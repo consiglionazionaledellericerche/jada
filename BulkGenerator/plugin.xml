@@ -19,6 +19,11 @@
                name="*">
          </export>
       </library>
+      <library name="lib/mysql-connector-java-5.1.7-bin.jar">
+         <export
+               name="*">
+         </export>
+      </library>
    </runtime>
 
    <requires>

@@ -15,15 +15,11 @@ public class Filter {
 	private Collection<String> collection;
 	public Filter() {
 		collection = new ArrayList<String>();
-		//collection.add("DACR");	
-		//collection.add("DUVA");	
-		//collection.add("UTCR");	
-		//collection.add("UTUV");
-		collection.add("CRUTENTE");
-		collection.add("CRDATA");
-		collection.add("PROGRE_VER_REC");			
-		collection.add("AGUTENTE");			
-		collection.add("AGDATA");			
+		collection.add("DACR");	
+		collection.add("DUVA");	
+		collection.add("UTCR");	
+		collection.add("UTUV");
+		collection.add("PG_VER_REC");			
 	}
 	public boolean isFilter(String string) {
 		return collection.contains(string);

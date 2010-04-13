@@ -50,7 +50,7 @@ public class ColumnMetaData implements Comparable<ColumnMetaData> {
 	}
 
 	public String getPropertyName() {
-		return propertyName.toLowerCase();
+		return getHibernatePropertyName();
 	}
 
 	public String getHibernatePropertyName() {
