@@ -3,7 +3,7 @@
 <plugin
    id="it.spasia.generator"
    name="Bulk Generator Plug-in"
-   version="2.0.0"
+   version="2.0.1"
    provider-name="CNR"
    class="it.spasia.generator.BulkGeneratorPlugin">
 

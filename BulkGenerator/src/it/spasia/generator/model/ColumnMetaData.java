@@ -50,6 +50,8 @@ public class ColumnMetaData implements Comparable<ColumnMetaData> {
 	}
 
 	public String getPropertyName() {
+		if (getColumnName().equals("PG_VER_REC"))
+			return getColumnName().toLowerCase();
 		return getHibernatePropertyName();
 	}
 
