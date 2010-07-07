@@ -39,7 +39,6 @@ public class LogComponentSessionBean extends CRUDComponentSessionBean implements
         super();
     }
 
-	@Override
 	@ExcludeDefaultInterceptors	
 	public void elaboraErrore(Throwable t) throws ComponentException {
 		LogErrore errore = new LogErrore(getExceptionName(t));

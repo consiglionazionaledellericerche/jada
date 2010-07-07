@@ -21,17 +21,14 @@ public class AdminUserContext implements UserContext {
 		return _instance;
 	}
 
-	@Override
 	public String getSessionId() {
 		return null;
 	}
 
-	@Override
 	public String getUser() {
 		return "ADMIN";
 	}
 
-	@Override
 	public void writeTo(PrintWriter printwriter) {
 	}
 

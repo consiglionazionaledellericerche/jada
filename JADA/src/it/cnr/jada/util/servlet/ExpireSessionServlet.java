@@ -18,11 +18,9 @@ import javax.servlet.http.HttpSessionListener;
 public class ExpireSessionServlet extends HttpServlet implements HttpSessionListener {
 	private static final long serialVersionUID = -670381598120618354L;
 
-	@Override
 	public void sessionCreated(HttpSessionEvent arg0) {
 	}
 
-	@Override
 	public void sessionDestroyed(HttpSessionEvent se) {
 		HttpEJBCleaner httpejbcleaner = (HttpEJBCleaner)se.getSession().getAttribute("it.cnr.jada.util.ejb.HttpEJBCleaner");
 		if (httpejbcleaner != null)

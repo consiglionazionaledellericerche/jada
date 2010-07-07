@@ -78,57 +78,48 @@ public class CRUDComponentSessionBean extends AbstractComponentSessionBean  impl
     	getHomeClass(bulkClass).deleteByCriteria(userContext, criteria);
     }
 
-	@Override
 	public <T extends OggettoBulk> List<T> cerca(UserContext userContext, Criteria compoundfindclause, T oggettobulk) throws ComponentException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
 	public <T extends OggettoBulk> List<T> cerca(UserContext userContext, Criteria compoundfindclause, T oggettobulk, OggettoBulk contesto,String property) throws ComponentException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
 	public <T extends OggettoBulk> T creaConBulk(UserContext userContext, T model) throws ComponentException {
 		// TODO Auto-generated method stub
-		return null;
+		return model;
 	}
 
-	@Override
 	public void eliminaConBulk(UserContext userContext, OggettoBulk model) throws ComponentException {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public <T extends OggettoBulk> T inizializzaBulkPerInserimento(UserContext userContext, T oggettobulk) throws ComponentException {
 		// TODO Auto-generated method stub
-		return null;
+		return oggettobulk;
 	}
 
-	@Override
 	public <T extends OggettoBulk> T inizializzaBulkPerModifica(UserContext userContext, T oggettobulk) throws ComponentException {
 		// TODO Auto-generated method stub
-		return null;
+		return oggettobulk;
 	}
 
-	@Override
 	public <T extends OggettoBulk> T inizializzaBulkPerRicerca(UserContext userContext, T oggettobulk) throws ComponentException {
 		// TODO Auto-generated method stub
-		return null;
+		return oggettobulk;
 	}
 
-	@Override
 	public <T extends OggettoBulk> T inizializzaBulkPerRicercaLibera(UserContext userContext, T oggettobulk) throws ComponentException {
 		// TODO Auto-generated method stub
-		return null;
+		return oggettobulk;
 	}
 
-	@Override
 	public <T extends OggettoBulk> T modificaConBulk(UserContext userContext,T oggettobulk) throws ComponentException {
 		// TODO Auto-generated method stub
-		return null;
+		return oggettobulk;
 	}
 }

@@ -68,7 +68,6 @@ public class BulkLoaderIteratorBean extends AbstractComponentSessionBean impleme
 		doCount = true;
 	}
 
-	@PostActivate
 	private void initializeTransaction(){
 		try{
 			if(usertransaction.getStatus() == Status.STATUS_NO_TRANSACTION){
@@ -349,7 +348,6 @@ public class BulkLoaderIteratorBean extends AbstractComponentSessionBean impleme
 	}
 	
 	@SuppressWarnings("unused")
-	@PrePassivate
 	private void passivate() throws PersistencyException{
 		closeUserTransaction();
 		reset();
@@ -374,7 +372,6 @@ public class BulkLoaderIteratorBean extends AbstractComponentSessionBean impleme
 		}		
 	}
 	
-	@Override
 	@Remove
 	public void remove() {
 		closeUserTransaction();
