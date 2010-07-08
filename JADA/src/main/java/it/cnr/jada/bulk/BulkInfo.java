@@ -205,7 +205,7 @@ public class BulkInfo implements Serializable{
      */
     public Criteria buildFindClausesFrom(OggettoBulk oggettobulk, Boolean freeSearch){
         try{
-            Criteria compoundfindclause = CriteriaFactory.createCriteria(oggettobulk.getClass());
+            Criteria compoundfindclause = CriteriaFactory.createCriteria(oggettobulk.getClass().getName());
             for(Enumeration<?> enumeration = getFindFieldProperties(); enumeration.hasMoreElements();){
                 FieldProperty fieldproperty = (FieldProperty)enumeration.nextElement();
                 if(fieldproperty.getProperty() != null && (freeSearch == null || fieldproperty.isEnabledOnFreeSearch() == freeSearch.booleanValue())){

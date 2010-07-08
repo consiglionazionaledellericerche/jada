@@ -28,11 +28,6 @@ public abstract class AbstractComponentSessionBean {
 
 	protected EntityManager manager;
 
-	protected org.hibernate.Session hibernateSession; 
-	
-	public org.hibernate.Session getHibernateSession() {
-		return hibernateSession;
-	}
 	public EntityManager getManager() {
 		return manager;
 	}

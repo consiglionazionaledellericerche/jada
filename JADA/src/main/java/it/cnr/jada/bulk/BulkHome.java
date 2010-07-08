@@ -51,7 +51,7 @@ public class BulkHome<T extends OggettoBulk> implements Serializable{
 	}
 	
 	public Criteria createCriteria(UserContext userContext){
-		return CriteriaFactory.createCriteria(bulkClass);
+		return CriteriaFactory.createCriteria(bulkClass.getName());
 	}
 	
 	@SuppressWarnings("unchecked")

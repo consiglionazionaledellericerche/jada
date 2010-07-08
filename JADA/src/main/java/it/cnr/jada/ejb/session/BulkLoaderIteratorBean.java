@@ -16,8 +16,6 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.ejb.EJBException;
-import javax.ejb.PostActivate;
-import javax.ejb.PrePassivate;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.ejb.TransactionManagement;
@@ -33,11 +31,6 @@ import javax.transaction.UserTransaction;
 
 import net.bzdyl.ejb3.criteria.Criteria;
 import net.bzdyl.ejb3.criteria.Order;
-import net.bzdyl.ejb3.criteria.QueryContext;
-import net.bzdyl.ejb3.criteria.QueryParameterValue;
-import net.bzdyl.ejb3.criteria.impl.QueryBuilder;
-
-import org.hibernate.ScrollableResults;
 /**
  * 
  * @author mspasiano
@@ -54,7 +47,6 @@ public class BulkLoaderIteratorBean extends AbstractComponentSessionBean impleme
 	
 	protected Query query;
 	protected Criteria criteria;
-	private Criteria criteriaCount;	
 	protected Long recordCount;
 	protected int position;
 	protected UserContext userContext;
@@ -121,11 +113,6 @@ public class BulkLoaderIteratorBean extends AbstractComponentSessionBean impleme
 
 	public void create(UserContext usercontext, Criteria criteria) throws ComponentException{
 		this.criteria = criteria;
-		try {
-			this.criteriaCount = (Criteria) criteria.clone();
-		} catch (CloneNotSupportedException e) {
-			throw new ComponentException(e);
-		} 
 		this.userContext = usercontext;
 		removed = false;
 	}
@@ -263,19 +250,7 @@ public class BulkLoaderIteratorBean extends AbstractComponentSessionBean impleme
 
 	protected void predictCount(){
 		if(doCount){
-			QueryBuilder queryBuilder =  new QueryBuilder((QueryContext) criteriaCount, getManager() );			
-			queryBuilder.collectJoinElements();
-			queryBuilder.collectWhereElements();
-	        String queryString = queryBuilder.buildQueryString();
-			org.hibernate.Query hibernateQuery = getHibernateSession().createQuery(queryString);
-	        Map<String, QueryParameterValue> parameters = queryBuilder.getQueryContext().getParameters();
-	        for ( String parameterName : parameters.keySet() ){
-	            QueryParameterValue parameterValue = parameters.get( parameterName );
-	            hibernateQuery.setParameter(parameterName, parameterValue.getValue());
-	        }
-			ScrollableResults scroll = hibernateQuery.scroll();
-			scroll.last();			
-			recordCount = Long.valueOf(scroll.getRowNumber()+1);
+			recordCount = Long.valueOf(criteria.prepareQuery(getManager()).getResultList().size());
 			doCount=false;
 		}
 	}
@@ -304,7 +279,7 @@ public class BulkLoaderIteratorBean extends AbstractComponentSessionBean impleme
 
 	public void setOrderBy(String propertyName, OrderConstants sortDirection) throws DetailedRuntimeException{
 		try{
-			criteria.removeOrder(Order.remove(propertyName));
+			//criteria.removeOrder(Order.remove(propertyName));
 			if (sortDirection.equals(OrderConstants.ORDER_ASC))
 				criteria.addOrder(Order.asc(propertyName));
 			else if (sortDirection.equals(OrderConstants.ORDER_DESC))
