@@ -3,12 +3,12 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>it.cnr</groupId>
 	<artifactId>jada-ejb3</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0</version>
 	<packaging>ejb</packaging>
 	<repositories>
 		<repository>
 			<id>sigla</id>
-			<url>http://buildandtest.si.cnr.it:8081/nexus/content/repositories/SIGLAGROUP</url>
+			<url>http://buildandtest.si.cnr.it:8081/nexus/content/group/public</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
@@ -16,23 +16,18 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</repository>
-		<repository>
-		    <id>ejb3criteria.releases</id>
-		    <name>EJB3 Criteria Releases Repository</name>
-		    <url>http://ejb3criteria.googlecode.com/svn/maven2repo/releases</url>
-	  </repository>
 	</repositories>
 	<distributionManagement>
 	    <repository>
-	        <id>sigla-releases</id>
-	        <name>SIGLA Releases</name>
-	        <url>http://buildandtest.si.cnr.it:8081/nexus/content/repositories/sigla-releases</url>
+	        <id>jada-releases</id>
+	        <name>JADA Releases</name>
+	        <url>http://buildandtest.si.cnr.it:8081/nexus/content/repositories/jada-releases</url>
 	    </repository>
 	 
 	    <snapshotRepository>
-	        <id>sigla-snapshots</id>
-	        <name>SIGLA Internal Snapshots</name>
-	        <url>http://buildandtest.si.cnr.it:8081/nexus/content/repositories/sigla-snapshots</url>
+	        <id>jada-snapshots</id>
+	        <name>JADA Internal Snapshots</name>
+	        <url>http://buildandtest.si.cnr.it:8081/nexus/content/repositories/jada-snapshots</url>
 	    </snapshotRepository>
 	</distributionManagement>
 	<build>
