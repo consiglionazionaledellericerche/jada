@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Configurazione hibernate -->
+<persistence>
+   
+   <!-- datasource principale -->
+   <persistence-unit name="SYSTEM">
+      <jta-data-source>java:/DefaultDS</jta-data-source>
+      <properties>
+         <property name="hibernate.hbm2ddl.auto" value="auto"/>
+		 <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>
+		 <property name="hibernate.jdbc.batch_size">0</property>		  
+		 <property name="hibernate.jdbc.use_streams_for_binary">false</property>
+		 <property name="hibernate.show_sql">false</property>		  
+	  </properties>
+   </persistence-unit>
+   
+</persistence>
