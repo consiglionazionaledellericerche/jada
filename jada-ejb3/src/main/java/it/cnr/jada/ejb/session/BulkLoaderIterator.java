@@ -2,11 +2,10 @@
 * Copyright 2008-2009 Italian National Research Council
 * 	All rights reserved
 */
-package it.cnr.jada.ejb.session.remote;
+package it.cnr.jada.ejb.session;
 
 import it.cnr.jada.DetailedRuntimeException;
 import it.cnr.jada.UserContext;
-import it.cnr.jada.ejb.session.ComponentException;
 import it.cnr.jada.util.RemoteOrderable;
 import it.cnr.jada.util.RemotePagedIterator;
 import javax.ejb.Remote;

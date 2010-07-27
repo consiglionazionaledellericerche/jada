@@ -4,7 +4,7 @@
 */
 package it.cnr.jada.util.ejb;
 
-import it.cnr.jada.ejb.session.remote.BulkLoaderIterator;
+import it.cnr.jada.ejb.session.BulkLoaderIterator;
 
 import java.io.Serializable;
 import java.util.*;

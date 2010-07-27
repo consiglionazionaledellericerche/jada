@@ -7,7 +7,6 @@ package it.cnr.jada.ejb.session;
 import it.cnr.jada.DetailedRuntimeException;
 import it.cnr.jada.UserContext;
 import it.cnr.jada.bulk.OggettoBulk;
-import it.cnr.jada.ejb.session.remote.BulkLoaderIterator;
 import it.cnr.jada.util.OrderConstants;
 
 import java.util.ArrayList;

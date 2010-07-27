@@ -6,7 +6,6 @@ package it.cnr.jada.ejb.session;
 
 import it.cnr.jada.AdminUserContext;
 import it.cnr.jada.ejb.entity.LogErrore;
-import it.cnr.jada.ejb.session.remote.LogComponentSession;
 
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
@@ -44,7 +43,7 @@ public class LogComponentSessionBean extends CRUDComponentSessionBean implements
 		LogErrore errore = new LogErrore(getExceptionName(t));
 		errore.setTrace(getExceptionStack(t));		
 		errore.setToBeCreated();
-		persist(AdminUserContext.getInstance(), errore);		
+		creaConBulk(AdminUserContext.getInstance(), errore);		
 	}
 	/** ritorna il nome della prima eccezione nello stack */
 	private String getExceptionName(Throwable t) {

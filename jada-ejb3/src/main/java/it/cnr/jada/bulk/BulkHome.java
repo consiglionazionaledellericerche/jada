@@ -22,8 +22,8 @@ import javax.persistence.Query;
 
 import net.bzdyl.ejb3.criteria.Criteria;
 import net.bzdyl.ejb3.criteria.CriteriaFactory;
+import net.bzdyl.ejb3.criteria.Criterion;
 import net.bzdyl.ejb3.criteria.projections.Projections;
-import net.bzdyl.ejb3.criteria.restrictions.Restrictions;
 /**
  * PersistentHome specializzato per classi persistenti derivate da OggettoBulk. 
  * Possiede le seguenti estensioni: gestisce i campi sistemistici di 
@@ -60,19 +60,17 @@ public class BulkHome<T extends OggettoBulk> implements Serializable{
     	return query.getResultList();
     }
 	
-	@SuppressWarnings("unchecked")
 	public T merge(UserContext userContext, T oggettoBulk){
 		return manager.merge(oggettoBulk);
 	}	
 
-	@SuppressWarnings("unchecked")
 	public T refresh(UserContext userContext, T oggettoBulk){
 		manager.refresh(oggettoBulk);
 		return oggettoBulk;
 	}	
 	
 	@SuppressWarnings("unchecked")
-	public T findByPrimaryKey(UserContext userContext, T oggettoBulk){
+	public T findByPrimaryKey(UserContext userContext, T oggettoBulk) throws ComponentException{
     	T bulk = (T)manager.find(oggettoBulk.getClass(), oggettoBulk.getId());
     	if(bulk == null)
     		return null;
@@ -81,13 +79,6 @@ public class BulkHome<T extends OggettoBulk> implements Serializable{
     }
 	
     public T update(UserContext userContext, T oggettoBulk) throws ComponentException{
-    	/*
-    	T oggettoBulkDB = findByPrimaryKey(userContext, oggettoBulk);
-    	if (oggettoBulkDB == null)
-    		throw new BulkNotFoundException();
-    	if (!oggettoBulkDB.getPg_ver_rec().equals(oggettoBulk.getPg_ver_rec()))
-    		throw new OutdatedResourceException(oggettoBulk);
-    	*/	
     	oggettoBulk.setUtuv(userContext.getUser());
     	oggettoBulk.setDuva(new Timestamp(new Date().getTime()));
     	T obj = manager.merge(oggettoBulk);
@@ -119,12 +110,25 @@ public class BulkHome<T extends OggettoBulk> implements Serializable{
     	return oggettoBulk;
     }
     
-    @SuppressWarnings("unchecked")
-	public List<T> findByCriteria(UserContext userContext, Criteria criteria){
-    	Query query = criteria.prepareQuery(manager);
-    	return query.getResultList();
+	public Query findByCriterion(UserContext userContext, Criterion criterion){
+		Criteria criteria = selectByCriterion(userContext, criterion);
+		if (criterion != null)
+			criteria.add(criterion);
+    	return criteria.prepareQuery(manager);
     }
 
+	public Criteria selectByCriterion(UserContext userContext, Criterion criterion){
+		Criteria criteria = createCriteria(userContext);
+		if (criterion != null)
+			criteria.add(criterion);
+    	return criteria;
+    }
+
+	@SuppressWarnings("unchecked")
+	public List<T> findByCriteria(UserContext userContext, Criteria criteria){
+    	return criteria.prepareQuery(manager).getResultList();
+    }
+	
     @SuppressWarnings("unchecked")
 	public void deleteByCriteria(UserContext userContext, Criteria criteria) throws ComponentException{
     	Query query = criteria.prepareQuery(manager);    	
@@ -153,6 +157,10 @@ public class BulkHome<T extends OggettoBulk> implements Serializable{
 		Criteria criteria = CriteriaFactory.createCriteria(bulkClass.getName());
     	Query query = criteria.prepareQuery(manager);
     	return query.getResultList();
+    }
+    
+    public void lock(UserContext userContext, T oggettoBulk){
+    	manager.lock(oggettoBulk, LockModeType.WRITE);
     }
     
 	// ====================================================================
@@ -197,5 +205,10 @@ public class BulkHome<T extends OggettoBulk> implements Serializable{
 		} catch (InvocationTargetException e) {
     		throw new ComponentException(e);
 		}
-    }    
+    }
+
+	public void initializePrimaryKeyForInsert(UserContext userContext,
+			OggettoBulk oggettobulk) {
+		
+	}    
 }
