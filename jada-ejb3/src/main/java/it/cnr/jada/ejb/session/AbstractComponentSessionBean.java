@@ -30,11 +30,7 @@ import javax.persistence.EntityManager;
  */
 public abstract class AbstractComponentSessionBean<T extends OggettoBulk> {
 
-	protected EntityManager manager;
-
-	public EntityManager getManager() {
-		return manager;
-	}
+	public abstract EntityManager getManager();
 
 	// ====================================================================
 	// conteggio generico
@@ -47,26 +43,24 @@ public abstract class AbstractComponentSessionBean<T extends OggettoBulk> {
 	// ====================================================================
 	// query generica
 	// ====================================================================
-	@SuppressWarnings("unchecked")
 	public List<T> findAll(Class<T> bulkClass)
 			throws ComponentException {
 		return getHomeClass(bulkClass).findAll();
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<T> findByQuery(UserContext userContext,
 			String queryString, Class<T> bulkClass) throws ComponentException {
 		return getHomeClass(bulkClass).findByQuery(userContext, queryString);
 	}
 
 	@SuppressWarnings("unchecked")
-	public BulkHome<T> getHomeClass(T oggettoBulk)
+	public <N extends OggettoBulk> BulkHome<N> getHomeClass(N oggettoBulk)
 			throws ComponentException {
-		return getHomeClass((Class<T>)oggettoBulk.getClass());
+		return getHomeClass((Class<N>)oggettoBulk.getClass());
 	}
 
 	@SuppressWarnings("unchecked")
-	public BulkHome<T> getHomeClass(Class<T> bulkClass)
+	public <N extends OggettoBulk> BulkHome<N> getHomeClass(Class<N> bulkClass)
 			throws ComponentException {
 		try {
 			HomeClass homeClass = bulkClass.getAnnotation(HomeClass.class);

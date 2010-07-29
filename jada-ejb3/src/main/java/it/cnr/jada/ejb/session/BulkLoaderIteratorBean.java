@@ -11,12 +11,10 @@ import it.cnr.jada.util.OrderConstants;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.ejb.EJBException;
 import javax.ejb.Remove;
-import javax.ejb.Stateful;
 import javax.ejb.TransactionManagement;
 import javax.ejb.TransactionManagementType;
 import javax.persistence.Query;
@@ -36,9 +34,8 @@ import net.bzdyl.ejb3.criteria.Order;
  * @version 1.0
  * @since October 2009
  */
-@Stateful(name="JADA_BulkLoaderIterator")
 @TransactionManagement(TransactionManagementType.BEAN)
-public class BulkLoaderIteratorBean extends AbstractComponentSessionBean implements BulkLoaderIterator{
+public abstract class BulkLoaderIteratorBean<T extends OggettoBulk> extends AbstractComponentSessionBean<T> implements BulkLoaderIterator{
 	private static final long serialVersionUID = -2431501664741158683L;
 	
 	@Resource 

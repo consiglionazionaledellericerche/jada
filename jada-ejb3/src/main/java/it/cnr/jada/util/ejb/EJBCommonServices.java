@@ -7,7 +7,6 @@ package it.cnr.jada.util.ejb;
 import it.cnr.jada.DetailedRuntimeException;
 import it.cnr.jada.UserContext;
 import it.cnr.jada.ejb.session.BulkLoaderIterator;
-import it.cnr.jada.ejb.session.CRUDComponentSessionLocal;
 import it.cnr.jada.ejb.session.ComponentException;
 import it.cnr.jada.util.RemoteIterator;
 
@@ -22,18 +21,6 @@ import javax.servlet.http.HttpSession;
  * @since October 2009
  */
 public final class EJBCommonServices {
-
-	public static CRUDComponentSessionLocal createCRUDComponentSession(){
-		return (CRUDComponentSessionLocal) createRemoteEJB("JADA_CRUDComponentSession");
-	}
-	
-	public static final CRUDComponentSessionLocal createRemoteEJB(String jndiName){
-		try {
-			return (CRUDComponentSessionLocal)getInitialContext().lookup(jndiName);
-		} catch (NamingException e) {
-			throw new EJBException(e);
-		}
-	}
 
 	public static final BulkLoaderIterator createRemoteIterator(String jndiName){
 		try {
