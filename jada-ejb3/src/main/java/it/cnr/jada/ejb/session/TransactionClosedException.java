@@ -5,6 +5,7 @@
 package it.cnr.jada.ejb.session;
 
 import java.io.Serializable;
+
 import javax.ejb.EJBException;
 /**
  * 

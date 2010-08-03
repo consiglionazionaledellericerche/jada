@@ -9,14 +9,23 @@ import it.cnr.jada.bulk.BulkHome;
 import it.cnr.jada.bulk.OggettoBulk;
 import it.cnr.jada.bulk.OutdatedResourceException;
 import it.cnr.jada.bulk.annotation.HomeClass;
+import it.cnr.jada.bulk.annotation.JadaOneToMany;
 import it.cnr.jada.util.Introspector;
 
+import java.beans.IntrospectionException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
+
+import net.bzdyl.ejb3.criteria.Criteria;
+import net.bzdyl.ejb3.criteria.restrictions.Restrictions;
 
 /**
  * Astrazione del manager di persistenza
@@ -104,6 +113,7 @@ public abstract class AbstractComponentSessionBean<T extends OggettoBulk> {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	protected void makeBulkPersistent(UserContext usercontext,
 			T oggettobulk) throws ComponentException,
 			PersistencyException {
@@ -120,8 +130,60 @@ public abstract class AbstractComponentSessionBean<T extends OggettoBulk> {
 			break;
 
 		}
+    	List<Field> attributi = Arrays.asList(oggettobulk.getClass().getDeclaredFields());
+		for (Field attributo : attributi) {
+			JadaOneToMany jadaOneToMany = attributo.getAnnotation(JadaOneToMany.class);
+			if (jadaOneToMany != null){
+				try {
+					Object value = Introspector.getPropertyValue(oggettobulk, attributo.getName());
+					if (value == null)
+						continue;
+					if (attributo.getDeclaringClass().equals(List.class)){
+						List<OggettoBulk> result = (List<OggettoBulk>)value;
+						for (OggettoBulk oggettoBulk2 : result) {
+							makeForeignBulkPersistent(usercontext, oggettoBulk2);
+						}
+					}else if (attributo.getDeclaringClass().equals(Set.class)){
+						Set<OggettoBulk> result = (Set<OggettoBulk>)value;
+						for (OggettoBulk oggettoBulk2 : result) {
+							makeForeignBulkPersistent(usercontext, oggettoBulk2);
+						}
+					}
+				} catch (IntrospectionException e) {
+					handleException(e);
+				} catch (InvocationTargetException e) {
+					handleException(e);					
+				}
+			}
+		}
+		
+	}
+	
+	private <N extends OggettoBulk> void makeForeignBulkPersistent(UserContext usercontext,
+			N oggettobulk) throws ComponentException,
+			PersistencyException {
+		switch (oggettobulk.getCrudStatus()) {
+		case 1: // '\001'
+			insertForeignBulk(usercontext, oggettobulk);
+			break;
+
+		case 2: // '\002'
+			updateForeignBulk(usercontext, oggettobulk);
+			break;
+		case 3: // '\003'
+			deleteForeignBulk(usercontext, oggettobulk);
+			break;
+
+		}
 	}
 
+	private <N extends OggettoBulk> void insertForeignBulk(UserContext userContext, N oggettobulk)
+		throws PersistencyException, ComponentException {
+		getHomeClass(oggettobulk).initializePrimaryKeyForInsert(
+				userContext, oggettobulk);
+		getHomeClass(oggettobulk).insert(userContext, oggettobulk);
+	}
+	
 	protected void insertBulk(UserContext userContext, T oggettobulk)
 			throws PersistencyException, ComponentException {
 		getHomeClass(oggettobulk).initializePrimaryKeyForInsert(
@@ -129,11 +191,21 @@ public abstract class AbstractComponentSessionBean<T extends OggettoBulk> {
 		getHomeClass(oggettobulk).insert(userContext, oggettobulk);
 	}
 
+	private <N extends OggettoBulk> void updateForeignBulk(UserContext userContext, N oggettobulk)
+		throws PersistencyException, ComponentException {
+		getHomeClass(oggettobulk).update(userContext, oggettobulk);
+	}
+	
 	protected void updateBulk(UserContext userContext, T oggettobulk)
 			throws PersistencyException, ComponentException {
 		getHomeClass(oggettobulk).update(userContext, oggettobulk);
 	}
 
+	private <N extends OggettoBulk> void deleteForeignBulk(UserContext userContext, N oggettobulk)
+		throws PersistencyException, ComponentException {
+		getHomeClass(oggettobulk).delete(userContext, oggettobulk);
+	}
+	
 	protected void deleteBulk(UserContext userContext, T oggettobulk)
 			throws PersistencyException, ComponentException {
 		getHomeClass(oggettobulk).delete(userContext, oggettobulk);
@@ -172,8 +244,29 @@ public abstract class AbstractComponentSessionBean<T extends OggettoBulk> {
 		getHomeClass(oggettobulk).lock(userContext, oggettobulk);
 	}
     
-	protected void initializeKeysAndOptionsInto(UserContext usercontext, T oggettobulk)
+	@SuppressWarnings("unchecked")
+	protected void initializeKeysAndOptionsInto(UserContext userContext, T oggettobulk)
     		throws ComponentException{
+    	List<Field> attributi = Arrays.asList(oggettobulk.getClass().getDeclaredFields());
+		for (Field attributo : attributi) {
+			JadaOneToMany jadaOneToMany = attributo.getAnnotation(JadaOneToMany.class);
+			if (jadaOneToMany != null){
+				BulkHome home = getHomeClass(jadaOneToMany.targetEntity());
+				Criteria criteria = home.createCriteria(userContext);
+				criteria.add(Restrictions.eq(jadaOneToMany.mappedBy(), oggettobulk));
+				List result = home.findByCriteria(userContext, criteria);
+				try {
+					if (attributo.getDeclaringClass().equals(List.class))
+						Introspector.setPropertyValue(oggettobulk, attributo.getName(), result);
+					else if (attributo.getDeclaringClass().equals(Set.class))
+						Introspector.setPropertyValue(oggettobulk, attributo.getName(), new HashSet(result));
+				} catch (IntrospectionException e) {
+					handleException(e);
+				} catch (InvocationTargetException e) {
+					handleException(e);
+				}
+			}
+		}
     }
     
 	protected ComponentException handleException(Throwable throwable) {

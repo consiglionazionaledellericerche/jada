@@ -8,7 +8,9 @@ import it.cnr.jada.DetailedRuntimeException;
 import it.cnr.jada.UserContext;
 import it.cnr.jada.util.RemoteOrderable;
 import it.cnr.jada.util.RemotePagedIterator;
+
 import javax.ejb.Remote;
+
 import net.bzdyl.ejb3.criteria.Criteria;
 /**
  * 
