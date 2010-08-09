@@ -14,6 +14,7 @@ import javax.persistence.Query;
 
 import net.bzdyl.ejb3.criteria.Criteria;
 import net.bzdyl.ejb3.criteria.Criterion;
+import net.bzdyl.ejb3.criteria.Order;
 import net.bzdyl.ejb3.criteria.projections.Projections;
 
 /**
@@ -36,18 +37,11 @@ import net.bzdyl.ejb3.criteria.projections.Projections;
  * @since October 2009
  */
 public abstract class CRUDComponentSessionBean<T extends OggettoBulk> extends
-		AbstractComponentSessionBean<T> implements
-		CRUDComponentSession<T>{
+		AbstractComponentSessionBean<T> implements CRUDComponentSession<T> {
 	/**
 	 * Default constructor.
 	 */
 	public CRUDComponentSessionBean() {
-	}
-
-	public T findByPrimaryKey(UserContext userContext, T oggettoBulk)
-			throws ComponentException {
-		return getHomeClass(oggettoBulk).findByPrimaryKey(userContext,
-				oggettoBulk);
 	}
 
 	public void deleteByCriteria(UserContext userContext, Criteria criteria,
@@ -55,51 +49,65 @@ public abstract class CRUDComponentSessionBean<T extends OggettoBulk> extends
 		getHomeClass(bulkClass).deleteByCriteria(userContext, criteria);
 	}
 
-	@SuppressWarnings("unchecked")
-	public List<T> findByCriteria(UserContext userContext, Criteria criteria)
+	/**
+	 * Metodi di Ricerca
+	 */
+	public T findByPrimaryKey(UserContext userContext, T oggettoBulk)
 			throws ComponentException {
-		return criteria.prepareQuery(getManager()).getResultList();
+		return getHomeClass(oggettoBulk).findByPrimaryKey(userContext,
+				oggettoBulk);
 	}
 
-	public Long countByCriteria(UserContext userContext, Criteria criteria)
-			throws ComponentException {
+	public Long count(UserContext userContext,Class<T> bulkClass) throws ComponentException {
+		Criteria criteria = select(userContext, bulkClass);
 		criteria.setProjection(Projections.rowCount());
 		return (Long) criteria.prepareQuery(getManager()).getSingleResult();
 	}
 
+	public Long countByCriterion(UserContext userContext, Class<T> bulkClass, Criterion criterion)
+			throws ComponentException {
+		Criteria criteria = select(userContext, bulkClass, criterion);
+		criteria.setProjection(Projections.rowCount());
+		if (criterion != null)
+			criteria.add(criterion);
+		return (Long) criteria.prepareQuery(getManager()).getSingleResult();
+	}
+
 	@SuppressWarnings("unchecked")
-	public List<T> findByCriteria(UserContext userContext, Criteria criteria,
+	public List<T> findAll(UserContext userContext, Class<T> bulkClass)
+			throws ComponentException {
+		return select(userContext, bulkClass).prepareQuery(getManager()).getResultList();
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<T> findByCriterion(UserContext userContext, Class<T> bulkClass, Criterion criterion,
 			Integer firstResult, Integer maxResult) throws ComponentException {
-		Query query = criteria.prepareQuery(getManager());
+		Query query = select(userContext, bulkClass, criterion).prepareQuery(getManager());
 		query.setFirstResult(firstResult);
 		query.setMaxResults(maxResult);
 		return query.getResultList();
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<T> findByCriterion(UserContext userContext,
-			Criterion criterion, Class<T> bulkClass) throws ComponentException {
-		Criteria criteria = select(userContext, criterion, bulkClass);
+	public List<T> findByCriterion(UserContext userContext, Class<T> bulkClass,
+			Criterion criterion, Order... order) throws ComponentException {
+		Criteria criteria = select(userContext, bulkClass, criterion, order);
 		return criteria.prepareQuery(getManager()).getResultList();
 	}
 
-	/**
-	 * Implementazione fisica del metodo
-	 * cerca(UserContext,CompoundFindClause,T). Costruisce l'istruzione SQL
-	 * corrispondente ad una ricerca con le clausole specificate.
-	 * L'implementazione standard invoca il metodo findByCriteria sull'Home
-	 * dell'T specificato come prototipo.
-	 */
-	protected Criteria select(UserContext userContext, Criterion criterion,
-			T oggettoBulk) throws ComponentException {
-		return getHomeClass(oggettoBulk).selectByCriterion(userContext,
-				criterion);
+	protected Criteria select(UserContext userContext, Class<T> bulkClass) throws ComponentException {
+		return select(userContext, bulkClass, null);
 	}
 
-	protected Criteria select(UserContext userContext, Criterion criterion,
-			Class<T> bulkClass) throws ComponentException {
+	protected Criteria select(UserContext userContext, Class<T> bulkClass,
+			Criterion criterion) throws ComponentException {
+		return select(userContext, bulkClass, null, new Order[0]);
+	}
+	
+	protected Criteria select(UserContext userContext, Class<T> bulkClass,
+			Criterion criterion, Order... order) throws ComponentException {
 		return getHomeClass(bulkClass)
-				.selectByCriterion(userContext, criterion);
+				.selectByCriterion(userContext, criterion, order);
 	}
 
 	public T persist(UserContext userContext, T model)
@@ -281,6 +289,7 @@ public abstract class CRUDComponentSessionBean<T extends OggettoBulk> extends
 						null, oggettobulk);
 			} else {
 				initializeKeysAndOptionsInto(userContext, oggettobulk);
+				initializeForeignKey(userContext, oggettobulk);
 				return oggettobulk;
 			}
 		} catch (Exception exception) {

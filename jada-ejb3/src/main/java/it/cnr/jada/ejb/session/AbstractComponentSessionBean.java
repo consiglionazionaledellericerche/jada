@@ -10,6 +10,7 @@ import it.cnr.jada.bulk.OggettoBulk;
 import it.cnr.jada.bulk.OutdatedResourceException;
 import it.cnr.jada.bulk.annotation.HomeClass;
 import it.cnr.jada.bulk.annotation.JadaOneToMany;
+import it.cnr.jada.criterion.CriterionList;
 import it.cnr.jada.util.Introspector;
 
 import java.beans.IntrospectionException;
@@ -24,7 +25,6 @@ import java.util.Set;
 
 import javax.persistence.EntityManager;
 
-import net.bzdyl.ejb3.criteria.Criteria;
 import net.bzdyl.ejb3.criteria.restrictions.Restrictions;
 
 /**
@@ -40,27 +40,6 @@ import net.bzdyl.ejb3.criteria.restrictions.Restrictions;
 public abstract class AbstractComponentSessionBean<T extends OggettoBulk> {
 
 	public abstract EntityManager getManager();
-
-	// ====================================================================
-	// conteggio generico
-	// ====================================================================
-	public Long count(Class<T> bulkClass)
-			throws ComponentException {
-		return getHomeClass(bulkClass).count();
-	}
-
-	// ====================================================================
-	// query generica
-	// ====================================================================
-	public List<T> findAll(Class<T> bulkClass)
-			throws ComponentException {
-		return getHomeClass(bulkClass).findAll();
-	}
-
-	public List<T> findByQuery(UserContext userContext,
-			String queryString, Class<T> bulkClass) throws ComponentException {
-		return getHomeClass(bulkClass).findByQuery(userContext, queryString);
-	}
 
 	@SuppressWarnings("unchecked")
 	public <N extends OggettoBulk> BulkHome<N> getHomeClass(N oggettoBulk)
@@ -138,12 +117,12 @@ public abstract class AbstractComponentSessionBean<T extends OggettoBulk> {
 					Object value = Introspector.getPropertyValue(oggettobulk, attributo.getName());
 					if (value == null)
 						continue;
-					if (attributo.getDeclaringClass().equals(List.class)){
+					if (attributo.getType().equals(List.class)){
 						List<OggettoBulk> result = (List<OggettoBulk>)value;
 						for (OggettoBulk oggettoBulk2 : result) {
 							makeForeignBulkPersistent(usercontext, oggettoBulk2);
 						}
-					}else if (attributo.getDeclaringClass().equals(Set.class)){
+					}else if (attributo.getType().equals(Set.class)){
 						Set<OggettoBulk> result = (Set<OggettoBulk>)value;
 						for (OggettoBulk oggettoBulk2 : result) {
 							makeForeignBulkPersistent(usercontext, oggettoBulk2);
@@ -245,20 +224,18 @@ public abstract class AbstractComponentSessionBean<T extends OggettoBulk> {
 	}
     
 	@SuppressWarnings("unchecked")
-	protected void initializeKeysAndOptionsInto(UserContext userContext, T oggettobulk)
-    		throws ComponentException{
+	protected void initializeForeignKey(UserContext userContext, T oggettobulk) throws ComponentException {
     	List<Field> attributi = Arrays.asList(oggettobulk.getClass().getDeclaredFields());
 		for (Field attributo : attributi) {
 			JadaOneToMany jadaOneToMany = attributo.getAnnotation(JadaOneToMany.class);
 			if (jadaOneToMany != null){
 				BulkHome home = getHomeClass(jadaOneToMany.targetEntity());
-				Criteria criteria = home.createCriteria(userContext);
-				criteria.add(Restrictions.eq(jadaOneToMany.mappedBy(), oggettobulk));
-				List result = home.findByCriteria(userContext, criteria);
+				CriterionList criterionList = new CriterionList(Restrictions.eq(jadaOneToMany.mappedBy(), oggettobulk));
+				List result = home.selectByCriterion(userContext, criterionList).prepareQuery(getManager()).getResultList();
 				try {
-					if (attributo.getDeclaringClass().equals(List.class))
+					if (attributo.getType().equals(List.class))
 						Introspector.setPropertyValue(oggettobulk, attributo.getName(), result);
-					else if (attributo.getDeclaringClass().equals(Set.class))
+					else if (attributo.getType().equals(Set.class))
 						Introspector.setPropertyValue(oggettobulk, attributo.getName(), new HashSet(result));
 				} catch (IntrospectionException e) {
 					handleException(e);
@@ -267,6 +244,11 @@ public abstract class AbstractComponentSessionBean<T extends OggettoBulk> {
 				}
 			}
 		}
+	}
+
+	protected void initializeKeysAndOptionsInto(UserContext userContext, T oggettobulk)
+    		throws ComponentException{
+		getHomeClass(oggettobulk).initializeKeysAndOptionsInto(userContext, oggettobulk);
     }
     
 	protected ComponentException handleException(Throwable throwable) {

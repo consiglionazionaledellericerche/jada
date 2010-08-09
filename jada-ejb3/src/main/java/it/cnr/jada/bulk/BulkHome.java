@@ -23,6 +23,7 @@ import javax.persistence.Query;
 import net.bzdyl.ejb3.criteria.Criteria;
 import net.bzdyl.ejb3.criteria.CriteriaFactory;
 import net.bzdyl.ejb3.criteria.Criterion;
+import net.bzdyl.ejb3.criteria.Order;
 import net.bzdyl.ejb3.criteria.projections.Projections;
 /**
  * PersistentHome specializzato per classi persistenti derivate da OggettoBulk. 
@@ -110,25 +111,36 @@ public class BulkHome<T extends OggettoBulk> implements Serializable{
     	return oggettoBulk;
     }
     
-	public Query findByCriterion(UserContext userContext, Criterion criterion){
-		Criteria criteria = selectByCriterion(userContext, criterion);
-		if (criterion != null)
-			criteria.add(criterion);
+	public Query getQueryByCriterion(UserContext userContext, Criterion criterion){
+		Criteria criteria = selectByCriterion(userContext, criterion, new Order[0]);
     	return criteria.prepareQuery(manager);
     }
 
+	@SuppressWarnings("unchecked")
+	public List<T> findByCriterion(UserContext userContext, Criterion criterion){
+		return selectByCriterion(userContext, criterion, new Order[0]).prepareQuery(manager).getResultList();
+    }
+	
 	public Criteria selectByCriterion(UserContext userContext, Criterion criterion){
-		Criteria criteria = createCriteria(userContext);
-		if (criterion != null)
-			criteria.add(criterion);
-    	return criteria;
+		return selectByCriterion(userContext, criterion, new Order[0]);
     }
 
 	@SuppressWarnings("unchecked")
-	public List<T> findByCriteria(UserContext userContext, Criteria criteria){
-    	return criteria.prepareQuery(manager).getResultList();
+	public List<T> findByCriterion(UserContext userContext, Criterion criterion, Order... order){
+		return selectByCriterion(userContext, criterion, order).prepareQuery(manager).getResultList();
     }
 	
+	public Criteria selectByCriterion(UserContext userContext, Criterion criterion, Order... order){
+		Criteria criteria = createCriteria(userContext);
+		if (criterion != null)
+			criteria.add(criterion);
+		if (order != null)
+			for (Order o : order) {
+				criteria.addOrder(o);
+			}
+    	return criteria;
+    }
+
     @SuppressWarnings("unchecked")
 	public void deleteByCriteria(UserContext userContext, Criteria criteria) throws ComponentException{
     	Query query = criteria.prepareQuery(manager);    	
@@ -210,5 +222,9 @@ public class BulkHome<T extends OggettoBulk> implements Serializable{
 	public void initializePrimaryKeyForInsert(UserContext userContext,
 			OggettoBulk oggettobulk) {
 		
-	}    
+	}   
+
+	public void initializeKeysAndOptionsInto(UserContext userContext, T oggettobulk) throws ComponentException{
+		
+	}
 }
