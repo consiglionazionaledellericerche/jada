@@ -222,11 +222,18 @@ public abstract class AbstractComponentSessionBean<T extends OggettoBulk> {
 			OutdatedResourceException, BusyResourceException {
 		getHomeClass(oggettobulk).lock(userContext, oggettobulk);
 	}
-    
+
+	public void initializeForeignKey(UserContext userContext, T oggettobulk) throws ComponentException {
+		initializeForeignKey(userContext, oggettobulk, new String[0]);
+	}	
+	
 	@SuppressWarnings("unchecked")
-	protected void initializeForeignKey(UserContext userContext, T oggettobulk) throws ComponentException {
+	public void initializeForeignKey(UserContext userContext, T oggettobulk, String...attributes) throws ComponentException {
     	List<Field> attributi = Arrays.asList(oggettobulk.getClass().getDeclaredFields());
 		for (Field attributo : attributi) {
+			if (attributes != null && !Arrays.asList(attributes).isEmpty() &&
+					!Arrays.asList(attributes).contains(attributo.getName()))
+				continue;
 			JadaOneToMany jadaOneToMany = attributo.getAnnotation(JadaOneToMany.class);
 			if (jadaOneToMany != null){
 				BulkHome home = getHomeClass(jadaOneToMany.targetEntity());

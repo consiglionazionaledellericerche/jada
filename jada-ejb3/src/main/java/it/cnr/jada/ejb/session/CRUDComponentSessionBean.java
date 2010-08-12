@@ -59,7 +59,7 @@ public abstract class CRUDComponentSessionBean<T extends OggettoBulk> extends
 	}
 
 	public Long count(UserContext userContext,Class<T> bulkClass) throws ComponentException {
-		Criteria criteria = select(userContext, bulkClass);
+		Criteria criteria = select(userContext, bulkClass, null);
 		criteria.setProjection(Projections.rowCount());
 		return (Long) criteria.prepareQuery(getManager()).getSingleResult();
 	}
@@ -76,16 +76,31 @@ public abstract class CRUDComponentSessionBean<T extends OggettoBulk> extends
 	@SuppressWarnings("unchecked")
 	public List<T> findAll(UserContext userContext, Class<T> bulkClass)
 			throws ComponentException {
-		return select(userContext, bulkClass).prepareQuery(getManager()).getResultList();
+		return select(userContext, bulkClass, null).prepareQuery(getManager()).getResultList();
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<T> findByCriterion(UserContext userContext, Class<T> bulkClass, Criterion criterion,
 			Integer firstResult, Integer maxResult) throws ComponentException {
 		Query query = select(userContext, bulkClass, criterion).prepareQuery(getManager());
-		query.setFirstResult(firstResult);
-		query.setMaxResults(maxResult);
+		if (firstResult != null)
+			query.setFirstResult(firstResult);
+		if (maxResult != null)
+			query.setMaxResults(maxResult);
 		return query.getResultList();
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<T> findByCriterion(UserContext userContext, Class<T> bulkClass) throws ComponentException {
+		Criteria criteria = select(userContext, bulkClass, null);
+		return criteria.prepareQuery(getManager()).getResultList();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<T> findByCriterion(UserContext userContext, Class<T> bulkClass,
+			Criterion criterion) throws ComponentException {
+		Criteria criteria = select(userContext, bulkClass, criterion);
+		return criteria.prepareQuery(getManager()).getResultList();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -95,13 +110,9 @@ public abstract class CRUDComponentSessionBean<T extends OggettoBulk> extends
 		return criteria.prepareQuery(getManager()).getResultList();
 	}
 
-	protected Criteria select(UserContext userContext, Class<T> bulkClass) throws ComponentException {
-		return select(userContext, bulkClass, null);
-	}
-
 	protected Criteria select(UserContext userContext, Class<T> bulkClass,
 			Criterion criterion) throws ComponentException {
-		return select(userContext, bulkClass, null, new Order[0]);
+		return select(userContext, bulkClass, criterion, new Order[0]);
 	}
 	
 	protected Criteria select(UserContext userContext, Class<T> bulkClass,

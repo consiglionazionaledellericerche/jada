@@ -27,6 +27,12 @@ public interface CRUDComponentSession<T extends OggettoBulk> {
 			Criterion criterion, Integer firstResult, Integer maxResult)
 			throws ComponentException;
 
+	public List<T> findByCriterion(UserContext userContext, Class<T> bulkClass) 
+		throws ComponentException;
+	
+	public List<T> findByCriterion(UserContext userContext, Class<T> bulkClass,
+			Criterion criterion) throws ComponentException;
+
 	public List<T> findByCriterion(UserContext userContext, Class<T> bulkClass,
 			Criterion criterion, Order... order) throws ComponentException;
 
@@ -56,5 +62,10 @@ public interface CRUDComponentSession<T extends OggettoBulk> {
 
 	public T modificaConBulk(UserContext userContext, T oggettobulk)
 			throws ComponentException;
+	public void initializeForeignKey(UserContext userContext, T oggettobulk) 
+		throws ComponentException;
+	
+	public void initializeForeignKey(UserContext userContext, T oggettobulk, String...attributes) 
+		throws ComponentException;
 
 }
