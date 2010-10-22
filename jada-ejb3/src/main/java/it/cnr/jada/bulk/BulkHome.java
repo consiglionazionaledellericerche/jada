@@ -4,13 +4,13 @@
 */
 package it.cnr.jada.bulk;
 
-import it.cnr.jada.UserContext;
 import it.cnr.jada.bulk.annotation.HomeClass;
 import it.cnr.jada.ejb.session.ComponentException;
 import it.cnr.jada.util.Introspector;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
+import java.security.Principal;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Iterator;
@@ -51,27 +51,27 @@ public class BulkHome<T extends OggettoBulk> implements Serializable{
 		this.bulkClass = bulkClass;
 	}
 	
-	public Criteria createCriteria(UserContext userContext){
+	public Criteria createCriteria(Principal principal){
 		return CriteriaFactory.createCriteria(bulkClass.getName());
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<T> findByQuery(UserContext userContext, String queryString){
+	public List<T> findByQuery(Principal principal, String queryString){
     	Query query = manager.createQuery(queryString);
     	return query.getResultList();
     }
 	
-	public T merge(UserContext userContext, T oggettoBulk){
+	public T merge(Principal principal, T oggettoBulk){
 		return manager.merge(oggettoBulk);
 	}	
 
-	public T refresh(UserContext userContext, T oggettoBulk){
+	public T refresh(Principal principal, T oggettoBulk){
 		manager.refresh(oggettoBulk);
 		return oggettoBulk;
 	}	
 	
 	@SuppressWarnings("unchecked")
-	public T findByPrimaryKey(UserContext userContext, T oggettoBulk) throws ComponentException{
+	public T findByPrimaryKey(Principal principal, T oggettoBulk) throws ComponentException{
     	T bulk = (T)manager.find(oggettoBulk.getClass(), oggettoBulk.getId());
     	if(bulk == null)
     		return null;
@@ -79,59 +79,59 @@ public class BulkHome<T extends OggettoBulk> implements Serializable{
     	return bulk;
     }
 	
-    public T update(UserContext userContext, T oggettoBulk) throws ComponentException{
-    	oggettoBulk.setUtuv(userContext.getUser());
+    public T update(Principal principal, T oggettoBulk) throws ComponentException{
+    	oggettoBulk.setUtuv(principal.getName());
     	oggettoBulk.setDuva(new Timestamp(new Date().getTime()));
     	T obj = manager.merge(oggettoBulk);
     	obj.setCrudStatus(OggettoBulk.NORMAL);
     	return obj;
     }
 
-    public T insert(UserContext userContext, T oggettoBulk) throws ComponentException{
-    	oggettoBulk.setUtcr(userContext.getUser());
-    	oggettoBulk.setUtuv(userContext.getUser());
+    public T insert(Principal principal, T oggettoBulk) throws ComponentException{
+    	oggettoBulk.setUtcr(principal.getName());
+    	oggettoBulk.setUtuv(principal.getName());
     	oggettoBulk.setDuva(new Timestamp(new Date().getTime()));
     	oggettoBulk.setDacr(new Timestamp(new Date().getTime()));
     	manager.persist(oggettoBulk);
-    	return findByPrimaryKey(userContext, oggettoBulk);
+    	return findByPrimaryKey(principal, oggettoBulk);
     }
 
-    public void delete(UserContext userContext, T oggettoBulk) throws ComponentException{
-    	oggettoBulk = findByPrimaryKey(userContext, oggettoBulk);
+    public void delete(Principal principal, T oggettoBulk) throws ComponentException{
+    	oggettoBulk = findByPrimaryKey(principal, oggettoBulk);
     	manager.remove(oggettoBulk);
     }
     
-    public T persist(UserContext userContext, T oggettoBulk) throws ComponentException{
+    public T persist(Principal principal, T oggettoBulk) throws ComponentException{
     	if (oggettoBulk.isToBeCreated())
-    		return insert(userContext, oggettoBulk);
+    		return insert(principal, oggettoBulk);
     	else if (oggettoBulk.isToBeUpdated())
-    		return update(userContext, oggettoBulk);
+    		return update(principal, oggettoBulk);
     	else if (oggettoBulk.isToBeDeleted())
-    		delete(userContext, oggettoBulk);
+    		delete(principal, oggettoBulk);
     	return oggettoBulk;
     }
     
-	public Query getQueryByCriterion(UserContext userContext, Criterion criterion){
-		Criteria criteria = selectByCriterion(userContext, criterion, new Order[0]);
+	public Query getQueryByCriterion(Principal principal, Criterion criterion){
+		Criteria criteria = selectByCriterion(principal, criterion, new Order[0]);
     	return criteria.prepareQuery(manager);
     }
 
 	@SuppressWarnings("unchecked")
-	public List<T> findByCriterion(UserContext userContext, Criterion criterion){
-		return selectByCriterion(userContext, criterion, new Order[0]).prepareQuery(manager).getResultList();
+	public List<T> findByCriterion(Principal principal, Criterion criterion){
+		return selectByCriterion(principal, criterion, new Order[0]).prepareQuery(manager).getResultList();
     }
 	
-	public Criteria selectByCriterion(UserContext userContext, Criterion criterion){
-		return selectByCriterion(userContext, criterion, new Order[0]);
+	public Criteria selectByCriterion(Principal principal, Criterion criterion){
+		return selectByCriterion(principal, criterion, new Order[0]);
     }
 
 	@SuppressWarnings("unchecked")
-	public List<T> findByCriterion(UserContext userContext, Criterion criterion, Order... order){
-		return selectByCriterion(userContext, criterion, order).prepareQuery(manager).getResultList();
+	public List<T> findByCriterion(Principal principal, Criterion criterion, Order... order){
+		return selectByCriterion(principal, criterion, order).prepareQuery(manager).getResultList();
     }
 	
-	public Criteria selectByCriterion(UserContext userContext, Criterion criterion, Order... order){
-		Criteria criteria = createCriteria(userContext);
+	public Criteria selectByCriterion(Principal principal, Criterion criterion, Order... order){
+		Criteria criteria = createCriteria(principal);
 		if (criterion != null)
 			criteria.add(criterion);
 		if (order != null)
@@ -142,12 +142,12 @@ public class BulkHome<T extends OggettoBulk> implements Serializable{
     }
 
     @SuppressWarnings("unchecked")
-	public void deleteByCriteria(UserContext userContext, Criteria criteria) throws ComponentException{
+	public void deleteByCriteria(Principal principal, Criteria criteria) throws ComponentException{
     	Query query = criteria.prepareQuery(manager);    	
     	for (Iterator iterator = query.getResultList().iterator(); iterator.hasNext();) {
 			T result = (T) iterator.next();
 			result.setToBeDeleted();
-			persist(userContext, result);
+			persist(principal, result);
 		}
     }
     
@@ -155,7 +155,7 @@ public class BulkHome<T extends OggettoBulk> implements Serializable{
      * Effettua una ricerca lockante del massimo valore di un attributo di un oggetto persistente. 
      **/
     @SuppressWarnings("unchecked")
-	public T fetchAndLockMax(UserContext userContext, String propertyName){
+	public T fetchAndLockMax(Principal principal, String propertyName){
 		Criteria criteria = CriteriaFactory.createCriteria(bulkClass.getName());
 		criteria.setProjection(Projections.max(propertyName));
 		Query query = criteria.prepareQuery(manager);
@@ -165,13 +165,13 @@ public class BulkHome<T extends OggettoBulk> implements Serializable{
     }
 
     @SuppressWarnings("unchecked")
-	public List<T> find(UserContext userContext, T oggettoBulk){
+	public List<T> find(Principal principal, T oggettoBulk){
 		Criteria criteria = CriteriaFactory.createCriteria(bulkClass.getName());
     	Query query = criteria.prepareQuery(manager);
     	return query.getResultList();
     }
     
-    public void lock(UserContext userContext, T oggettoBulk){
+    public void lock(Principal principal, T oggettoBulk){
     	manager.lock(oggettoBulk, LockModeType.WRITE);
     }
     
@@ -219,12 +219,12 @@ public class BulkHome<T extends OggettoBulk> implements Serializable{
 		}
     }
 
-	public void initializePrimaryKeyForInsert(UserContext userContext,
+	public void initializePrimaryKeyForInsert(Principal principal,
 			OggettoBulk oggettobulk) {
 		
 	}   
 
-	public void initializeKeysAndOptionsInto(UserContext userContext, T oggettobulk) throws ComponentException{
+	public void initializeKeysAndOptionsInto(Principal principal, T oggettobulk) throws ComponentException{
 		
 	}
 }

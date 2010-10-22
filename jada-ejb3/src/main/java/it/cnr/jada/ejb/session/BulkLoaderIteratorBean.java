@@ -4,19 +4,16 @@
 */
 package it.cnr.jada.ejb.session;
 
+
 import it.cnr.jada.DetailedRuntimeException;
-import it.cnr.jada.UserContext;
 import it.cnr.jada.bulk.OggettoBulk;
 import it.cnr.jada.util.OrderConstants;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
-import javax.ejb.EJBException;
-import javax.ejb.Remove;
-import javax.ejb.TransactionManagement;
-import javax.ejb.TransactionManagementType;
 import javax.persistence.Query;
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.HeuristicRollbackException;
@@ -34,7 +31,6 @@ import net.bzdyl.ejb3.criteria.Order;
  * @version 1.0
  * @since October 2009
  */
-@TransactionManagement(TransactionManagementType.BEAN)
 public abstract class BulkLoaderIteratorBean<T extends OggettoBulk> extends AbstractComponentSessionBean<T> implements BulkLoaderIterator{
 	private static final long serialVersionUID = -2431501664741158683L;
 	
@@ -45,7 +41,7 @@ public abstract class BulkLoaderIteratorBean<T extends OggettoBulk> extends Abst
 	protected Criteria criteria;
 	protected Long recordCount;
 	protected int position;
-	protected UserContext userContext;
+	protected Principal principal;
 	protected int pageSize;
 	protected boolean removed;
 	protected boolean doCount;
@@ -62,12 +58,10 @@ public abstract class BulkLoaderIteratorBean<T extends OggettoBulk> extends Abst
 				usertransaction.begin();
 			}
 		}catch(NotSupportedException notsupportedexception){
-			throw new EJBException("Can't begin transaction", notsupportedexception);
+			throw new RuntimeException("Can't begin transaction", notsupportedexception);
 		}catch(SystemException systemexception){
-			throw new EJBException("Can't begin transaction", systemexception);
-		}catch(EJBException ejbexception){
-			throw new EJBException("Can't begin transaction", ejbexception);
-		}		
+			throw new RuntimeException("Can't begin transaction", systemexception);
+		}
 	}
 	
 	public void close(){
@@ -107,9 +101,9 @@ public abstract class BulkLoaderIteratorBean<T extends OggettoBulk> extends Abst
 		}
 	}
 
-	public void create(UserContext usercontext, Criteria criteria) throws ComponentException{
+	public void create(Principal principal, Criteria criteria) throws ComponentException{
 		this.criteria = criteria;
-		this.userContext = usercontext;
+		this.principal = principal;
 		removed = false;
 	}
 
@@ -314,7 +308,7 @@ public abstract class BulkLoaderIteratorBean<T extends OggettoBulk> extends Abst
 			prepareSearchResult();
 	}
 
-	public void open(UserContext usercontext) throws ComponentException, DetailedRuntimeException{
+	public void open(Principal principal) throws ComponentException, DetailedRuntimeException{
 		initializeTransaction();
 	}
 	
@@ -329,21 +323,20 @@ public abstract class BulkLoaderIteratorBean<T extends OggettoBulk> extends Abst
 			if(usertransaction.getStatus() == Status.STATUS_ACTIVE)
 			  usertransaction.commit();
 		}catch (SecurityException e){
-			throw new EJBException(e);
+			throw new RuntimeException(e);
 		}catch (IllegalStateException e){
-			throw new EJBException(e);
+			throw new RuntimeException(e);
 		}catch (SystemException e){
-			throw new EJBException(e);
+			throw new RuntimeException(e);
 		}catch (RollbackException e){
-			throw new EJBException(e);
+			throw new RuntimeException(e);
 		}catch (HeuristicMixedException e){
-			throw new EJBException(e);
+			throw new RuntimeException(e);
 		}catch (HeuristicRollbackException e){
-			throw new EJBException(e);
+			throw new RuntimeException(e);
 		}		
 	}
 	
-	@Remove
 	public void remove() {
 		closeUserTransaction();
 	}

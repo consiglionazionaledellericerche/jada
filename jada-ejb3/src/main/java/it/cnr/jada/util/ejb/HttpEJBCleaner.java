@@ -7,9 +7,11 @@ package it.cnr.jada.util.ejb;
 import it.cnr.jada.ejb.session.BulkLoaderIterator;
 
 import java.io.Serializable;
-import java.util.*;
-import javax.ejb.*;
-import javax.servlet.http.*;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
 /**
  * 
  * @author mspasiano
@@ -61,11 +63,9 @@ public class HttpEJBCleaner implements Serializable {
 	
 	public void remove(Object obj){
 		try{
-			for(; obj instanceof Handle; obj = ((Handle)obj).getEJBObject());
 			if(obj instanceof BulkLoaderIterator){            
 				((BulkLoaderIterator)obj).remove();
 			}                
-		}catch(javax.ejb.NoSuchEJBException ex){	
 		}catch(Throwable _ex) {
 			_ex.printStackTrace();
 		}

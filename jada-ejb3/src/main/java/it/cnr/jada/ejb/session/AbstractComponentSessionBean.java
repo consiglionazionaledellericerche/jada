@@ -4,7 +4,7 @@
  */
 package it.cnr.jada.ejb.session;
 
-import it.cnr.jada.UserContext;
+
 import it.cnr.jada.bulk.BulkHome;
 import it.cnr.jada.bulk.OggettoBulk;
 import it.cnr.jada.bulk.OutdatedResourceException;
@@ -18,6 +18,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.security.Principal;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -69,43 +70,43 @@ public abstract class AbstractComponentSessionBean<T extends OggettoBulk> {
 		}
 	}
 
-	protected void validateBulkForPersistency(UserContext userContext,
+	protected void validateBulkForPersistency(Principal principal,
 			T oggettobulk) throws ComponentException,
 			PersistencyException, OutdatedResourceException,
 			BusyResourceException, PrimaryKeyChangedException {
 		switch (oggettobulk.getCrudStatus()) {
 			case 1: // '\001'
-				validateBulkForInsert(userContext, oggettobulk);
+				validateBulkForInsert(principal, oggettobulk);
 				break;
 	
 			case 2: // '\002'
-				validateBulkForUpdate(userContext, oggettobulk);
+				validateBulkForUpdate(principal, oggettobulk);
 				break;
 	
 			case 3: // '\003'
-				validateBulkForDelete(userContext, oggettobulk);
+				validateBulkForDelete(principal, oggettobulk);
 				break;
 	
 			case 4: // '\004'
-				validateBulkForCheck(userContext, oggettobulk);
+				validateBulkForCheck(principal, oggettobulk);
 				break;
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	protected void makeBulkPersistent(UserContext usercontext,
+	protected void makeBulkPersistent(Principal principal,
 			T oggettobulk) throws ComponentException,
 			PersistencyException {
 		switch (oggettobulk.getCrudStatus()) {
 		case 1: // '\001'
-			insertBulk(usercontext, oggettobulk);
+			insertBulk(principal, oggettobulk);
 			break;
 
 		case 2: // '\002'
-			updateBulk(usercontext, oggettobulk);
+			updateBulk(principal, oggettobulk);
 			break;
 		case 3: // '\003'
-			deleteBulk(usercontext, oggettobulk);
+			deleteBulk(principal, oggettobulk);
 			break;
 
 		}
@@ -120,12 +121,12 @@ public abstract class AbstractComponentSessionBean<T extends OggettoBulk> {
 					if (attributo.getType().equals(List.class)){
 						List<OggettoBulk> result = (List<OggettoBulk>)value;
 						for (OggettoBulk oggettoBulk2 : result) {
-							makeForeignBulkPersistent(usercontext, oggettoBulk2);
+							makeForeignBulkPersistent(principal, oggettoBulk2);
 						}
 					}else if (attributo.getType().equals(Set.class)){
 						Set<OggettoBulk> result = (Set<OggettoBulk>)value;
 						for (OggettoBulk oggettoBulk2 : result) {
-							makeForeignBulkPersistent(usercontext, oggettoBulk2);
+							makeForeignBulkPersistent(principal, oggettoBulk2);
 						}
 					}
 				} catch (IntrospectionException e) {
@@ -138,97 +139,97 @@ public abstract class AbstractComponentSessionBean<T extends OggettoBulk> {
 		
 	}
 	
-	private <N extends OggettoBulk> void makeForeignBulkPersistent(UserContext usercontext,
+	private <N extends OggettoBulk> void makeForeignBulkPersistent(Principal principal,
 			N oggettobulk) throws ComponentException,
 			PersistencyException {
 		switch (oggettobulk.getCrudStatus()) {
 		case 1: // '\001'
-			insertForeignBulk(usercontext, oggettobulk);
+			insertForeignBulk(principal, oggettobulk);
 			break;
 
 		case 2: // '\002'
-			updateForeignBulk(usercontext, oggettobulk);
+			updateForeignBulk(principal, oggettobulk);
 			break;
 		case 3: // '\003'
-			deleteForeignBulk(usercontext, oggettobulk);
+			deleteForeignBulk(principal, oggettobulk);
 			break;
 
 		}
 	}
 
-	private <N extends OggettoBulk> void insertForeignBulk(UserContext userContext, N oggettobulk)
+	private <N extends OggettoBulk> void insertForeignBulk(Principal principal, N oggettobulk)
 		throws PersistencyException, ComponentException {
 		getHomeClass(oggettobulk).initializePrimaryKeyForInsert(
-				userContext, oggettobulk);
-		getHomeClass(oggettobulk).insert(userContext, oggettobulk);
+				principal, oggettobulk);
+		getHomeClass(oggettobulk).insert(principal, oggettobulk);
 	}
 	
-	protected void insertBulk(UserContext userContext, T oggettobulk)
+	protected void insertBulk(Principal principal, T oggettobulk)
 			throws PersistencyException, ComponentException {
 		getHomeClass(oggettobulk).initializePrimaryKeyForInsert(
-				userContext, oggettobulk);
-		getHomeClass(oggettobulk).insert(userContext, oggettobulk);
+				principal, oggettobulk);
+		getHomeClass(oggettobulk).insert(principal, oggettobulk);
 	}
 
-	private <N extends OggettoBulk> void updateForeignBulk(UserContext userContext, N oggettobulk)
+	private <N extends OggettoBulk> void updateForeignBulk(Principal principal, N oggettobulk)
 		throws PersistencyException, ComponentException {
-		getHomeClass(oggettobulk).update(userContext, oggettobulk);
+		getHomeClass(oggettobulk).update(principal, oggettobulk);
 	}
 	
-	protected void updateBulk(UserContext userContext, T oggettobulk)
+	protected void updateBulk(Principal principal, T oggettobulk)
 			throws PersistencyException, ComponentException {
-		getHomeClass(oggettobulk).update(userContext, oggettobulk);
+		getHomeClass(oggettobulk).update(principal, oggettobulk);
 	}
 
-	private <N extends OggettoBulk> void deleteForeignBulk(UserContext userContext, N oggettobulk)
+	private <N extends OggettoBulk> void deleteForeignBulk(Principal principal, N oggettobulk)
 		throws PersistencyException, ComponentException {
-		getHomeClass(oggettobulk).delete(userContext, oggettobulk);
+		getHomeClass(oggettobulk).delete(principal, oggettobulk);
 	}
 	
-	protected void deleteBulk(UserContext userContext, T oggettobulk)
+	protected void deleteBulk(Principal principal, T oggettobulk)
 			throws PersistencyException, ComponentException {
-		getHomeClass(oggettobulk).delete(userContext, oggettobulk);
+		getHomeClass(oggettobulk).delete(principal, oggettobulk);
 	}
 	
-	protected void validateBulkForCheck(UserContext usercontext,
+	protected void validateBulkForCheck(Principal principal,
 			T oggettobulk) throws ComponentException,
 			PersistencyException, OutdatedResourceException,
 			BusyResourceException {
-		lockBulk(usercontext, oggettobulk);
+		lockBulk(principal, oggettobulk);
 	}
 
-	protected void validateBulkForDelete(UserContext usercontext,
+	protected void validateBulkForDelete(Principal principal,
 			T oggettobulk) throws ComponentException,
 			PersistencyException, OutdatedResourceException,
 			BusyResourceException, ObjectNotFoundException {
-		lockBulk(usercontext, oggettobulk);
+		lockBulk(principal, oggettobulk);
 	}
 
-	protected void validateBulkForInsert(UserContext usercontext,
+	protected void validateBulkForInsert(Principal principal,
 			T oggettobulk) throws ComponentException,
 			PersistencyException, OutdatedResourceException,
 			BusyResourceException {
 	}
 
-	protected void validateBulkForUpdate(UserContext usercontext,
+	protected void validateBulkForUpdate(Principal principal,
 			T oggettobulk) throws ComponentException,
 			PersistencyException, OutdatedResourceException,
 			BusyResourceException, ObjectNotFoundException,
 			PrimaryKeyChangedException {
 	}
 
-	protected void lockBulk(UserContext userContext, T oggettobulk)
+	protected void lockBulk(Principal principal, T oggettobulk)
 			throws PersistencyException, ComponentException,
 			OutdatedResourceException, BusyResourceException {
-		getHomeClass(oggettobulk).lock(userContext, oggettobulk);
+		getHomeClass(oggettobulk).lock(principal, oggettobulk);
 	}
 
-	public void initializeForeignKey(UserContext userContext, T oggettobulk) throws ComponentException {
-		initializeForeignKey(userContext, oggettobulk, new String[0]);
+	public void initializeForeignKey(Principal principal, T oggettobulk) throws ComponentException {
+		initializeForeignKey(principal, oggettobulk, new String[0]);
 	}	
 	
 	@SuppressWarnings("unchecked")
-	public void initializeForeignKey(UserContext userContext, T oggettobulk, String...attributes) throws ComponentException {
+	public void initializeForeignKey(Principal principal, T oggettobulk, String...attributes) throws ComponentException {
     	List<Field> attributi = Arrays.asList(oggettobulk.getClass().getDeclaredFields());
 		for (Field attributo : attributi) {
 			if (attributes != null && !Arrays.asList(attributes).isEmpty() &&
@@ -238,7 +239,7 @@ public abstract class AbstractComponentSessionBean<T extends OggettoBulk> {
 			if (jadaOneToMany != null){
 				BulkHome home = getHomeClass(jadaOneToMany.targetEntity());
 				CriterionList criterionList = new CriterionList(Restrictions.eq(jadaOneToMany.mappedBy(), oggettobulk));
-				List result = home.selectByCriterion(userContext, criterionList).prepareQuery(getManager()).getResultList();
+				List result = home.selectByCriterion(principal, criterionList).prepareQuery(getManager()).getResultList();
 				try {
 					if (attributo.getType().equals(List.class))
 						Introspector.setPropertyValue(oggettobulk, attributo.getName(), result);
@@ -253,9 +254,9 @@ public abstract class AbstractComponentSessionBean<T extends OggettoBulk> {
 		}
 	}
 
-	protected void initializeKeysAndOptionsInto(UserContext userContext, T oggettobulk)
+	protected void initializeKeysAndOptionsInto(Principal principal, T oggettobulk)
     		throws ComponentException{
-		getHomeClass(oggettobulk).initializeKeysAndOptionsInto(userContext, oggettobulk);
+		getHomeClass(oggettobulk).initializeKeysAndOptionsInto(principal, oggettobulk);
     }
     
 	protected ComponentException handleException(Throwable throwable) {

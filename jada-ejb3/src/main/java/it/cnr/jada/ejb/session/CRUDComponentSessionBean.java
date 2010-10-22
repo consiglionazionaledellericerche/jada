@@ -4,10 +4,10 @@
  */
 package it.cnr.jada.ejb.session;
 
-import it.cnr.jada.UserContext;
 import it.cnr.jada.bulk.OggettoBulk;
 import it.cnr.jada.bulk.OutdatedResourceException;
 
+import java.security.Principal;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -44,29 +44,29 @@ public abstract class CRUDComponentSessionBean<T extends OggettoBulk> extends
 	public CRUDComponentSessionBean() {
 	}
 
-	public void deleteByCriteria(UserContext userContext, Criteria criteria,
+	public void deleteByCriteria(Principal principal, Criteria criteria,
 			Class<T> bulkClass) throws ComponentException {
-		getHomeClass(bulkClass).deleteByCriteria(userContext, criteria);
+		getHomeClass(bulkClass).deleteByCriteria(principal, criteria);
 	}
 
 	/**
 	 * Metodi di Ricerca
 	 */
-	public T findByPrimaryKey(UserContext userContext, T oggettoBulk)
+	public T findByPrimaryKey(Principal principal, T oggettoBulk)
 			throws ComponentException {
-		return getHomeClass(oggettoBulk).findByPrimaryKey(userContext,
+		return getHomeClass(oggettoBulk).findByPrimaryKey(principal,
 				oggettoBulk);
 	}
 
-	public Long count(UserContext userContext,Class<T> bulkClass) throws ComponentException {
-		Criteria criteria = select(userContext, bulkClass, null);
+	public Long count(Principal principal,Class<T> bulkClass) throws ComponentException {
+		Criteria criteria = select(principal, bulkClass, null);
 		criteria.setProjection(Projections.rowCount());
 		return (Long) criteria.prepareQuery(getManager()).getSingleResult();
 	}
 
-	public Long countByCriterion(UserContext userContext, Class<T> bulkClass, Criterion criterion)
+	public Long countByCriterion(Principal principal, Class<T> bulkClass, Criterion criterion)
 			throws ComponentException {
-		Criteria criteria = select(userContext, bulkClass, criterion);
+		Criteria criteria = select(principal, bulkClass, criterion);
 		criteria.setProjection(Projections.rowCount());
 		if (criterion != null)
 			criteria.add(criterion);
@@ -74,15 +74,15 @@ public abstract class CRUDComponentSessionBean<T extends OggettoBulk> extends
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<T> findAll(UserContext userContext, Class<T> bulkClass)
+	public List<T> findAll(Principal principal, Class<T> bulkClass)
 			throws ComponentException {
-		return select(userContext, bulkClass, null).prepareQuery(getManager()).getResultList();
+		return select(principal, bulkClass, null).prepareQuery(getManager()).getResultList();
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<T> findByCriterion(UserContext userContext, Class<T> bulkClass, Criterion criterion,
+	public List<T> findByCriterion(Principal principal, Class<T> bulkClass, Criterion criterion,
 			Integer firstResult, Integer maxResult) throws ComponentException {
-		Query query = select(userContext, bulkClass, criterion).prepareQuery(getManager());
+		Query query = select(principal, bulkClass, criterion).prepareQuery(getManager());
 		if (firstResult != null)
 			query.setFirstResult(firstResult);
 		if (maxResult != null)
@@ -91,44 +91,44 @@ public abstract class CRUDComponentSessionBean<T extends OggettoBulk> extends
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<T> findByCriterion(UserContext userContext, Class<T> bulkClass) throws ComponentException {
-		Criteria criteria = select(userContext, bulkClass, null);
+	public List<T> findByCriterion(Principal principal, Class<T> bulkClass) throws ComponentException {
+		Criteria criteria = select(principal, bulkClass, null);
 		return criteria.prepareQuery(getManager()).getResultList();
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<T> findByCriterion(UserContext userContext, Class<T> bulkClass,
+	public List<T> findByCriterion(Principal principal, Class<T> bulkClass,
 			Criterion criterion) throws ComponentException {
-		Criteria criteria = select(userContext, bulkClass, criterion);
+		Criteria criteria = select(principal, bulkClass, criterion);
 		return criteria.prepareQuery(getManager()).getResultList();
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<T> findByCriterion(UserContext userContext, Class<T> bulkClass,
+	public List<T> findByCriterion(Principal principal, Class<T> bulkClass,
 			Criterion criterion, Order... order) throws ComponentException {
-		Criteria criteria = select(userContext, bulkClass, criterion, order);
+		Criteria criteria = select(principal, bulkClass, criterion, order);
 		return criteria.prepareQuery(getManager()).getResultList();
 	}
 
-	protected Criteria select(UserContext userContext, Class<T> bulkClass,
+	protected Criteria select(Principal principal, Class<T> bulkClass,
 			Criterion criterion) throws ComponentException {
-		return select(userContext, bulkClass, criterion, new Order[0]);
+		return select(principal, bulkClass, criterion, new Order[0]);
 	}
 	
-	protected Criteria select(UserContext userContext, Class<T> bulkClass,
+	protected Criteria select(Principal principal, Class<T> bulkClass,
 			Criterion criterion, Order... order) throws ComponentException {
 		return getHomeClass(bulkClass)
-				.selectByCriterion(userContext, criterion, order);
+				.selectByCriterion(principal, criterion, order);
 	}
 
-	public T persist(UserContext userContext, T model)
+	public T persist(Principal principal, T model)
 			throws ComponentException {
 		if (model.isToBeCreated())
-			return creaConBulk(userContext, model);
+			return creaConBulk(principal, model);
 		else if (model.isToBeUpdated())
-			return modificaConBulk(userContext, model);
+			return modificaConBulk(principal, model);
 		else if (model.isToBeDeleted())
-			eliminaConBulk(userContext, model);
+			eliminaConBulk(principal, model);
 		return model;
 	}
 
@@ -154,11 +154,11 @@ public abstract class CRUDComponentSessionBean<T extends OggettoBulk> extends
 	 * Post: l'T viene crato fisicamente nella base dati e viene chiusa la
 	 * transazione
 	 */
-	public T creaConBulk(UserContext userContext, T model)
+	public T creaConBulk(Principal principal, T model)
 			throws ComponentException {
 		try {
-			validaCreaConBulk(userContext, model);
-			return eseguiCreaConBulk(userContext, model);
+			validaCreaConBulk(principal, model);
+			return eseguiCreaConBulk(principal, model);
 		} catch (Throwable throwable) {
 			throw handleException(throwable);
 		}
@@ -167,34 +167,34 @@ public abstract class CRUDComponentSessionBean<T extends OggettoBulk> extends
 	/**
 	 * Esegue una la parte di persistenza di creaConBulk.
 	 */
-	protected T eseguiCreaConBulk(UserContext usercontext, T oggettobulk)
+	protected T eseguiCreaConBulk(Principal principal, T oggettobulk)
 			throws ComponentException, PersistencyException {
-		makeBulkPersistent(usercontext, oggettobulk);
+		makeBulkPersistent(principal, oggettobulk);
 		return oggettobulk;
 	}
 
 	/**
 	 * Esegue una la parte di validazione di creaConBulk.
 	 */
-	protected void validaCreaConBulk(UserContext userContext, T oggettobulk)
+	protected void validaCreaConBulk(Principal principal, T oggettobulk)
 			throws ComponentException {
 		if (oggettobulk.isToBeCreated() && oggettobulk.getId() != null) {
 			T oggettobulk1 = (T) getHomeClass(oggettobulk).findByPrimaryKey(
-					userContext, oggettobulk);
+					principal, oggettobulk);
 			if (oggettobulk1 != null)
 				throw new CRUDDuplicateKeyException(
 						"Errore di chiave duplicata", oggettobulk, oggettobulk1);
 		}
-		validaCreaModificaConBulk(userContext, oggettobulk);
+		validaCreaModificaConBulk(principal, oggettobulk);
 	}
 
 	/**
 	 * Esegue una la parte di validazione comune a creaConBulk e modificaConBulk
 	 */
-	protected void validaCreaModificaConBulk(UserContext userContext,
+	protected void validaCreaModificaConBulk(Principal principal,
 			T oggettobulk) throws ComponentException {
 		try {
-			validateBulkForPersistency(userContext, oggettobulk);
+			validateBulkForPersistency(principal, oggettobulk);
 		} catch (OutdatedResourceException outdatedresourceexception) {
 			throw handleException(outdatedresourceexception);
 		} catch (BusyResourceException busyresourceexception) {
@@ -228,11 +228,11 @@ public abstract class CRUDComponentSessionBean<T extends OggettoBulk> extends
 	 * Post: l'T eliminato fisicamente dalla base di dati e viene chiusa la
 	 * transazione
 	 */
-	public void eliminaConBulk(UserContext userContext, T model)
+	public void eliminaConBulk(Principal principal, T model)
 			throws ComponentException {
 		try {
-			validaEliminaConBulk(userContext, model);
-			eseguiEliminaConBulk(userContext, model);
+			validaEliminaConBulk(principal, model);
+			eseguiEliminaConBulk(principal, model);
 		} catch (Throwable throwable) {
 			throw handleException(throwable);
 		}
@@ -241,10 +241,10 @@ public abstract class CRUDComponentSessionBean<T extends OggettoBulk> extends
 	/**
 	 * Esegue una la parte di validazione di eliminaConBulk.
 	 */
-	protected void validaEliminaConBulk(UserContext usercontext, T oggettobulk)
+	protected void validaEliminaConBulk(Principal principal, T oggettobulk)
 			throws ComponentException {
 		try {
-			validateBulkForPersistency(usercontext, oggettobulk);
+			validateBulkForPersistency(principal, oggettobulk);
 		} catch (Throwable throwable) {
 			throw handleException(throwable);
 		}
@@ -253,10 +253,10 @@ public abstract class CRUDComponentSessionBean<T extends OggettoBulk> extends
 	/**
 	 * Esegue una la parte di persistenza di eliminaConBulk.
 	 */
-	protected void eseguiEliminaConBulk(UserContext usercontext, T oggettobulk)
+	protected void eseguiEliminaConBulk(Principal principal, T oggettobulk)
 			throws ComponentException, PersistencyException {
 		try {
-			super.makeBulkPersistent(usercontext, oggettobulk);
+			super.makeBulkPersistent(principal, oggettobulk);
 		} catch (NotDeletableException notdeletableexception) {
 			if (notdeletableexception.getPersistent() != oggettobulk)
 				throw handleException(notdeletableexception);
@@ -268,10 +268,10 @@ public abstract class CRUDComponentSessionBean<T extends OggettoBulk> extends
 		}
 	}
 
-	public T inizializzaBulkPerInserimento(UserContext userContext,
+	public T inizializzaBulkPerInserimento(Principal principal,
 			T oggettobulk) throws ComponentException {
 		try {
-			initializeKeysAndOptionsInto(userContext, oggettobulk);
+			initializeKeysAndOptionsInto(principal, oggettobulk);
 			return oggettobulk;
 		} catch (Throwable throwable) {
 			throw handleException(throwable);
@@ -289,18 +289,18 @@ public abstract class CRUDComponentSessionBean<T extends OggettoBulk> extends
 	 * effettuata con una FetchPolicy il cui nome è ottenuto concatenando il
 	 * nome della component con la stringa ".edit"
 	 */
-	public T inizializzaBulkPerModifica(UserContext userContext, T oggettobulk)
+	public T inizializzaBulkPerModifica(Principal principal, T oggettobulk)
 			throws ComponentException {
 		try {
 			oggettobulk = getHomeClass(oggettobulk).findByPrimaryKey(
-					userContext, oggettobulk);
+					principal, oggettobulk);
 			if (oggettobulk == null) {
 				throw new CRUDException(
 						"Risorsa non pi\371 valida: \350 stata cancellata dall'ultimo caricamento.",
 						null, oggettobulk);
 			} else {
-				initializeKeysAndOptionsInto(userContext, oggettobulk);
-				initializeForeignKey(userContext, oggettobulk);
+				initializeKeysAndOptionsInto(principal, oggettobulk);
+				initializeForeignKey(principal, oggettobulk);
 				return oggettobulk;
 			}
 		} catch (Exception exception) {
@@ -319,10 +319,10 @@ public abstract class CRUDComponentSessionBean<T extends OggettoBulk> extends
 	 * effettuata con una FetchPolicy il cui nome è ottenuto concatenando il
 	 * nome della component con la stringa ".edit"
 	 */
-	public T inizializzaBulkPerRicerca(UserContext userContext, T oggettobulk)
+	public T inizializzaBulkPerRicerca(Principal principal, T oggettobulk)
 			throws ComponentException {
 		try {
-			initializeKeysAndOptionsInto(userContext, oggettobulk);
+			initializeKeysAndOptionsInto(principal, oggettobulk);
 			return oggettobulk;
 		} catch (Throwable throwable) {
 			throw handleException(throwable);
@@ -335,10 +335,10 @@ public abstract class CRUDComponentSessionBean<T extends OggettoBulk> extends
 	 * inizializzato con tutti gli oggetti collegati e preparato per l'utilizzo
 	 * come prototipo in in una operazione di ricerca libera
 	 */
-	public T inizializzaBulkPerRicercaLibera(UserContext userContext,
+	public T inizializzaBulkPerRicercaLibera(Principal principal,
 			T oggettobulk) throws ComponentException {
 		try {
-			initializeKeysAndOptionsInto(userContext, oggettobulk);
+			initializeKeysAndOptionsInto(principal, oggettobulk);
 			return oggettobulk;
 		} catch (Throwable throwable) {
 			throw handleException(throwable);
@@ -366,11 +366,11 @@ public abstract class CRUDComponentSessionBean<T extends OggettoBulk> extends
 	 * precedenti superati Post: l'T viene modificato fisicamente nella base
 	 * dati e viene chiusa la transazione
 	 */
-	public T modificaConBulk(UserContext userContext, T oggettobulk)
+	public T modificaConBulk(Principal principal, T oggettobulk)
 			throws ComponentException {
 		try {
-			validaModificaConBulk(userContext, oggettobulk);
-			return eseguiModificaConBulk(userContext, oggettobulk);
+			validaModificaConBulk(principal, oggettobulk);
+			return eseguiModificaConBulk(principal, oggettobulk);
 		} catch (Throwable throwable) {
 			throw handleException(throwable);
 		}
@@ -379,17 +379,17 @@ public abstract class CRUDComponentSessionBean<T extends OggettoBulk> extends
 	/**
 	 * Esegue una la parte di validazione di modificaConBulk.
 	 */
-	protected void validaModificaConBulk(UserContext usercontext, T oggettobulk)
+	protected void validaModificaConBulk(Principal principal, T oggettobulk)
 			throws ComponentException {
-		validaCreaModificaConBulk(usercontext, oggettobulk);
+		validaCreaModificaConBulk(principal, oggettobulk);
 	}
 
 	/**
 	 * Esegue una la parte di persistenza di creaConBulk.
 	 */
-	protected T eseguiModificaConBulk(UserContext userContext, T oggettobulk)
+	protected T eseguiModificaConBulk(Principal principal, T oggettobulk)
 			throws ComponentException, PersistencyException {
-		makeBulkPersistent(userContext, oggettobulk);
+		makeBulkPersistent(principal, oggettobulk);
 		return oggettobulk;
 	}
 
