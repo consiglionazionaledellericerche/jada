@@ -2,6 +2,7 @@ package it.cnr.jada.ejb.session;
 
 import it.cnr.jada.bulk.OggettoBulk;
 
+import java.io.Serializable;
 import java.security.Principal;
 import java.util.List;
 
@@ -35,7 +36,9 @@ public interface CRUDComponentSession<T extends OggettoBulk> {
 
 	public List<T> findByCriterion(Principal principal, Class<T> bulkClass,
 			Criterion criterion, Order... order) throws ComponentException;
-
+	
+	public T findById(Principal principal, Class<T> bulkClass, Serializable id) throws ComponentException;
+	
 	public void deleteByCriteria(Principal principal, Criteria criteria,
 			Class<T> bulkClass) throws ComponentException;
 

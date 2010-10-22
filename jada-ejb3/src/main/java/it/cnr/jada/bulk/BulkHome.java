@@ -193,7 +193,15 @@ public class BulkHome<T extends OggettoBulk> implements Serializable{
 		Query query = criteria.prepareQuery(manager);
 		return query.getResultList();
 	}	
-    
+	
+	public T findById(Principal principal, Class<T> bulkClass, Serializable id) throws ComponentException{
+	     T bulk = (T)manager.find(bulkClass, id);
+	     if(bulk == null)
+	      return null;
+	     bulk.setCrudStatus(OggettoBulk.NORMAL);
+	     return bulk;
+	}    
+	
 	@SuppressWarnings("unchecked")
 	public <K extends OggettoBulk> BulkHome<K> getHomeClass(K oggettoBulk) throws ComponentException{
     	return (BulkHome<K>) getHomeClass(oggettoBulk.getClass());

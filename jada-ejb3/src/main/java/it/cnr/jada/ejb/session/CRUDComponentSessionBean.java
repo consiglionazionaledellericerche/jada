@@ -7,6 +7,7 @@ package it.cnr.jada.ejb.session;
 import it.cnr.jada.bulk.OggettoBulk;
 import it.cnr.jada.bulk.OutdatedResourceException;
 
+import java.io.Serializable;
 import java.security.Principal;
 import java.util.List;
 
@@ -109,7 +110,11 @@ public abstract class CRUDComponentSessionBean<T extends OggettoBulk> extends
 		Criteria criteria = select(principal, bulkClass, criterion, order);
 		return criteria.prepareQuery(getManager()).getResultList();
 	}
-
+	
+	public T findById(Principal principal, Class<T> bulkClass, Serializable id) throws ComponentException {
+		return getHomeClass(bulkClass).findById(principal, bulkClass, id);
+	}
+	
 	protected Criteria select(Principal principal, Class<T> bulkClass,
 			Criterion criterion) throws ComponentException {
 		return select(principal, bulkClass, criterion, new Order[0]);
