@@ -487,6 +487,16 @@ public final class Introspector implements Serializable{
 			return false;
 		}
 	}
+
+	public static Object invoke(Object obj, Method method, Object... aobj)
+	throws NoSuchMethodException, IllegalAccessException, InvocationTargetException
+	{
+		if(method == null)
+			throw new NoSuchMethodException("No method in class " + obj.getClass() + " with parameters specified.");
+		else
+			return method.invoke(obj, aobj);
+	}
+	
     /**
      * Invoca un metodo su un'oggetto. Il metodo da invocare viene selezionato in base al nome e al tipo 
      * effettivo dei parametri passati.
