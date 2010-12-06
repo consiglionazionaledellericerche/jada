@@ -50,6 +50,7 @@ public abstract class CRUDComponentSessionBean<T extends OggettoBulk> extends
 		getHomeClass(bulkClass).deleteByCriteria(principal, criteria);
 	}
 
+
 	/**
 	 * Metodi di Ricerca
 	 */
@@ -58,7 +59,13 @@ public abstract class CRUDComponentSessionBean<T extends OggettoBulk> extends
 		return getHomeClass(oggettoBulk).findByPrimaryKey(principal,
 				oggettoBulk);
 	}
-
+	
+	public T findById(Principal principal, Class<T> bulkClass, Serializable id)
+		throws ComponentException {
+			return getHomeClass(bulkClass).findById(principal, bulkClass,
+					id);
+	}
+	
 	public Long count(Principal principal,Class<T> bulkClass) throws ComponentException {
 		Criteria criteria = select(principal, bulkClass, null);
 		criteria.setProjection(Projections.rowCount());
@@ -110,11 +117,7 @@ public abstract class CRUDComponentSessionBean<T extends OggettoBulk> extends
 		Criteria criteria = select(principal, bulkClass, criterion, order);
 		return criteria.prepareQuery(getManager()).getResultList();
 	}
-	
-	public T findById(Principal principal, Class<T> bulkClass, Serializable id) throws ComponentException {
-		return getHomeClass(bulkClass).findById(principal, bulkClass, id);
-	}
-	
+
 	protected Criteria select(Principal principal, Class<T> bulkClass,
 			Criterion criterion) throws ComponentException {
 		return select(principal, bulkClass, criterion, new Order[0]);
@@ -172,9 +175,9 @@ public abstract class CRUDComponentSessionBean<T extends OggettoBulk> extends
 	/**
 	 * Esegue una la parte di persistenza di creaConBulk.
 	 */
-	protected T eseguiCreaConBulk(Principal principal, T oggettobulk)
+	protected T eseguiCreaConBulk(Principal usercontext, T oggettobulk)
 			throws ComponentException, PersistencyException {
-		makeBulkPersistent(principal, oggettobulk);
+		makeBulkPersistent(usercontext, oggettobulk);
 		return oggettobulk;
 	}
 
@@ -246,10 +249,10 @@ public abstract class CRUDComponentSessionBean<T extends OggettoBulk> extends
 	/**
 	 * Esegue una la parte di validazione di eliminaConBulk.
 	 */
-	protected void validaEliminaConBulk(Principal principal, T oggettobulk)
+	protected void validaEliminaConBulk(Principal usercontext, T oggettobulk)
 			throws ComponentException {
 		try {
-			validateBulkForPersistency(principal, oggettobulk);
+			validateBulkForPersistency(usercontext, oggettobulk);
 		} catch (Throwable throwable) {
 			throw handleException(throwable);
 		}
@@ -258,10 +261,10 @@ public abstract class CRUDComponentSessionBean<T extends OggettoBulk> extends
 	/**
 	 * Esegue una la parte di persistenza di eliminaConBulk.
 	 */
-	protected void eseguiEliminaConBulk(Principal principal, T oggettobulk)
+	protected void eseguiEliminaConBulk(Principal usercontext, T oggettobulk)
 			throws ComponentException, PersistencyException {
 		try {
-			super.makeBulkPersistent(principal, oggettobulk);
+			super.makeBulkPersistent(usercontext, oggettobulk);
 		} catch (NotDeletableException notdeletableexception) {
 			if (notdeletableexception.getPersistent() != oggettobulk)
 				throw handleException(notdeletableexception);
@@ -384,9 +387,9 @@ public abstract class CRUDComponentSessionBean<T extends OggettoBulk> extends
 	/**
 	 * Esegue una la parte di validazione di modificaConBulk.
 	 */
-	protected void validaModificaConBulk(Principal principal, T oggettobulk)
+	protected void validaModificaConBulk(Principal usercontext, T oggettobulk)
 			throws ComponentException {
-		validaCreaModificaConBulk(principal, oggettobulk);
+		validaCreaModificaConBulk(usercontext, oggettobulk);
 	}
 
 	/**
