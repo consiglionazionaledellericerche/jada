@@ -1,0 +1,21 @@
+<bulkInfo
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns="http://contab.cnr.it/schema/SIGLA" 
+		xsi:schemaLocation="http://contab.cnr.it/schema/SIGLA http://contab.cnr.it/schema/SIGLA/BulkInfo_1_5.xsd">
+	<fieldProperty
+		name="operator"
+		property="operator"
+		keysProperty="operatorsDescriptions"
+		label="Operatore"
+		inputType="SELECT" />
+	<fieldProperty
+		name="findFieldProperty"
+		property="findFieldProperty"
+		printProperty="label"
+		optionsProperty="findFieldProperties"
+		label="Attributo" />
+
+	<formFieldProperty name="findFieldProperty" />
+	<formFieldProperty name="operator" />
+
+</bulkInfo>

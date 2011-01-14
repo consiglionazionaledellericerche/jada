@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SQLPersistentInfo
+	persistentClassName="it.cnr.jada.blobs.bulk.Bframe_blobKey" >
+	<defaultColumnMap
+		tableName="BFRAME_BLOB" >
+		<columnMapping
+			columnName="CD_TIPO"
+			propertyName="cd_tipo"
+			sqlTypeName="VARCHAR"
+			columnSize="10"
+			nullable="false"
+			primary="true" />
+		<columnMapping
+			columnName="FILENAME"
+			propertyName="filename"
+			sqlTypeName="VARCHAR"
+			columnSize="50"
+			nullable="false"
+			primary="true" />
+		<columnMapping
+			columnName="PATH"
+			propertyName="path"
+			sqlTypeName="VARCHAR"
+			columnSize="256"
+			nullable="false"
+			primary="true" />
+	</defaultColumnMap>
+	<persistentProperty
+		name="cd_tipo"
+		partOfOid="true" />
+	<persistentProperty
+		name="filename"
+		partOfOid="true" />
+	<persistentProperty
+		name="path"
+		partOfOid="true" />
+</SQLPersistentInfo>
