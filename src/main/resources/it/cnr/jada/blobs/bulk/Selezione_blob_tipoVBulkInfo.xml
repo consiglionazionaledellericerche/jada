@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<bulkInfo
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns="http://contab.cnr.it/schema/SIGLA" 
+		xsi:schemaLocation="http://contab.cnr.it/schema/SIGLA http://contab.cnr.it/schema/SIGLA/BulkInfo_1_5.xsd">
+	<fieldProperty
+		name="blob_tipo"
+		property="blob_tipo"
+		inputType="SELECT"
+		label="Tipo"
+		printProperty="cd_ds_tipo"
+		optionsProperty="blob_tipoList"
+		nullable="false"
+		command="doCambiaTipo" />
+	<fieldProperty
+		name="ti_visibilita"
+		property="ti_visibilita"
+		inputType="RADIOGROUP"
+		layout="HORIZONTAL"
+		keysProperty="ti_visibilitaKeys"
+		label="Visibilità"
+		command="doCambiaVisibilita" />
+
+	<formFieldProperty
+		name="blob_tipo" />
+	<formFieldProperty
+		name="ti_visibilita" />
+
+</bulkInfo>

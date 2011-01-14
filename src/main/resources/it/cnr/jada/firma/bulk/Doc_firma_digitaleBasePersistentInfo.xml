@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SQLPersistentInfo
+	persistentClassName="it.cnr.jada.firma.bulk.Doc_firma_digitaleBase"
+	keyClassName="it.cnr.jada.firma.bulk.Doc_firma_digitaleKey"
+	homeClassName="it.cnr.jada.firma.bulk.Doc_firma_digitaleHome">
+	<defaultColumnMap
+		tableName="DOC_FIRMA_DIGITALE">
+		<columnMapping
+			columnName="CD_UTENTE"
+			propertyName="cd_utente"
+			sqlTypeName="VARCHAR"
+			columnSize="20"
+			nullable="false" />
+		<columnMapping
+			columnName="DATA"
+			propertyName="data"
+			sqlTypeName="TIMESTAMP"
+			columnSize="7"
+			nullable="false" />
+		<columnMapping
+			columnName="NOME_FILE"
+			propertyName="nome_file"
+			sqlTypeName="VARCHAR"
+			columnSize="400"
+			nullable="false" />
+		<columnMapping
+			columnName="DS_FILE"
+			propertyName="ds_file"
+			sqlTypeName="VARCHAR"
+			columnSize="2000"
+			nullable="true" />
+		<columnMapping
+			columnName="UTCR"
+			propertyName="utcr"
+			sqlTypeName="VARCHAR"
+			columnSize="20"
+			nullable="false" />
+		<columnMapping
+			columnName="DACR"
+			propertyName="dacr"
+			sqlTypeName="TIMESTAMP"
+			columnSize="7"
+			nullable="false" />
+		<columnMapping
+			columnName="UTUV"
+			propertyName="utuv"
+			sqlTypeName="VARCHAR"
+			columnSize="20"
+			nullable="false" />
+		<columnMapping
+			columnName="DUVA"
+			propertyName="duva"
+			sqlTypeName="TIMESTAMP"
+			columnSize="7"
+			nullable="false" />
+		<columnMapping
+			columnName="PG_VER_REC"
+			propertyName="pg_ver_rec"
+			sqlTypeName="DECIMAL"
+			columnSize="22"
+			nullable="false" />
+	</defaultColumnMap>
+	<persistentProperty
+		name="cd_utente" />
+	<persistentProperty
+		name="data" />
+	<persistentProperty
+		name="nome_file" />
+	<persistentProperty
+		name="ds_file" />
+	<persistentProperty
+		name="utcr" />
+	<persistentProperty
+		name="dacr" />
+	<persistentProperty
+		name="utuv" />
+	<persistentProperty
+		name="duva" />
+	<persistentProperty
+		name="pg_ver_rec" />
+</SQLPersistentInfo>

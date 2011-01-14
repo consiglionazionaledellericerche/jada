@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SQLPersistentInfo
+	persistentClassName="it.cnr.jada.excel.bulk.Excel_spooler_param_columnBulk"
+	homeClassName="it.cnr.jada.excel.bulk.Excel_spooler_param_columnHome">
+	<defaultColumnMap
+		tableName="EXCEL_SPOOLER_PARAM_COLUMN">
+		<columnMapping
+			columnName="PG_ESTRAZIONE"
+			propertyName="excel_spooler_param.pg_estrazione"
+			sqlTypeName="DECIMAL"
+			columnSize="10" />
+		<columnMapping
+			columnName="PG_COLUMN"
+			propertyName="excel_spooler_param.pg_column"
+			sqlTypeName="DECIMAL"
+			columnSize="10" />
+			
+	</defaultColumnMap>
+	<persistentProperty
+		name="excel_spooler_param"
+		partOfOid="true" />
+</SQLPersistentInfo>

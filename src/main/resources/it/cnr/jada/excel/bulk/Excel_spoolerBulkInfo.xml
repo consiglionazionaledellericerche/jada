@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<bulkInfo
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns="http://contab.cnr.it/schema/SIGLA" 
+		xsi:schemaLocation="http://contab.cnr.it/schema/SIGLA http://contab.cnr.it/schema/SIGLA/BulkInfo_1_5.xsd" shortDescription="File Excel">
+	<fieldProperty
+		name="pg_estrazione"
+		property="pg_estrazione"
+		inputType="TEXT"
+		inputSize="10"
+		maxLength="10"
+		label="pg_estrazione" />
+	<fieldProperty
+		name="sheet_name"
+		property="sheet_name"
+		maxLength="400"
+		inputSize="40"
+		inputType="TEXT"
+		label="Nome del File"
+		caseSensitiveSearch="false"
+		enabledOnSearch="false"
+		enabledOnEdit="false"		
+		enabledOnInsert="false" />
+	<fieldProperty
+		name="stato"
+		property="stato"
+		inputType="RADIOGROUP"
+		layout="HORIZONTAL"
+		keysProperty="statoKeys"
+		label="Stato"
+		caseSensitiveSearch="false" />
+	<fieldProperty
+		name="ds_estrazione"
+		property="ds_estrazione"
+		maxLength="300"
+		cols="50"
+		rows="5"
+		inputType="TEXTAREA"
+		label="Descrizione"
+		caseSensitiveSearch="false" />
+	<fieldProperty
+		name="server"
+		property="server"
+		inputType="TEXTAREA"
+		cols="60"
+		rows="5"
+		maxLength="200"
+		label="server" />
+	<fieldProperty
+		name="nome_file"
+		property="nome_file"
+		inputType="TEXTAREA"
+		cols="60"
+		rows="5"
+		maxLength="300"
+		label="nome_file" />
+	<fieldProperty
+		name="query"
+		property="query"
+		inputType="TEXTAREA"
+		cols="60"
+		rows="5"
+		maxLength="4000"
+		label="query" />
+	<fieldProperty
+		name="errore"
+		property="errore"
+		inputType="TEXTAREA"
+		cols="60"
+		rows="5"
+		maxLength="4000"
+		label="errore" />
+	<fieldProperty
+		name="dacr"
+		property="dacr"
+		inputType="ROTEXT"
+		label="Data accodamento"
+		formatName="timestamp" />
+	<fieldProperty
+		name="duva"
+		property="duva"
+		inputType="ROTEXT"
+		label="Data esecuzione"
+		formatName="timestamp" />
+	<fieldProperty
+		name="fl_email"
+		property="fl_email"
+		inputType="CHECKBOX"
+		label="Invia E-Mail con la consultazione allegata" />
+	<fieldProperty
+		name="email_a"
+		property="email_a"
+		inputType="TEXT"
+        inputSize="63"
+		maxLength="250"
+		nullable="false"
+		label="A:" />
+	<fieldProperty
+		name="email_cc"
+		property="email_cc"
+		inputType="TEXT"
+        inputSize="63"
+		maxLength="250"
+		label="Cc:" />
+	<fieldProperty
+		name="email_ccn"
+		property="email_ccn"
+		inputType="TEXT"
+        inputSize="63"
+		maxLength="250"
+		label="Ccn:" />
+	<fieldProperty
+		name="email_subject"
+		property="email_subject"
+		inputType="TEXT"
+        inputSize="63"
+		maxLength="250"
+		nullable="false"
+		label="Oggetto:" />
+	<fieldProperty
+		name="email_body"
+		property="email_body"
+		inputType="TEXTAREA"
+		cols="100"
+		rows="7"
+		maxLength="4000"
+		label="Corpo del testo" />	
+	<fieldProperty
+		name="dt_partenza"
+		property="dt_partenza"
+		inputSize="20"
+		inputType="TEXT"
+		label="Data e ora"
+		formatName="timestamp" />
+	<fieldProperty
+		name="intervallo"
+		property="intervallo"
+		inputSize="20"
+		inputType="TEXT"
+		label="Intervallo" />
+	<fieldProperty
+		name="ti_intervallo"
+		property="ti_intervallo"
+		keysProperty="tipo_intervalloKeys"
+		inputType="SELECT"
+		label="Unità intervallo" />
+	<fieldProperty
+		name="dt_prossima_esecuzione"
+		property="dt_prossima_esecuzione"
+		inputSize="20"
+		inputType="TEXT"
+		label="Data prossima esecuzione"
+		formatName="timestamp" />	
+	<formFieldProperty
+		name="pg_estrazione" />
+	<formFieldProperty
+		name="sheet_name" />
+	<formFieldProperty
+		name="ds_estrazione" />	
+	<formFieldProperty
+		name="stato" />
+	<formFieldProperty
+		name="server" />
+	<formFieldProperty
+		name="nome_file" />
+	<formFieldProperty
+		name="errore" />
+	<formFieldProperty
+		name="fl_email"
+		command="doSendEMail"/>
+	<formFieldProperty
+		name="email_a"/>
+	<formFieldProperty
+		name="email_cc"/>
+	<formFieldProperty
+		name="email_ccn"/>
+	<formFieldProperty
+		name="email_subject"/>
+	<formFieldProperty
+		name="email_body"/>	
+	<formFieldProperty
+		name="dt_partenza" />
+	<formFieldProperty
+		name="intervallo" />
+	<formFieldProperty
+		name="ti_intervallo" />
+	<formFieldProperty
+		name="dt_prossima_esecuzione" />
+		
+	<findFieldProperty
+		name="pg_estrazione" />
+	<findFieldProperty
+		name="sheet_name" />
+	<findFieldProperty
+		name="stato" />
+	<findFieldProperty
+		name="server" />
+	<findFieldProperty
+		name="nome_file" />
+	<findFieldProperty
+		name="errore" />
+
+	<columnFieldProperty
+		name="dacr"/>		
+	<columnFieldProperty
+		name="sheet_name" />
+	<columnFieldProperty
+		name="ds_estrazione" />		
+	<columnFieldProperty
+		name="duva"/>		
+	<columnFieldProperty
+		name="stato"/>
+	<columnFieldProperty
+		name="dt_partenza" />
+	<columnFieldProperty
+		name="intervallo" />
+	<columnFieldProperty
+		name="ti_intervallo" />
+	<columnFieldProperty
+		name="dt_prossima_esecuzione" />
+
+</bulkInfo>

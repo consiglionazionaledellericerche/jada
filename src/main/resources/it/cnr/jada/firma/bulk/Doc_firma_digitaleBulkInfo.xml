@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<bulkInfo
+		longDescription="Documenti con Firma Digitale"
+		shortDescription="Documenti con Firma Digitale">
+	<fieldProperty
+		name="id_documento"
+		property="id_documento"
+		inputType="ROTEXT"
+		inputSize="22"
+		maxLength="22"
+		label="Progressivo" />
+	<fieldProperty
+		name="cd_utente"
+		property="cd_utente"
+		inputType="ROTEXT"
+		inputSize="20"
+		maxLength="20"
+		label="Utente" />
+	<fieldProperty
+		name="data"
+		property="data"
+		inputType="ROTEXT"
+		formatName="timestamp"
+		inputSize="15"
+		label="Data firma e/o inserimento" />
+	<fieldProperty
+		name="nome_file"
+		property="nome_file"
+		inputType="ROTEXT"
+		inputSize="80"
+		maxLength="400"
+		label="Nome del file" />
+	<fieldProperty
+		name="blob"
+		property="blob"
+		inputType="FILE"
+		inputSize="40"
+		maxLength="400"
+		caseSensitiveSearch="false"
+		nullable="false"
+		label="File" />
+	<fieldProperty
+		name="attivaFile_blob"
+		property="blob"
+		readonlyProperty="ROAttivaFileBlob"
+		inputType="BUTTON"
+		enabledOnView="true"
+		img="img/import24.gif"
+		href="javascript:doScaricaFile()"
+		label="Apri File" />
+	<fieldProperty
+		name="ds_file"
+		property="ds_file"
+		inputType="TEXTAREA"
+		cols="60"
+		rows="5"
+		maxLength="2000"
+		label="Descrizione" />
+	<formFieldProperty
+		name="data" />
+	<formFieldProperty
+		name="nome_file" />
+	<formFieldProperty
+		name="ds_file" />
+	<formFieldProperty
+		name="blob" />
+	<formFieldProperty
+		name="attivaFile_blob" />
+	<findFieldProperty
+		name="id_documento" />
+	<findFieldProperty
+		name="cd_utente" />
+	<findFieldProperty
+		name="data" />
+	<findFieldProperty
+		name="nome_file" />
+	<findFieldProperty
+		name="ds_file" />
+	<columnFieldProperty
+		name="id_documento" />
+	<columnFieldProperty
+		name="cd_utente" />
+	<columnFieldProperty
+		name="data" />
+	<columnFieldProperty
+		name="nome_file" />
+	<columnFieldProperty
+		name="ds_file" />
+</bulkInfo>
