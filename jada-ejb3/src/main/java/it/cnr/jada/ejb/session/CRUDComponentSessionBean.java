@@ -143,20 +143,20 @@ public abstract class CRUDComponentSessionBean<T extends OggettoBulk> extends
 	/**
 	 * Esegue una operazione di creazione di un T. Pre-post-conditions: Nome:
 	 * Non passa validazione applicativa Pre: l'T non passa i criteri di
-	 * validità applicativi Post: Viene generata CRUDValidationException che
+	 * validitï¿½ applicativi Post: Viene generata CRUDValidationException che
 	 * descrive l'errore di validazione. Nome: Non passa validazione per
 	 * violazione di vincoli della base di dati Pre: l'T contiene qualche
 	 * attributo nullo in corrispondenza di campi NOT_NULLABLE o qualche
 	 * attributo stringa troppo lungo per i corrispondenti campi fisici. Post:
 	 * Viene generata una it.jada.stone.comp.CRUDNotNullConstraintException o
 	 * una CRUDTooLargeConstraintException con la descrizione dell'errore Nome:
-	 * Errore di chiave duplicata Pre: Esiste già un T persistente che possiede
+	 * Errore di chiave duplicata Pre: Esiste giï¿½ un T persistente che possiede
 	 * la stessa chiave primaria di quello specificato. Post: Viene generata una
 	 * CRUDDuplicateKeyException con la descrizione dell'errore e con una nuova
 	 * istanza che rappresenta l'oggetto esistente in base dati che possiede la
-	 * chiave duplicata. Nome: Vincolo di integrità referenziale Pre: l'T
-	 * specificato non può essere creato perchè viene violato qualche vincolo di
-	 * integrità referenziale Post: Viene generata una
+	 * chiave duplicata. Nome: Vincolo di integritï¿½ referenziale Pre: l'T
+	 * specificato non puï¿½ essere creato perchï¿½ viene violato qualche vincolo di
+	 * integritï¿½ referenziale Post: Viene generata una
 	 * CRUDReferentialIntegrityException con la descrizione dell'errore Nome:
 	 * Tutti i controlli superati Pre: Tutti i controlli precedenti superati
 	 * Post: l'T viene crato fisicamente nella base dati e viene chiusa la
@@ -177,8 +177,7 @@ public abstract class CRUDComponentSessionBean<T extends OggettoBulk> extends
 	 */
 	protected T eseguiCreaConBulk(Principal usercontext, T oggettobulk)
 			throws ComponentException, PersistencyException {
-		makeBulkPersistent(usercontext, oggettobulk);
-		return oggettobulk;
+		return makeBulkPersistent(usercontext, oggettobulk);
 	}
 
 	/**
@@ -217,20 +216,20 @@ public abstract class CRUDComponentSessionBean<T extends OggettoBulk> extends
 	/**
 	 * Esegue una operazione di eliminazione di un T. Pre-post-conditions: Nome:
 	 * Non passa validazione di business Pre: l'T non passa i criteri di
-	 * validità di business per l'operazione di cancellazione Post: Viene
+	 * validitï¿½ di business per l'operazione di cancellazione Post: Viene
 	 * generata una ComponentException con detail la ValidationException che
 	 * descrive l'errore di validazione. Nome: Oggetto non trovato Pre: l'T
 	 * specificato non esiste. Post: Viene generata una CRUDException con la
-	 * descrizione dell'errore Nome: Oggetto scaduto Pre: l'T specificato è
+	 * descrizione dell'errore Nome: Oggetto scaduto Pre: l'T specificato ï¿½
 	 * stato modificato da altri utenti dopo la lettura Post: Viene generata una
 	 * CRUDException con la descrizione dell'errore Nome: Oggetto occupato Pre:
-	 * l'T specificato è bloccato da qualche altro utente. Post: Viene generata
+	 * l'T specificato ï¿½ bloccato da qualche altro utente. Post: Viene generata
 	 * una CRUDException con la descrizione dell'errore Nome: Oggetto non
-	 * cancellabile Pre: l'T non è cancellabile per motivi applicativi Post:
+	 * cancellabile Pre: l'T non ï¿½ cancellabile per motivi applicativi Post:
 	 * Viene generata una CRUDNotDeletableException con la descrizione
-	 * dell'errore Nome: Vincolo di integrità referenziale Pre: l'T specificato
-	 * non può essere cancellato perchè viene violato+ qualche vincolo di
-	 * integrità referenziale Post: Viene generata una
+	 * dell'errore Nome: Vincolo di integritï¿½ referenziale Pre: l'T specificato
+	 * non puï¿½ essere cancellato perchï¿½ viene violato+ qualche vincolo di
+	 * integritï¿½ referenziale Post: Viene generata una
 	 * CRUDReferentialIntegrityException con la descrizione dell'errore Nome:
 	 * Tutti i controlli superati Pre: Tutti i controlli precedenti superati
 	 * Post: l'T eliminato fisicamente dalla base di dati e viene chiusa la
@@ -294,7 +293,7 @@ public abstract class CRUDComponentSessionBean<T extends OggettoBulk> extends
 	 * specificato esiste. Post: Viene riletto l'T, inizializzato con tutti gli
 	 * oggetti collegati e preparato per l'operazione di presentazione e
 	 * modifica nell'interfaccia visuale. L'operazione di lettura viene
-	 * effettuata con una FetchPolicy il cui nome è ottenuto concatenando il
+	 * effettuata con una FetchPolicy il cui nome ï¿½ ottenuto concatenando il
 	 * nome della component con la stringa ".edit"
 	 */
 	public T inizializzaBulkPerModifica(Principal principal, T oggettobulk)
@@ -324,7 +323,7 @@ public abstract class CRUDComponentSessionBean<T extends OggettoBulk> extends
 	 * specificato esiste. Post: Viene riletto l'T, inizializzato con tutti gli
 	 * oggetti collegati e preparato per l'operazione di presentazione e
 	 * modifica nell'interfaccia visuale. L'operazione di lettura viene
-	 * effettuata con una FetchPolicy il cui nome è ottenuto concatenando il
+	 * effettuata con una FetchPolicy il cui nome ï¿½ ottenuto concatenando il
 	 * nome della component con la stringa ".edit"
 	 */
 	public T inizializzaBulkPerRicerca(Principal principal, T oggettobulk)
@@ -355,7 +354,7 @@ public abstract class CRUDComponentSessionBean<T extends OggettoBulk> extends
 
 	/**
 	 * Esegue una operazione di modifica di un T. Pre-post-conditions: Nome: Non
-	 * passa validazione applicativa Pre: l'T non passa i criteri di validità
+	 * passa validazione applicativa Pre: l'T non passa i criteri di validitï¿½
 	 * applicativi per l'operazione di modifica Post: Viene generata
 	 * CRUDValidationException che descrive l'errore di validazione. Nome: Non
 	 * passa validazione per violazione di vincoli della base di dati Pre: l'T
@@ -366,9 +365,9 @@ public abstract class CRUDComponentSessionBean<T extends OggettoBulk> extends
 	 * CRUDTooLargeConstraintException con la descrizione dell'errore Nome:
 	 * Oggetto non trovato Pre: l'T specificato non esiste. Post: Viene generata
 	 * una CRUDException con la descrizione dell'errore Nome: Oggetto scaduto
-	 * Pre: l'T specificato è stato modificato da altri utenti dopo la lettura
+	 * Pre: l'T specificato ï¿½ stato modificato da altri utenti dopo la lettura
 	 * Post: Viene generata una CRUDException con la descrizione dell'errore
-	 * Nome: Oggetto occupato Pre: l'T specificato è bloccato da qualche altro
+	 * Nome: Oggetto occupato Pre: l'T specificato ï¿½ bloccato da qualche altro
 	 * utente. Post: Viene generata una CRUDException con la descrizione
 	 * dell'errore Nome: Tutti i controlli superati Pre: Tutti i controlli
 	 * precedenti superati Post: l'T viene modificato fisicamente nella base
@@ -397,8 +396,7 @@ public abstract class CRUDComponentSessionBean<T extends OggettoBulk> extends
 	 */
 	protected T eseguiModificaConBulk(Principal principal, T oggettobulk)
 			throws ComponentException, PersistencyException {
-		makeBulkPersistent(principal, oggettobulk);
-		return oggettobulk;
+		return makeBulkPersistent(principal, oggettobulk);
 	}
 
 }
