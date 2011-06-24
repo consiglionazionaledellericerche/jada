@@ -128,7 +128,10 @@ public class SendPecMail {
 		Identificatore identificatore = factory.createIdentificatore();
 		identificatore.setCodiceAmministrazione("000000");
 		identificatore.setCodiceAOO("AMMCNT");
-		identificatore.setNumeroRegistrazione("0000000");
+		if (datiPEC.getNumeroRegistrazione().equals(""))
+			identificatore.setNumeroRegistrazione("0000000");
+		else
+			identificatore.setNumeroRegistrazione(datiPEC.getNumeroRegistrazione());
 
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         java.util.Date date = new java.util.Date();

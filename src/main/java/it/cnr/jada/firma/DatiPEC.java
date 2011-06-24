@@ -43,6 +43,8 @@ public class DatiPEC {
 
 	private String oggetto;
 	
+	private String numeroRegistrazione;
+
 	public java.util.List<String> emailListProtocollo() {
 		java.util.List<String> indirizzi = new ArrayList<String>();
 		if (emailProtocollo!=null)
@@ -217,5 +219,11 @@ public class DatiPEC {
 	}
 	public String getSiglaUoDest() {
 		return siglaUoDest;
+	}
+	public void setNumeroRegistrazione(String numeroRegistrazione) {
+		this.numeroRegistrazione = numeroRegistrazione;
+	}
+	public String getNumeroRegistrazione() {
+		return numeroRegistrazione;
 	}
 }
