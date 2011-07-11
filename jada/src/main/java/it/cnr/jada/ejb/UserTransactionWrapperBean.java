@@ -3,24 +3,32 @@ package it.cnr.jada.ejb;
 import it.cnr.jada.DetailedRuntimeException;
 import it.cnr.jada.UserContext;
 import it.cnr.jada.util.Introspector;
-import it.cnr.jada.util.ejb.*;
+import it.cnr.jada.util.ejb.EJBCommonServices;
+import it.cnr.jada.util.ejb.EJBTracer;
+import it.cnr.jada.util.ejb.UserTransactionTimeoutException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.rmi.RemoteException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
-import javax.ejb.PrePassivate;
 import javax.ejb.Remove;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateful;
 import javax.ejb.TransactionManagement;
 import javax.ejb.TransactionManagementType;
-import javax.persistence.PostRemove;
-import javax.transaction.*;
+import javax.transaction.HeuristicMixedException;
+import javax.transaction.HeuristicRollbackException;
+import javax.transaction.NotSupportedException;
+import javax.transaction.RollbackException;
+import javax.transaction.Status;
+import javax.transaction.SystemException;
+import javax.transaction.UserTransaction;
 
 @Stateful(name="JADAEJB_UserTransactionWrapper")
 @TransactionManagement(TransactionManagementType.BEAN)
