@@ -41,6 +41,7 @@ public class TransactionalBulkLoaderIteratorBean extends BaseBulkLoaderIteratorB
 	}
 
 	@Override
+	@PostActivate
 	protected void initialize() throws PersistencyException {
 		super.ejbActivate();
 		super.initialize();
@@ -93,7 +94,6 @@ public class TransactionalBulkLoaderIteratorBean extends BaseBulkLoaderIteratorB
 		out.writeObject(super.userContext);
 		out.writeInt(super.pageSize);
 		out.writeObject(super.fetchPolicyName);
-		out.defaultWriteObject();
 	}
 	
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException{
@@ -104,6 +104,5 @@ public class TransactionalBulkLoaderIteratorBean extends BaseBulkLoaderIteratorB
 		super.userContext = (UserContext) in.readObject();
 		super.pageSize = in.readInt();
 		super.fetchPolicyName = (String) in.readObject();
-		in.defaultReadObject();
 	}	
 }
