@@ -85,20 +85,12 @@ public class BulkLoaderIteratorBean extends BaseBulkLoaderIteratorBean implement
 	}
 
 	@Override
+	@PostActivate
 	protected void initialize() throws PersistencyException {
 		if(usertransaction == null)
 			usertransaction = EJBCommonServices.getUserTransaction();
 		super.ejbActivate();
 		super.initialize();
-	}
-
-	@PostActivate
-	public void postActivate(){
-		try {
-			initialize();
-		} catch (PersistencyException e) {
-			throw new EJBException(e);
-		}
 	}
 	
 	protected Connection getConnection(){

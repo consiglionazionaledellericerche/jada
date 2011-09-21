@@ -11,6 +11,8 @@ import java.io.ObjectOutputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.ejb.EJBException;
 import javax.ejb.PostActivate;
 import javax.ejb.PrePassivate;
@@ -18,12 +20,15 @@ import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.ejb.TransactionManagement;
-import javax.ejb.TransactionManagementType;
+import javax.persistence.PostRemove;
+import javax.transaction.HeuristicMixedException;
+import javax.transaction.HeuristicRollbackException;
+import javax.transaction.RollbackException;
+import javax.transaction.Status;
+import javax.transaction.SystemException;
 
 @Stateful(name="JADAEJB_TransactionalBulkLoaderIterator")
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-@TransactionManagement(TransactionManagementType.BEAN)
 public class TransactionalBulkLoaderIteratorBean extends BaseBulkLoaderIteratorBean implements TransactionalBulkLoaderIterator{
 	static final long serialVersionUID = 0x2c7e5503d9bf9553L;
 	private Connection connection;
@@ -36,18 +41,10 @@ public class TransactionalBulkLoaderIteratorBean extends BaseBulkLoaderIteratorB
 	}
 
 	@Override
+	@PostActivate
 	protected void initialize() throws PersistencyException {
 		super.ejbActivate();
 		super.initialize();
-	}
-	
-	@PostActivate
-	public void postActivate(){
-		try {
-			initialize();
-		} catch (PersistencyException e) {
-			throw new EJBException(e);
-		}
 	}
 	
 	protected void initializeConnection() throws PersistencyException{
