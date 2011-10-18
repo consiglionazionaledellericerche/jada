@@ -4,6 +4,7 @@
  */
 package it.cnr.jada.ejb.session;
 
+import it.cnr.jada.bulk.BulkCollection;
 import it.cnr.jada.bulk.BulkHome;
 import it.cnr.jada.bulk.OggettoBulk;
 import it.cnr.jada.bulk.OutdatedResourceException;
@@ -20,7 +21,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -102,25 +105,22 @@ public abstract class AbstractComponentSessionBean<T extends OggettoBulk> {
 			if (jadaOneToMany != null){
 				try {
 					Object value = Introspector.getPropertyValue(oggettobulk, attributo.getName());
-					if (value == null)
+					if (value == null || !(value instanceof Collection))
 						continue;
-					if (attributo.getType().equals(List.class)){
-						List<OggettoBulk> result = (List<OggettoBulk>)value;
-						List<OggettoBulk> persistentResult = new ArrayList<OggettoBulk>();
-						for (OggettoBulk oggettoBulk2 : result) {
-							persistentResult.add(makeForeignBulkPersistent(usercontext, oggettoBulk2));
+					Collection<OggettoBulk> result = (Collection<OggettoBulk>)value;
+					Object persistentResult = getFieldTypeNewInstance(attributo);
+					if (persistentResult!=null && persistentResult instanceof Collection){
+						for (OggettoBulk oggettoBulk2 : result)
+							((Collection<OggettoBulk>)persistentResult).add(makeForeignBulkPersistent(usercontext, oggettoBulk2));
+						if (result instanceof BulkCollection){
+							for (Iterator<OggettoBulk> iterator = ((BulkCollection)result).deleteIterator(); iterator.hasNext();) {
+								OggettoBulk oggettoBulk2 = (OggettoBulk) iterator.next();
+								((Collection<OggettoBulk>)persistentResult).add(makeForeignBulkPersistent(usercontext, oggettoBulk2));
+							}
 						}
-						if (obj != null)
-							Introspector.setPropertyValue(obj, attributo.getName(), persistentResult);
-					}else if (attributo.getType().equals(Set.class)){
-						Set<OggettoBulk> result = (Set<OggettoBulk>)value;
-						Set<OggettoBulk> persistentResult = new HashSet<OggettoBulk>();
-						for (OggettoBulk oggettoBulk2 : result) {
-							persistentResult.add(makeForeignBulkPersistent(usercontext, oggettoBulk2));
-						}
-						if (obj != null)
-							Introspector.setPropertyValue(obj, attributo.getName(), persistentResult);
 					}
+					if (obj != null)
+						Introspector.setPropertyValue(obj, attributo.getName(), persistentResult);
 				} catch (IntrospectionException e) {
 					handleException(e);
 				} catch (InvocationTargetException e) {
@@ -252,15 +252,16 @@ public abstract class AbstractComponentSessionBean<T extends OggettoBulk> {
 				BulkHome home = getHomeClass(jadaOneToMany.targetEntity());
 				CriterionList criterionList = new CriterionList(Restrictions.eq(jadaOneToMany.mappedBy(), oggettobulk));
 				List result = home.selectByCriterion(principal, criterionList).prepareQuery(getManager()).getResultList();
-				try {
-					if (attributo.getType().equals(List.class))
-						Introspector.setPropertyValue(oggettobulk, attributo.getName(), result);
-					else if (attributo.getType().equals(Set.class))
-						Introspector.setPropertyValue(oggettobulk, attributo.getName(), new HashSet(result));
-				} catch (IntrospectionException e) {
-					handleException(e);
-				} catch (InvocationTargetException e) {
-					handleException(e);
+				Object result2 = getFieldTypeNewInstance(attributo);
+				if (result2 !=null && result2 instanceof Collection){
+					((Collection<OggettoBulk>)result2).addAll(result);
+					try{
+						Introspector.setPropertyValue(oggettobulk, attributo.getName(), result2);
+					} catch (IntrospectionException e) {
+						handleException(e);
+					} catch (InvocationTargetException e) {
+						handleException(e);
+					}
 				}
 			}
 		}
@@ -289,4 +290,21 @@ public abstract class AbstractComponentSessionBean<T extends OggettoBulk> {
 				throwable);
 	}
 
+    private Object getFieldTypeNewInstance(Field attributo)	throws ComponentException{
+		if (attributo.getType().isInterface()) {
+			if (attributo.getType().equals(List.class))
+				return new ArrayList<OggettoBulk>();
+			else if (attributo.getType().equals(Set.class))
+				return new HashSet<OggettoBulk>();
+		} else {
+	    	try{
+				return attributo.getType().newInstance();
+			} catch (InstantiationException e) {
+				handleException(e);					
+			} catch (IllegalAccessException e) {
+				handleException(e);					
+			}
+		}
+		return null;
+    }
 }
