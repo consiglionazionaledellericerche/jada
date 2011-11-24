@@ -13,6 +13,8 @@ import java.io.ObjectOutputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 import javax.ejb.EJBException;
 import javax.ejb.PostActivate;
@@ -20,13 +22,14 @@ import javax.ejb.PrePassivate;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.ejb.TransactionManagement;
-import javax.ejb.TransactionManagementType;
+import javax.persistence.PostRemove;
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.HeuristicRollbackException;
 import javax.transaction.NotSupportedException;
 import javax.transaction.RollbackException;
 import javax.transaction.Status;
 import javax.transaction.SystemException;
+import javax.ejb.TransactionManagementType;
 
 
 @Stateful(name="JADAEJB_BulkLoaderIterator")
@@ -85,10 +88,7 @@ public class BulkLoaderIteratorBean extends BaseBulkLoaderIteratorBean implement
 	}
 
 	@Override
-	@PostActivate
 	protected void initialize() throws PersistencyException {
-		if(usertransaction == null)
-			usertransaction = EJBCommonServices.getUserTransaction();
 		super.ejbActivate();
 		super.initialize();
 	}
@@ -147,6 +147,7 @@ public class BulkLoaderIteratorBean extends BaseBulkLoaderIteratorBean implement
 		out.writeObject(super.userContext);
 		out.writeInt(super.pageSize);
 		out.writeObject(super.fetchPolicyName);
+		out.defaultWriteObject();
 	}
 	
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException{
@@ -157,5 +158,6 @@ public class BulkLoaderIteratorBean extends BaseBulkLoaderIteratorBean implement
 		super.userContext = (UserContext) in.readObject();
 		super.pageSize = in.readInt();
 		super.fetchPolicyName = (String) in.readObject();
+		in.defaultReadObject();
 	}	
 }
