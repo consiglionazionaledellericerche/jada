@@ -19,8 +19,8 @@
 	</repositories>
 	<distributionManagement>
 	    <repository>
-	        <id>sigla-releases</id>
-	        <name>SIGLA Releases</name>
+	        <id>buildandtest</id>
+	        <name>Buildandtest</name>
 	       <url>${nexus.url}/content/groups/public</url>
 	    </repository>
 	</distributionManagement>
