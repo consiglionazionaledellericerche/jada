@@ -21,14 +21,8 @@
 	    <repository>
 	        <id>sigla-releases</id>
 	        <name>SIGLA Releases</name>
-	        <url>http://buildandtest.si.cnr.it:8081/nexus/content/repositories/public</url>
+	       <url>${nexus.url}/content/groups/public</url>
 	    </repository>
-	 
-	    <snapshotRepository>
-	        <id>sigla-snapshots</id>
-	        <name>SIGLA Internal Snapshots</name>
-	        <url>http://buildandtest.si.cnr.it:8081/nexus/content/repositories/public</url>
-	    </snapshotRepository>
 	</distributionManagement>
 	<build>
 		<pluginManagement>
@@ -180,4 +174,7 @@
     	<scope>provided</scope>
     </dependency>
   </dependencies>
+  <properties>
+  	 <nexus.url>http://buildandtest.si.cnr.it:8081/nexus</nexus.url>
+  </properties>
 </project>
