@@ -4,6 +4,9 @@
 	<groupId>it.cnr</groupId>
 	<artifactId>jada-ejb3</artifactId>
 	<version>2.4</version>
+	<properties>
+		<nexus.url>http://buildandtest.si.cnr.it:8081/nexus</nexus.url>
+	</properties>
 	<repositories>
 		<repository>
 			<id>sigla</id>
@@ -17,16 +20,18 @@
 		</repository>
 	</repositories>
 	<distributionManagement>
+		<!-- Publish the versioned releases here -->
 		<repository>
-			<id>jada-releases</id>
-			<name>JADA Releases</name>
-			<url>http://buildandtest.si.cnr.it:8081/nexus/content/repositories/jada-releases</url>
+			<id>buildandtest</id>
+			<name>nexus buildandtest.si.cnr.it</name>
+			<url>${nexus.url}/content/repositories/releases</url>
 		</repository>
 
+		<!-- Publish the versioned releases here -->
 		<snapshotRepository>
-			<id>jada-snapshots</id>
-			<name>JADA Internal Snapshots</name>
-			<url>http://buildandtest.si.cnr.it:8081/nexus/content/repositories/jada-snapshots</url>
+			<id>buildandtest</id>
+			<name>nexus buildandtest.si.cnr.it</name>
+			<url>${nexus.url}/content/repositories/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
 	<build>
