@@ -9,16 +9,36 @@
 	</properties>
 	<repositories>
 		<repository>
-			<id>sigla</id>
-			<url>http://buildandtest.si.cnr.it:8081/nexus/content/group/public</url>
+			<id>cnr</id>
+			<name>cnr public</name>
+			<url>${nexus.url}/content/groups/public</url>
 			<releases>
 				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>cnr-snapshots</id>
+			<name>cnr public</name>
+			<url>${nexus.url}/content/groups/public-snapshots</url>
+			<releases>
+				<enabled>false</enabled>
 			</releases>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
 		</repository>
 	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>cnr</id>
+			<name>cnr public</name>
+			<url>${nexus.url}/content/groups/public</url>
+		</pluginRepository>
+	</pluginRepositories>
 	<distributionManagement>
 		<!-- Publish the versioned releases here -->
 		<repository>
@@ -86,7 +106,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
-		
+
 	</build>
 	<dependencies>
 		<dependency>
