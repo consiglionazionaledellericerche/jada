@@ -931,54 +931,9 @@ public class LoggedCallableStatement extends LoggedPreparedStatement
 		return null;
 	}
 
-	public NClob getNClob(int parameterIndex) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public NClob getNClob(String parameterName) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	public Object getObject(int parameterIndex, Map<String, Class<?>> map)
 			throws SQLException {
         return ((CallableStatement)super.statement).getObject(parameterIndex, map);
 	}
 
-	public RowId getRowId(int parameterIndex) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public RowId getRowId(String parameterName) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public SQLXML getSQLXML(int parameterIndex) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public SQLXML getSQLXML(String parameterName) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void setNClob(String parameterName, NClob value) throws SQLException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void setRowId(String parameterName, RowId x) throws SQLException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void setSQLXML(String parameterName, SQLXML xmlObject)
-			throws SQLException {
-		// TODO Auto-generated method stub
-		
-	}
 }

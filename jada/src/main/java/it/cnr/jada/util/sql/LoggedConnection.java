@@ -355,28 +355,6 @@ public class LoggedConnection
 		return null;
 	}
 
-	public NClob createNClob() throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public SQLXML createSQLXML() throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void setClientInfo(Properties properties)
-			throws SQLClientInfoException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void setClientInfo(String name, String value)
-			throws SQLClientInfoException {
-		// TODO Auto-generated method stub
-		
-	}
-
 	public void setTypeMap(Map<String, Class<?>> map) throws SQLException {
         connection.setTypeMap(map);
 	}
