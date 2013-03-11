@@ -470,7 +470,18 @@ public class Table
                     jspwriter.print(name);
                     jspwriter.print(".selection\" value=\"");
                     jspwriter.print(i);
-                    jspwriter.print("\" onclick=\"cancelBubble(event)\"");
+                    jspwriter.print("\" ");
+                    if (onselect != null){
+                    	jspwriter.print(" onclick=\"");                   	
+                    	jspwriter.print(onselect);
+                        jspwriter.print("('");
+                        jspwriter.print(name);
+                        jspwriter.print("',");
+                        jspwriter.print(i);
+                        jspwriter.print(");\"");
+                    }else{
+                    	jspwriter.print("onclick=\"cancelBubble(event)\" ");                    	
+                    }
                     if(selection.isSelected(i))
                         jspwriter.print(" checked");
                     jspwriter.println(">");

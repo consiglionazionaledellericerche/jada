@@ -501,20 +501,4 @@ public class OfflinePreparedStatement extends OfflineStatement
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	public void setNClob(int parameterIndex, NClob value) throws SQLException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void setRowId(int parameterIndex, RowId x) throws SQLException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void setSQLXML(int parameterIndex, SQLXML xmlObject)
-			throws SQLException {
-		// TODO Auto-generated method stub
-		
-	}
 }
