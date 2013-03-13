@@ -73,9 +73,33 @@
 					<configuration>
 						<ejbVersion>3.0</ejbVersion>
 					</configuration>
-				</plugin>
+				</plugin>		
 			</plugins>
 		</pluginManagement>
+		<plugins>
+			<!-- Enable maven-source-plugin -->
+			<plugin>
+				<inherited>true</inherited>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- maven resources plugin 2.3 has the new copy-resources goal -->
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<encoding>UTF-8</encoding>
+					<filtering>false</filtering>
+				</configuration>
+			</plugin>		
+		</plugins>
 	</build>
 	<dependencies>
 		<dependency>
