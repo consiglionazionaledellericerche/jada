@@ -26,9 +26,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 import javax.persistence.EntityManager;
 
+import net.bzdyl.ejb3.criteria.Order;
 import net.bzdyl.ejb3.criteria.restrictions.Restrictions;
 
 /**
@@ -251,7 +253,25 @@ public abstract class AbstractComponentSessionBean<T extends OggettoBulk> {
 			if (jadaOneToMany != null){
 				BulkHome home = getHomeClass(jadaOneToMany.targetEntity());
 				CriterionList criterionList = new CriterionList(Restrictions.eq(jadaOneToMany.mappedBy(), oggettobulk));
-				List result = home.selectByCriterion(principal, criterionList).prepareQuery(getManager()).getResultList();
+				List<Order> listOrder = new ArrayList<Order>();
+				if (jadaOneToMany.orderBy()!=null) {
+					for (int i = 0; i < jadaOneToMany.orderBy().length; i++) {
+						String string = jadaOneToMany.orderBy()[i];
+						StringTokenizer token = new StringTokenizer(string, " ");
+						if (token.hasMoreTokens()) {
+							Order order;
+							String field = token.nextToken(), ascDesc = null;
+							if (token.hasMoreTokens())
+								ascDesc = token.nextToken();
+							if (ascDesc != null && ascDesc.equals("desc"))
+								order = Order.desc(field);
+							else
+								order = Order.asc(field);
+							listOrder.add(order);
+						}
+					}
+				}
+				List result = home.selectByCriterion(principal, criterionList, listOrder.toArray(new Order[listOrder.size()])).prepareQuery(getManager()).getResultList();
 				Object result2 = getFieldTypeNewInstance(attributo);
 				if (result2 !=null && result2 instanceof Collection){
 					((Collection<OggettoBulk>)result2).addAll(result);

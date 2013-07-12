@@ -8,7 +8,8 @@ import java.lang.annotation.Target;
 @Target(value=ElementType.FIELD)
 @Retention(value=RetentionPolicy.RUNTIME)
 public @interface JadaOneToMany {
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public abstract java.lang.Class targetEntity();
 	public abstract java.lang.String mappedBy();
+	public abstract String[] orderBy() default {};
 }
