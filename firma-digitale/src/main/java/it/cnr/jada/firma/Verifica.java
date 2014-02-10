@@ -1,14 +1,16 @@
 package it.cnr.jada.firma;
 
+import it.actalis.ellips.capi.CapiException;
+import it.actalis.ellips.capi.StreamSignedEnvelope;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Arrays;
-
-import it.actalis.ellips.capi.*;
 
 public class Verifica {
 
@@ -16,10 +18,26 @@ public class Verifica {
 	private static byte buff1[] = new byte[BUFFSIZE];
 	private static byte buff2[] = new byte[BUFFSIZE];
 
+	public static void verificaBustaFirmata(File fInput)
+			throws FileNotFoundException, CapiException {
 
-	public static void verificaBustaFirmata(File fInput) throws FileNotFoundException, CapiException {
+		FileInputStream fis = new FileInputStream(fInput);
+		FileOutputStream fos = new FileOutputStream(new File(fInput.getPath()
+				+ ".data"));
+		verificaBustaFirmata(fis, fos);
+
+	}
+
+	public static void verificaBustaFirmata(InputStream inputStream,
+			OutputStream outputStream) throws FileNotFoundException,
+			CapiException {
 		StreamSignedEnvelope sse=null;
-		sse = new StreamSignedEnvelope(new FileInputStream(fInput), new FileOutputStream(new File(fInput.getPath()+".data"))); 	//parses the enveloper from file "in" and save the contained data in "data"
+		sse = new StreamSignedEnvelope(inputStream, outputStream); // parses
+																	// the
+																	// enveloper
+		// from file "in" and
+		// save the contained
+		// data in "data"
 		String[] certs = sse.listCertificates();  //gets a list of contained certificates
 		String[] signersDN = sse.listSigners();   //gets a list of signers
 		for (int i=0;i<signersDN.length;i++) {
