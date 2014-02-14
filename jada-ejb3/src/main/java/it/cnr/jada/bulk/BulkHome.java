@@ -24,6 +24,7 @@ import net.bzdyl.ejb3.criteria.Criteria;
 import net.bzdyl.ejb3.criteria.CriteriaFactory;
 import net.bzdyl.ejb3.criteria.Criterion;
 import net.bzdyl.ejb3.criteria.Order;
+import net.bzdyl.ejb3.criteria.Projection;
 import net.bzdyl.ejb3.criteria.projections.Projections;
 /**
  * PersistentHome specializzato per classi persistenti derivate da OggettoBulk. 
@@ -125,15 +126,29 @@ public class BulkHome<T extends OggettoBulk> implements Serializable{
 		return selectByCriterion(principal, criterion, new Order[0]);
     }
 
+	public Criteria selectByProjection(Principal principal, Projection projection){
+		return selectByCriterion(principal, null, projection, new Order[0]);
+    }
+
+	public Criteria selectByProjection(Principal principal, Projection projection, Criterion criterion){
+		return selectByCriterion(principal, criterion, projection, new Order[0]);
+    }
+
 	@SuppressWarnings("unchecked")
 	public List<T> findByCriterion(Principal principal, Criterion criterion, Order... order){
 		return selectByCriterion(principal, criterion, order).prepareQuery(manager).getResultList();
     }
 	
 	public Criteria selectByCriterion(Principal principal, Criterion criterion, Order... order){
+		return selectByCriterion(principal, criterion, null, order);
+    }
+
+	public Criteria selectByCriterion(Principal principal, Criterion criterion, Projection projection, Order... order){
 		Criteria criteria = createCriteria(principal);
 		if (criterion != null)
 			criteria.add(criterion);
+		if (projection != null)
+			criteria.setProjection(projection);
 		if (order != null)
 			for (Order o : order) {
 				criteria.addOrder(o);
@@ -141,7 +156,7 @@ public class BulkHome<T extends OggettoBulk> implements Serializable{
     	return criteria;
     }
 
-    @SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void deleteByCriteria(Principal principal, Criteria criteria) throws ComponentException{
     	Query query = criteria.prepareQuery(manager);    	
     	for (Iterator iterator = query.getResultList().iterator(); iterator.hasNext();) {

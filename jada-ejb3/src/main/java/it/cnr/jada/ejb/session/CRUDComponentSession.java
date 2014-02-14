@@ -9,6 +9,7 @@ import java.util.List;
 import net.bzdyl.ejb3.criteria.Criteria;
 import net.bzdyl.ejb3.criteria.Criterion;
 import net.bzdyl.ejb3.criteria.Order;
+import net.bzdyl.ejb3.criteria.projections.AggregateProjection;
 
 public interface CRUDComponentSession<T extends OggettoBulk> {
 
@@ -37,6 +38,12 @@ public interface CRUDComponentSession<T extends OggettoBulk> {
 	public List<T> findByCriterion(Principal principal, Class<T> bulkClass,
 			Criterion criterion, Order... order) throws ComponentException;
 	
+	public Object findByAggregateProjection(Principal principal, Class<T> bulkClass,
+			AggregateProjection aggregateProjection) throws ComponentException;
+
+	public Object findByAggregateProjection(Principal principal, Class<T> bulkClass,
+			AggregateProjection aggregateProjection, Criterion criterion) throws ComponentException;
+
 	public T findById(Principal principal, Class<T> bulkClass, Serializable id) throws ComponentException;
 	
 	public void deleteByCriteria(Principal principal, Criteria criteria,

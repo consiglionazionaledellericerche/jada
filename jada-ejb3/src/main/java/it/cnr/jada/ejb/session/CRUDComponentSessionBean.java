@@ -16,6 +16,8 @@ import javax.persistence.Query;
 import net.bzdyl.ejb3.criteria.Criteria;
 import net.bzdyl.ejb3.criteria.Criterion;
 import net.bzdyl.ejb3.criteria.Order;
+import net.bzdyl.ejb3.criteria.Projection;
+import net.bzdyl.ejb3.criteria.projections.AggregateProjection;
 import net.bzdyl.ejb3.criteria.projections.Projections;
 
 /**
@@ -114,19 +116,36 @@ public abstract class CRUDComponentSessionBean<T extends OggettoBulk> extends
 	@SuppressWarnings("unchecked")
 	public List<T> findByCriterion(Principal principal, Class<T> bulkClass,
 			Criterion criterion, Order... order) throws ComponentException {
-		Criteria criteria = select(principal, bulkClass, criterion, order);
+		Criteria criteria = select(principal, bulkClass, criterion, null, order);
 		return criteria.prepareQuery(getManager()).getResultList();
+	}
+
+	public Object findByAggregateProjection(Principal principal, Class<T> bulkClass,
+			AggregateProjection aggregateProjection) throws ComponentException {
+		Criteria criteria = select(principal, bulkClass, null, aggregateProjection);
+		return criteria.prepareQuery(getManager()).getSingleResult();
+	}
+
+	public Object findByAggregateProjection(Principal principal, Class<T> bulkClass,
+			AggregateProjection aggregateProjection, Criterion criterion) throws ComponentException {
+		Criteria criteria = select(principal, bulkClass, criterion, aggregateProjection);
+		return criteria.prepareQuery(getManager()).getSingleResult();
 	}
 
 	protected Criteria select(Principal principal, Class<T> bulkClass,
 			Criterion criterion) throws ComponentException {
-		return select(principal, bulkClass, criterion, new Order[0]);
+		return select(principal, bulkClass, criterion, null, new Order[0]);
 	}
 	
 	protected Criteria select(Principal principal, Class<T> bulkClass,
-			Criterion criterion, Order... order) throws ComponentException {
+			Criterion criterion, Projection projection) throws ComponentException {
+		return select(principal, bulkClass, criterion, projection, new Order[0]);
+	}
+
+	protected Criteria select(Principal principal, Class<T> bulkClass,
+			Criterion criterion, Projection projection, Order... order) throws ComponentException {
 		return getHomeClass(bulkClass)
-				.selectByCriterion(principal, criterion, order);
+				.selectByCriterion(principal, criterion, projection, order);
 	}
 
 	public T persist(Principal principal, T model)
