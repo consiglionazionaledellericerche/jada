@@ -5,7 +5,7 @@
 	<artifactId>jada-ejb3</artifactId>
 	<version>2.6</version>
 	<properties>
-		<nexus.url>http://buildandtest.si.cnr.it:8081/nexus</nexus.url>
+		<nexus.url>http://bandt.si.cnr.it:8280/nexus</nexus.url>
 	</properties>
 	<repositories>
 		<repository>
@@ -43,14 +43,14 @@
 		<!-- Publish the versioned releases here -->
 		<repository>
 			<id>buildandtest</id>
-			<name>nexus buildandtest.si.cnr.it</name>
+			<name>nexus bandt.si.cnr.it</name>
 			<url>${nexus.url}/content/repositories/releases</url>
 		</repository>
 
 		<!-- Publish the versioned releases here -->
 		<snapshotRepository>
 			<id>buildandtest</id>
-			<name>nexus buildandtest.si.cnr.it</name>
+			<name>nexus bandt.si.cnr.it</name>
 			<url>${nexus.url}/content/repositories/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
