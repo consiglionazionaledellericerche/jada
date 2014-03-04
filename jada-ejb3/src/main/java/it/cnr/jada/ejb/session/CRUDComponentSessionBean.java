@@ -18,6 +18,7 @@ import net.bzdyl.ejb3.criteria.Criterion;
 import net.bzdyl.ejb3.criteria.Order;
 import net.bzdyl.ejb3.criteria.Projection;
 import net.bzdyl.ejb3.criteria.projections.AggregateProjection;
+import net.bzdyl.ejb3.criteria.projections.DistinctProjection;
 import net.bzdyl.ejb3.criteria.projections.Projections;
 
 /**
@@ -130,6 +131,30 @@ public abstract class CRUDComponentSessionBean<T extends OggettoBulk> extends
 			AggregateProjection aggregateProjection, Criterion criterion) throws ComponentException {
 		Criteria criteria = select(principal, bulkClass, criterion, aggregateProjection);
 		return criteria.prepareQuery(getManager()).getSingleResult();
+	}
+
+	public List<Object> findByDistinctProjection(Principal principal, Class<T> bulkClass,
+			DistinctProjection distinctProjection) throws ComponentException {
+		return findByProjection(principal, bulkClass, distinctProjection, null);
+	}
+
+	public List<Object> findByDistinctProjection(Principal principal, Class<T> bulkClass,
+			DistinctProjection distinctProjection, Criterion criterion) throws ComponentException {
+		return findByProjection(principal, bulkClass, distinctProjection, criterion);
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Object> findByProjection(Principal principal, Class<T> bulkClass,
+			Projection projection, Criterion criterion) throws ComponentException {
+		Criteria criteria = select(principal, bulkClass, criterion, projection);
+		return criteria.prepareQuery(getManager()).getResultList();
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Object> findByProjection(Principal principal, Class<T> bulkClass,
+			Projection projection, Criterion criterion, Order... order) throws ComponentException {
+		Criteria criteria = select(principal, bulkClass, criterion, projection, order);
+		return criteria.prepareQuery(getManager()).getResultList();
 	}
 
 	protected Criteria select(Principal principal, Class<T> bulkClass,
