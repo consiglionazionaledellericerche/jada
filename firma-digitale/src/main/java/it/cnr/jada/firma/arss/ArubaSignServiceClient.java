@@ -11,7 +11,11 @@ import it.cnr.jada.firma.arss.stub.TypeTransport;
 import it.cnr.jada.firma.arss.stub.VerifyRequest;
 import it.cnr.jada.firma.arss.stub.VerifyReturn;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Properties;
+
+import javax.xml.namespace.QName;
 
 import org.apache.log4j.Logger;
 
@@ -19,6 +23,7 @@ public class ArubaSignServiceClient {
 
   private static final String CERT_ID = "arubaRemoteSignService.certId";
   private static final String TYPE_OTP_AUTH = "arubaRemoteSignService.typeOtpAuth";
+	private static final String URL = "arubaRemoteSignService.url";
 
   private static final String STATUS_OK = "OK";
 
@@ -34,27 +39,37 @@ public class ArubaSignServiceClient {
     return pkcs7SignV2(identity, bytes);
   }
 
-  public byte[] verify(byte[] bytes) {
-    ArubaSignService service = new ArubaSignServiceService()
-        .getArubaSignServicePort();
-    VerifyRequest request = new VerifyRequest();
-    request.setBinaryinput(bytes);
-    request.setTransport(TypeTransport.BYNARYNET);
-    request.setType(DocumentType.PKCS_7);
+	public byte[] verify(byte[] bytes) throws ArubaSignServiceException {
+		ArubaSignService service = getServicePort();
+		VerifyRequest request = new VerifyRequest();
+		request.setBinaryinput(bytes);
+		request.setTransport(TypeTransport.BYNARYNET);
+		request.setType(DocumentType.PKCS_7);
 
-    VerifyReturn out = service.verify(request);
-    LOGGER.info(out.getStatus());
-    LOGGER.info(out.getDescription());
-    return out.getBinaryoutput();
+		VerifyReturn out = service.verify(request);
+		LOGGER.info(out.getStatus());
+		LOGGER.info(out.getDescription());
+		return out.getBinaryoutput();
   }
+
+	private ArubaSignService getServicePort() throws ArubaSignServiceException {
+		URL url;
+		try {
+			url = new URL(props.getProperty(URL));
+			LOGGER.debug(url);
+		} catch (MalformedURLException e) {
+			throw new ArubaSignServiceException("URL: " + URL, e);
+		}
+		QName qname = new QName("http://arubasignservice.arubapec.it/", "ArubaSignServiceService");
+		return new ArubaSignServiceService(url, qname).getArubaSignServicePort();
+	}
 
   public byte[] pkcs7SignV2(Auth identity, byte[] bytes)
       throws ArubaSignServiceException {
 
     LOGGER.debug(identity.getUser());
 
-    ArubaSignService service = new ArubaSignServiceService()
-        .getArubaSignServicePort();
+		ArubaSignService service = getServicePort();
 
     LOGGER.debug("version " + service.getVersion());
 

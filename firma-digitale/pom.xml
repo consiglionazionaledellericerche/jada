@@ -9,7 +9,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jaxws.output.dir>${project.build.directory}/classes</jaxws.output.dir>
-    <wsdl.url>https://pteasb.actalis.it/ArubaSignService/ArubaSignService?WSDL</wsdl.url>
+    <wsdl.file>ArubaSignService.xml</wsdl.file>
   </properties>
 
   <dependencies>
@@ -64,9 +64,9 @@
           </execution>
         </executions>
         <configuration>
-          <wsdlUrls>
-            <wsdlUrl>${wsdl.url}</wsdlUrl>
-          </wsdlUrls>
+          <wsdlFiles>
+            <wsdlFile>${wsdl.file}</wsdlFile>
+          </wsdlFiles>
           <packageName>it.cnr.jada.firma.arss.stub</packageName>
           <verbose>true</verbose>
           <sourceDestDir>${jaxws.output.dir}</sourceDestDir>
