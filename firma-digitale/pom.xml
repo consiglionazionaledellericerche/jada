@@ -10,6 +10,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jaxws.output.dir>${project.build.directory}/classes</jaxws.output.dir>
     <wsdl.file>ArubaSignService.xml</wsdl.file>
+    <nexus.url>http://bandt.si.cnr.it:8280/nexus</nexus.url>
   </properties>
 
   <dependencies>
@@ -105,5 +106,22 @@
       </plugin>
     </plugins>
   </build>
+
+
+  <distributionManagement>
+    <!-- Publish the versioned releases here -->
+    <repository>
+      <id>buildandtest</id>
+      <name>nexus</name>
+      <url>${nexus.url}/content/repositories/releases</url>
+    </repository>
+
+    <!-- Publish the versioned releases here -->
+    <snapshotRepository>
+      <id>buildandtest</id>
+      <name>nexus</name>
+      <url>${nexus.url}/content/repositories/snapshots</url>
+    </snapshotRepository>
+  </distributionManagement>
   
 </project>
