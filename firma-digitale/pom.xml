@@ -2,15 +2,19 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
+  <parent>
+    <artifactId>archetype</artifactId>
+    <groupId>it.cnr.si</groupId>
+    <version>0.1</version>
+  </parent>
+
   <groupId>it.cnr.commons</groupId>
   <artifactId>firmadigitale</artifactId>
   <version>0.2.1</version>
 
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jaxws.output.dir>${project.build.directory}/classes</jaxws.output.dir>
     <wsdl.file>ArubaSignService.xml</wsdl.file>
-    <nexus.url>http://bandt.si.cnr.it:8280/nexus</nexus.url>
   </properties>
 
   <dependencies>
@@ -106,22 +110,4 @@
       </plugin>
     </plugins>
   </build>
-
-
-  <distributionManagement>
-    <!-- Publish the versioned releases here -->
-    <repository>
-      <id>buildandtest</id>
-      <name>nexus</name>
-      <url>${nexus.url}/content/repositories/releases</url>
-    </repository>
-
-    <!-- Publish the versioned releases here -->
-    <snapshotRepository>
-      <id>buildandtest</id>
-      <name>nexus</name>
-      <url>${nexus.url}/content/repositories/snapshots</url>
-    </snapshotRepository>
-  </distributionManagement>
-  
 </project>
