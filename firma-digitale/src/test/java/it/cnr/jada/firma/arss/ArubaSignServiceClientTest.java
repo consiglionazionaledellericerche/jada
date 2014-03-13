@@ -17,11 +17,12 @@ public class ArubaSignServiceClientTest {
 
   private static final Logger LOGGER = Logger.getLogger(ArubaSignServiceClientTest.class);
 
-  private static final String USERNAME = "test_collaudo3";
-  private static final String PASSWORD = "password11";
-  private static final String OTP = "dspin";
+  private static final String USERNAME = "mfraticelli";
+  private static final String PASSWORD = "massimo72frat";
+  private static final String OTP = "539863";
 
   @Test
+  @Ignore
   public void testPkcs7SignV2() throws IOException, ArubaSignServiceException {
     ArubaSignServiceClient client = new ArubaSignServiceClient();
 
