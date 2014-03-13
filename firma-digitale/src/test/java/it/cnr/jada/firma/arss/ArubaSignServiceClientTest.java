@@ -8,6 +8,7 @@ import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class ArubaSignServiceClientTest {
