@@ -76,6 +76,7 @@ public class ArubaSignServiceClient {
     try {
       SignReturnV2 response = service.pkcs7SignV2(
           getRequest(identity, bytes),
+          false,
           false);
 
       LOGGER.debug(response.getReturnCode() + " " + response.getStatus());

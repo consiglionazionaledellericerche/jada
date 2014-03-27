@@ -4,21 +4,9 @@
 </wsp:Policy>
 <types>
 <xsd:schema>
-<xsd:import namespace="http://arubasignservice.arubapec.it/" schemaLocation="http://arss.cedrc.cnr.it:8080/ArubaSignService/ArubaSignService?xsd=1"/>
+<xsd:import namespace="http://arubasignservice.arubapec.it/" schemaLocation="http://arss1.cedrc.cnr.it:8080/ArubaSignService/ArubaSignService?xsd=1"/>
 </xsd:schema>
 </types>
-<message name="verify">
-<part name="parameters" element="tns:verify"/>
-</message>
-<message name="verifyResponse">
-<part name="parameters" element="tns:verifyResponse"/>
-</message>
-<message name="getVersion">
-<part name="parameters" element="tns:getVersion"/>
-</message>
-<message name="getVersionResponse">
-<part name="parameters" element="tns:getVersionResponse"/>
-</message>
 <message name="ping">
 <part name="parameters" element="tns:ping"/>
 </message>
@@ -33,6 +21,54 @@
 </message>
 <message name="TypeOfTransportNotImplemented">
 <part name="fault" element="tns:TypeOfTransportNotImplemented"/>
+</message>
+<message name="xmlsignature">
+<part name="parameters" element="tns:xmlsignature"/>
+</message>
+<message name="xmlsignatureResponse">
+<part name="parameters" element="tns:xmlsignatureResponse"/>
+</message>
+<message name="opensession">
+<part name="parameters" element="tns:opensession"/>
+</message>
+<message name="opensessionResponse">
+<part name="parameters" element="tns:opensessionResponse"/>
+</message>
+<message name="closesession">
+<part name="parameters" element="tns:closesession"/>
+</message>
+<message name="closesessionResponse">
+<part name="parameters" element="tns:closesessionResponse"/>
+</message>
+<message name="pkcs7signhash">
+<part name="parameters" element="tns:pkcs7signhash"/>
+</message>
+<message name="pkcs7signhashResponse">
+<part name="parameters" element="tns:pkcs7signhashResponse"/>
+</message>
+<message name="listCert">
+<part name="parameters" element="tns:listCert"/>
+</message>
+<message name="listCertResponse">
+<part name="parameters" element="tns:listCertResponse"/>
+</message>
+<message name="verifyOtp">
+<part name="parameters" element="tns:verifyOtp"/>
+</message>
+<message name="verifyOtpResponse">
+<part name="parameters" element="tns:verifyOtpResponse"/>
+</message>
+<message name="sendCredential">
+<part name="parameters" element="tns:sendCredential"/>
+</message>
+<message name="sendCredentialResponse">
+<part name="parameters" element="tns:sendCredentialResponse"/>
+</message>
+<message name="pkcs7signV2_multiple">
+<part name="parameters" element="tns:pkcs7signV2_multiple"/>
+</message>
+<message name="pkcs7signV2_multipleResponse">
+<part name="parameters" element="tns:pkcs7signV2_multipleResponse"/>
 </message>
 <message name="tsd">
 <part name="parameters" element="tns:tsd"/>
@@ -88,57 +124,43 @@
 <message name="signhashResponse">
 <part name="parameters" element="tns:signhashResponse"/>
 </message>
-<message name="xmlsignature">
-<part name="parameters" element="tns:xmlsignature"/>
+<message name="pkcs7signhash_multiple">
+<part name="parameters" element="tns:pkcs7signhash_multiple"/>
 </message>
-<message name="xmlsignatureResponse">
-<part name="parameters" element="tns:xmlsignatureResponse"/>
+<message name="pkcs7signhash_multipleResponse">
+<part name="parameters" element="tns:pkcs7signhash_multipleResponse"/>
 </message>
-<message name="opensession">
-<part name="parameters" element="tns:opensession"/>
+<message name="pdfsignatureV2_multiple">
+<part name="parameters" element="tns:pdfsignatureV2_multiple"/>
 </message>
-<message name="opensessionResponse">
-<part name="parameters" element="tns:opensessionResponse"/>
+<message name="pdfsignatureV2_multipleResponse">
+<part name="parameters" element="tns:pdfsignatureV2_multipleResponse"/>
 </message>
-<message name="closesession">
-<part name="parameters" element="tns:closesession"/>
+<message name="xmlsignature_multiple">
+<part name="parameters" element="tns:xmlsignature_multiple"/>
 </message>
-<message name="closesessionResponse">
-<part name="parameters" element="tns:closesessionResponse"/>
+<message name="xmlsignature_multipleResponse">
+<part name="parameters" element="tns:xmlsignature_multipleResponse"/>
 </message>
-<message name="pkcs7signhash">
-<part name="parameters" element="tns:pkcs7signhash"/>
+<message name="retriveCredential">
+<part name="parameters" element="tns:retriveCredential"/>
 </message>
-<message name="pkcs7signhashResponse">
-<part name="parameters" element="tns:pkcs7signhashResponse"/>
+<message name="retriveCredentialResponse">
+<part name="parameters" element="tns:retriveCredentialResponse"/>
 </message>
-<message name="listCert">
-<part name="parameters" element="tns:listCert"/>
+<message name="verify">
+<part name="parameters" element="tns:verify"/>
 </message>
-<message name="listCertResponse">
-<part name="parameters" element="tns:listCertResponse"/>
+<message name="verifyResponse">
+<part name="parameters" element="tns:verifyResponse"/>
 </message>
-<message name="verifyOtp">
-<part name="parameters" element="tns:verifyOtp"/>
+<message name="getVersion">
+<part name="parameters" element="tns:getVersion"/>
 </message>
-<message name="verifyOtpResponse">
-<part name="parameters" element="tns:verifyOtpResponse"/>
-</message>
-<message name="sendCredential">
-<part name="parameters" element="tns:sendCredential"/>
-</message>
-<message name="sendCredentialResponse">
-<part name="parameters" element="tns:sendCredentialResponse"/>
+<message name="getVersionResponse">
+<part name="parameters" element="tns:getVersionResponse"/>
 </message>
 <portType name="ArubaSignService">
-<operation name="verify">
-<input wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/verifyRequest" message="tns:verify"/>
-<output wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/verifyResponse" message="tns:verifyResponse"/>
-</operation>
-<operation name="getVersion">
-<input wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/getVersionRequest" message="tns:getVersion"/>
-<output wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/getVersionResponse" message="tns:getVersionResponse"/>
-</operation>
 <operation name="ping">
 <input wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/pingRequest" message="tns:ping"/>
 <output wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/pingResponse" message="tns:pingResponse"/>
@@ -147,6 +169,41 @@
 <input wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/pkcs7signV2Request" message="tns:pkcs7signV2"/>
 <output wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/pkcs7signV2Response" message="tns:pkcs7signV2Response"/>
 <fault message="tns:TypeOfTransportNotImplemented" name="TypeOfTransportNotImplemented" wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/pkcs7signV2/Fault/TypeOfTransportNotImplemented"/>
+</operation>
+<operation name="xmlsignature">
+<input wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/xmlsignatureRequest" message="tns:xmlsignature"/>
+<output wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/xmlsignatureResponse" message="tns:xmlsignatureResponse"/>
+<fault message="tns:TypeOfTransportNotImplemented" name="TypeOfTransportNotImplemented" wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/xmlsignature/Fault/TypeOfTransportNotImplemented"/>
+</operation>
+<operation name="opensession">
+<input wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/opensessionRequest" message="tns:opensession"/>
+<output wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/opensessionResponse" message="tns:opensessionResponse"/>
+</operation>
+<operation name="closesession">
+<input wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/closesessionRequest" message="tns:closesession"/>
+<output wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/closesessionResponse" message="tns:closesessionResponse"/>
+</operation>
+<operation name="pkcs7signhash">
+<input wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/pkcs7signhashRequest" message="tns:pkcs7signhash"/>
+<output wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/pkcs7signhashResponse" message="tns:pkcs7signhashResponse"/>
+<fault message="tns:TypeOfTransportNotImplemented" name="TypeOfTransportNotImplemented" wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/pkcs7signhash/Fault/TypeOfTransportNotImplemented"/>
+</operation>
+<operation name="listCert">
+<input wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/listCertRequest" message="tns:listCert"/>
+<output wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/listCertResponse" message="tns:listCertResponse"/>
+</operation>
+<operation name="verifyOtp">
+<input wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/verifyOtpRequest" message="tns:verifyOtp"/>
+<output wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/verifyOtpResponse" message="tns:verifyOtpResponse"/>
+</operation>
+<operation name="sendCredential">
+<input wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/sendCredentialRequest" message="tns:sendCredential"/>
+<output wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/sendCredentialResponse" message="tns:sendCredentialResponse"/>
+</operation>
+<operation name="pkcs7signV2_multiple">
+<input wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/pkcs7signV2_multipleRequest" message="tns:pkcs7signV2_multiple"/>
+<output wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/pkcs7signV2_multipleResponse" message="tns:pkcs7signV2_multipleResponse"/>
+<fault message="tns:TypeOfTransportNotImplemented" name="TypeOfTransportNotImplemented" wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/pkcs7signV2_multiple/Fault/TypeOfTransportNotImplemented"/>
 </operation>
 <operation name="tsd">
 <input wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/tsdRequest" message="tns:tsd"/>
@@ -191,58 +248,37 @@
 <input wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/signhashRequest" message="tns:signhash"/>
 <output wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/signhashResponse" message="tns:signhashResponse"/>
 </operation>
-<operation name="xmlsignature">
-<input wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/xmlsignatureRequest" message="tns:xmlsignature"/>
-<output wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/xmlsignatureResponse" message="tns:xmlsignatureResponse"/>
-<fault message="tns:TypeOfTransportNotImplemented" name="TypeOfTransportNotImplemented" wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/xmlsignature/Fault/TypeOfTransportNotImplemented"/>
+<operation name="pkcs7signhash_multiple">
+<input wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/pkcs7signhash_multipleRequest" message="tns:pkcs7signhash_multiple"/>
+<output wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/pkcs7signhash_multipleResponse" message="tns:pkcs7signhash_multipleResponse"/>
+<fault message="tns:TypeOfTransportNotImplemented" name="TypeOfTransportNotImplemented" wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/pkcs7signhash_multiple/Fault/TypeOfTransportNotImplemented"/>
 </operation>
-<operation name="opensession">
-<input wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/opensessionRequest" message="tns:opensession"/>
-<output wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/opensessionResponse" message="tns:opensessionResponse"/>
+<operation name="pdfsignatureV2_multiple">
+<input wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/pdfsignatureV2_multipleRequest" message="tns:pdfsignatureV2_multiple"/>
+<output wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/pdfsignatureV2_multipleResponse" message="tns:pdfsignatureV2_multipleResponse"/>
+<fault message="tns:TypeOfTransportNotImplemented" name="TypeOfTransportNotImplemented" wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/pdfsignatureV2_multiple/Fault/TypeOfTransportNotImplemented"/>
 </operation>
-<operation name="closesession">
-<input wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/closesessionRequest" message="tns:closesession"/>
-<output wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/closesessionResponse" message="tns:closesessionResponse"/>
+<operation name="xmlsignature_multiple">
+<input wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/xmlsignature_multipleRequest" message="tns:xmlsignature_multiple"/>
+<output wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/xmlsignature_multipleResponse" message="tns:xmlsignature_multipleResponse"/>
+<fault message="tns:TypeOfTransportNotImplemented" name="TypeOfTransportNotImplemented" wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/xmlsignature_multiple/Fault/TypeOfTransportNotImplemented"/>
 </operation>
-<operation name="pkcs7signhash">
-<input wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/pkcs7signhashRequest" message="tns:pkcs7signhash"/>
-<output wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/pkcs7signhashResponse" message="tns:pkcs7signhashResponse"/>
-<fault message="tns:TypeOfTransportNotImplemented" name="TypeOfTransportNotImplemented" wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/pkcs7signhash/Fault/TypeOfTransportNotImplemented"/>
+<operation name="retriveCredential">
+<input wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/retriveCredentialRequest" message="tns:retriveCredential"/>
+<output wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/retriveCredentialResponse" message="tns:retriveCredentialResponse"/>
 </operation>
-<operation name="listCert">
-<input wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/listCertRequest" message="tns:listCert"/>
-<output wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/listCertResponse" message="tns:listCertResponse"/>
+<operation name="verify">
+<input wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/verifyRequest" message="tns:verify"/>
+<output wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/verifyResponse" message="tns:verifyResponse"/>
 </operation>
-<operation name="verifyOtp">
-<input wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/verifyOtpRequest" message="tns:verifyOtp"/>
-<output wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/verifyOtpResponse" message="tns:verifyOtpResponse"/>
-</operation>
-<operation name="sendCredential">
-<input wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/sendCredentialRequest" message="tns:sendCredential"/>
-<output wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/sendCredentialResponse" message="tns:sendCredentialResponse"/>
+<operation name="getVersion">
+<input wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/getVersionRequest" message="tns:getVersion"/>
+<output wsam:Action="http://arubasignservice.arubapec.it/ArubaSignService/getVersionResponse" message="tns:getVersionResponse"/>
 </operation>
 </portType>
 <binding name="ArubaSignServicePortBinding" type="tns:ArubaSignService">
 <wsp:PolicyReference URI="#ArubaSignServicePortBindingPolicy"/>
 <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
-<operation name="verify">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-</operation>
-<operation name="getVersion">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-</operation>
 <operation name="ping">
 <soap:operation soapAction=""/>
 <input>
@@ -253,6 +289,87 @@
 </output>
 </operation>
 <operation name="pkcs7signV2">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+<fault name="TypeOfTransportNotImplemented">
+<soap:fault name="TypeOfTransportNotImplemented" use="literal"/>
+</fault>
+</operation>
+<operation name="xmlsignature">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+<fault name="TypeOfTransportNotImplemented">
+<soap:fault name="TypeOfTransportNotImplemented" use="literal"/>
+</fault>
+</operation>
+<operation name="opensession">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
+<operation name="closesession">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
+<operation name="pkcs7signhash">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+<fault name="TypeOfTransportNotImplemented">
+<soap:fault name="TypeOfTransportNotImplemented" use="literal"/>
+</fault>
+</operation>
+<operation name="listCert">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
+<operation name="verifyOtp">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
+<operation name="sendCredential">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
+<operation name="pkcs7signV2_multiple">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -366,7 +483,7 @@
 <soap:body use="literal"/>
 </output>
 </operation>
-<operation name="xmlsignature">
+<operation name="pkcs7signhash_multiple">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -378,25 +495,7 @@
 <soap:fault name="TypeOfTransportNotImplemented" use="literal"/>
 </fault>
 </operation>
-<operation name="opensession">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-</operation>
-<operation name="closesession">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-</operation>
-<operation name="pkcs7signhash">
+<operation name="pdfsignatureV2_multiple">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -408,7 +507,19 @@
 <soap:fault name="TypeOfTransportNotImplemented" use="literal"/>
 </fault>
 </operation>
-<operation name="listCert">
+<operation name="xmlsignature_multiple">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+<fault name="TypeOfTransportNotImplemented">
+<soap:fault name="TypeOfTransportNotImplemented" use="literal"/>
+</fault>
+</operation>
+<operation name="retriveCredential">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -417,7 +528,7 @@
 <soap:body use="literal"/>
 </output>
 </operation>
-<operation name="verifyOtp">
+<operation name="verify">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -426,7 +537,7 @@
 <soap:body use="literal"/>
 </output>
 </operation>
-<operation name="sendCredential">
+<operation name="getVersion">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -438,7 +549,7 @@
 </binding>
 <service name="ArubaSignServiceService">
 <port name="ArubaSignServicePort" binding="tns:ArubaSignServicePortBinding">
-<soap:address location="http://arss.cedrc.cnr.it:8080/ArubaSignService/ArubaSignService"/>
+<soap:address location="http://arss1.cedrc.cnr.it:8080/ArubaSignService/ArubaSignService"/>
 </port>
 </service>
 </definitions>
