@@ -4,7 +4,7 @@
 </wsp:Policy>
 <types>
 <xsd:schema>
-<xsd:import namespace="http://arubasignservice.arubapec.it/" schemaLocation="http://arss.cedrc.cnr.it:8080/ArubaSignService/ArubaSignService?xsd=1"/>
+<xsd:import namespace="http://arubasignservice.arubapec.it/" schemaLocation="http://arss1.cedrc.cnr.it:8080/ArubaSignService/ArubaSignService?xsd=1"/>
 </xsd:schema>
 </types>
 <message name="ping">
@@ -549,7 +549,7 @@
 </binding>
 <service name="ArubaSignServiceService">
 <port name="ArubaSignServicePort" binding="tns:ArubaSignServicePortBinding">
-<soap:address location="http://arss.cedrc.cnr.it:8080/ArubaSignService/ArubaSignService"/>
+<soap:address location="http://arss1.cedrc.cnr.it:8080/ArubaSignService/ArubaSignService"/>
 </port>
 </service>
 </definitions>
