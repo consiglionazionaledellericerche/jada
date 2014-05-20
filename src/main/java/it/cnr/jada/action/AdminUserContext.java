@@ -1,21 +1,23 @@
 package it.cnr.jada.action;
 
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.util.Dictionary;
+import java.util.Hashtable;
 
 import it.cnr.jada.UserContext;
 
 public class AdminUserContext implements UserContext {
 	private static final long serialVersionUID = 7472364126199935204L;
 	private static AdminUserContext instance = null;
-	private java.lang.String sessionId;
+	private Hashtable<String, Serializable> attributes = new Hashtable<String, Serializable>();
 	
 	protected AdminUserContext() {
-      // Exists only to defeat instantiation.
+		this(String.valueOf(serialVersionUID));
    	}
    	
 	public AdminUserContext(String sessionId) {
-		this.sessionId = sessionId;
+		attributes.put("sessionId", sessionId);
 	}
 
 	public static AdminUserContext getInstance() {
@@ -32,12 +34,12 @@ public class AdminUserContext implements UserContext {
 	      return instance;
 	   	}
 	
-	public Dictionary getHiddenColumns() {
+	public Dictionary<Object, Object> getHiddenColumns() {
 		return null;
 	}
 
 	public String getSessionId() {
-		return null;
+		return (String) attributes.get("sessionId");
 	}
 
 	public String getUser() {
@@ -54,6 +56,10 @@ public class AdminUserContext implements UserContext {
 
 	public void writeTo(PrintWriter printwriter) {
 		printwriter.print("USER: ADMIN");
+	}
+
+	public Hashtable<String, Serializable> getAttributes() {
+		return attributes;
 	}
 
 }

@@ -14,23 +14,29 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Enumeration;
+
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspWriter;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 public abstract class OggettoBulk implements Cloneable, FetchListener, PersistencyListener, Serializable{
+	@JsonIgnore
 	@it.cnr.jada.bulk.annotation.FieldPropertyAnnotation(name="duva",
 			inputType=InputType.ROTEXT,
 			formatName=FormatName.timestamp,
 			nullable=false,
 			label="Data ultimo aggiornamento")
 	protected Timestamp duva;
+	@JsonIgnore
 	@it.cnr.jada.bulk.annotation.FieldPropertyAnnotation(name="dacr",
 			inputType=InputType.ROTEXT,
 			formatName=FormatName.timestamp,
 			nullable=false,
 			label="Data di creazione")
     protected Timestamp dacr;
+	@JsonIgnore
 	@it.cnr.jada.bulk.annotation.FieldPropertyAnnotation(name="utuv",
 			inputType=InputType.ROTEXT,
 			inputSize=20,
@@ -38,7 +44,9 @@ public abstract class OggettoBulk implements Cloneable, FetchListener, Persisten
 			nullable=false,
 			label="Utente ultimo aggiornamento")
     protected String utuv;
+	@JsonIgnore
 	protected String user;
+	@JsonIgnore
 	@it.cnr.jada.bulk.annotation.FieldPropertyAnnotation(name="utcr",
 			inputType=InputType.ROTEXT,
 			inputSize=20,
@@ -46,6 +54,7 @@ public abstract class OggettoBulk implements Cloneable, FetchListener, Persisten
 			nullable=false,
 			label="Utente di creazione")
 	protected String utcr;
+	@JsonIgnore
 	@it.cnr.jada.bulk.annotation.FieldPropertyAnnotation(name="pg_ver_rec",
 			inputType=InputType.ROTEXT,
 			inputSize=20,
@@ -53,8 +62,10 @@ public abstract class OggettoBulk implements Cloneable, FetchListener, Persisten
 			nullable=false,
 			label="Progressivo versione Record")
 	protected Long pg_ver_rec;
-    protected boolean operabile;
-    private int crudStatus;
+	@JsonIgnore
+	protected boolean operabile;
+	@JsonIgnore
+	private int crudStatus;
     public static final int UNDEFINED = 0;
     public static final int TO_BE_CREATED = 1;
     public static final int TO_BE_UPDATED = 2;
@@ -62,6 +73,7 @@ public abstract class OggettoBulk implements Cloneable, FetchListener, Persisten
     public static final int TO_BE_CHECKED = 4;
     public static final int NORMAL = 5;
     private static final long serialVersionUID = 0x93cc4a6eb3975ff8L;
+    @JsonIgnore
     private KeyedPersistent key;
 
     public OggettoBulk(){
@@ -184,17 +196,17 @@ public abstract class OggettoBulk implements Cloneable, FetchListener, Persisten
             return false;
         }
     }
-
+    @JsonIgnore
     public BulkInfo getBulkInfo()
     {
         return BulkInfo.getBulkInfo(getClass());
     }
-
+    @JsonIgnore
     public BulkCollection[] getBulkLists()
     {
         return null;
     }
-
+    @JsonIgnore
     public OggettoBulk[] getBulksForPersistentcy()
     {
         return null;
@@ -273,42 +285,42 @@ public abstract class OggettoBulk implements Cloneable, FetchListener, Persisten
     public void insertingUsing(Persister persister, UserContext userContext)
     {
     }
-
+    @JsonIgnore
     public boolean isNew()
     {
         return crudStatus == 1;
     }
-
+    @JsonIgnore
     public boolean isNotNew()
     {
         return !isNew();
     }
-
+    @JsonIgnore
     public static boolean isNullOrEmpty(String s)
     {
         return s == null || s.length() == 0;
     }
-
+    @JsonIgnore
     public boolean isOperabile()
     {
         return operabile;
     }
-
+    @JsonIgnore
     public boolean isToBeChecked()
     {
         return crudStatus == 4;
     }
-
+    @JsonIgnore
     public boolean isToBeCreated()
     {
         return crudStatus == 1;
     }
-
+    @JsonIgnore
     public boolean isToBeDeleted()
     {
         return crudStatus == 3;
     }
-
+    @JsonIgnore
     public boolean isToBeUpdated()
     {
         return crudStatus == 2;

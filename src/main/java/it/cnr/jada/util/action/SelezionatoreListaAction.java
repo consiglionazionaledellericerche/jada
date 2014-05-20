@@ -1,35 +1,26 @@
 package it.cnr.jada.util.action;
 
-import it.cnr.jada.action.*;
-import it.cnr.jada.blobs.ejb.BframeBlobComponentSession;
-import it.cnr.jada.bulk.BulkHome;
-import it.cnr.jada.bulk.BulkInfo;
+import it.cnr.jada.action.ActionContext;
+import it.cnr.jada.action.BusinessProcessException;
+import it.cnr.jada.action.Forward;
+import it.cnr.jada.action.HookForward;
 import it.cnr.jada.bulk.ColumnFieldProperty;
 import it.cnr.jada.bulk.OggettoBulk;
 import it.cnr.jada.ejb.BulkLoaderIterator;
 import it.cnr.jada.ejb.TransactionalBulkLoaderIterator;
-import it.cnr.jada.excel.bp.ExcelSpoolerBP;
 import it.cnr.jada.excel.bp.OfflineExcelSpoolerBP;
 import it.cnr.jada.excel.ejb.BframeExcelComponentSession;
 import it.cnr.jada.persistency.sql.Query;
 import it.cnr.jada.util.Introspector;
 import it.cnr.jada.util.OrderedHashtable;
 import it.cnr.jada.util.RemoteIterator;
-import it.cnr.jada.util.RemoteIteratorEnumeration;
 import it.cnr.jada.util.ejb.EJBCommonServices;
 import it.cnr.jada.util.ejb.TransactionClosedException;
 
-import java.io.*;
-import java.math.BigDecimal;
-import java.rmi.NoSuchObjectException;
+import java.io.Serializable;
 import java.rmi.RemoteException;
-import java.sql.Timestamp;
-import java.util.Date;
 import java.util.Dictionary;
 import java.util.Enumeration;
-import java.util.Hashtable;
-
-import javax.ejb.EJB;
 
 // Referenced classes of package it.cnr.jada.util.action:
 //			  SelezionatoreAction, SelezionatoreListaBP, AbstractSelezionatoreBP, Selection, 

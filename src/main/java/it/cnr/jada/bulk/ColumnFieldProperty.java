@@ -8,11 +8,17 @@ import java.beans.IntrospectionException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
+
 import javax.servlet.jsp.JspWriter;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 public class ColumnFieldProperty extends FieldProperty implements Serializable{
+	@JsonIgnore
 	private String headerStyle;
+	@JsonIgnore
 	private String columnStyle;
+	@JsonIgnore
 	private String headerLabel;
     
     public ColumnFieldProperty(){
@@ -195,6 +201,7 @@ public class ColumnFieldProperty extends FieldProperty implements Serializable{
 			  jspwriter.print(encodeHtmlText(s));
 		jspwriter.print("</span>");
 	}
+	@JsonIgnore
     public boolean isNotTableHeader(){
     	return getHeaderLabel()==null;
     }
