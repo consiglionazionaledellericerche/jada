@@ -74,7 +74,7 @@ public class ConsultazioniBP extends SelezionatoreListaBP
 			   setMultiSelection(true);			      
 			setPageSize(getRecordPerPagina().intValue());
 			//TODO Da testare Mario
-			if (context.getBusinessProcess().getBPLevel() == 1)
+			if (context.getBusinessProcess() != null && context.getBusinessProcess().getBPLevel() == 1)
 			  openIterator(context);
 					
 		}catch(Throwable e) {

@@ -6,14 +6,15 @@
  */
 package it.cnr.jada.util.action;
 
-import java.util.Iterator;
 import it.cnr.jada.action.ActionContext;
 import it.cnr.jada.action.BusinessProcessException;
 import it.cnr.jada.action.Forward;
 import it.cnr.jada.action.HookForward;
 import it.cnr.jada.bulk.OggettoBulk;
 import it.cnr.jada.persistency.sql.CompoundFindClause;
-import it.cnr.jada.persistency.sql.SQLBuilder;
+import it.cnr.jada.rest.RestForward;
+import it.cnr.jada.rest.RestInfo;
+import it.cnr.jada.util.RemoteIterator;
 
 /**
  * @author Marco Spasiano
@@ -22,6 +23,7 @@ import it.cnr.jada.persistency.sql.SQLBuilder;
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
 public class ConsultazioniAction extends SelezionatoreListaAction {
+	private static final long serialVersionUID = 1L;
 
 	public Forward doBringBack(ActionContext actioncontext) {
 		return null;
@@ -62,7 +64,7 @@ public class ConsultazioniAction extends SelezionatoreListaAction {
 	  try 
 	  {
 		ConsultazioniBP bp = (ConsultazioniBP)context.getBusinessProcess();
-		it.cnr.jada.util.RemoteIterator ri = bp.search(context,(CompoundFindClause) null,(OggettoBulk) bp.getBulkInfo().getBulkClass().newInstance()); 
+		RemoteIterator ri = bp.search(context,(CompoundFindClause) null,(OggettoBulk) bp.getBulkInfo().getBulkClass().newInstance()); 
 		bp.setIterator(context,ri);
 		return context.findDefaultForward();
 	  } catch(Throwable e) {
@@ -117,5 +119,15 @@ public class ConsultazioniAction extends SelezionatoreListaAction {
 		} catch(Throwable e) {
 			return handleException(context,e);
 		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public Forward doRestInfo(ActionContext context) throws BusinessProcessException{
+		ConsultazioniBP bp = (ConsultazioniBP)context.getBusinessProcess();
+		return new RestInfo(bp.getColumns());		
+	}
+	
+	public Forward doRestResponse(ActionContext context) throws BusinessProcessException {
+		return new RestForward();		
 	}
 }

@@ -291,7 +291,7 @@ public class ActionServlet extends HttpServlet implements Serializable{
 		uploadsTempDir = new File(getServletContext().getRealPath("/tmp/"));
         uploadsTempDir.mkdirs();
         try{
-            reloadActions();
+            mappings = ActionUtil.reloadActions(actionDirFile);
 			if (System.getProperty("it.cnr.readBulkInfos","Y").equalsIgnoreCase("Y"))
 				loadPersistentInfos();
         }catch(ActionMappingsConfigurationException actionmappingsconfigurationexception){
@@ -302,33 +302,6 @@ public class ActionServlet extends HttpServlet implements Serializable{
 	public synchronized void loadPersistentInfos() throws ServletException{    
 		new ReadClass(getServletContext().getRealPath("/bulkinfos/BulkClassList.xml"));		
 	}
-    /**
-     * Forza la rilettura del file di configurazione della mappatura
-     */
-    public synchronized void reloadActions() throws ActionMappingsConfigurationException{
-        ActionMappings actionmappings = new ActionMappings();
-        File afile[] = actionDirFile.listFiles();
-        try{
-            XMLObjectFiller xmlobjectfiller = new XMLObjectFiller(actionmappings);
-            xmlobjectfiller.mapElementToClass("action-mappings", it.cnr.jada.action.ActionMappings.class);
-            xmlobjectfiller.mapElement("action", it.cnr.jada.action.ActionMapping.class, "addActionMapping");
-            xmlobjectfiller.mapElement("businessProcess", it.cnr.jada.action.BusinessProcessMapping.class, "addBusinessProcessMapping");
-            xmlobjectfiller.mapElement("forward", it.cnr.jada.action.StaticForward.class, "addForward");
-            xmlobjectfiller.mapElement("init-param", it.cnr.jada.action.InitParameter.class, "addInitParameter");
-            for(int i = 0; i < afile.length; i++)
-                if(afile[i].isFile() && afile[i].getName().endsWith(".xml") && afile[i].canRead()){                
-                    String encoding = System.getProperty("SIGLA_ENCODING","ISO-8859-1");  
-			        xmlobjectfiller.parse(new InputSource(new InputStreamReader(new FileInputStream(afile[i]),encoding)));
-                }
-        }catch(SAXException saxexception){
-            throw new ActionMappingsConfigurationException(saxexception);
-        }catch(ParserConfigurationException parserConfigurationException){
-			throw new ActionMappingsConfigurationException(parserConfigurationException);
-		}catch(IOException ioexception){
-            throw new ActionMappingsConfigurationException(ioexception);
-        }
-        mappings = actionmappings;
-    }
 
     void traceRequest(HttpActionContext httpactioncontext){
     	if (httpactioncontext.getUserContext() == null)

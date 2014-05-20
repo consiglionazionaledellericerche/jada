@@ -2,20 +2,20 @@ package it.cnr.jada.action;
 
 import java.io.Serializable;
 import java.util.Hashtable;
+import java.util.Iterator;
 
-// Referenced classes of package it.cnr.jada.action:
-//            ActionMapping, BusinessProcessMapping, StaticForward, BusinessProcessException, 
-//            ActionForward, Forward, ActionContext, BusinessProcess
+public class ActionMappings implements Serializable {
 
-public class ActionMappings
-    implements Serializable
-{
+	private static final long serialVersionUID = 1L;
 
-    public ActionMappings()
-    {
-        actions = new Hashtable();
-        businessProcesses = new Hashtable();
-        forwards = new Hashtable();
+    private Hashtable<String, ActionMapping> actions;
+    private Hashtable<String, BusinessProcessMapping> businessProcesses;
+    private Hashtable<String, Forward> forwards;
+    
+	public ActionMappings() {
+        actions = new Hashtable<String, ActionMapping>();
+        businessProcesses = new Hashtable<String, BusinessProcessMapping>();
+        forwards = new Hashtable<String, Forward>();
     }
 
     public void addActionMapping(ActionMapping actionmapping)
@@ -34,6 +34,7 @@ public class ActionMappings
         forwards.put(staticforward.getName(), staticforward);
     }
 
+    
     public BusinessProcess createBusinessProcess(String s, ActionContext actioncontext)
         throws BusinessProcessException
     {
@@ -79,7 +80,16 @@ public class ActionMappings
         return (Forward)forwards.get(s);
     }
 
-    private Hashtable actions;
-    private Hashtable businessProcesses;
-    private Hashtable forwards;
+	public BusinessProcess createBusinessProcess(ActionMapping actionmapping, ActionContext actioncontext) throws BusinessProcessException {
+		String bpName = null;
+		for (String key : businessProcesses.keySet()) {
+			BusinessProcessMapping businessProcessMapping = businessProcesses.get(key);
+			if (businessProcessMapping.getConfig() != null && actionmapping.getPath().equals("/" + businessProcessMapping.getConfig().getInitParameter("defaultAction"))){
+				bpName = key;	
+				break;
+			}
+		} 		
+		return createBusinessProcess(bpName, actioncontext);
+	}
+
 }

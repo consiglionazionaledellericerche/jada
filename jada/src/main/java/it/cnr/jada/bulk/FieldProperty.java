@@ -45,9 +45,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Vector;
+
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspWriter;
+
+import org.codehaus.jackson.annotate.JsonIgnore;
 /**
 * Classe che descrive le proprietà di un input field da visualizzare in una FORM HTML 
 * per visualizzare/modificare il valore di un attributo di un OggettoBulk. 
@@ -194,52 +197,91 @@ public class FieldProperty implements Serializable{
 	public static final int HORIZONTAL_LAYOUT = 1;
 	public static final Object UNDEFINED_VALUE;
 	private String property;
+	@JsonIgnore
 	private Format format;
+	@JsonIgnore
 	private String formatName;
 	private String label;
+	@JsonIgnore
 	private String keysProperty;
+	@JsonIgnore
 	private String optionsProperty;
+	@JsonIgnore
 	private String printProperty;
+	@JsonIgnore
 	private String descProperty;
 	private String name;
+	@JsonIgnore
 	private String style;
+	@JsonIgnore
 	private String labelStyle;
 	private int inputType;
 	private int maxLength;
 	private int inputSize;
+	@JsonIgnore
 	private String readonlyProperty;
+	@JsonIgnore
 	private int cols;
+	@JsonIgnore
 	private int rows;
+	@JsonIgnore
 	private String formName;
+	@JsonIgnore
 	private BulkInfo bulkInfo;
+	@JsonIgnore
 	private boolean enabledOnSearch;
+	@JsonIgnore
 	private boolean enabledOnInsert;
+	@JsonIgnore
 	private boolean enabledOnEdit;
+	@JsonIgnore
 	private boolean caseSensitiveSearch;
+	@JsonIgnore
 	private String editFormatName;
+	@JsonIgnore
 	private Format editFormat;
+	@JsonIgnore
 	private String CRUDBusinessProcessName;
+	@JsonIgnore
 	private boolean enabledOnFreeSearch;
+	@JsonIgnore
 	private boolean completeOnSave;
+	
 	private boolean nullable;
+	@JsonIgnore
 	private String readonlyPropertyOnEdit;
+	@JsonIgnore
 	private String readonlyPropertyOnInsert;
+	@JsonIgnore
 	private String readonlyPropertyOnSearch;
+	@JsonIgnore
 	private String readonlyPropertyOnFreeSearch;
+	@JsonIgnore
 	private boolean enabledOnView;
+	@JsonIgnore
 	private String readonlyPropertyOnView;
+	@JsonIgnore
 	private int layout;
+	@JsonIgnore
 	private String img;
+	@JsonIgnore
 	private String href;
+	@JsonIgnore
 	private String columnSet;
+	@JsonIgnore
 	private boolean ghost;
+	@JsonIgnore
 	private String command;
 	private static Button confirmButton;
 	private static Button cancelButton;
 	private Class propertyType;
+	@JsonIgnore
 	private String findProperty;
+	@JsonIgnore
 	private String freeSearchSet;
+	@JsonIgnore
 	private int ordinalPosition;
+	@JsonIgnore
 	private String accessKey;
 	
 	static{
@@ -521,7 +563,7 @@ public class FieldProperty implements Serializable{
 			confirmButton = new Button(Config.getHandler().getProperties(getClass()), "confirmButton");
 		return confirmButton;
 	}
-
+	@JsonIgnore
 	public String getCRUDBusinessProcessName()
 	{
 		return CRUDBusinessProcessName;
@@ -613,7 +655,7 @@ public class FieldProperty implements Serializable{
 	{
 		return inputTypeNames[inputType];
 	}
-
+	@JsonIgnore
 	public int getInputTypeIndex()
 	{
 		return inputType;
@@ -678,7 +720,7 @@ public class FieldProperty implements Serializable{
 		}
 		return null;
 	}
-
+	@JsonIgnore
 	public int getLayoutType()
 	{
 		return layout;
@@ -934,7 +976,7 @@ public class FieldProperty implements Serializable{
 	{
 		return style;
 	}
-
+	@JsonIgnore
 	public String getType()
 	{
 		if(propertyType == null)
@@ -1097,12 +1139,12 @@ public class FieldProperty implements Serializable{
 	{
 		return ghost;
 	}
-
+	@JsonIgnore
 	public boolean isMulti()
 	{
 		return getInputTypeIndex() == 6 && (getPropertyType().isArray() || java.util.Collection.class.isAssignableFrom(getPropertyType()));
 	}
-
+	@JsonIgnore
 	public boolean isNoWrap()
 	{
 		return inputType == 5;

@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>it.cnr</groupId>
 	<artifactId>jada</artifactId>
-	<version>2.0.3</version>
+	<version>2.1.0</version>
 	<packaging>ejb</packaging>
 	<name>jada</name>
 	
@@ -228,6 +228,11 @@
 			<artifactId>firmadigitale</artifactId>
 			<version>0.2</version>
 		</dependency>
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>1.9.9</version>
+		</dependency>            
 	</dependencies>
 	<properties>
 		<nexus.url>http://bandt.si.cnr.it:8280/nexus</nexus.url>
