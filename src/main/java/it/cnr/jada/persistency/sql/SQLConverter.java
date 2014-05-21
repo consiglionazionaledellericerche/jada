@@ -7,7 +7,7 @@ public interface SQLConverter
 
     public abstract Class getTargetJavaType(int i, boolean flag);
 
-    public abstract void javaToSql(PreparedStatement preparedstatement, Object obj, int i, int j)
+    public abstract void javaToSql(LoggableStatement preparedstatement, Object obj, int i, int j)
         throws SQLException;
 
     public abstract Object sqlToJava(ResultSet resultset, String s)

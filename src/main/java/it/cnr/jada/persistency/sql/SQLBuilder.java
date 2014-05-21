@@ -1,30 +1,23 @@
 package it.cnr.jada.persistency.sql;
 
 import it.cnr.jada.DetailedRuntimeException;
-import it.cnr.jada.persistency.AbstractIntrospector;
 import it.cnr.jada.persistency.IntrospectionException;
 import it.cnr.jada.persistency.Introspector;
 import it.cnr.jada.persistency.KeyedPersistent;
 import it.cnr.jada.persistency.Persistent;
-import it.cnr.jada.persistency.PersistentInfo;
 import it.cnr.jada.persistency.PersistentProperty;
 import it.cnr.jada.persistency.Prefix;
-import it.cnr.jada.persistency.SimplePersistentInfo;
 import it.cnr.jada.persistency.beans.BeanIntrospector;
 import it.cnr.jada.util.IntrospectionError;
 import it.cnr.jada.util.OrderedHashMap;
 import it.cnr.jada.util.OrderedHashtable;
 import it.cnr.jada.util.ejb.EJBCommonServices;
 
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.AbstractList;
-import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -857,7 +850,7 @@ public class SQLBuilder extends SQLQuery{
         resetStatement();
     }
 
-    public int bindParameters(PreparedStatement preparedstatement, int i)
+    public int bindParameters(LoggableStatement preparedstatement, int i)
         throws SQLException
     {
         if(super.updateParameters != null && "UPDATE".equalsIgnoreCase(command))

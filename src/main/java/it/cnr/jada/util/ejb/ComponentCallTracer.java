@@ -3,8 +3,10 @@ package it.cnr.jada.util.ejb;
 import it.cnr.jada.persistency.sql.LoggableStatement;
 import it.cnr.jada.util.OutputStreamCounter;
 
-import java.io.*;
-import java.sql.*;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.sql.Connection;
 
 // Referenced classes of package it.cnr.jada.util.ejb:
 //            EJBCommonServices

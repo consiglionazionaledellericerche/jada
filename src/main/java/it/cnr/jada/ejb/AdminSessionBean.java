@@ -62,10 +62,6 @@ public class AdminSessionBean implements AdminSession{
             return EJBCommonServices.getSqlEventTracer().isDumpStackTraceEnabled();
     }
 
-    public boolean isSqlTracerEnabled(){
-        return EJBCommonServices.isSqlTracerEnabled();
-    }
-
     public void removeSQLTraceUser(String s){
         EJBCommonServices.getSqlEventTracer().removeTraceUser(s);
     }
@@ -104,9 +100,4 @@ public class AdminSessionBean implements AdminSession{
             return;
         }
     }
-
-    public void setSqlTracerEnabled(boolean flag){
-        EJBCommonServices.setSqlTracerEnabled(flag);
-    }
-
 }

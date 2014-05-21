@@ -299,7 +299,7 @@ public abstract class BaseBulkLoaderIteratorBean{
 			it.cnr.jada.persistency.sql.PersistentHome persistenthome = homeCache.getHome(bulkClass);
 			if(doCount)
 				recordCount = query.executeCountQuery(getConnection());
-			PreparedStatement preparedstatement = query.prepareStatement(persistenthome.getConnection(), 1004, 1007);
+			LoggableStatement preparedstatement = query.prepareStatement(persistenthome.getConnection(), 1004, 1007);
 			broker = persistenthome.createBroker(preparedstatement, preparedstatement.executeQuery(), query.getColumnMap(), persistenthome.getIntrospector().getPersistentInfo(bulkClass).getFetchPolicy(fetchPolicyName));			
 			broker.setAutomaticClose(false);
 		}catch(SQLException sqlexception){

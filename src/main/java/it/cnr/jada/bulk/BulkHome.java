@@ -5,12 +5,10 @@ import it.cnr.jada.comp.ComponentException;
 import it.cnr.jada.persistency.Broker;
 import it.cnr.jada.persistency.FindException;
 import it.cnr.jada.persistency.IntrospectionException;
-import it.cnr.jada.persistency.Introspector;
 import it.cnr.jada.persistency.ObjectNotFoundException;
 import it.cnr.jada.persistency.PersistencyException;
 import it.cnr.jada.persistency.Persistent;
 import it.cnr.jada.persistency.PersistentCache;
-import it.cnr.jada.persistency.Persister;
 import it.cnr.jada.persistency.sql.ColumnMap;
 import it.cnr.jada.persistency.sql.ColumnMapping;
 import it.cnr.jada.persistency.sql.CompoundFindClause;
@@ -22,17 +20,13 @@ import it.cnr.jada.persistency.sql.SQLBroker;
 import it.cnr.jada.persistency.sql.SQLBuilder;
 import it.cnr.jada.persistency.sql.SQLExceptionHandler;
 import it.cnr.jada.persistency.sql.SQLPersistentInfo;
-import it.cnr.jada.persistency.sql.SQLPersister;
-import it.cnr.jada.persistency.sql.SQLQuery;
 import it.cnr.jada.util.IntrospectionError;
 import it.cnr.jada.util.ejb.EJBCommonServices;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -53,7 +47,7 @@ public class BulkHome extends PersistentHome implements Serializable {
 		super(class1, connection, persistentcache);
 	}
 
-	private ResultSet executeLockedQuery(PreparedStatement preparedStatement)
+	private ResultSet executeLockedQuery(LoggableStatement preparedStatement)
 			throws SQLException, BusyResourceException, PersistencyException {
 		try {
 			for (int i = 0; i < 3; i++) {
@@ -84,7 +78,7 @@ public class BulkHome extends PersistentHome implements Serializable {
 	public Persistent fetchAndLock(Query query) throws PersistencyException,
 			BusyResourceException, OutdatedResourceException {
 		try {
-			PreparedStatement preparedstatement = query
+			LoggableStatement preparedstatement = query
 					.prepareStatement(getConnection());
 			try {
 				SQLBroker sqlbroker = createBroker(preparedstatement,
@@ -139,8 +133,7 @@ public class BulkHome extends PersistentHome implements Serializable {
 			}
 
 			sqlbuilder = sqlbuilder1;
-			PreparedStatement loggablestatement = sqlbuilder
-					.prepareStatement(getConnection());
+			LoggableStatement loggablestatement = sqlbuilder.prepareStatement(getConnection());
 			ResultSet resultset = executeLockedQuery(loggablestatement);
 			SQLBroker sqlbroker = createBroker(loggablestatement, resultset);
 			if (sqlbroker.next()) {
@@ -161,7 +154,7 @@ public class BulkHome extends PersistentHome implements Serializable {
 	public Object fetchMax(SQLBuilder sqlbuilder, String s, Object obj)
 			throws PersistencyException {
 		try {
-			PreparedStatement loggablestatement = sqlbuilder
+			LoggableStatement loggablestatement = sqlbuilder
 					.prepareStatement(getConnection());
 			ResultSet resultset = loggablestatement.executeQuery();
 			SQLBroker sqlbroker = createBroker(loggablestatement, resultset);
@@ -217,7 +210,7 @@ public class BulkHome extends PersistentHome implements Serializable {
 			throws PersistencyException, OutdatedResourceException,
 			BusyResourceException {
 		try {
-			PreparedStatement preparestatement = getLoggableSelectForUpdateStatement();
+			LoggableStatement preparestatement = getLoggableSelectForUpdateStatement();
 			preparestatement.clearParameters();
 			setParametersUsing(preparestatement, oggettobulk, getColumnMap()
 					.getPrimaryColumnNames(), 1);
@@ -329,7 +322,7 @@ public class BulkHome extends PersistentHome implements Serializable {
 			}
 			if (findClause != null)
 				sqlbuilder.addClause(findClause);
-			PreparedStatement loggablestatement = sqlbuilder
+			LoggableStatement loggablestatement = sqlbuilder
 					.prepareStatement(getConnection());
 			ResultSet resultset = executeLockedQuery(loggablestatement);
 			SQLBroker sqlbroker = createBroker(loggablestatement, resultset);
@@ -482,7 +475,7 @@ public class BulkHome extends PersistentHome implements Serializable {
 	public void lock(OggettoBulk oggettobulk) throws PersistencyException,
 			OutdatedResourceException, BusyResourceException {
 		try {
-			PreparedStatement loggablestatement = getLoggableSelectForUpdateStatement();
+			LoggableStatement loggablestatement = getLoggableSelectForUpdateStatement();
 			loggablestatement.clearParameters();
 			setParametersUsing(loggablestatement, oggettobulk, getColumnMap()
 					.getPrimaryColumnNames(), 1);

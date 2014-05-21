@@ -1,7 +1,8 @@
 package it.cnr.jada.persistency.sql;
 
 import java.io.Serializable;
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 // Referenced classes of package it.cnr.jada.persistency.sql:
 //            SQLConverter
@@ -19,7 +20,7 @@ public class CHARToBooleanConverter
         return java.lang.Boolean.class;
     }
 
-    public void javaToSql(PreparedStatement preparedstatement, Object obj, int i, int j)
+    public void javaToSql(LoggableStatement preparedstatement, Object obj, int i, int j)
         throws SQLException
     {
         if(obj == null)

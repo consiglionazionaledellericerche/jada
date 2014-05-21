@@ -21,10 +21,10 @@ public interface Query
 
     public abstract boolean isOrderableByProperty(String s);
 
-    public abstract PreparedStatement prepareStatement(Connection connection)
+    public abstract LoggableStatement prepareStatement(Connection connection)
         throws SQLException;
 
-    public abstract PreparedStatement prepareStatement(Connection connection, int i, int j)
+    public abstract LoggableStatement prepareStatement(Connection connection, int i, int j)
         throws SQLException;
 
     public abstract void setOrderBy(String s, int i);
