@@ -25,7 +25,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-public final class LoggableStatement  implements CallableStatement {
+public final class LoggableStatement {
 	public static boolean IS_ENABLED = false;
 	private Log log;
 	private BigDecimal TimeWarning=new BigDecimal(30000);
@@ -1706,45 +1706,5 @@ public final class LoggableStatement  implements CallableStatement {
 
 	public void setURL(String parameterName, URL val) throws SQLException {
 		((CallableStatement)callableStatement).setURL(parameterName, val);
-	}
-
-	public boolean wasNull() throws SQLException {
-		return ((CallableStatement)callableStatement).wasNull();
-	}
-	public Reader getCharacterStream(int parameterIndex) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	public Reader getCharacterStream(String parameterName) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	public Reader getNCharacterStream(int parameterIndex) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	public Reader getNCharacterStream(String parameterName) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	public boolean isClosed() throws SQLException {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	public boolean isPoolable() throws SQLException {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	public void setPoolable(boolean poolable) throws SQLException {
-		// TODO Auto-generated method stub
-		
-	}
-	public boolean isWrapperFor(Class<?> iface) throws SQLException {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	public <T> T unwrap(Class<T> iface) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

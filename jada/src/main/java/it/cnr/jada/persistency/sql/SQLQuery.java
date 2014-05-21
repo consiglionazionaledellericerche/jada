@@ -3,10 +3,15 @@ package it.cnr.jada.persistency.sql;
 import it.cnr.jada.util.Config;
 
 import java.io.Serializable;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 public class SQLQuery implements Query, Serializable{
 	private static String formDate = "yyyyMMdd";
@@ -58,14 +63,14 @@ public class SQLQuery implements Query, Serializable{
     /**
      * Imposta il valore dei parametri delle clausole in un statement creato utilizzando buildParameterSQL.
      */
-    public int bindParameters(PreparedStatement preparedstatement) throws SQLException{
+    public int bindParameters(LoggableStatement preparedstatement) throws SQLException{
         return bindParameters(preparedstatement, 1);
     }
 
     /**
      * Imposta il valore dei parametri delle clausole in un statement creato utilizzando buildParameterSQL.
      */
-    public int bindParameters(PreparedStatement preparedstatement, int index) throws SQLException{
+    public int bindParameters(LoggableStatement preparedstatement, int index) throws SQLException{
         for(Enumeration enumeration = parameters.elements(); enumeration.hasMoreElements();){
             SQLParameter sqlparameter = (SQLParameter)enumeration.nextElement();
             if(sqlparameter != null)
@@ -135,7 +140,7 @@ public class SQLQuery implements Query, Serializable{
      * Costruisce un PreparedStatement che contiene una query di conteggio del numero di record risultanti 
      * dalla query definita dal ricevente
      */
-    public PreparedStatement prepareCountStatement(Connection connection) throws SQLException{
+    public LoggableStatement prepareCountStatement(Connection connection) throws SQLException{
         StringBuffer stringbuffer = new StringBuffer("SELECT COUNT(*) FROM (");
         stringbuffer.append(getStatement(true));
         stringbuffer.append(" )");
@@ -147,7 +152,7 @@ public class SQLQuery implements Query, Serializable{
      * Costruisce un PreparedStatement che contiene una query di conteggio del numero di record risultanti 
      * dalla query definita dal ricevente
      */
-    public PreparedStatement prepareExistsStatement(Connection connection) throws SQLException{
+    public LoggableStatement prepareExistsStatement(Connection connection) throws SQLException{
         StringBuffer stringbuffer = new StringBuffer("SELECT 1 FROM DUAL WHERE EXISTS (");
         String s = getStatement();
         int i = s.toUpperCase().lastIndexOf("ORDER BY");
@@ -162,7 +167,7 @@ public class SQLQuery implements Query, Serializable{
     /**
      * Crea un PreparedStatement che contiene la statemenent SQL generato e i valori dei parametri delle clausole.
      */
-    public PreparedStatement prepareStatement(Connection connection) throws SQLException{
+    public LoggableStatement prepareStatement(Connection connection) throws SQLException{
     	LoggableStatement loggablestatement = new LoggableStatement(connection,getStatement(),true,this.getClass());
         bindParameters(loggablestatement);
         return loggablestatement;
@@ -170,7 +175,7 @@ public class SQLQuery implements Query, Serializable{
     /**
      * Crea un PreparedStatement che contiene la statemenent SQL generato e i valori dei parametri delle clausole.
      */
-    public PreparedStatement prepareStatement(Connection connection, int resultSetType, int resulSetConcurrency) throws SQLException{
+    public LoggableStatement prepareStatement(Connection connection, int resultSetType, int resulSetConcurrency) throws SQLException{
     	LoggableStatement loggablestatement = new LoggableStatement(connection,getStatement(),true,this.getClass(),resultSetType, resulSetConcurrency);
         bindParameters(loggablestatement);
         return loggablestatement;

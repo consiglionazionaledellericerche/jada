@@ -1,10 +1,16 @@
 package it.cnr.jada.persistency.sql;
 
-import it.cnr.jada.DetailedException;
-import it.cnr.jada.persistency.*;
+import it.cnr.jada.persistency.Broker;
+import it.cnr.jada.persistency.FetchException;
+import it.cnr.jada.persistency.FetchPolicy;
+import it.cnr.jada.persistency.Introspector;
+import it.cnr.jada.persistency.PersistencyException;
+import it.cnr.jada.persistency.PersistentCache;
+import it.cnr.jada.persistency.PersistentPropertyNotAvailableException;
 
 import java.io.Serializable;
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Date;
 
 // Referenced classes of package it.cnr.jada.persistency.sql:
@@ -17,7 +23,7 @@ public class SQLBroker extends Broker
 
     private ResultSet resultSet;
     private ColumnMap columnMap;
-    private Statement statement;
+    private LoggableStatement statement;
     private boolean automaticClose;
 	private boolean isClose;
 
@@ -37,7 +43,7 @@ public class SQLBroker extends Broker
 		isClose = false;
     }
 
-    public SQLBroker(ColumnMap columnmap, Introspector introspector, PersistentCache persistentcache, Statement statement1, ResultSet resultset)
+    public SQLBroker(ColumnMap columnmap, Introspector introspector, PersistentCache persistentcache, LoggableStatement statement1, ResultSet resultset)
     {
         super(introspector, persistentcache);
         automaticClose = true;
@@ -47,7 +53,7 @@ public class SQLBroker extends Broker
         resultSet = resultset;
     }
 
-    public SQLBroker(ColumnMap columnmap, Introspector introspector, PersistentCache persistentcache, Statement statement1, ResultSet resultset, FetchPolicy fetchpolicy)
+    public SQLBroker(ColumnMap columnmap, Introspector introspector, PersistentCache persistentcache, LoggableStatement statement1, ResultSet resultset, FetchPolicy fetchpolicy)
     {
         super(introspector, persistentcache, fetchpolicy);
         automaticClose = true;

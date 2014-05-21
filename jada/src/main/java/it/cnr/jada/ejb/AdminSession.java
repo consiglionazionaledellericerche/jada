@@ -30,9 +30,6 @@ public interface AdminSession{
     public abstract boolean isDumpStackTraceEnabled()
         throws RemoteException;
 
-    public abstract boolean isSqlTracerEnabled()
-        throws RemoteException;
-
     public abstract void removeSQLTraceUser(String s)
         throws RemoteException;
 
@@ -46,8 +43,5 @@ public interface AdminSession{
         throws RemoteException;
 
     public abstract void setDumpStackTraceEnabled(boolean flag)
-        throws RemoteException;
-
-    public abstract void setSqlTracerEnabled(boolean flag)
         throws RemoteException;
 }

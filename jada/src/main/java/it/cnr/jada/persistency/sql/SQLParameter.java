@@ -2,7 +2,6 @@ package it.cnr.jada.persistency.sql;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 // Referenced classes of package it.cnr.jada.persistency.sql:
@@ -45,13 +44,13 @@ class SQLParameter
         converter = sqlconverter;
     }
 
-    public void setInPreparedStatement(int i, PreparedStatement preparedstatement)
+    public void setInPreparedStatement(int i, LoggableStatement preparedstatement)
         throws SQLException
     {
         setParameterInPreparedStatement(i, preparedstatement, value, sqlType, scale, converter);
     }
 
-    public static final void setParameterInPreparedStatement(int i, PreparedStatement preparedstatement, Object obj, int j, int k, SQLConverter sqlconverter)
+    public static final void setParameterInPreparedStatement(int i, LoggableStatement preparedstatement, Object obj, int j, int k, SQLConverter sqlconverter)
         throws SQLException
     {
         if(sqlconverter != null)

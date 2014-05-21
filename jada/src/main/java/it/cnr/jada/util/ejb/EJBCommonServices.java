@@ -6,45 +6,32 @@ import it.cnr.jada.action.ActionContext;
 import it.cnr.jada.comp.ComponentException;
 import it.cnr.jada.ejb.BulkLoaderIterator;
 import it.cnr.jada.ejb.GenericComponentSession;
-import it.cnr.jada.ejb.GenericComponentSessionBean;
 import it.cnr.jada.ejb.ServerDate;
 import it.cnr.jada.ejb.TransactionalBulkLoaderIterator;
 import it.cnr.jada.ejb.UserTransactionWrapper;
 import it.cnr.jada.persistency.sql.LoggableStatement;
-import it.cnr.jada.util.*;
-import it.cnr.jada.util.sql.LoggedConnection;
+import it.cnr.jada.util.Config;
+import it.cnr.jada.util.EventTracer;
+import it.cnr.jada.util.RemoteIterator;
+import it.cnr.jada.util.SessionEventTracer;
 
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.rmi.MarshalException;
 import java.rmi.RemoteException;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Hashtable;
+
 import javax.ejb.EJBException;
 import javax.ejb.EJBHome;
-import javax.ejb.EJBLocalHome;
-import javax.ejb.EJBLocalObject;
-import javax.ejb.EJBMetaData;
-import javax.ejb.EJBObject;
-import javax.ejb.RemoveException;
-import javax.jms.*;
-import javax.naming.Context;
+import javax.jms.Queue;
+import javax.jms.QueueConnectionFactory;
 import javax.naming.InitialContext;
-import javax.naming.NameClassPair;
 import javax.naming.NameNotFoundException;
-import javax.naming.NameParser;
-import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.rmi.PortableRemoteObject;
 import javax.sql.DataSource;
 import javax.transaction.UserTransaction;
 
@@ -57,7 +44,6 @@ public class EJBCommonServices implements Serializable{
 	private static Hashtable queues = new Hashtable();
 	private static EventTracer sqlEventTracer;
 	private static EventTracer componentEventTracer;
-	private static boolean sqlTracerEnabled = false;
 	private static String dataSourceName;
 	private static String earAppName;
 	private static final Format clientInfoDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm.ss");
@@ -266,9 +252,6 @@ public class EJBCommonServices implements Serializable{
 		}
 		return false;
 	}
-	public static boolean isSqlTracerEnabled(){
-		return sqlTracerEnabled;
-	}
 
 	public static final Timestamp getDateRefreshDB() throws EJBException{
 		java.sql.Timestamp dateRefresh = null;		
@@ -325,10 +308,6 @@ public class EJBCommonServices implements Serializable{
 		return remoteiterator;
 	}
 
-	public static void setSqlTracerEnabled(boolean flag){
-		sqlTracerEnabled = flag;
-	}
-
 	private static final Connection traceUserConnection(UserContext usercontext, Connection connection){
 		try{
 			String user = "LOGIN", sessionId = "LOGIN";
@@ -352,10 +331,7 @@ public class EJBCommonServices implements Serializable{
 		}catch(SQLException _ex) {
 			
 		}
-		if(sqlTracerEnabled)
-			return new LoggedConnection(connection, getSqlEventTracer(), usercontext);
-		else
-			return connection;
+		return connection;
 	}
 
 	public static final void unlockTransaction() throws EJBException{

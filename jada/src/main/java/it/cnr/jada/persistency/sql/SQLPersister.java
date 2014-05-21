@@ -1,9 +1,24 @@
 package it.cnr.jada.persistency.sql;
 
-import it.cnr.jada.persistency.*;
+import it.cnr.jada.persistency.DeleteException;
+import it.cnr.jada.persistency.FetchAllPolicy;
+import it.cnr.jada.persistency.FetchPolicy;
+import it.cnr.jada.persistency.FindException;
+import it.cnr.jada.persistency.IntrospectionError;
+import it.cnr.jada.persistency.IntrospectionException;
+import it.cnr.jada.persistency.Introspector;
+import it.cnr.jada.persistency.ObjectNotFoundException;
+import it.cnr.jada.persistency.PersistencyException;
+import it.cnr.jada.persistency.Persistent;
+import it.cnr.jada.persistency.PersistentCache;
+import it.cnr.jada.persistency.Persister;
+import it.cnr.jada.persistency.UpdateException;
 
 import java.io.Serializable;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 // Referenced classes of package it.cnr.jada.persistency.sql:
 //            SQLPersistentInfo, Query, SQLExceptionHandler, SQLBroker, 
@@ -67,19 +82,19 @@ public class SQLPersister extends Persister
         throws PersistencyException
     {
         try{
-        	PreparedStatement preparedstatement = query.prepareStatement(getConnection());
-            return createBroker(((Statement) (preparedstatement)), preparedstatement.executeQuery(), query.getColumnMap(), fetchpolicy);
+        	LoggableStatement preparedstatement = query.prepareStatement(getConnection());
+            return createBroker(preparedstatement, preparedstatement.executeQuery(), query.getColumnMap(), fetchpolicy);
         }catch(SQLException sqlexception){
             throw SQLExceptionHandler.getInstance().handleSQLException(sqlexception);
         }
     }
 
-    public SQLBroker createBroker(Statement statement, ResultSet resultset)
+    public SQLBroker createBroker(LoggableStatement statement, ResultSet resultset)
     {
         return createBroker(statement, resultset, getColumnMap(), fetchPolicy);
     }
 
-    public SQLBroker createBroker(Statement statement, ResultSet resultset, ColumnMap columnmap, FetchPolicy fetchpolicy)
+    public SQLBroker createBroker(LoggableStatement statement, ResultSet resultset, ColumnMap columnmap, FetchPolicy fetchpolicy)
     {
         return new SQLBroker(columnmap, getIntrospector(), persistentCache, statement, resultset, fetchpolicy);
     }
@@ -94,7 +109,7 @@ public class SQLPersister extends Persister
     {
         try
         {
-        	PreparedStatement loggablestatement = getLoggableDeleteStatement();
+        	LoggableStatement loggablestatement = getLoggableDeleteStatement();
             try
             {
                 setParametersUsing(loggablestatement, persistent, columnMap.getPrimaryColumnNames(), 1);
@@ -115,12 +130,12 @@ public class SQLPersister extends Persister
         }
     }
 
-    protected void doInsert(Persistent persistent)
+	protected void doInsert(Persistent persistent)
         throws PersistencyException
     {
         try
         {
-        	PreparedStatement loggablestatement = getLoggableInsertStatement();
+        	LoggableStatement loggablestatement = getLoggableInsertStatement();
             try
             {
                 setParametersUsing(loggablestatement, persistent, columnMap.getColumnNames(), 1);
@@ -142,7 +157,7 @@ public class SQLPersister extends Persister
     {
         try
         {
-        	PreparedStatement loggablestatement = getLoggableUpdateStatement();
+        	LoggableStatement loggablestatement = getLoggableUpdateStatement();
             try
             {
                 int i = 1;
@@ -173,7 +188,7 @@ public class SQLPersister extends Persister
     {
         try
         {
-        	PreparedStatement loggablestatement;
+        	LoggableStatement loggablestatement;
         	if (flag)
         		loggablestatement = getLoggableSelectForUpdateStatement();
         	else
@@ -215,8 +230,7 @@ public class SQLPersister extends Persister
         return getConnection().prepareStatement(columnMap.getDefaultDeleteSQL());
     }
     
-    protected PreparedStatement getLoggableDeleteStatement()
-    throws SQLException
+    protected LoggableStatement getLoggableDeleteStatement() throws SQLException
 	{
 	    return new LoggableStatement(getConnection(),columnMap.getDefaultDeleteSQL(),true,this.getClass());
 	}
@@ -230,8 +244,7 @@ public class SQLPersister extends Persister
     {
         return getConnection().prepareStatement(columnMap.getDefaultInsertSQL());
     }
-    protected PreparedStatement getLoggableInsertStatement()
-    throws SQLException
+    protected LoggableStatement getLoggableInsertStatement() throws SQLException
 	{
 	    return new LoggableStatement(getConnection(),columnMap.getDefaultInsertSQL(),true,this.getClass());
 	}
@@ -284,7 +297,7 @@ public class SQLPersister extends Persister
         fetchPolicy = fetchpolicy;
     }
 
-    protected int setParametersUsing(PreparedStatement preparedstatement, Object obj, String as[], int i)
+    protected int setParametersUsing(LoggableStatement preparedstatement, Object obj, String as[], int i)
         throws SQLException
     {
         try
