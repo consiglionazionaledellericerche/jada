@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>it.cnr</groupId>
 	<artifactId>jada-ejb3</artifactId>
-	<version>2.6</version>
+	<version>2.7</version>
 	<properties>
 		<nexus.url>http://bandt.si.cnr.it:8280/nexus</nexus.url>
 	</properties>
@@ -140,7 +140,7 @@
 		<dependency>
 			<groupId>net.bzdyl.ejb3criteria</groupId>
 			<artifactId>ejb3criteria</artifactId>
-			<version>0.4</version>
+			<version>0.5</version>
 		</dependency>
 	</dependencies>
 </project>

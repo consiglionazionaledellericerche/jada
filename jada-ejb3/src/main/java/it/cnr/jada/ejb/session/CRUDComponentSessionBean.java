@@ -20,6 +20,7 @@ import net.bzdyl.ejb3.criteria.Projection;
 import net.bzdyl.ejb3.criteria.projections.AggregateProjection;
 import net.bzdyl.ejb3.criteria.projections.DistinctProjection;
 import net.bzdyl.ejb3.criteria.projections.Projections;
+import net.bzdyl.ejb3.criteria.transformers.Transformers;
 
 /**
  * Componente generica per effettuare operazioni di CRUD su una classe di OggettiBulk. 
@@ -152,11 +153,29 @@ public abstract class CRUDComponentSessionBean<T extends OggettoBulk> extends
 
 	@SuppressWarnings("unchecked")
 	public List<Object> findByProjection(Principal principal, Class<T> bulkClass,
+			Projection projection, Criterion criterion, boolean useBeanResultTransformer) throws ComponentException {
+		Criteria criteria = select(principal, bulkClass, criterion, projection);
+		if (useBeanResultTransformer)
+			criteria.setResultTransformer(Transformers.beanConstructor(bulkClass));
+		return criteria.prepareQuery(getManager()).getResultList();
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Object> findByProjection(Principal principal, Class<T> bulkClass,
 			Projection projection, Criterion criterion, Order... order) throws ComponentException {
 		Criteria criteria = select(principal, bulkClass, criterion, projection, order);
 		return criteria.prepareQuery(getManager()).getResultList();
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<Object> findByProjection(Principal principal, Class<T> bulkClass,
+			Projection projection, Criterion criterion, boolean useBeanResultTransformer, Order... order) throws ComponentException {
+		Criteria criteria = select(principal, bulkClass, criterion, projection, order);
+		if (useBeanResultTransformer)
+			criteria.setResultTransformer(Transformers.beanConstructor(bulkClass));		
+		return criteria.prepareQuery(getManager()).getResultList();
+	}
+	
 	protected Criteria select(Principal principal, Class<T> bulkClass,
 			Criterion criterion) throws ComponentException {
 		return select(principal, bulkClass, criterion, null, new Order[0]);

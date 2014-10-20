@@ -53,11 +53,14 @@ public interface CRUDComponentSession<T extends OggettoBulk> {
 			DistinctProjection distinctProjection, Criterion criterion) throws ComponentException;
 
 	public List<Object> findByProjection(Principal principal, Class<T> bulkClass,
-			Projection projection, Criterion criterion) throws ComponentException;
+			Projection projection, Criterion criterion, boolean useBeanResultTransformer) throws ComponentException;
 
 	public List<Object> findByProjection(Principal principal, Class<T> bulkClass,
 			Projection projection, Criterion criterion, Order... order) throws ComponentException;
 
+	public List<Object> findByProjection(Principal principal, Class<T> bulkClass,
+			Projection projection, Criterion criterion, boolean useBeanResultTransformer, Order... order) throws ComponentException;
+	
 	public T findById(Principal principal, Class<T> bulkClass, Serializable id) throws ComponentException;
 	
 	public void deleteByCriteria(Principal principal, Criteria criteria,
