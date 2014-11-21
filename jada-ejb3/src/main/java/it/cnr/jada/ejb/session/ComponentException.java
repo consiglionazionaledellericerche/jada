@@ -4,7 +4,7 @@
 */
 package it.cnr.jada.ejb.session;
 
-import it.cnr.jada.DetailedException;
+import it.cnr.jada.DetailedRuntimeException;
 
 import java.io.Serializable;
 /**
@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @version 1.0
  * @since October 2009
  */
-public class ComponentException extends DetailedException implements Serializable{
+public class ComponentException extends DetailedRuntimeException implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
