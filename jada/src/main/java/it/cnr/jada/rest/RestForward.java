@@ -3,7 +3,9 @@ package it.cnr.jada.rest;
 import it.cnr.jada.action.ActionContext;
 import it.cnr.jada.action.Forward;
 import it.cnr.jada.action.HttpActionContext;
+import it.cnr.jada.bulk.ColumnFieldProperty;
 import it.cnr.jada.bulk.OggettoBulk;
+import it.cnr.jada.util.Introspector;
 import it.cnr.jada.util.action.ConsultazioniBP;
 import it.cnr.jada.util.ejb.EJBCommonServices;
 
@@ -36,7 +38,15 @@ public class RestForward implements Forward {
 			mapper.configure(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false);
 			Enumeration<OggettoBulk> elements = bp.fetchPage(httpactioncontext);
 			while(elements.hasMoreElements()) {
-				jGenerator.writeRawValue(mapper.writeValueAsString(elements.nextElement()));				
+				jGenerator.writeStartObject();
+				OggettoBulk oggettoBulk = elements.nextElement();
+				for(Enumeration<ColumnFieldProperty> enumeration2 = bp.getColumns().elements(); enumeration2.hasMoreElements();){
+					ColumnFieldProperty columnFieldProperty = enumeration2.nextElement();
+					jGenerator.writeFieldName(columnFieldProperty.getProperty());
+					jGenerator.writeRawValue(mapper.writeValueAsString(
+							Introspector.getPropertyValue(oggettoBulk, columnFieldProperty.getProperty())));
+				}
+				jGenerator.writeEndObject();
 			}
 			jGenerator.writeEndArray();
 			jGenerator.close();
