@@ -42,7 +42,7 @@ public class RestForward implements Forward {
 				OggettoBulk oggettoBulk = elements.nextElement();
 				for(Enumeration<ColumnFieldProperty> enumeration2 = bp.getColumns().elements(); enumeration2.hasMoreElements();){
 					ColumnFieldProperty columnFieldProperty = enumeration2.nextElement();
-					jGenerator.writeFieldName(columnFieldProperty.getProperty());
+					jGenerator.writeFieldName(columnFieldProperty.getName());
 					jGenerator.writeRawValue(mapper.writeValueAsString(
 							Introspector.getPropertyValue(oggettoBulk, columnFieldProperty.getProperty())));
 				}
