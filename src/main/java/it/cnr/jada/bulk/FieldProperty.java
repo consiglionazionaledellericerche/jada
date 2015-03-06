@@ -510,6 +510,8 @@ public class FieldProperty implements Serializable{
 			freeSearchSet = fieldproperty.freeSearchSet;
 		if(accessKey == null)
 			accessKey = fieldproperty.accessKey;
+		if(CRUDBusinessProcessName == null)
+			CRUDBusinessProcessName = fieldproperty.CRUDBusinessProcessName;
 			
 	}
 
@@ -2063,6 +2065,8 @@ public class FieldProperty implements Serializable{
 		getNewButton().write(jspwriter, !flag, "javascript:submitForm('doBlankSearch(" + mergePrefix(s2, getName()) + ")')");
 		getSearchButton().write(jspwriter, !flag, "javascript:submitForm('doSearch(" + mergePrefix(s2, getName()) + ")')");
 		getFreeSearchButton().write(jspwriter, !flag, "javascript:submitForm('doFreeSearch(" + mergePrefix(s2, getName()) + ")')");
+		if (getCRUDBusinessProcessName() != null)
+			getCrudButton().write(jspwriter, !flag, "javascript:submitForm('doCRUD(" + mergePrefix(s2, getName()) + ")')");
 		if(formName != null)
 		{
 			jspwriter.println("</td></tr>");
