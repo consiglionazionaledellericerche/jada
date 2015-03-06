@@ -132,6 +132,7 @@ public class BulkInfo implements Serializable{
         FieldPropertySet fieldpropertyset = (FieldPropertySet)forms.get("default");
         if(fieldpropertyset == null)
             forms.put("default", fieldpropertyset = new FieldPropertySet(this, "default"));
+        completeFieldProperty(fieldproperty);
         fieldpropertyset.addFieldProperty(fieldproperty);
         fieldproperty.setBulkInfo(this);
     }
