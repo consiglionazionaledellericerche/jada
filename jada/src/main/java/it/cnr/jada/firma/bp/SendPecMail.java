@@ -1,17 +1,40 @@
 package it.cnr.jada.firma.bp;
+import it.cnr.jada.firma.DatiPEC;
+import it.cnr.jada.firma.jaxb.AOO;
+import it.cnr.jada.firma.jaxb.Amministrazione;
+import it.cnr.jada.firma.jaxb.CAP;
+import it.cnr.jada.firma.jaxb.Civico;
+import it.cnr.jada.firma.jaxb.Cognome;
+import it.cnr.jada.firma.jaxb.Comune;
+import it.cnr.jada.firma.jaxb.Denominazione;
+import it.cnr.jada.firma.jaxb.Descrizione;
+import it.cnr.jada.firma.jaxb.Destinatario;
+import it.cnr.jada.firma.jaxb.Destinazione;
+import it.cnr.jada.firma.jaxb.Documento;
+import it.cnr.jada.firma.jaxb.Fax;
+import it.cnr.jada.firma.jaxb.Identificatore;
+import it.cnr.jada.firma.jaxb.IndirizzoPostale;
+import it.cnr.jada.firma.jaxb.IndirizzoTelematico;
+import it.cnr.jada.firma.jaxb.Intestazione;
+import it.cnr.jada.firma.jaxb.Mittente;
+import it.cnr.jada.firma.jaxb.Nome;
+import it.cnr.jada.firma.jaxb.Origine;
+import it.cnr.jada.firma.jaxb.Persona;
+import it.cnr.jada.firma.jaxb.Provincia;
+import it.cnr.jada.firma.jaxb.Segnatura;
+import it.cnr.jada.firma.jaxb.Telefono;
+import it.cnr.jada.firma.jaxb.Titolo;
+import it.cnr.jada.firma.jaxb.Toponimo;
+import it.cnr.jada.firma.jaxb.UnitaOrganizzativa;
+import it.cnr.jada.util.ejb.EJBCommonServices;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Iterator;
 import java.util.List;
-
-import it.cnr.jada.bulk.OggettoBulk;
-import it.cnr.jada.firma.DatiPEC;
-import it.cnr.jada.firma.jaxb.*;
-import it.cnr.jada.util.ejb.EJBCommonServices;
 
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
@@ -23,7 +46,6 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.naming.NamingException;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
