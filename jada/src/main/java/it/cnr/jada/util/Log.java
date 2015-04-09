@@ -14,10 +14,10 @@ package it.cnr.jada.util;
 * limitations under the License.
 */
 
-import org.apache.commons.logging.LogFactory;
-
 import java.lang.reflect.Array;
 import java.util.Arrays;
+
+import org.slf4j.LoggerFactory;
 
 /**
 * <p>A <em>wafer thin</em> wrapper around Commons logging that uses var-args to make it
@@ -30,7 +30,7 @@ import java.util.Arrays;
 * @author Tim Fennell
 */
 public final class Log {
-   private org.apache.commons.logging.Log realLog;
+   private org.slf4j.Logger realLog;
 
    /**
     * Get a Log instance to perform logging within the Class specified.  Returns an instance
@@ -39,27 +39,15 @@ public final class Log {
     * @return a Log instance with which to log
     */
    public static Log getInstance(Class clazz) {
-       return new Log( LogFactory.getLog(clazz) );
+       return new Log( LoggerFactory.getLogger(clazz) );
    }
 
    /**
     * Private constructor which creates a new Log instance wrapping the commons Log instance
     * provided.  Only used by the static getInstance() method on this class.
     */
-   private Log(org.apache.commons.logging.Log realLog) {
+   private Log(org.slf4j.Logger realLog) {
        this.realLog = realLog;
-   }
-
-   /**
-    * Logs a Throwable and optional message parts at level fatal.
-    * @param throwable an instance of Throwable that should be logged with stack trace
-    * @param messageParts zero or more objects which should be combined, by calling toString()
-    *        to form the log message.
-    */
-   public final void fatal(Throwable throwable, Object... messageParts) {
-       if (this.realLog.isFatalEnabled()) {
-           this.realLog.fatal(combineParts(messageParts), throwable);
-       }
    }
 
    /**
@@ -119,19 +107,6 @@ public final class Log {
    public final void trace(Throwable throwable, Object... messageParts) {
        if (this.realLog.isTraceEnabled()) {
            this.realLog.trace(combineParts(messageParts), throwable);
-       }
-   }
-
-   // Similar methods, but without Throwables, follow
-
-   /**
-    * Logs one or more message parts at level fatal.
-    * @param messageParts one or more objects which should be combined, by calling toString()
-    *        to form the log message.
-    */
-   public final void fatal(Object... messageParts) {
-       if (this.realLog.isFatalEnabled()) {
-           this.realLog.fatal(combineParts(messageParts));
        }
    }
 

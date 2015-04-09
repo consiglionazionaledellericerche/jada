@@ -107,7 +107,7 @@ public class ActionServlet extends HttpServlet implements Serializable{
 	    	try{
 				httpservletrequest = new MultipartWrapper(httpservletrequest,getServletContext().getRealPath("/tmp/"));
 	    	}catch(Exception e){
-	    		log.fatal(e, "Errore Multipart :");
+	    		log.error(e, "Errore Multipart :");
 			}
 		}  
 
@@ -149,7 +149,7 @@ public class ActionServlet extends HttpServlet implements Serializable{
 				    	    }
 				    	}
 			    	}catch(Exception e){
-			    		log.fatal(e, "Errore Form urlencoded :");
+			    		log.error(e, "Errore Form urlencoded :");
 					}
 			    }
 		    	else {
