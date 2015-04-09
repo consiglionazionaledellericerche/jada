@@ -248,7 +248,17 @@
                <artifactId>commons-io</artifactId>
                <version>1.4</version>
        </dependency>
-		           
+	    <dependency>
+	      <groupId>org.slf4j</groupId>
+	      <artifactId>slf4j-log4j12</artifactId>
+	      <version>1.4.3</version>
+	      <exclusions>
+	      	<exclusion>
+	      		<artifactId>log4j</artifactId>
+	      		<groupId>log4j</groupId>
+	      	</exclusion>
+	      </exclusions>
+	    </dependency>		           
 	</dependencies>
 	<properties>
 		<nexus.url>http://bandt.si.cnr.it:8280/nexus</nexus.url>
