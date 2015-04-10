@@ -226,7 +226,7 @@
 		<dependency>
 			<groupId>it.cnr.commons</groupId>
 			<artifactId>firmadigitale</artifactId>
-			<version>0.25</version>
+			<version>0.2.11</version>
 		</dependency>
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
