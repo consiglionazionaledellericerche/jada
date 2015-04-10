@@ -111,7 +111,7 @@
   </build>
 
   <scm>
-    <connection>scm:svn:svn+ssh://svnselezioni.si.cnr.it/DATA/svnroot/svn-documentale/tags/firmadigitale-0.2.6</connection>
-    <developerConnection>scm:svn:svn+ssh://svnselezioni.si.cnr.it/DATA/svnroot/svn-documentale/tags/firmadigitale-0.2.6</developerConnection>
+    <connection>svn+ssh://scm.cedrc.cnr.it/data/svnroot/svn-jada/trunk/firma-digitale</connection>
+    <developerConnection>svn+ssh://scm.cedrc.cnr.it/data/svnroot/svn-jada/trunk/firma-digitale</developerConnection>
   </scm>
 </project>
