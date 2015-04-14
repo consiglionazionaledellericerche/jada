@@ -6,54 +6,14 @@
 	<version>2.2.0</version>
 	<packaging>ejb</packaging>
 	<name>jada</name>
-	
-	<repositories>
-		<repository>
-			<id>cnr</id>
-			<name>cnr public</name>
-			<url>${nexus.url}/content/groups/public</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>cnr-snapshots</id>
-			<name>cnr public snapshots</name>
-			<url>${nexus.url}/content/groups/public-snapshots</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
-
-	<pluginRepositories>
-		<pluginRepository>
-			<id>cnr</id>
-			<name>cnr public</name>
-			<url>${nexus.url}/content/groups/public</url>
-		</pluginRepository>
-	</pluginRepositories>
-	<distributionManagement>
-		<!-- Publish the versioned releases here -->
-		<repository>
-			<id>buildandtest</id>
-			<name>nexus bandt.si.cnr.it</name>
-			<url>${nexus.url}/content/repositories/releases</url>
-		</repository>
-
-		<!-- Publish the versioned releases here -->
-		<snapshotRepository>
-			<id>buildandtest</id>
-			<name>nexus buildandtest.si.cnr.it</name>
-			<url>${nexus.url}/content/repositories/snapshots</url>
-		</snapshotRepository>
-	</distributionManagement>
+	<parent>
+	    	<artifactId>archetype</artifactId>
+    		<groupId>it.cnr.si</groupId>
+    		<version>0.2</version>
+  	</parent>		
+	<properties>
+		<project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
+	</properties>
 	<build>
 		<pluginManagement>
 			<plugins>
@@ -260,8 +220,4 @@
 	      </exclusions>
 	    </dependency>		           
 	</dependencies>
-	<properties>
-		<nexus.url>http://bandt.si.cnr.it:8280/nexus</nexus.url>
-		<project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
-	</properties>
 </project>
