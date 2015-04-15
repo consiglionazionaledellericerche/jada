@@ -9,7 +9,7 @@
 
   <groupId>it.cnr.commons</groupId>
   <artifactId>firmadigitale</artifactId>
-  <version>0.2.12</version>
+  <version>0.3-SNAPSHOT</version>
 
   <properties>
     <jaxws.output.dir>${project.build.directory}/classes</jaxws.output.dir>
@@ -112,7 +112,7 @@
   </build>
 
   <scm>
-    <connection>scm:svn:svn+ssh://scm.cedrc.cnr.it/data/svnroot/svn-jada/tags/firmadigitale-0.2.12</connection>
-    <developerConnection>scm:svn:svn+ssh://scm.cedrc.cnr.it/data/svnroot/svn-jada/tags/firmadigitale-0.2.12</developerConnection>
+    <connection>scm:svn:svn+ssh://scm.cedrc.cnr.it/data/svnroot/svn-jada/trunk/firma-digitale</connection>
+    <developerConnection>scm:svn:svn+ssh://scm.cedrc.cnr.it/data/svnroot/svn-jada/trunk/firma-digitale</developerConnection>
   </scm>
 </project>
