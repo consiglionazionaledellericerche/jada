@@ -219,10 +219,14 @@ public class SelezionatoreListaBP extends AbstractSelezionatoreBP
 
 	public String getFormTitle()
 	{
+		String formTitle = null;
 		if(bulkInfo == null)
-			return super.getFormTitle();
+			formTitle = super.getFormTitle();
 		else
-			return super.getFormTitle() + " - " + bulkInfo.getShortDescription();
+			formTitle = super.getFormTitle() + " - " + bulkInfo.getShortDescription();
+		if (iterator != null)
+			formTitle = formTitle + " - Trovate " + elementsCount + " righe";
+		return formTitle;
 	}
 
 	public RemoteIterator getIterator()

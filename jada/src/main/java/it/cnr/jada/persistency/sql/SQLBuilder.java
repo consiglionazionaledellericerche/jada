@@ -172,9 +172,9 @@ public class SQLBuilder extends SQLQuery{
         addClause(s, s1, i, obj, true);
     }
 	/**
-	*  1° parametro valore da confrontare dalla decode
-	*  2° parametro orderhashtable altre condizioni da confrontare nella decode e comportamento
-	*  3° parametro valore di default della decode
+	*  1ï¿½ parametro valore da confrontare dalla decode
+	*  2ï¿½ parametro orderhashtable altre condizioni da confrontare nella decode e comportamento
+	*  3ï¿½ parametro valore di default della decode
 	*/
 	public String addDecode(Object o, OrderedHashtable table, Object obj)
 	{
@@ -188,12 +188,12 @@ public class SQLBuilder extends SQLQuery{
 		    return s;
 	}
 	  /**
-		*  1° parametro valore da confrontare nella decode
-		*  2° parametro 1a condizione da verificare nella decode 
-		*  3° parametro comportamento caso 1a condizione 
-		*  4° parametro 2a condizione da verificare nella decode gestito anche null
-		*  5° parametro comportamento 2a condizione  gestito anche null
-		*  6° parametro valore di default della decode
+		*  1ï¿½ parametro valore da confrontare nella decode
+		*  2ï¿½ parametro 1a condizione da verificare nella decode 
+		*  3ï¿½ parametro comportamento caso 1a condizione 
+		*  4ï¿½ parametro 2a condizione da verificare nella decode gestito anche null
+		*  5ï¿½ parametro comportamento 2a condizione  gestito anche null
+		*  6ï¿½ parametro valore di default della decode
 		*/
 		public String addDecode(Object o, String s1,String s2,String s3,String s4, Object obj)
 		{		
@@ -546,7 +546,7 @@ public class SQLBuilder extends SQLQuery{
         resetStatement();
     }
     /**
-     ** Aggiunge una clausola SQL, nel caso in cui l'oggetto passato è null
+     ** Aggiunge una clausola SQL, nel caso in cui l'oggetto passato ï¿½ null
      ** fa fallire tutta la select
      */
 	public void addNotNullableSQLClause(String s, String s1, int i, Object obj)
@@ -580,7 +580,11 @@ public class SQLBuilder extends SQLQuery{
             clauses.append(")");
         } else
         {
-            clauses.append(s1);
+        	if (sqlconverter != null) {
+        		clauses.append(sqlconverter.columnName(s1));
+        	} else {
+                clauses.append(s1);        		
+        	}
         }
         clauses.append(' ');
         switch(i)
@@ -721,7 +725,7 @@ public class SQLBuilder extends SQLQuery{
     }
 	/**
 	 * Costruisce una Join o un'autoJoin con il parametro, il quale  
-	 * indica se la join da effettuare è di uguaglianza o di disuguaglianza
+	 * indica se la join da effettuare ï¿½ di uguaglianza o di disuguaglianza
 	 */
 	public void addSQLJoin(String s, int parametro, String s1)
 	{
