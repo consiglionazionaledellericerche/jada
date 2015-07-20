@@ -101,6 +101,21 @@ public class BusinessProcessMapping
         }
     }
 
+    public Boolean isSubclassOf(Class clazzIn)  throws BusinessProcessException {
+    	try
+    	{
+    		Class clazz = Class.forName(className);
+    		if (clazzIn.isAssignableFrom(clazz)){
+    			return true;
+    		}
+    		return false;
+    	}
+    	catch(ClassNotFoundException _ex)
+    	{
+            throw new BusinessProcessException("Error creating Class \"" + className );
+    	}
+    }
+
     public String getName()
     {
         return name;
