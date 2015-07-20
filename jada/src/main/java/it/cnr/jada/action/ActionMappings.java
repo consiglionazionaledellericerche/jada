@@ -9,7 +9,7 @@ public class ActionMappings implements Serializable {
 	private static final long serialVersionUID = 1L;
 
     private Hashtable<String, ActionMapping> actions;
-    private Hashtable<String, BusinessProcessMapping> businessProcesses;
+	private Hashtable<String, BusinessProcessMapping> businessProcesses;
     private Hashtable<String, Forward> forwards;
     
 	public ActionMappings() {
@@ -45,6 +45,19 @@ public class ActionMappings implements Serializable {
             return businessprocessmapping.getInstance(actioncontext);
     }
 
+    public Boolean isSubclassOf(String s, Class clazz)  throws BusinessProcessException
+        {
+        	if (businessProcesses != null){
+            BusinessProcessMapping businessprocessmapping = (BusinessProcessMapping)businessProcesses.get(s);
+            if(businessprocessmapping == null)
+                return false;
+            else
+                return businessprocessmapping.isSubclassOf(clazz);
+        } else {
+            return false;
+        }	
+		}
+		
     public BusinessProcess createBusinessProcess(String s, ActionContext actioncontext, Object aobj[])
         throws BusinessProcessException
     {
@@ -81,6 +94,11 @@ public class ActionMappings implements Serializable {
     }
 
 	public BusinessProcess createBusinessProcess(ActionMapping actionmapping, ActionContext actioncontext) throws BusinessProcessException {
+		String bpName = getBusinessProcessName(actionmapping, actioncontext);
+		return createBusinessProcess(bpName, actioncontext);
+	}
+
+	public String getBusinessProcessName(ActionMapping actionmapping, ActionContext actioncontext) throws BusinessProcessException {
 		String bpName = null;
 		for (String key : businessProcesses.keySet()) {
 			BusinessProcessMapping businessProcessMapping = businessProcesses.get(key);
@@ -89,7 +107,11 @@ public class ActionMappings implements Serializable {
 				break;
 			}
 		} 		
-		return createBusinessProcess(bpName, actioncontext);
+		return bpName;
+	}
+
+    public Hashtable<String, ActionMapping> getActions() {
+		return actions;
 	}
 
 }
