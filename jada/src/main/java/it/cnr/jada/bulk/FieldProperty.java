@@ -52,11 +52,11 @@ import javax.servlet.jsp.JspWriter;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 /**
-* Classe che descrive le proprietà di un input field da visualizzare in una FORM HTML 
+* Classe che descrive le proprietï¿½ di un input field da visualizzare in una FORM HTML 
 * per visualizzare/modificare il valore di un attributo di un OggettoBulk. 
 * Le FieldProperty sono definite nel BulkInfo di un OggettoBulk e possono essere elencate nel file ".info" associato.
 * 
-* Una field property possiede le seguenti proprietà (tra parentesi i valori di default:
+* Una field property possiede le seguenti proprietï¿½ (tra parentesi i valori di default:
 * 
 * name (null);
 *     Nome della fieldProperty 
@@ -64,7 +64,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 *     Nome della property JavaBean per estrarre/valorizzare il valore della FieldProperty 
 * formatName (null);
 *     Nome del Format da applicare al valore della FieldProperty per la visualizzazione in un 
-*     campo di testo (se nullo viene usato toString). Può essere il nome di una classe Format 
+*     campo di testo (se nullo viene usato toString). Puï¿½ essere il nome di una classe Format 
 *     o uno dei seguenti formati predefiniti:
 * 
 *     date_short
@@ -77,18 +77,18 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 * label (null);
 *     Label da utilizzare per il campo di input. 
 * keysProperty (null);
-*     Se valorizzato è il nome di una property dell'OggettoBulk da utilizzare per convertire il valore 
+*     Se valorizzato ï¿½ il nome di una property dell'OggettoBulk da utilizzare per convertire il valore 
 *     della FieldProperty mediante il lookup in un dizionario di chiavi; 
 *     la property deve restituire un'istanza di java.util.Dictionary che viene usata 
-*     sia in lettura che in scrittura. Se inputType è uguale a SELECT il dizionario 
+*     sia in lettura che in scrittura. Se inputType ï¿½ uguale a SELECT il dizionario 
 *     viene anche usato per ottenere l'elenco dei valori con cui riempire l'elenco delle opzioni. 
 * optionsProperty (null);
-*     Se valorizzato è il nome di una property dell'OggettoBulk da utilizzare per riempire 
-*     l'elenco delle opzioni di nel caso in cui inputType è SELECT. La property deve restituire 
+*     Se valorizzato ï¿½ il nome di una property dell'OggettoBulk da utilizzare per riempire 
+*     l'elenco delle opzioni di nel caso in cui inputType ï¿½ SELECT. La property deve restituire 
 *     un oggetto assimilabile a una collezione (un array statico o un'istanza di java.util.Collection, 
 *     java.util.Enumeration o di java.util.Iterator 
 * printProperty (null);
-*     Se valorizzato è il nome di una property da utilizzare per ottenere un valore "stampabile"; 
+*     Se valorizzato ï¿½ il nome di una property da utilizzare per ottenere un valore "stampabile"; 
 *     viene utilizzato solo in lettura secondo il seguente schema:
 * 
 *         * dall'OggettoBulk viene estratto il valore di "property";
@@ -98,7 +98,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 *         * se non nullo viene applicato il format; 
 * 
 *     Le fieldProperty dotate di printProperty sono implicitamente readonly tranne quelle con inputType = SELECT 
-*     e optionsProperty non nulla; in questo caso il valore da assegnare in scrittura è uno di quelli 
+*     e optionsProperty non nulla; in questo caso il valore da assegnare in scrittura ï¿½ uno di quelli 
 *     presenti nelle "options"; printProperty viene usata anche per estrarre la descrizione nell'elenco 
 *     delle opzioni della SELECT. 
 * style (null);
@@ -126,8 +126,8 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 * inputSize (0);
 *     Lunghezza media in caratteri di un campo di input; valido solo per inputType = TEXT o ROTEXT 
 * readonlyProperty (null);
-*     Se valorizzato è il nome di una property da utilizzare per ottenere la disabilitazione dinamica 
-*     del campo di input. La property deve essere di tipo Boolean e se il suo valore è true il 
+*     Se valorizzato ï¿½ il nome di una property da utilizzare per ottenere la disabilitazione dinamica 
+*     del campo di input. La property deve essere di tipo Boolean e se il suo valore ï¿½ true il 
 *     campo viene disabilitato. 
 * cols (0);
 *     Numero di colonne di un campo di input di tipo TEXTAREA 
@@ -144,20 +144,20 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 *     Nome del Format da utilizzare per convertire il testo digitato in un campo di input di tipo TEXT o TEXTAREA 
 *     in valore da assegnare alla property. Se nullo viene utilizzato "format". 
 * CRUDBusinessProcessName (null); Nome del CRUDBP da utilizzare sull'attivazione del bottone del CRUDTOOL
-* completeOnSave (true); Se true il FormController che governa l'editing dell'OggettoBulk può tentare di completare automaticamente il valore della FieldProperty SEARCHTOOL sulla base delle informazioni inserite nei campi di ricerca.
+* completeOnSave (true); Se true il FormController che governa l'editing dell'OggettoBulk puï¿½ tentare di completare automaticamente il valore della FieldProperty SEARCHTOOL sulla base delle informazioni inserite nei campi di ricerca.
 * nullable (true); Se true e inputType = SELECT viene aggiunta una voce vuota allinizio dell'elenco delle opzioni selezionabili. Se l'utente seleziona tale voce la property viene impostata a null.
-* enabledOnEdit (true); Se true il campo viene abilitato in modalità FormController.EDIT.
-* enabledOnInsert (true); Se true il campo viene abilitato in modalità FormController.INSERT
-* enabledOnSearch (false); Se true il campo viene abilitato in modalità FormController.SEARCH
-* enabledOnFreeSearch (true); Se true il campo viene abilitato in modalità FormController.FREESEARCH
-* enabledOnView (false); Se true il campo viene abilitato in modalità FormController.VIEW
-* readonlyPropertyOnEdit (false); Nome della property da usare se il FormController si trova in modalità FormController.EDIT per disabilitare in modo dinamico il campo di input.
-* readonlyPropertyOnInsert (false); Nome della property da usare se il FormController si trova in modalità FormController.INSERT per disabilitare in modo dinamico il campo di input.
-* readonlyPropertyOnSearch (false); Nome della property da usare se il FormController si trova in modalità FormController.SEARCH per disabilitare in modo dinamico il campo di input.
-* readonlyPropertyOnFreeSearch (false); Nome della property da usare se il FormController si trova in modalità FormController.FREESEARCH per disabilitare in modo dinamico il campo di input.
-* readonlyPropertyOnView (false); Nome della property da usare se il FormController si trova in modalità FormController.VIEW per disabilitare in modo dinamico il campo di input.
+* enabledOnEdit (true); Se true il campo viene abilitato in modalitï¿½ FormController.EDIT.
+* enabledOnInsert (true); Se true il campo viene abilitato in modalitï¿½ FormController.INSERT
+* enabledOnSearch (false); Se true il campo viene abilitato in modalitï¿½ FormController.SEARCH
+* enabledOnFreeSearch (true); Se true il campo viene abilitato in modalitï¿½ FormController.FREESEARCH
+* enabledOnView (false); Se true il campo viene abilitato in modalitï¿½ FormController.VIEW
+* readonlyPropertyOnEdit (false); Nome della property da usare se il FormController si trova in modalitï¿½ FormController.EDIT per disabilitare in modo dinamico il campo di input.
+* readonlyPropertyOnInsert (false); Nome della property da usare se il FormController si trova in modalitï¿½ FormController.INSERT per disabilitare in modo dinamico il campo di input.
+* readonlyPropertyOnSearch (false); Nome della property da usare se il FormController si trova in modalitï¿½ FormController.SEARCH per disabilitare in modo dinamico il campo di input.
+* readonlyPropertyOnFreeSearch (false); Nome della property da usare se il FormController si trova in modalitï¿½ FormController.FREESEARCH per disabilitare in modo dinamico il campo di input.
+* readonlyPropertyOnView (false); Nome della property da usare se il FormController si trova in modalitï¿½ FormController.VIEW per disabilitare in modo dinamico il campo di input.
 * layout (DEFAULT_LAYOUT);
-*     Tipo di layout da applicare; può assumere i valori "HORIZONTAL" e "VERTICAL"; attualmente è valido solo per i inputType = RADIOGROUP e CRUDSEARCH (viene applicato alla form di ricerca, vd. formName). 
+*     Tipo di layout da applicare; puï¿½ assumere i valori "HORIZONTAL" e "VERTICAL"; attualmente ï¿½ valido solo per i inputType = RADIOGROUP e CRUDSEARCH (viene applicato alla form di ricerca, vd. formName). 
 * img
 *     URL di immagine; valido solo per inputType = "BUTTON" 
 * href
@@ -2364,7 +2364,7 @@ public class FieldProperty implements Serializable{
 		s4 = mergeStyles(s4, writeFillExceptionStyle(jspwriter, fieldvalidationexception));
 		if(flag || obj == null)
 		{
-			jspwriter.print(" readonly");
+			jspwriter.print(" readonly disabled");
 			s4 = mergeStyles(s4, "background-color:transparent;color:BlackText;");
 		}
 		if(s1 != null)
