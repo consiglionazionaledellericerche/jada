@@ -446,6 +446,11 @@ public class BulkHome extends PersistentHome implements Serializable {
 			OggettoBulk oggettobulk) throws PersistencyException,
 			ComponentException {
 	}
+	
+	public void initializeBulkForInsert(UserContext usercontext,
+			OggettoBulk oggettobulk) throws PersistencyException,
+			ComponentException{		
+	}
 
 	public void insert(Persistent persistent, UserContext userContext) throws PersistencyException {
 		OggettoBulk oggettobulk = (OggettoBulk) persistent;
