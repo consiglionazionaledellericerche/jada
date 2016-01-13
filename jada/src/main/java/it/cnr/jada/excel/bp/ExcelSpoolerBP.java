@@ -14,6 +14,7 @@ import it.cnr.jada.bulk.OggettoBulk;
 import it.cnr.jada.excel.bulk.Excel_spoolerBulk;
 import it.cnr.jada.excel.ejb.BframeExcelComponentSession;
 import it.cnr.jada.util.action.SelezionatoreListaBP;
+import it.cnr.jada.util.ejb.EJBCommonServices;
 import it.cnr.jada.util.jsp.Button;
 import it.cnr.jada.util.jsp.JSPUtils;
 
@@ -60,6 +61,7 @@ public class ExcelSpoolerBP extends SelezionatoreListaBP {
 	}
 	public void refresh(ActionContext context) throws BusinessProcessException {
 		try {
+			EJBCommonServices.closeRemoteIterator(getIterator());			
 			setIterator(context,createComponentSession().queryJobs(
 				context.getUserContext()));
 		} catch(Throwable e) {
@@ -67,7 +69,7 @@ public class ExcelSpoolerBP extends SelezionatoreListaBP {
 		}
 	}
 	// R.P. 04/09/2009 eliminato per la schedulazione  
-	/* Riscritto perchè in questo caso non voglio che quando l'utente
+	/* Riscritto perchï¿½ in questo caso non voglio che quando l'utente
 	 * seleziona una riga nel selezionatore venga anche impostato
 	 * il modello del BulkBP
 	 
