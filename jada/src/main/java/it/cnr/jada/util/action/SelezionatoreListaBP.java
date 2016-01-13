@@ -3,6 +3,7 @@ package it.cnr.jada.util.action;
 import it.cnr.jada.DetailedRuntimeException;
 import it.cnr.jada.UserContext;
 import it.cnr.jada.action.ActionContext;
+import it.cnr.jada.action.ActionServlet;
 import it.cnr.jada.action.BusinessProcess;
 import it.cnr.jada.action.BusinessProcessException;
 import it.cnr.jada.action.Forward;
@@ -27,6 +28,7 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
 import javax.servlet.ServletException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
@@ -369,10 +371,11 @@ public class SelezionatoreListaBP extends AbstractSelezionatoreBP
 		try
 		{
 			return ((RemoteOrderable)iterator).isOrderableBy(s);
-		}
-		catch(RemoteException remoteexception)
-		{
+		} catch(RemoteException remoteexception) {
 			throw new DetailedRuntimeException(remoteexception);
+		} catch(javax.ejb.ConcurrentAccessException concurrentAccessException){
+			logger.info(concurrentAccessException);
+			return false;
 		}
 	}
 
@@ -680,5 +683,6 @@ public class SelezionatoreListaBP extends AbstractSelezionatoreBP
 	private SelectionListener selectionListener;
 	private boolean mostraHideColumns = false; 
 	private boolean hiddenColumnButtonHidden = true;
+	private static final Log logger = Log.getInstance(SelezionatoreListaBP.class);
 
 }
