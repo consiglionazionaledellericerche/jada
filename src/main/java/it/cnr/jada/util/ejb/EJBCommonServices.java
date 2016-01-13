@@ -12,6 +12,7 @@ import it.cnr.jada.ejb.UserTransactionWrapper;
 import it.cnr.jada.persistency.sql.LoggableStatement;
 import it.cnr.jada.util.Config;
 import it.cnr.jada.util.EventTracer;
+import it.cnr.jada.util.Log;
 import it.cnr.jada.util.RemoteIterator;
 import it.cnr.jada.util.SessionEventTracer;
 
@@ -47,6 +48,7 @@ public class EJBCommonServices implements Serializable{
 	private static String dataSourceName;
 	private static String earAppName;
 	private static final Format clientInfoDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm.ss");
+	private static final Log logger = Log.getInstance(EJBCommonServices.class);
 
 	private EJBCommonServices(){
 		
@@ -62,7 +64,11 @@ public class EJBCommonServices implements Serializable{
 				remoteiterator.close();
 				remoteiterator.ejbRemove();
 			}
+		}catch(IllegalStateException illegalStateException){
 		}catch(javax.ejb.NoSuchEJBException noSuchEJBException){
+			logger.info(noSuchEJBException);
+		}catch(javax.ejb.ConcurrentAccessException concurrentAccessException){
+			logger.info(concurrentAccessException);			
 		}catch(Exception removeexception){
 			throw new RemoteException("Remove exception", removeexception);
 		}
