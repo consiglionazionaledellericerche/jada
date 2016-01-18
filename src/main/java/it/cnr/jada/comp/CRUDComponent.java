@@ -218,8 +218,6 @@ import java.io.Serializable;
         try
         {
             initializeKeysAndOptionsInto(usercontext, oggettobulk);
-            BulkHome home = getHome(usercontext, oggettobulk.getClass());
-            home.initializeBulkForInsert(usercontext, oggettobulk);
             return oggettobulk;
         }
         catch(Throwable throwable)
