@@ -173,7 +173,7 @@ public class FieldProperty implements Serializable{
 	private static Button crudButton;
 	private static String inputTypeNames[] = {
 		"UNDEFINED", "HIDDEN", "PASSWORD", "RADIOGROUP", "ROTEXT", "SEARCHTOOL", "SELECT", "TEXT", "TEXTAREA", "CHECKBOX", 
-		"CRUDTOOL", "BUTTON", "TABLE", "FORM", "FILE", "DESCTOOL"
+		"CRUDTOOL", "BUTTON", "TABLE", "FORM", "FILE", "DESCTOOL", "LABEL"
 	};
 	public static final int UNDEFINED = 0;
 	public static final int HIDDEN = 1;
@@ -191,6 +191,7 @@ public class FieldProperty implements Serializable{
 	public static final int FORM = 13;
 	public static final int FILE = 14;
 	public static final int DESCTOOL = 15;
+	public static final int LABEL = 16;
 	
 	public static final int DEFAULT_LAYOUT = -1;
 	public static final int VERTICAL_LAYOUT = 0;
@@ -1807,6 +1808,10 @@ public class FieldProperty implements Serializable{
 				writeDescTool(jspwriter, obj, flag, obj1, s, s1, s2, i, fieldvalidationmap);
 				break;
 
+			case LABEL: 
+				writeLabel(jspwriter, obj, flag, obj1, s, s1, s2, i, fieldvalidationmap);
+				break;
+
 			default:
 				if(optionsProperty != null)
 					writeSelect(bp, jspwriter, obj, flag, obj1, s, s1, s2, i, fieldvalidationmap);
@@ -2084,6 +2089,18 @@ public class FieldProperty implements Serializable{
 		writeImgDesc(jspwriter, obj, flag, obj1, s, s1, s2, i, fieldvalidationmap);
 		jspwriter.println("</span>");
 	}
+
+	protected void writeLabel(JspWriter jspwriter, Object obj, boolean flag, Object obj1, String s, String s1, String s2, 
+			int i, FieldValidationMap fieldvalidationmap)
+		throws IOException, IntrospectionException, InvocationTargetException
+	{
+		jspwriter.println("<span");
+		writeLabelStyle(jspwriter, s, labelStyle, obj);
+		jspwriter.print(">");
+		jspwriter.print(encodeHtmlText(obj1));
+		jspwriter.println("</span>");
+	}
+
 	protected void writeImgDesc(JspWriter jspwriter, Object obj, boolean flag, Object obj1, String s, String s1, String s2, 
 			int i, FieldValidationMap fieldvalidationmap)
 		throws IOException, IntrospectionException, InvocationTargetException
