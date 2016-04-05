@@ -36,6 +36,44 @@ public class CRUDAction extends BulkAction
             hookforward.addParameter("undoBringBack", oggettobulk);
         return hookforward;
     }
+    
+    public Forward doLastSearch(ActionContext actioncontext)
+            throws RemoteException, InstantiationException, RemoveException
+        {
+            try
+            {
+                fillModel(actioncontext);
+                CRUDBP crudbp = getBusinessProcess(actioncontext);
+                OggettoBulk oggettobulk = crudbp.getModel();
+                RemoteIterator remoteiterator = crudbp.lastFind(actioncontext);
+                if(remoteiterator == null || remoteiterator.countElements() == 0)
+                {
+                    EJBCommonServices.closeRemoteIterator(remoteiterator);
+                    crudbp.setMessage("La ricerca non ha fornito alcun risultato.");
+                    return actioncontext.findDefaultForward();
+                }
+                if(remoteiterator.countElements() == 1)
+                {
+                    OggettoBulk oggettobulk1 = (OggettoBulk)remoteiterator.nextElement();
+                    EJBCommonServices.closeRemoteIterator(remoteiterator);
+                    crudbp.setMessage("La ricerca ha fornito un solo risultato.");
+                    return doRiportaSelezione(actioncontext, oggettobulk1);
+                } else
+                {
+                    crudbp.setModel(actioncontext, oggettobulk);
+                    SelezionatoreListaBP selezionatorelistabp = (SelezionatoreListaBP)actioncontext.createBusinessProcess("Selezionatore");
+                    selezionatorelistabp.setIterator(actioncontext, remoteiterator);
+                    selezionatorelistabp.setBulkInfo(crudbp.getSearchBulkInfo());
+                    selezionatorelistabp.setColumns(getBusinessProcess(actioncontext).getSearchResultColumns());
+                    actioncontext.addHookForward("seleziona", this, "doRiportaSelezione");
+                    return actioncontext.addBusinessProcess(selezionatorelistabp);
+                }
+            }
+            catch(Throwable throwable)
+            {
+                return handleException(actioncontext, throwable);
+            }
+        }
 
     public Forward doCerca(ActionContext actioncontext)
         throws RemoteException, InstantiationException, RemoveException
