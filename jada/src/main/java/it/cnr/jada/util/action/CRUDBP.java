@@ -1,12 +1,10 @@
 package it.cnr.jada.util.action;
 
 import it.cnr.jada.action.ActionContext;
-import it.cnr.jada.action.BusinessProcess;
 import it.cnr.jada.action.BusinessProcessException;
 import it.cnr.jada.bulk.BulkInfo;
 import it.cnr.jada.bulk.OggettoBulk;
 import it.cnr.jada.bulk.ROWrapper;
-import it.cnr.jada.bulk.UserInfo;
 import it.cnr.jada.bulk.ValidationException;
 import it.cnr.jada.persistency.sql.CompoundFindClause;
 import it.cnr.jada.util.Config;
@@ -22,8 +20,8 @@ import java.io.Serializable;
 import java.text.DateFormat;
 import java.util.Dictionary;
 import java.util.Enumeration;
+
 import javax.servlet.ServletException;
-import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 
 // Referenced classes of package it.cnr.jada.util.action:
@@ -170,11 +168,12 @@ public abstract class CRUDBP extends BulkBP
 
     protected Button[] createToolbar()
     {
-        Button abutton[] = new Button[9];
+        Button abutton[] = new Button[10];
         int i = 0;
         abutton[i++] = new Button(Config.getHandler().getProperties(getClass()), "CRUDToolbar.search");
         abutton[i++] = new Button(Config.getHandler().getProperties(getClass()), "CRUDToolbar.startSearch");
         abutton[i++] = new Button(Config.getHandler().getProperties(getClass()), "CRUDToolbar.freeSearch");
+        abutton[i++] = new Button(Config.getHandler().getProperties(getClass()), "CRUDToolbar.startLastSearch");        
         abutton[i++] = new Button(Config.getHandler().getProperties(getClass()), "CRUDToolbar.new");
         abutton[i++] = new Button(Config.getHandler().getProperties(getClass()), "CRUDToolbar.save");
         abutton[i++] = new Button(Config.getHandler().getProperties(getClass()), "CRUDToolbar.delete");
@@ -210,6 +209,9 @@ public abstract class CRUDBP extends BulkBP
 
     public abstract RemoteIterator find(ActionContext actioncontext, CompoundFindClause compoundfindclause, OggettoBulk oggettobulk)
         throws BusinessProcessException;
+
+    public abstract RemoteIterator lastFind(ActionContext actioncontext)
+            throws BusinessProcessException;
 
     public OggettoBulk getBringBackModel()
     {
