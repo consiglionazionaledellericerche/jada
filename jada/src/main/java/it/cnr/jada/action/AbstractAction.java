@@ -1,6 +1,6 @@
 package it.cnr.jada.action;
 
-import it.cnr.jada.*;
+import it.cnr.jada.DetailedRuntimeException;
 import it.cnr.jada.util.Introspector;
 import it.cnr.jada.util.action.FormBP;
 import it.cnr.jada.util.ejb.RemoteError;
@@ -12,7 +12,6 @@ import java.lang.reflect.Method;
 import java.rmi.RemoteException;
 import java.text.ParseException;
 import java.util.StringTokenizer;
-import org.omg.CORBA.COMM_FAILURE;
 
 // Referenced classes of package it.cnr.jada.action:
 //            Action, ActionContext, ActionPerformingError, BusinessProcess, 
@@ -41,10 +40,6 @@ public abstract class AbstractAction
         catch(NoSuchBusinessProcessException _ex)
         {
             return actioncontext.findForward("pageExpired");
-        }
-        catch(COMM_FAILURE _ex)
-        {
-            return actioncontext.findForward("serviceUnavailable");
         }
         catch(UserTransactionTimeoutException usertransactiontimeoutexception)
         {
