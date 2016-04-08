@@ -75,7 +75,7 @@ public class CRUDFirmaBP extends SimpleCRUDBP {
 		}
 		if (!(file == null || file.getName().equals(""))) { 
 			//if (file.length() > LUNGHEZZA_MAX)
-			//	throw new ValidationException("Attenzione: la dimensione del file è superiore alla massima consentita (10 Mb).");
+			//	throw new ValidationException("Attenzione: la dimensione del file  superiore alla massima consentita (10 Mb).");
 
 			doc.setFile(file.getFile());
 			doc.setNome_file(doc.parseFilename(file.getName()));

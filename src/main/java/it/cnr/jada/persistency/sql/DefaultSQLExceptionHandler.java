@@ -82,7 +82,7 @@ public class DefaultSQLExceptionHandler extends SQLExceptionHandler
         case 20012: 
             return new NotDeletableException(sqlexception, persistent);
         case 4068:
-        	return new ApplicationPersistencyDiscardedException("Si è verificato un problema momentaneo della procedura.\nRiprovare l'operazione.");
+        	return new ApplicationPersistencyDiscardedException("Si e' verificato un problema momentaneo della procedura.\nRiprovare l'operazione.");
         }
         return super.handleSQLException(sqlexception, persistent);
     }
