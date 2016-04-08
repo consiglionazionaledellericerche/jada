@@ -1,11 +1,11 @@
 package it.cnr.jada.comp;
 
 import it.cnr.jada.UserContext;
-import it.cnr.jada.bulk.BulkHome;
 import it.cnr.jada.bulk.OggettoBulk;
 import it.cnr.jada.persistency.PersistencyException;
 import it.cnr.jada.persistency.Persistent;
-import it.cnr.jada.persistency.sql.*;
+import it.cnr.jada.persistency.sql.CompoundFindClause;
+import it.cnr.jada.persistency.sql.Query;
 import it.cnr.jada.util.Introspector;
 import it.cnr.jada.util.RemoteIterator;
 
@@ -13,7 +13,7 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 
 /**
- * Una componente con responsabilità di ricerca. L'interfaccia pubblica possiede due metodi cerca che implementano 
+ * Una componente con responsabilit  di ricerca. L'interfaccia pubblica possiede due metodi cerca che implementano 
  * la ricerca di un OggettoBulk (senza vincoli e contestuale ad un altro OggettoBulk)
  */
 public class RicercaComponent extends GenericComponent implements Serializable, IRicercaMgr{
@@ -24,15 +24,15 @@ public class RicercaComponent extends GenericComponent implements Serializable, 
      * Esegue una operazione di ricerca di un OggettoBulk con clausole. 
      * Pre-post-conditions: 
      * Nome: Clausole non specificate 
-     * Pre: L'albero delle clausole non è specficato (nullo) 
+     * Pre: L'albero delle clausole non   specficato (nullo) 
      * Post: Viene generato un albero di clausole usando tutti i valori non nulli degli attributi dell'OggettoBulk 
-     * 		specificato come prototipo. L'elenco degli attributi da utilizzare per ottenere le clausole è estratto 
+     * 		specificato come prototipo. L'elenco degli attributi da utilizzare per ottenere le clausole   estratto 
      * 		dal BulkInfo dell'OggettoBulk 
      * Nome: Tutti i controlli superati 
      * Pre: Albero delle clausole di ricerca specificato (non nullo) 
      * Post: Viene effettuata una ricerca di OggettoBulk compatibili con il bulk specificato. 
      * 		La ricerca deve essere effettuata utilizzando le clausole specificate da "clausole". 
-     * 		L'operazione di lettura viene effettuata con una FetchPolicy il cui nome è ottenuto concatenando il 
+     * 		L'operazione di lettura viene effettuata con una FetchPolicy il cui nome   ottenuto concatenando il 
      * 		nome della component con la stringa ".find"
      */
     public RemoteIterator cerca(UserContext usercontext, CompoundFindClause compoundfindclause, OggettoBulk oggettobulk) throws ComponentException{
@@ -48,15 +48,15 @@ public class RicercaComponent extends GenericComponent implements Serializable, 
      * l'attributo e l'OggettoBulk specificato. 
      * Pre-post-conditions: 
      * Nome: Clausole non specificate 
-     * Pre: L'albero delle clausole non è specficato (nullo) 
+     * Pre: L'albero delle clausole non   specficato (nullo) 
      * Post: Viene generato un albero di clausole usando tutti i valori non nulli degli attributi dell'OggettoBulk 
-     * 		specificato come prototipo. L'elenco degli attributi da utilizzare per ottenere le clausole è estratto 
+     * 		specificato come prototipo. L'elenco degli attributi da utilizzare per ottenere le clausole   estratto 
      * 		dal BulkInfo dell'OggettoBulk 
      * Nome: Tutti i controlli superati 
      * Pre: Albero delle clausole di ricerca specificato (non nullo) 
      * Post: Viene effettuata una ricerca di possibili OggettoBulk da assegnare all'attributo "attributo" 
      * 		dell'OggettoBulk "contesto". La ricerca deve essere effettuata utilizzando le clausole specificate 
-     * 		da "clausole". L'operazione di lettura viene effettuata con una FetchPolicy il cui nome è ottenuto 
+     * 		da "clausole". L'operazione di lettura viene effettuata con una FetchPolicy il cui nome   ottenuto 
      * 		concatenando il nome della component con la stringa ".find." e il nome dell'attributo
      */
     public RemoteIterator cerca(UserContext usercontext, CompoundFindClause compoundfindclause, OggettoBulk oggettobulk, OggettoBulk oggettobulk1, String attributo) throws ComponentException{

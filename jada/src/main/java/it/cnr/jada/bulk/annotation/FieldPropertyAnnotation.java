@@ -19,7 +19,7 @@ import java.lang.annotation.Target;
 @Inherited
 public @interface FieldPropertyAnnotation{
 	
-	/** Nome logico del FieldProperty, l'attributo è obbligatorio, ed è univoco all'interno del documento.*/
+	/** Nome logico del FieldProperty, l'attributo e obbligatorio, ed e univoco all'interno del documento.*/
 	public String name();
 	
 	/** Tipo di FieldProperty*/
@@ -38,69 +38,69 @@ public @interface FieldPropertyAnnotation{
 	 */
 	public String freeSearchSet() default "";
 	/**
-	 * Nome della propietà del JavaBean da visualizzare, viene usato per i FieldProperty di tipo "DESCTOOL".
+	 * Nome della propieta del JavaBean da visualizzare, viene usato per i FieldProperty di tipo "DESCTOOL".
 	 */
 	public String descProperty() default "";
 	/**
-	 * Se valorizzato è il nome di una property da utilizzare per ottenere un valore "stampabile".
+	 * Se valorizzato e il nome di una property da utilizzare per ottenere un valore "stampabile".
 	 * Le fieldProperty dotate di printProperty sono implicitamente readonly tranne quelle con inputType = "SELECT"
-	 * e optionsProperty non nulla; in questo caso il valore da assegnare in scrittura è uno di quelli
+	 * e optionsProperty non nulla; in questo caso il valore da assegnare in scrittura e uno di quelli
 	 * presenti nelle "options"; printProperty viene usata anche per estrarre la descrizione nell'elenco
 	 * delle opzioni della SELECT. 
 	 */
 	public String printProperty() default "";
 	/**
-	 * Se valorizzato è il nome di una property del JavaBean da utilizzare per convertire il valore
+	 * Se valorizzato e il nome di una property del JavaBean da utilizzare per convertire il valore
 	 * della FieldProperty mediante il lookup in un dizionario di chiavi;
 	 * la property deve restituire un'istanza di java.util.Dictionary che viene usata sia in lettura che in scrittura. 
-	 * Se inputType è uguale a SELECT il dizionario viene anche usato per ottenere l'elenco dei valori con cui riempire l'elenco delle opzioni.
+	 * Se inputType e uguale a SELECT il dizionario viene anche usato per ottenere l'elenco dei valori con cui riempire l'elenco delle opzioni.
 	 */
 	public String keysProperty() default "";
 	/**
-	 * Se valorizzato è il nome di una property del JavaBean da utilizzare per riempire l'elenco delle
-	 * opzioni di nel caso in cui inputType è "SELECT".
+	 * Se valorizzato e il nome di una property del JavaBean da utilizzare per riempire l'elenco delle
+	 * opzioni di nel caso in cui inputType e "SELECT".
 	 * La property deve restituire un oggetto assimilabile a una collezione (un array statico o un'istanza di
 	 * java.util.Collection, java.util.Enumeration o di java.util.Iterator).
 	 */
 	public String optionsProperty() default "";
 	/**
-	 * Se valorizzato è il nome di una property da utilizzare per ottenere la disabilitazione dinamica del campo di input.
-	 * La property deve essere di tipo Boolean e se il suo valore è true il campo viene disabilitato.
+	 * Se valorizzato e il nome di una property da utilizzare per ottenere la disabilitazione dinamica del campo di input.
+	 * La property deve essere di tipo Boolean e se il suo valore e true il campo viene disabilitato.
 	 */
 	public String readonlyProperty() default "";
 	/**
-	 * Nome della property da usare se il FormController si trova in modalità FormController.EDIT 
+	 * Nome della property da usare se il FormController si trova in modalita FormController.EDIT 
 	 * per disabilitare in modo dinamico il campo di input.
-	 * La property deve essere di tipo Boolean e se il suo valore è true il campo viene disabilitato.
+	 * La property deve essere di tipo Boolean e se il suo valore e true il campo viene disabilitato.
 	 */
 	public String readonlyPropertyOnEdit() default "";
 	/**
-	 * Nome della property da usare se il FormController si trova in modalità FormController.INSERT 
+	 * Nome della property da usare se il FormController si trova in modalita FormController.INSERT 
 	 * per disabilitare in modo dinamico il campo di input.
-	 * La property deve essere di tipo Boolean e se il suo valore è true il campo viene disabilitato.
+	 * La property deve essere di tipo Boolean e se il suo valore e true il campo viene disabilitato.
 	 */
 	public String readonlyPropertyOnInsert() default "";
 	/**
-	 * Nome della property da usare se il FormController si trova in modalità FormController.SEARCH 
+	 * Nome della property da usare se il FormController si trova in modalita FormController.SEARCH 
 	 * per disabilitare in modo dinamico il campo di input.
-	 * La property deve essere di tipo Boolean e se il suo valore è true il campo viene disabilitato.
+	 * La property deve essere di tipo Boolean e se il suo valore e true il campo viene disabilitato.
 	 */
 	public String readonlyPropertyOnSearch() default "";
 	/**
-	 * Nome della property da usare se il FormController si trova in modalità FormController.FREESEARCH 
+	 * Nome della property da usare se il FormController si trova in modalita FormController.FREESEARCH 
 	 * per disabilitare in modo dinamico il campo di input.
-	 * La property deve essere di tipo Boolean e se il suo valore è true il campo viene disabilitato.
+	 * La property deve essere di tipo Boolean e se il suo valore e true il campo viene disabilitato.
 	 */
 	public String readonlyPropertyOnFreeSearch() default "";
 	/**
-	 * Nome della property da usare se il FormController si trova in modalità FormController.VIEW 
+	 * Nome della property da usare se il FormController si trova in modalita FormController.VIEW 
 	 * per disabilitare in modo dinamico il campo di input.
-	 * La property deve essere di tipo Boolean e se il suo valore è true il campo viene disabilitato.
+	 * La property deve essere di tipo Boolean e se il suo valore e true il campo viene disabilitato.
 	 */
 	public String readonlyPropertyOnView() default "";
 	/**
 	 * Nome della property da usare per impostare la ricerca su una property diversa da quella indicata in property,
-	 * può essere utilizzata ad esempio pei i "SERACHTOOL" in determinati casi.
+	 * puï¿½ essere utilizzata ad esempio pei i "SERACHTOOL" in determinati casi.
 	 */
 	public String findProperty() default "";
 	/**
@@ -111,12 +111,12 @@ public @interface FieldPropertyAnnotation{
 	 * "SEARCHTOOL" --> Corrisponde a diversi (in genere due, tipo "Codice e Descrizione") campi di input html (se valorizzato l'attributo "formName"),
 	 * 					altrimenti presenta solamente tre pulsanti atti a riplire i campi, effettuare la ricerca, effettuare la ricerca libera.
 	 * "CRUDTOOL" --> Corrisponde ad un bottone html utilizzato per effettuare operazioni di CRUD su una mappa diversa.
-	 * "DESCTOOL" --> Corrisponde ad campo di input html a cui è associato una "descProperty" da valorizzare per mostrare una property ulteriore a quella di base.
+	 * "DESCTOOL" --> Corrisponde ad campo di input html a cui e associato una "descProperty" da valorizzare per mostrare una property ulteriore a quella di base.
 	 */
 	public InputType inputType() default InputType.UNDEFINED;
 	/**
-	 * Tipo di layout da applicare; può assumere i valori
-	 * "HORIZONTAL" e "VERTICAL"; attualmente è valido solo
+	 * Tipo di layout da applicare; puo assumere i valori
+	 * "HORIZONTAL" e "VERTICAL"; attualmente e valido solo
 	 * per inputType = "RADIOGROUP" e "SEARCHTOOL" (viene applicato alla form di ricerca, vd. formName).
 	 */
 	public Layout layout() default Layout.HORIZONTAL;
@@ -146,43 +146,43 @@ public @interface FieldPropertyAnnotation{
 	public int rows() default 0;
 	/**
 	 * Nome del Format da applicare al valore della FieldProperty per la visualizzazione in un campo di testo (se nullo viene usato toString). 
-	 * Può essere il nome di una classe Format. 
+	 * Puo essere il nome di una classe Format. 
 	 */
 	public FormatName formatName() default FormatName.NoFormat;
 	/**
-	 * Se true il campo viene abilitato in modalità FormController.SEARCH
+	 * Se true il campo viene abilitato in modalita FormController.SEARCH
 	 */
 	public boolean enabledOnSearch() default false;
 	/**
-	 * Se true il campo viene abilitato in modalità FormController.INSERT
+	 * Se true il campo viene abilitato in modalita FormController.INSERT
 	 */
 	public boolean enabledOnInsert() default true;
 	/**
-	 * Se true il campo viene abilitato in modalità FormController.EDIT
+	 * Se true il campo viene abilitato in modalita FormController.EDIT
 	 */
 	public boolean enabledOnEdit() default true;
 	/**
-	 * Se true il campo viene abilitato in modalità FormController.FREESEARCH
+	 * Se true il campo viene abilitato in modalita FormController.FREESEARCH
 	 */
 	public boolean enabledOnFreeSearch() default true;
 	/**
-	 * Se true il campo viene abilitato in modalità FormController.VIEW
+	 * Se true il campo viene abilitato in modalita FormController.VIEW
 	 */
 	public boolean enabledOnView() default false;
 	/**
 	 * Se vale false le ricerche vengono effettuate "case insensitive" 
-	 * (sia quelle con = che con LIKE), il default è true.
+	 * (sia quelle con = che con LIKE), il default e true.
 	 */
 	public boolean caseSensitiveSearch() default true;
 	/**
-	 * Se true il FormController che governa l'editing del JavaBean può tentare di completare automaticamente
+	 * Se true il FormController che governa l'editing del JavaBean puo tentare di completare automaticamente
 	 * il valore della FieldProperty SEARCHTOOL sulla base delle informazioni inserite nei campi di ricerca. 
-	 * Il default è true.
+	 * Il default e true.
 	 */
 	public boolean completeOnSave() default true;
 	/**
 	 * Se true e inputType = SELECT viene aggiunta una voce vuota allinizio dell'elenco delle opzioni selezionabili. 
-	 * Se l'utente seleziona tale voce la property viene impostata a null.Il deafult è true,
+	 * Se l'utente seleziona tale voce la property viene impostata a null.Il deafult e true,
 	 * se impostata a false il campo viene presentato di colore diverso.
 	 */
 	public boolean nullable() default true;
@@ -202,7 +202,7 @@ public @interface FieldPropertyAnnotation{
 	/**
 	 * Attributo usato per la validazione del campo di input,
 	 * deve contenre il nome del metodo della classe Action associata da richiamare,
-	 * all'atto della validazione si può anche specificare il metodo doDefault comune a tutte le Action. 
+	 * all'atto della validazione si puo anche specificare il metodo doDefault comune a tutte le Action. 
 	 */
 	public String command() default "";
 	/**
