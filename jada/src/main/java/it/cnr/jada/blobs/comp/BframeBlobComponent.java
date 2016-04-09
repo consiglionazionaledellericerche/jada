@@ -1,51 +1,34 @@
 package it.cnr.jada.blobs.comp;
 
 import it.cnr.jada.UserContext;
-import it.cnr.jada.blobs.bulk.Bframe_blobBulk;
-import it.cnr.jada.blobs.bulk.Bframe_blobHome;
-import it.cnr.jada.blobs.bulk.Bframe_blobKey;
-import it.cnr.jada.blobs.bulk.Bframe_blob_pathBulk;
-import it.cnr.jada.blobs.bulk.Bframe_blob_tipoBulk;
-import it.cnr.jada.blobs.bulk.Bframe_blob_tipoKey;
-import it.cnr.jada.blobs.bulk.Excel_blobBulk;
-import it.cnr.jada.blobs.bulk.Selezione_blob_tipoVBulk;
+import it.cnr.jada.action.ActionContext;
+import it.cnr.jada.blobs.bulk.*;
 import it.cnr.jada.bulk.BulkHome;
 import it.cnr.jada.bulk.ColumnFieldProperty;
 import it.cnr.jada.bulk.OggettoBulk;
-import it.cnr.jada.comp.ApplicationException;
-import it.cnr.jada.comp.Component;
-import it.cnr.jada.comp.ComponentException;
-import it.cnr.jada.comp.RicercaComponent;
-import it.cnr.jada.ejb.BulkLoaderIterator;
-import it.cnr.jada.ejb.TransactionalBulkLoaderIterator;
+import it.cnr.jada.comp.*;
+import it.cnr.jada.ejb.*;
 import it.cnr.jada.persistency.PersistencyException;
-import it.cnr.jada.persistency.sql.ColumnMapping;
-import it.cnr.jada.persistency.sql.CompoundFindClause;
-import it.cnr.jada.persistency.sql.SQLBuilder;
-import it.cnr.jada.persistency.sql.SQLQuery;
+import it.cnr.jada.persistency.Persister;
+import it.cnr.jada.persistency.sql.*;
 import it.cnr.jada.util.Introspector;
 import it.cnr.jada.util.RemoteIterator;
 import it.cnr.jada.util.RemoteIteratorEnumeration;
+import it.cnr.jada.util.ejb.EJBCommonServices;
+import it.cnr.jada.util.ejb.HttpEJBCleaner;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.Serializable;
+import java.io.*;
 import java.math.BigDecimal;
 import java.rmi.NoSuchObjectException;
+import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.Dictionary;
-import java.util.Enumeration;
-import java.util.Iterator;
+import java.util.*;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFFont;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import javax.ejb.Handle;
+import javax.jms.*;
+import javax.naming.*;
+
+import org.apache.poi.hssf.usermodel.*;
 
 // Referenced classes of package it.cnr.jada.blobs.comp:
 //			  IBframeBlobMgr
@@ -190,6 +173,144 @@ public class BframeBlobComponent extends RicercaComponent
 	public void caricaFileExcel(UserContext param0, String longDescription,Dictionary columns,File excelFile,RemoteIterator remoteIterator,String user)	
 	throws ComponentException, it.cnr.jada.persistency.PersistencyException {
 		new Thread(new ExcelThread(longDescription,columns,excelFile,remoteIterator,user)).start();
+		/*try{	
+		  java.sql.Connection conn = it.cnr.jada.util.ejb.EJBCommonServices.getConnection();
+		  conn.setAutoCommit(false);
+		  it.cnr.jada.persistency.sql.HomeCache homeCache = new it.cnr.jada.persistency.sql.HomeCache(conn);
+		  Excel_blobBulk excelBlobBulk = (Excel_blobBulk)homeCache.getHome(Excel_blobBulk.class).findByPrimaryKey(new Excel_blobBulk(user,excelFile.getName()));  
+		  BulkHome home = (BulkHome)homeCache.getHome(excelBlobBulk);		  
+		  try{
+			oracle.sql.BLOB blob = (oracle.sql.BLOB)home.getSQLBlob(excelBlobBulk,"BDATA");
+			FileOutputStream excelOutput = new FileOutputStream(excelFile);
+            if (remoteIterator.countElements() < NUMERO_MAX_RIGHE.intValue()){				 			   	 
+				HSSFWorkbook wb = new HSSFWorkbook(); // Istanzio la classe workbook
+				HSSFSheet s = wb.createSheet(); // creo un foglio
+				HSSFRow r = null; // dichiaro r di tipo riga
+				HSSFCell c = null; // dichiaro c di tipo cella
+				s.setDefaultColumnWidth((short)20);
+				HSSFCellStyle cellStyle = wb.createCellStyle();
+				cellStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER_SELECTION);
+				HSSFFont font = wb.createFont();
+				font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+				cellStyle.setFont(font);
+				wb.setSheetName(0, longDescription,HSSFWorkbook.ENCODING_COMPRESSED_UNICODE );
+				short cellnum = (short) -1;
+				r = s.createRow(0); //creo la prima riga
+				for(Enumeration enumeration1 = columns.elements(); enumeration1.hasMoreElements();)//comincio col creare l'intestazione delle colonne
+				{
+					ColumnFieldProperty columnfieldproperty = (ColumnFieldProperty)enumeration1.nextElement();
+					cellnum++;
+					c = r.createCell(cellnum);
+					c.setCellValue(columnfieldproperty.getLabel());
+					c.setCellStyle(cellStyle);
+					c.setCellType(HSSFCell.CELL_TYPE_STRING);
+				}
+				int j = 0;
+				for(Enumeration enumeration2 =  new RemoteIteratorEnumeration(remoteIterator); enumeration2.hasMoreElements(); j++)
+				{
+					Object obj = enumeration2.nextElement();
+					r = s.createRow(j+1);
+					cellnum = (short) -1;
+					for(Enumeration enumeration3 = columns.elements(); enumeration3.hasMoreElements();)
+					{
+							cellnum++;
+							ColumnFieldProperty columnfieldproperty1 = (ColumnFieldProperty)enumeration3.nextElement();
+							c = r.createCell((short)cellnum);
+							Object obj2 = Introspector.getPropertyValue(obj,columnfieldproperty1.getProperty());
+							String valoreStringa = columnfieldproperty1.getStringValueFrom(obj,Introspector.getPropertyValue(obj, columnfieldproperty1.getProperty()));
+							if(obj2 != null){									
+							  if (obj2 instanceof String){								   
+								c.setCellType(HSSFCell.CELL_TYPE_STRING);
+								c.setCellValue(valoreStringa);
+							  }else if (obj2 instanceof Number){								   
+								c.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+								c.setCellValue(new BigDecimal(obj2.toString()).doubleValue());
+							  }else if (obj2 instanceof Timestamp){								   
+								c.setCellType(HSSFCell.CELL_TYPE_STRING);
+								c.setCellValue(valoreStringa);
+							  }else{								   
+								c.setCellType(HSSFCell.CELL_TYPE_STRING);
+								c.setCellValue(valoreStringa);
+							  }    
+							}  
+					}
+				}	
+				wb.write(excelOutput);// assegno lo stream al FileOutputStream
+			}else{
+				excelBlobBulk.setDs_file("Il file è stato estratto in formato testo, poichè le righe superano il limite consentito.("+NUMERO_MAX_RIGHE+").");
+				excelOutput.write("<table>".getBytes());
+				excelOutput.write("<tr>".getBytes());
+				for(Enumeration enumeration1 = columns.elements(); enumeration1.hasMoreElements();)//comincio col creare l'intestazione delle colonne
+				{
+					ColumnFieldProperty columnfieldproperty = (ColumnFieldProperty)enumeration1.nextElement();
+				    excelOutput.write(("<td><H4>"+columnfieldproperty.getLabel()+"</H4></td>").getBytes());
+				}
+				excelOutput.write("</tr>".getBytes());
+				int j = 0;
+				for(Enumeration enumeration2 =  new RemoteIteratorEnumeration(remoteIterator); enumeration2.hasMoreElements(); j++)
+				{
+				    excelOutput.write("<tr>".getBytes());
+					Object obj = enumeration2.nextElement();
+					for(Enumeration enumeration3 = columns.elements(); enumeration3.hasMoreElements();)
+					{
+						ColumnFieldProperty columnfieldproperty1 = (ColumnFieldProperty)enumeration3.nextElement();
+						Object obj2 = Introspector.getPropertyValue(obj,columnfieldproperty1.getProperty());
+						String valoreStringa = columnfieldproperty1.getStringValueFrom(obj,Introspector.getPropertyValue(obj, columnfieldproperty1.getProperty()));
+						excelOutput.write("<td>".getBytes());
+						if(obj2 != null){
+					      excelOutput.write(valoreStringa.getBytes());
+						}
+						excelOutput.write("</td>".getBytes());
+					}
+				    excelOutput.write("</tr>".getBytes());
+				}
+				excelOutput.write("</table>".getBytes());
+			}
+			excelOutput.close(); // chiudo il file
+			   	 
+			java.io.InputStream in = new java.io.BufferedInputStream(new FileInputStream(excelFile));
+			byte[] byteArr = new byte[1024];
+			java.io.OutputStream os = new java.io.BufferedOutputStream(blob.getBinaryOutputStream());
+			int len;			
+			while ((len = in.read(byteArr))>0){
+			   os.write(byteArr,0,len);
+			}
+			os.close();
+			in.close();
+			excelBlobBulk.setStato(Excel_blobBulk.STATO_ESEGUITO);
+			excelBlobBulk.setDuva(it.cnr.jada.util.ejb.EJBCommonServices.getServerDate());			
+		  }
+		  catch(Throwable throwable){
+			excelBlobBulk.setStato(Excel_blobBulk.STATO_ERRORE);
+			excelBlobBulk.setDuva(it.cnr.jada.util.ejb.EJBCommonServices.getServerDate());
+			throw new ComponentException(throwable);
+		  }		  
+		  finally {
+			  home.update(excelBlobBulk);
+			  conn.close();
+			  excelFile.delete();
+			  try{
+				Object obj = remoteIterator;
+				if(obj instanceof BulkLoaderIterator){
+				 ((BulkLoaderIterator)obj).close();
+				 ((BulkLoaderIterator)obj).remove();			  
+				}
+				else if(obj instanceof TransactionalBulkLoaderIterator){
+					((TransactionalBulkLoaderIterator)obj).remove();
+				}	
+			  }
+			  catch(NoSuchObjectException ex){	
+			  }
+			  catch(Throwable _ex) {
+				//Inserire nella lista per la rimozione	
+			  }
+		  }		  
+		}
+		catch(Throwable throwable)
+		{
+			throw new ComponentException(throwable);
+		}*/
+		   			
 	   }
 	class ExcelThread
 	  implements Runnable
@@ -268,7 +389,7 @@ public class BframeBlobComponent extends RicercaComponent
 			  }	
 			  wb.write(excelOutput);// assegno lo stream al FileOutputStream
 		  }else{
-			  excelBlobBulk.setDs_file("Il file ï¿½ stato estratto in formato testo, poichï¿½ le righe superano il limite consentito.("+NUMERO_MAX_RIGHE+").");
+			  excelBlobBulk.setDs_file("Il file è stato estratto in formato testo, poichè le righe superano il limite consentito.("+NUMERO_MAX_RIGHE+").");
 			  excelOutput.write("<table>".getBytes());
 			  excelOutput.write("<tr>".getBytes());
 			  for(Enumeration enumeration1 = columns.elements(); enumeration1.hasMoreElements();)//comincio col creare l'intestazione delle colonne
@@ -367,9 +488,9 @@ public class BframeBlobComponent extends RicercaComponent
 	 try {
 			for (int i = 0;i < array.length;i++) {
 				if (array[i] == null)
-					throw new it.cnr.jada.comp.ApplicationException("Uno o piï¿½ file sono stati cancellati.");
+					throw new it.cnr.jada.comp.ApplicationException("Uno o più file sono stati cancellati.");
 				if (Excel_blobBulk.STATO_IN_ESECUZIONE.equals(array[i].getStato()))
-					throw new it.cnr.jada.comp.ApplicationException("Uno o piï¿½ file sono attualmente in esecuzione e non possono essere cancellati.");						
+					throw new it.cnr.jada.comp.ApplicationException("Uno o più file sono attualmente in esecuzione e non possono essere cancellati.");						
 				BulkHome home = (BulkHome)getHome(context,array[i]);
 				home.delete(array[i], context);
 			}

@@ -1,9 +1,12 @@
 package it.cnr.jada.blobs.bulk;        
 
-import it.cnr.jada.bulk.OggettoBulk;
+import it.cnr.jada.bulk.*;
+import it.cnr.jada.persistency.*;
+import it.cnr.jada.persistency.beans.*;
+import it.cnr.jada.persistency.sql.*;
 import it.cnr.jada.util.OrderedHashtable;
 
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class Excel_blobBulk extends Excel_blobBase {
         private String blob;
@@ -53,9 +56,9 @@ public void setBlob(String string) {
 }
 
 /**
- * Restituisce il valore della propriet  'rOExcel_blob'
+ * Restituisce il valore della proprietà 'rOExcel_blob'
  *
- * @return Il valore della propriet  'rOExcel_blob'
+ * @return Il valore della proprietà 'rOExcel_blob'
  */
 public boolean isROExcel_blob() {
 	

@@ -17,7 +17,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Inherited
 public @interface FreeSearchSetAnnotation {
-	/** Nome logico del FreeSearchSet, l'attributo e obbligatorio, ed e univoco all'interno del documento.*/
+	/** Nome logico del FreeSearchSet, l'attributo è obbligatorio, ed è univoco all'interno del documento.*/
 	public String name() default "default";
 	/** Array di FindFieldProperty che compongono il FreeSearchSet.*/
 	public FieldPropertyAnnotation[] value();

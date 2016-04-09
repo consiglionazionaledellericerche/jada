@@ -1,59 +1,66 @@
 package it.cnr.jada.action;
 
+import it.cnr.jada.action.ActionMapping;
+import it.cnr.jada.action.ActionMappings;
+import it.cnr.jada.action.ActionMappingsConfigurationException;
+import it.cnr.jada.action.ActionPerformingError;
+import it.cnr.jada.action.BusinessProcess;
+import it.cnr.jada.action.HttpActionContext;
+import it.cnr.jada.ejb.AdminSession;
 import it.cnr.jada.firma.FirmaInfos;
 import it.cnr.jada.firma.bp.CRUDFirmaBP;
-import it.cnr.jada.util.Log;
-import it.cnr.jada.util.Utility;
+import it.cnr.jada.util.*;
+import it.cnr.jada.util.ejb.EJBCommonServices;
 import it.cnr.jada.util.jsp.JSPUtils;
-import it.cnr.jada.util.servlet.MultipartWrapper;
-import it.cnr.jada.util.servlet.ReadClass;
+import it.cnr.jada.util.servlet.*;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.io.Serializable;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Set;
+import java.io.*;
+import java.net.InetAddress;
+import java.net.URLDecoder;
+import java.net.UnknownHostException;
+import java.rmi.RemoteException;
+import java.sql.*;
+import java.util.*;
 
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.ejb.EJBException;
+import javax.servlet.*;
+import javax.servlet.http.*;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
+import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.fileupload.util.Streams;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 /**
  * Servlet per la gestione di action. 
  * ActionServlet smista le richieste in seguito ad una SUBMIT di una form HTML ad una istanza 
  * di Action in base alla configurazione contenuta in un file XML. 
- * Ad ogni richiesta la servlet controlla se il file di configurazione ï¿½ stato aggiornato e in tal caso lo rilegge.
+ * Ad ogni richiesta la servlet controlla se il file di configurazione è stato aggiornato e in tal caso lo rilegge.
  * La vita di una action segue il seguente schema: La richiesta HTML viene convertita in base alla mappatura 
- * nella classe che la implementa. Se la action necessita di una HttpSession giï¿½ attiva e se questa condizione 
- * non ï¿½ verificata viene cercato nell'ambito della action un forward dal nome sessionExpired e viene eseguito. 
+ * nella classe che la implementa. Se la action necessita di una HttpSession già attiva e se questa condizione 
+ * non è verificata viene cercato nell'ambito della action un forward dal nome sessionExpired e viene eseguito. 
  * All'interno dei parametri della richiesta viene cercato quello relativo al nome del business process in cui 
  * deve essere contestualizzata la action e viene passato all'ActionContext. 
  * La action viene istanziata e ogni property a cui corrisponde un parametro della richiesta viene settata 
  * col valore corrispondente. La action viene eseguita. 
- * Se il forward restituito dalla action ï¿½ nullo viene cercato un forward dal nome default e viene eseguito. 
+ * Se il forward restituito dalla action è nullo viene cercato un forward dal nome default e viene eseguito. 
  * altrimenti viene eseguito il forward restituito dalla action. 
  * Se in una qualsiasi fase si verifica una eccezione non gestita la servlet cerca il forward dal nome 
  * uncaughtException e lo esegue. 
  * Il file di configurazione definisce tre elementi: 
  * 		Action: definisce una action e la classe che la implementa. 
- * 				ï¿½ possibile impostare uno o piï¿½ parametri di inizializzazione della action che vengono 
+ * 				È possibile impostare uno o più parametri di inizializzazione della action che vengono 
  * 				passati all'istanza che implementa la action prima della sua effettiva esecuzione tramite init(). 
- * 				ï¿½ possibile richiedere che una action debba avere per forza una una session giï¿½ viva. 
+ * 				È possibile richiedere che una action debba avere per forza una una session già viva. 
  * 		BusinessProcess: definisce un business process e la classe che lo implementa. 
- * 						Un business process viene mantenuto nella session della servlet ed ï¿½ possibile 
+ * 						Un business process viene mantenuto nella session della servlet ed è possibile 
  * 						associare ogni form html con un particolare business process. 
- * 						ï¿½ possibile impostare uno o piï¿½ parametri di inizializzazione del bp che vengono 
+ * 						È possibile impostare uno o più parametri di inizializzazione del bp che vengono 
  * 						passati all'istanza che lo implementa tramite init() 
- * 		Forward: definisce il nome di un forward statico e l'url a cui ï¿½ associato. 
+ * 		Forward: definisce il nome di un forward statico e l'url a cui è associato. 
  * 				I forward possono essere definiti a tre livelli: 
  * 				business process: hanno la precedenza su tutti gli altri. 
  * 				action servlet: se non viene trovato agli altri livelli. 
@@ -67,10 +74,10 @@ import org.apache.commons.fileupload.util.Streams;
  * Per un corretto funzionamento la servlet deve essere dichiarata nel file di configurazione 
  * della web application e associata ad una servlet-path del tipo "*.[estensione]". 
  * In tal modo ogni url terminante nell'estesione specificata viene interpretato dalla servlet. 
- * L'estesione di defaul ï¿½ ".do".
+ * L'estesione di defaul è ".do".
  * Per default la servlet legge la configurazione dal file denominato actions.xml che si trova 
  * nella directory root della web application a cui appartiene la servlet.
- * ï¿½ possibile tuttavia utilizzare un altro file di configurazione passadone il nome alla servlet come 
+ * È possibile tuttavia utilizzare un altro file di configurazione passadone il nome alla servlet come 
  * parametro di inizializzazione dal nome actions
  * See Also:Serialized Form
  */
@@ -120,7 +127,7 @@ public class ActionServlet extends HttpServlet implements Serializable{
 	    		if (isMultipart) {
 			    	try{
 			    		/*
-			    		 * per ora questa parte non ï¿½ gestita dato che il file 
+			    		 * per ora questa parte non è gestita dato che il file 
 			    		 * firmato non viene trasferito come multipart
 			    		 */
 			    		// Create a new file upload handler

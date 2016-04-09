@@ -28,10 +28,10 @@ public class CRUDDetailComponent extends CRUDComponent implements ICRUDDetailMgr
      * Pre-post-conditions: 
      * Nome: Clausole non specificate 
      * Pre: Viene richiesta la ricerca dell'oggetto 'bulk' nell'ambito della relazione dal nome 'attributo' 
-     * 		che lo lega con l'oggetto 'contesto'. L'albero delle clausole non e specificato (nullo) 
+     * 		che lo lega con l'oggetto 'contesto'. L'albero delle clausole non è specificato (nullo) 
      * Post: Viene generato un albero di clausole usando tutti i valori non nulli degli attributi 
      * 		dell'OggettoBulk specificato come prototipo. L'elenco degli attributi da utilizzare per 
-     * 		ottenere le clausole estratto dal BulkInfo dell'OggettoBulk 
+     * 		ottenere le clausole è estratto dal BulkInfo dell'OggettoBulk 
      * Nome: Viene richiesta la creazione dell'oggetto 'bulk' nell'ambito della relazione dal nome 'attributo' 
      * 		che lo lega con l'oggetto 'contesto'. Tutti i controlli superati 
      * Pre: Albero delle clausole di ricerca specificato (non nullo) 
@@ -51,7 +51,7 @@ public class CRUDDetailComponent extends CRUDComponent implements ICRUDDetailMgr
      * Pre-post-conditions: 
      * Nome: Viene richiesta la creazione dell'oggetto 'bulk' nell'ambito della relazione dal nome 'attributo' 
      * 		che lo lega con l'oggetto 'contesto'. 'bulk' non passa validazione applicativa 
-     * Pre: l'OggettoBulk non passa i criteri di validita applicativi 
+     * Pre: l'OggettoBulk non passa i criteri di validità applicativi 
      * Post: Viene generata CRUDValidationException che descrive l'errore di validazione. 
      * Nome: Non passa validazione per violazione di vincoli della base di dati 
      * Pre: Viene richiesta la creazione dell'oggetto 'bulk' nell'ambito della relazione dal nome 'attributo' 
@@ -61,14 +61,14 @@ public class CRUDDetailComponent extends CRUDComponent implements ICRUDDetailMgr
      * 		CRUDTooLargeConstraintException con la descrizione dell'errore 
      * Nome: Errore di chiave duplicata 
      * Pre: Viene richiesta la creazione dell'oggetto 'bulk' nell'ambito della relazione dal nome 'attributo' 
-     * 		che lo lega con l'oggetto 'contesto'. Esiste gia un OggettoBulk persistente che possiede 
+     * 		che lo lega con l'oggetto 'contesto'. Esiste già un OggettoBulk persistente che possiede 
      * 		la stessa chiave primaria di quello specificato. 
      * Post: Viene generata una CRUDDuplicateKeyException con la descrizione dell'errore e con una nuova 
      * 		istanza che rappresenta l'oggetto esistente in base dati che possiede la chiave duplicata. 
-     * Nome: Vincolo di integrita referenziale 
+     * Nome: Vincolo di integrità referenziale 
      * Pre: Viene richiesta la creazione dell'oggetto 'bulk' nell'ambito della relazione dal 
-     * 		nome 'attributo' che lo lega con l'oggetto 'contesto'. 'bulk' non puo essere creato perche 
-     * 		viene violato qualche vincolo di integrita referenziale 
+     * 		nome 'attributo' che lo lega con l'oggetto 'contesto'. 'bulk' non può essere creato perchè 
+     * 		viene violato qualche vincolo di integrità referenziale 
      * Post: Viene generata una CRUDReferentialIntegrityException con la descrizione dell'errore 
      * Nome: Tutti i controlli superati 
      * Pre: Viene richiesta la creazione dell'oggetto 'bulk' nell'ambito 
@@ -93,7 +93,7 @@ public class CRUDDetailComponent extends CRUDComponent implements ICRUDDetailMgr
      * Nome: Non passa validazione di business 
      * Pre: Viene richiesta la eliminazione dell'oggetto 'bulk' nell'ambito della relazione 
      * 		dal nome 'attributo' che lo lega con l'oggetto 'contesto'. 'bulk' non passa i criteri di 
-     * 		validitï¿½ di business per l'operazione di cancellazione 
+     * 		validità di business per l'operazione di cancellazione 
      * Post: Viene generata una ComponentException con detail la ValidationException che descrive 
      * 		l'errore di validazione. 
      * Nome: Oggetto non trovato 
@@ -102,21 +102,21 @@ public class CRUDDetailComponent extends CRUDComponent implements ICRUDDetailMgr
      * Post: Viene generata una CRUDException con la descrizione dell'errore 
      * Nome: Oggetto scaduto 
      * Pre: Viene richiesta la eliminazione dell'oggetto 'bulk' nell'ambito della relazione dal nome 'attributo' 
-     * 		che lo lega con l'oggetto 'contesto'. l'OggettoBulk specificato e stato modificato da altri utenti 
+     * 		che lo lega con l'oggetto 'contesto'. l'OggettoBulk specificato è stato modificato da altri utenti 
      * 		dopo la lettura 
      * Post: Viene generata una CRUDException con la descrizione dell'errore 
      * Nome: Oggetto occupato 
      * Pre: Viene richiesta la eliminazione dell'oggetto 'bulk' nell'ambito della relazione dal nome 'attributo' 
-     * 		che lo lega con l'oggetto 'contesto'. 'bulk' e bloccato da qualche altro utente. 
+     * 		che lo lega con l'oggetto 'contesto'. 'bulk' è bloccato da qualche altro utente. 
      * Post: Viene generata una CRUDException con la descrizione dell'errore 
      * Nome: Oggetto non cancellabile 
      * Pre: Viene richiesta la eliminazione dell'oggetto 'bulk' nell'ambito della relazione dal nome 'attributo' 
-     * 		che lo lega con l'oggetto 'contesto'. 'bulk' non e cancellabile per motivi applicativi 
+     * 		che lo lega con l'oggetto 'contesto'. 'bulk' non è cancellabile per motivi applicativi 
      * Post: Viene generata una CRUDNotDeletableException con la descrizione dell'errore 
-     * Nome: Vincolo di integrita referenziale 
+     * Nome: Vincolo di integrità referenziale 
      * Pre: Viene richiesta la eliminazione dell'oggetto 'bulk' nell'ambito della relazione dal nome 'attributo' 
-     * 		che lo lega con l'oggetto 'contesto'. 'bulk' non puo essere cancellato perche viene violato 
-     * 		qualche vincolo di integrita referenziale 
+     * 		che lo lega con l'oggetto 'contesto'. 'bulk' non può essere cancellato perchè viene violato 
+     * 		qualche vincolo di integrità referenziale 
      * Post: Viene generata una CRUDReferentialIntegrityException con la descrizione dell'errore 
      * Nome: Tutti i controlli superati 
      * Pre: Viene richiesta la eliminazione dell'oggetto 'bulk' nell'ambito della relazione dal nome 'attributo' 
@@ -140,7 +140,7 @@ public class CRUDDetailComponent extends CRUDComponent implements ICRUDDetailMgr
      * Nome: Non passa validazione di business 
      * Pre: Viene richiesta la eliminazione dell'oggetto 'bulk' nell'ambito della relazione 
      * 		dal nome 'attributo' che lo lega con l'oggetto 'contesto'. 'bulk' non passa i criteri di 
-     * 		validita di business per l'operazione di cancellazione 
+     * 		validità di business per l'operazione di cancellazione 
      * Post: Viene generata una ComponentException con detail la ValidationException che descrive 
      * 		l'errore di validazione. 
      * Nome: Oggetto non trovato 
@@ -149,21 +149,21 @@ public class CRUDDetailComponent extends CRUDComponent implements ICRUDDetailMgr
      * Post: Viene generata una CRUDException con la descrizione dell'errore 
      * Nome: Oggetto scaduto 
      * Pre: Viene richiesta la eliminazione dell'oggetto 'bulk' nell'ambito della relazione dal nome 'attributo' 
-     * 		che lo lega con l'oggetto 'contesto'. l'OggettoBulk specificato e stato modificato da altri utenti 
+     * 		che lo lega con l'oggetto 'contesto'. l'OggettoBulk specificato è stato modificato da altri utenti 
      * 		dopo la lettura 
      * Post: Viene generata una CRUDException con la descrizione dell'errore 
      * Nome: Oggetto occupato 
      * Pre: Viene richiesta la eliminazione dell'oggetto 'bulk' nell'ambito della relazione dal nome 'attributo' 
-     * 		che lo lega con l'oggetto 'contesto'. 'bulk' e bloccato da qualche altro utente. 
+     * 		che lo lega con l'oggetto 'contesto'. 'bulk' è bloccato da qualche altro utente. 
      * Post: Viene generata una CRUDException con la descrizione dell'errore 
      * Nome: Oggetto non cancellabile 
      * Pre: Viene richiesta la eliminazione dell'oggetto 'bulk' nell'ambito della relazione dal nome 'attributo' 
-     * 		che lo lega con l'oggetto 'contesto'. 'bulk' non e cancellabile per motivi applicativi 
+     * 		che lo lega con l'oggetto 'contesto'. 'bulk' non è cancellabile per motivi applicativi 
      * Post: Viene generata una CRUDNotDeletableException con la descrizione dell'errore 
-     * Nome: Vincolo di integrita referenziale 
+     * Nome: Vincolo di integrità referenziale 
      * Pre: Viene richiesta la eliminazione dell'oggetto 'bulk' nell'ambito della relazione dal nome 'attributo' 
-     * 		che lo lega con l'oggetto 'contesto'. 'bulk' non puo essere cancellato perche viene violato 
-     * 		qualche vincolo di integrita referenziale 
+     * 		che lo lega con l'oggetto 'contesto'. 'bulk' non può essere cancellato perchè viene violato 
+     * 		qualche vincolo di integrità referenziale 
      * Post: Viene generata una CRUDReferentialIntegrityException con la descrizione dell'errore 
      * Nome: Tutti i controlli superati 
      * Pre: Viene richiesta la eliminazione dell'oggetto 'bulk' nell'ambito della relazione dal nome 'attributo' 
@@ -258,7 +258,7 @@ public class CRUDDetailComponent extends CRUDComponent implements ICRUDDetailMgr
      * Pre-post-conditions: 
      * Nome: Non passa validazione applicativa 
      * Pre: Viene richiesta la modifica dell'oggetto 'bulk' nell'ambito della relazione dal nome 'attributo' 
-     * 		che lo lega con l'oggetto 'contesto'. 'bulk' non passa i criteri di validitï¿½ applicativi per 
+     * 		che lo lega con l'oggetto 'contesto'. 'bulk' non passa i criteri di validità applicativi per 
      * 		l'operazione di modifica 
      * Post: Viene generata CRUDValidationException che descrive l'errore di validazione. 
      * Nome: Non passa validazione per violazione di vincoli della base di dati 
@@ -273,11 +273,11 @@ public class CRUDDetailComponent extends CRUDComponent implements ICRUDDetailMgr
      * Post: Viene generata una CRUDException con la descrizione dell'errore 
      * Nome: Oggetto scaduto 
      * Pre: Viene richiesta la modifica dell'oggetto 'bulk' nell'ambito della relazione dal nome 'attributo' 
-     * 		che lo lega con l'oggetto 'contesto'. 'bulk' e stato modificato da altri utenti dopo la lettura 
+     * 		che lo lega con l'oggetto 'contesto'. 'bulk' è stato modificato da altri utenti dopo la lettura 
      * Post: Viene generata una CRUDException con la descrizione dell'errore 
      * Nome: Oggetto occupato 
      * Pre: Viene richiesta la modifica dell'oggetto 'bulk' nell'ambito della relazione dal nome 'attributo' 
-     * 		che lo lega con l'oggetto 'contesto'. 'bulk' e bloccato da qualche altro utente. 
+     * 		che lo lega con l'oggetto 'contesto'. 'bulk' è bloccato da qualche altro utente. 
      * Post: Viene generata una CRUDException con la descrizione dell'errore 
      * Nome: Tutti i controlli superati 
      * Pre: Viene richiesta la modifica dell'oggetto 'bulk' nell'ambito della relazione dal nome 'attributo' 

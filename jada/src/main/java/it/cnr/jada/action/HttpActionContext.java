@@ -189,7 +189,7 @@ public class HttpActionContext
 			} 
 			else{
 				setBusinessProcess(businessprocess.getParent());
-				// non pu essere richiamato il closed perch chiude anche i figli
+				// non può essere richiamato il closed perchè chiude anche i figli
 		        if (businessprocess instanceof SelezionatoreListaBP)
 					try
 					{

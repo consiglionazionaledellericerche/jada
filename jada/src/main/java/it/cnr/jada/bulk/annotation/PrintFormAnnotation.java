@@ -17,7 +17,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Inherited
 public @interface PrintFormAnnotation {
-	/** Nome del report da eseguire, l'attributo e' obbligatorio, ed e' univoco all'interno del documento.*/
+	/** Nome del report da eseguire, l'attributo è obbligatorio, ed è univoco all'interno del documento.*/
 	public String name();
 	/** Array di PrintFieldProperty che compongono il PrintForm.*/
 	public FieldPropertyAnnotation[] value();
