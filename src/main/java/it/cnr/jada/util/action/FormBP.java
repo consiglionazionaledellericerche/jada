@@ -200,7 +200,7 @@ public class FormBP extends BusinessProcess implements Serializable{
      * del comando da eseguire sulla action; un input hidden "businessProcess" che contiene il nome 
      * del BusinessProcess contestuale all'azione. una serie di input hidden necessari per conservare 
      * la posizione di scoll sul browser alla risposta. 
-     * Per completare il disegno della FORM   necessario invocare closeForm
+     * Per completare il disegno della FORM è necessario invocare closeForm
      */
     public void openForm(PageContext pagecontext) throws IOException, ServletException{
         openForm(pagecontext, getDefaultAction(), getActionTarget(), null);
@@ -210,7 +210,7 @@ public class FormBP extends BusinessProcess implements Serializable{
      * del comando da eseguire sulla action; un input hidden "businessProcess" che contiene il nome 
      * del BusinessProcess contestuale all'azione. una serie di input hidden necessari per conservare 
      * la posizione di scoll sul browser alla risposta. 
-     * Per completare il disegno della FORM   necessario invocare closeForm
+     * Per completare il disegno della FORM è necessario invocare closeForm
      */
     public void openForm(PageContext pagecontext, String action, String target) throws IOException, ServletException{
         openForm(pagecontext, action, target, null);
@@ -220,7 +220,7 @@ public class FormBP extends BusinessProcess implements Serializable{
      * del comando da eseguire sulla action; un input hidden "businessProcess" che contiene il nome 
      * del BusinessProcess contestuale all'azione. una serie di input hidden necessari per conservare 
      * la posizione di scoll sul browser alla risposta. 
-     * Per completare il disegno della FORM   necessario invocare closeForm
+     * Per completare il disegno della FORM è necessario invocare closeForm
      */
     public void openForm(PageContext pagecontext, String action, String target, String encType) throws IOException, ServletException{
         pagecontext.getOut().print("<form name=\"");
@@ -250,14 +250,14 @@ public class FormBP extends BusinessProcess implements Serializable{
     }
     /**
      * Disegna una FORM e una tabella HTML con la barra del titolo e la toolbar. 
-     * Per completare il disegno della tabella   necessario invocare closeFormWindow
+     * Per completare il disegno della tabella è necessario invocare closeFormWindow
      */
     public void openFormWindow(PageContext pagecontext) throws IOException, ServletException{
         openFormWindow(pagecontext, getDefaultAction(), getActionTarget());
     }
     /**
      * Disegna una FORM e una tabella HTML con la barra del titolo e la toolbar. 
-     * Per completare il disegno della tabella   necessario invocare closeFormWindow
+     * Per completare il disegno della tabella è necessario invocare closeFormWindow
      */
     public void openFormWindow(PageContext pagecontext, String action, String target) throws IOException, ServletException{
         openForm(pagecontext, action, target);
@@ -268,7 +268,7 @@ public class FormBP extends BusinessProcess implements Serializable{
         pagecontext.getOut().println("<tr height=\"100%\" valign=\"top\"><td>");
     }
     /**
-     * Disegna latoolbar HTML del ricevente. Per completare il disegno   necessario invocare closeToolbar
+     * Disegna latoolbar HTML del ricevente. Per completare il disegno è necessario invocare closeToolbar
      */
     public void openToolbar(JspWriter jspwriter) throws IOException, ServletException{
         jspwriter.println("<!-- TOOLBAR -->");

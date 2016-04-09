@@ -10,13 +10,13 @@ import java.util.*;
 /**
  * Oggetto che descrive la mappatura di una PersistentProperty su una colonna DB. 
  * Gli attributi di ColumnMapping sono: 
- * columnName Nome della colonna fisica su cui  mappata la property 
- * propertyName Nome della PersistentProperty su cui mappata la colonna 
+ * columnName Nome della colonna fisica su cui è mappata la property 
+ * propertyName Nome della PersistentProperty su cui è mappata la colonna 
  * primary se true la colonna fisica fa parte della chiave primaria della tabella 
  * fetchOnly se true la ColumnMapping viene aggiunta solo alla mappatura delle property; 
  * 		in pratica questa mappatura viene usata solo in lettura e non in scrittura. 
  * converterClassName Nome della classe da utilizzare come converter dal tipo di dati SQL al tipo della PersistentProperty e viceversa 
- * sqlType Il tipo SQL della colonna fisica; una stringa che puo assumere i seguenti valori: 
+ * sqlType Il tipo SQL della colonna fisica; è una stringa che può assumere i seguenti valori: 
  * 	BIT 
  * 	TINYINT 
  * 	SMALLINT 
@@ -47,7 +47,7 @@ import java.util.*;
  * 	REF 
  * columnSize Largezza fisica della colonna 
  * columnScale Scale della colonna (solo per le colonne di tipo DECIMAL) 
- * nullable Se false la colonna non puo contenere il valore SQL NULL
+ * nullable Se false la colonna non può contenere il valore SQL NULL
  */
 public class ColumnMapping implements Serializable{
 

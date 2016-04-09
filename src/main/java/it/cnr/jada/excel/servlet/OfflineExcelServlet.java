@@ -104,7 +104,7 @@ public class OfflineExcelServlet extends HttpServlet {
 	private void unauthorized(javax.servlet.http.HttpServletRequest request,javax.servlet.http.HttpServletResponse response) throws java.io.IOException {
 		response.setStatus(javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED);
 		response.getWriter().println("Impossibile aprire il file Excel.<BR>");
-		response.getWriter().println("Consultare il <a href=\"http://contab.cnr.it/manuali/000%20-%2001%20requisiti%20browser.doc\">Manuale della Procedura di Contabilita'</a> e verificare le Impostazioni del Browser.");
+		response.getWriter().println("Consultare il <a href=\"http://contab.cnr.it/manuali/000%20-%2001%20requisiti%20browser.doc\">Manuale della Procedura di Contabilità</a> e verificare le Impostazioni del Browser.");
 		response.flushBuffer();
 	}
 

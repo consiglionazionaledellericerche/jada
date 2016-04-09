@@ -1,5 +1,9 @@
 package it.cnr.jada.excel.action;
 
+import java.rmi.RemoteException;
+
+import javax.ejb.EJBException;
+
 import it.cnr.jada.UserContext;
 import it.cnr.jada.action.ActionContext;
 import it.cnr.jada.action.AdminUserContext;
@@ -13,10 +17,6 @@ import it.cnr.jada.excel.ejb.BframeExcelComponentSession;
 import it.cnr.jada.util.action.FormAction;
 import it.cnr.jada.util.action.OptionBP;
 import it.cnr.jada.util.ejb.EJBCommonServices;
-
-import java.rmi.RemoteException;
-
-import javax.ejb.EJBException;
 
 public class CancellaSchedulazioneExcelAction extends FormAction{
 	@Override
@@ -33,7 +33,7 @@ public class CancellaSchedulazioneExcelAction extends FormAction{
 		try {
 			Excel_spoolerBulk excelSpooler = getComponent(actioncontext).findExcelSpooler(userContext, pg);
 			if (excelSpooler == null){
-				openMessage(actioncontext, "La lista di distribuzione della consultazione, e' stata eliminata!");
+				openMessage(actioncontext, "La lista di distribuzione della consultazione, è stata eliminata!");
 				return super.doDefault(actioncontext);
 			}
 			String msg = "Si conferma la cancellazione dell'indirizzo "+indirizzoEMail+"<BR>dalla lista di distribuzione della consultazione \""+excelSpooler.getNome_file()+"\"?";
@@ -52,7 +52,7 @@ public class CancellaSchedulazioneExcelAction extends FormAction{
 		if (option.getOption() == it.cnr.jada.util.action.OptionBP.YES_BUTTON) {
 			try {
 				getComponent(actioncontext).cancellaSchedulazione(userContext, new Long(bp.getResource("pg")), bp.getResource("indirizzoEMail"));
-				openMessage(actioncontext, "La cancellazione e' stata effettuata.");
+				openMessage(actioncontext, "La cancellazione è stata effettuata.");
 			} catch (Exception e) {
 				handleException(actioncontext, e);
 			}

@@ -1,6 +1,9 @@
 package it.cnr.jada.action;
 
+import it.cnr.jada.DetailedRuntimeException;
+import it.cnr.jada.UserContext;
 import it.cnr.jada.UserTransaction;
+import it.cnr.jada.comp.ComponentException;
 import it.cnr.jada.error.bulk.Application_errorBulk;
 import it.cnr.jada.error.bulk.Application_errorHome;
 import it.cnr.jada.util.Config;
@@ -10,42 +13,39 @@ import it.cnr.jada.util.ejb.EJBCommonServices;
 import java.io.IOException;
 import java.io.Serializable;
 import java.rmi.RemoteException;
+import java.sql.Blob;
 import java.sql.SQLException;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Properties;
-import java.util.StringTokenizer;
-
+import java.util.*;
 import javax.ejb.EJBException;
+import javax.mail.Address;
+import javax.mail.internet.InternetAddress;
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 /**
- * Un BusinessProcess ha la responsabilit  di mantenere lo stato del processo di business che   stato 
+ * Un BusinessProcess ha la responsabilità di mantenere lo stato del processo di business che è stato 
  * avviato in seguito alla richiesta di un client. 
  * I BusinessProcess vengono mantenuti nella sessione, quindi sopravvivono tra una action e l'altra.
  * Ogni richiesta originata da un client determina la selezione di un business process corrente. 
  * Durante la valutazione della Action o nell'esecuzione di una JSP in seguito alla valutazione di un 
- * forward viene mantenuto il riferimento a tale business process, per cui   possibile colloquiare 
+ * forward viene mantenuto il riferimento a tale business process, per cui è possibile colloquiare 
  * con tale istanza per reperire tutte le informazioni necessarie alla svolgimento della action e 
  * alla successiva costruzione della risposta.
- * Nell'ambito di una action   possibile accedere al business process corrente tramite l'ActionContext, 
+ * Nell'ambito di una action è possibile accedere al business process corrente tramite l'ActionContext, 
  * mentre in una JSP mediante un metodo statico di BusinessProcess. 
- *   responsabilit  della JSP includere nella risposta il riferimento al business process in cui 
- * dovr  essere valutata la prossima action.
- * La valutazione di una action pu  portare alla creazione di un nuovo business process o alla chiusura 
- * di quello corrente. Nel caso di un nuovo business process   possibile aggiungerlo come figlio del 
+ * È responsabilità della JSP includere nella risposta il riferimento al business process in cui 
+ * dovrà essere valutata la prossima action.
+ * La valutazione di una action può portare alla creazione di un nuovo business process o alla chiusura 
+ * di quello corrente. Nel caso di un nuovo business process è possibile aggiungerlo come figlio del 
  * business process corrente. In tal caso le ricerche di forward che non portano ad un risultato immediato, 
  * procedono nella gerarchia dei padri prima di passare alla mappatura statica.
- * Un business process pu  essere restituito da una action come forward; 
- * in tale caso verr  cercato il forward dal nome "default" nell'ambito del business process restituito.
+ * Un business process può essere restituito da una action come forward; 
+ * in tale caso verrà cercato il forward dal nome "default" nell'ambito del business process restituito.
  * Esiste sempre un business process che rappresenta la radice della gerarchia di tutti i business process. 
- * Se non specificato dalla richiesta esso   il business process di default.
- * Un BusinessProcess non pu  essere istanziato direttamente, ma solo tramite il metodo createBusinessProcess 
+ * Se non specificato dalla richiesta esso è il business process di default.
+ * Un BusinessProcess non può essere istanziato direttamente, ma solo tramite il metodo createBusinessProcess 
  * dell'ActionContext, specificando il nome contenuto all'interno del file di configurazione della ActionServlet. 
  * Subito dopo la creazione di un BusinessProcess viene invocato il metodo init con i parametri specificati 
  * nel file di configurazione.
@@ -79,8 +79,8 @@ public class BusinessProcess implements Forward, Serializable{
 	}
     /**
      * Costruisce un nuovo BusinessProcess
-     * function - Una stringa contenente la modalit  transazionale del BusinessProcess. Le modalit  ammesse sono:
-     * La modalit  transazionale di default   "Th"
+     * function - Una stringa contenente la modalità transazionale del BusinessProcess. Le modalità ammesse sono:
+     * La modalità transazionale di default è "Th"
      */
 	protected BusinessProcess(String function){
 		children = new HashMap();
@@ -116,7 +116,7 @@ public class BusinessProcess implements Forward, Serializable{
     /**
      * Aggiunge un business process come figlio del ricevente. 
      * Se esiste un altro BusinessProcess figlio con lo stesso nome di quello specificato 
-     * viene prima chiuso quello gi  esistente
+     * viene prima chiuso quello già esistente
      */
 	public void addChild(BusinessProcess businessprocess) throws BusinessProcessException{
 		if(businessprocess.getName() == null)
@@ -135,7 +135,7 @@ public class BusinessProcess implements Forward, Serializable{
      */
 	public void addChild(BusinessProcess businessprocess,boolean remove) throws BusinessProcessException{
 		// RP Per limitare il numero dei livelli delle consultazioni viene chiuso un livello intermedio
-		// ed il nome del bp   sempre lo stesso, per evitare la chiusura dei figli che hanno lo stesso nome
+		// ed il nome del bp è sempre lo stesso, per evitare la chiusura dei figli che hanno lo stesso nome
 		if(remove)
 			addChild(businessprocess);
 		else{
@@ -187,7 +187,7 @@ public class BusinessProcess implements Forward, Serializable{
 	}
     /**
      * Effettua una commit della UserTransaction associata al ricevente. 
-     * Se il ricevente non   in modalit  transazionale esce senza effettuare nulla.
+     * Se il ricevente non è in modalità transazionale esce senza effettuare nulla.
      */
 	public void commitUserTransaction() throws BusinessProcessException{
 		if(getUserTransaction() != null)
@@ -218,7 +218,7 @@ public class BusinessProcess implements Forward, Serializable{
 	}
     /**
      * Metodo statico da usare in una JSP per aggiungere il riferimento al business process in cui 
-     * dovr  essere eseguita la prossima action. 
+     * dovrà essere eseguita la prossima action. 
      * Va usato all'interno di una FORM che scatena una action.
      */
 	public static void encode(BusinessProcess businessprocess, PageContext pagecontext) throws IOException{
@@ -237,7 +237,7 @@ public class BusinessProcess implements Forward, Serializable{
 		jspwriter.println("\">");
 	}
     /**
-     * Metodo obsoleto. Mantenuto per compatibilit . Ritorna semplicemente la stringa che viene passata
+     * Metodo obsoleto. Mantenuto per compatibilità. Ritorna semplicemente la stringa che viene passata
      */
 	@Deprecated
 	public String encodePath(String path){
@@ -375,8 +375,8 @@ public class BusinessProcess implements Forward, Serializable{
 		return parent;
 	}
     /**
-     * Restituisce una stringa formata dal nome del ricevente pi  quello dei suoi padri. 
-     * Il nome del processo root   quello pi  a sinistra. Come separatore viene usato il carattere '/'
+     * Restituisce una stringa formata dal nome del ricevente più quello dei suoi padri. 
+     * Il nome del processo root è quello più a sinistra. Come separatore viene usato il carattere '/'
      */
 	public String getPath(){
 		return path;
@@ -413,7 +413,7 @@ public class BusinessProcess implements Forward, Serializable{
 		return transactionPolicy;
 	}
     /**
-     * Restituisce il valore della propriet  'userTransaction'
+     * Restituisce il valore della proprietà 'userTransaction'
      */
 	public UserTransaction getUserTransaction(){
 		return userTransaction;
@@ -432,7 +432,7 @@ public class BusinessProcess implements Forward, Serializable{
 	}
     /**
      * Gestisce una UserTransactionTimeoutException. La gestione standard prevede solamente 
-     * la chiusura del ricevente (che non   pi  utilizzabile).
+     * la chiusura del ricevente (che non è più utilizzabile).
      */
 	protected void handleUserTransactionTimeout(ActionContext actioncontext) throws BusinessProcessException{
 		actioncontext.closeBusinessProcess(this);
@@ -507,7 +507,7 @@ public class BusinessProcess implements Forward, Serializable{
 	}
     /**
      * Effettua una rollback della UserTransaction associata al ricevente. 
-     * Se il ricevente non   in modalit  transazionale esce senza effettuare nulla.
+     * Se il ricevente non è in modalità transazionale esce senza effettuare nulla.
      */
 	public void rollbackUserTransaction() throws BusinessProcessException{
 		if(getUserTransaction() != null)
@@ -538,7 +538,7 @@ public class BusinessProcess implements Forward, Serializable{
 			return busy = true;
 	}
     /**
-     * Imposta Il BusinessProcessMapping da cui   stato instanziato il ricevente. 
+     * Imposta Il BusinessProcessMapping da cui è stato instanziato il ricevente. 
      * Effettua l'inizializzaione del BusinessProcess.
      */
 	protected void setMapping(BusinessProcessMapping businessprocessmapping, ActionContext actioncontext) throws BusinessProcessException{

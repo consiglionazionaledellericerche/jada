@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Inherited
 public @interface FormAnnotation {
-	/** Nome logico del Form, l'attributo e' obbligatorio, ed e' univoco all'interno del documento.*/
+	/** Nome logico del Form, l'attributo è obbligatorio, ed è univoco all'interno del documento.*/
 	public String name() default "default";
 	/** Array di FormFieldProperty che compongono il Form.*/
 	public FieldPropertyAnnotation[] value();

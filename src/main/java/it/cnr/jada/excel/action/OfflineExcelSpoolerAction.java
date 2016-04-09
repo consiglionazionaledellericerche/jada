@@ -71,7 +71,7 @@ public Forward doExcel(ActionContext actioncontext)
 				bulkmodel.setDt_prossima_esecuzione(bulkmodel.getDt_partenza());
 			}
 			else{
-				bp.setMessage("Bisogna indicare sia la data e ora, sia l'intervallo e l'unita' dell'intervallo");
+				bp.setMessage("Bisogna indicare sia la data e ora, sia l'intervallo e l'unità dell'intervallo");
 			}	
 		bframeExcelComponentSession.modifyQueue(actioncontext.getUserContext(),bulkmodel);
 		ExcelSpoolerBP excelSpoolerBP = (ExcelSpoolerBP)actioncontext.createBusinessProcess("ExcelSpoolerBP");
