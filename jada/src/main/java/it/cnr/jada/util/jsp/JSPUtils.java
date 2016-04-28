@@ -373,11 +373,6 @@ public class JSPUtils
 		throws IOException
 	{
 		pagecontext.getOut().print("<BASE href=\"");
-		pagecontext.getOut().print(pagecontext.getRequest().getScheme());
-		pagecontext.getOut().print("://");
-		pagecontext.getOut().print(pagecontext.getRequest().getServerName());
-		pagecontext.getOut().print(':');
-		pagecontext.getOut().print(pagecontext.getRequest().getServerPort());
 		pagecontext.getOut().print(getAppRoot((HttpServletRequest)pagecontext.getRequest()));
 		pagecontext.getOut().println("\">");
 		printCloneUrl(pagecontext);
