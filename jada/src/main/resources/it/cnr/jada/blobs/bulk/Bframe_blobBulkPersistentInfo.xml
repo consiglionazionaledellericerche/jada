@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<SQLPersistentInfo
-	persistentClassName="it.cnr.jada.blobs.bulk.Bframe_blobBulk"
-	keyClassName="it.cnr.jada.blobs.bulk.Bframe_blobKey"
-	homeClassName="it.cnr.jada.blobs.bulk.Bframe_blobHome" >
-
-</SQLPersistentInfo>
