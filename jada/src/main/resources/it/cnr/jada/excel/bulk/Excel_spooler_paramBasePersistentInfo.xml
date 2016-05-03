@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SQLPersistentInfo
+	persistentClassName="it.cnr.jada.excel.bulk.Excel_spooler_paramBase"
+	keyClassName="it.cnr.jada.excel.bulk.Excel_spooler_paramKey"
+	homeClassName="it.cnr.jada.excel.bulk.Excel_spooler_paramHome">
+	<defaultColumnMap
+		tableName="EXCEL_SPOOLER_PARAM">
+		<columnMapping
+			columnName="COLUMN_NAME"
+			propertyName="column_name"
+			sqlTypeName="VARCHAR"
+			columnSize="300"
+			nullable="false" />
+		<columnMapping
+			columnName="COLUMN_TYPE"
+			propertyName="column_type"
+			sqlTypeName="VARCHAR"
+			columnSize="100"
+			nullable="true" />
+		<columnMapping
+			columnName="COLUMN_LABEL"
+			propertyName="column_label"
+			sqlTypeName="VARCHAR"
+			columnSize="100"
+			nullable="false" />
+		<columnMapping
+			columnName="HEADER_LABEL"
+			propertyName="header_label"
+			sqlTypeName="VARCHAR"
+			columnSize="300"
+			nullable="true" />
+		<columnMapping
+			columnName="DACR"
+			propertyName="dacr"
+			sqlTypeName="TIMESTAMP"
+			columnSize="7"
+			nullable="false" />
+		<columnMapping
+			columnName="UTCR"
+			propertyName="utcr"
+			sqlTypeName="VARCHAR"
+			columnSize="20"
+			nullable="false" />
+		<columnMapping
+			columnName="DUVA"
+			propertyName="duva"
+			sqlTypeName="TIMESTAMP"
+			columnSize="7"
+			nullable="false" />
+		<columnMapping
+			columnName="UTUV"
+			propertyName="utuv"
+			sqlTypeName="VARCHAR"
+			columnSize="20"
+			nullable="false" />
+		<columnMapping
+			columnName="PG_VER_REC"
+			propertyName="pg_ver_rec"
+			sqlTypeName="DECIMAL"
+			columnSize="22"
+			nullable="false" />
+	</defaultColumnMap>
+	<persistentProperty
+		name="column_name" />
+	<persistentProperty
+		name="column_type" />
+	<persistentProperty
+		name="column_label" />
+	<persistentProperty
+		name="header_label" />
+	<persistentProperty
+		name="dacr" />
+	<persistentProperty
+		name="utcr" />
+	<persistentProperty
+		name="duva" />
+	<persistentProperty
+		name="utuv" />
+	<persistentProperty
+		name="pg_ver_rec" />
+</SQLPersistentInfo>

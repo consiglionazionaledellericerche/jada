@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<bulkInfo
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns="http://contab.cnr.it/schema/SIGLA" 
+		xsi:schemaLocation="http://contab.cnr.it/schema/SIGLA http://contab.cnr.it/schema/SIGLA/BulkInfo_1_5.xsd">
+	<fieldProperty
+		name="path"
+		property="path"
+		maxLength="256"
+		inputSize="256"
+		inputType="TEXT"
+		label="Percorso"
+		caseSensitiveSearch="false" />
+	<fieldProperty
+		name="filename"
+		property="filename"
+		maxLength="50"
+		inputSize="50"
+		inputType="TEXT"
+		label="Nome file"
+		caseSensitiveSearch="false" />
+	<fieldProperty
+		name="cd_tipo"
+		property="cd_tipo"
+		maxLength="10"
+		inputSize="10"
+		inputType="TEXT"
+		label="Tipo"
+		caseSensitiveSearch="false" />
+	<fieldProperty
+		name="stato"
+		property="stato"
+		inputType="TEXT"
+		keysProperty="statoKeys"
+		label="Stato"
+		caseSensitiveSearch="false" />
+	<fieldProperty
+		name="dacr"
+		property="dacr"
+		inputType="ROTEXT"
+		label="Data creazione"
+		formatName="timestamp" />
+	<fieldProperty
+		name="duva"
+		property="duva"
+		inputType="ROTEXT"
+		label="Data modifica"
+		formatName="timestamp" />
+	<fieldProperty
+		name="utcr"
+		property="utcr"
+		inputType="ROTEXT"
+		label="Utente creazione" />
+	<fieldProperty
+		name="utuv"
+		property="utuv"
+		inputType="ROTEXT"
+		label="Utente modifica" />
+	<fieldProperty
+		name="ds_file"
+		maxLength="300"
+		inputSize="300"
+		inputType="TEXTAREA"
+		label="Descrizione" />
+	<fieldProperty
+		name="ds_utente"
+		maxLength="300"
+		inputSize="300"
+		inputType="TEXTAREA"
+		label="Descr. utente" />
+
+</bulkInfo>

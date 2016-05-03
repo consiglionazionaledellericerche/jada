@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<bulkInfo
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns="http://contab.cnr.it/schema/SIGLA" 
+		xsi:schemaLocation="http://contab.cnr.it/schema/SIGLA http://contab.cnr.it/schema/SIGLA/BulkInfo_1_5.xsd">
+	<fieldProperty
+		name="root"
+		property="root"
+		maxLength="200"
+		inputSize="200"
+		inputType="TEXT"
+		label="root"
+		caseSensitiveSearch="false" />
+	<fieldProperty
+		name="cd_tipo"
+		property="cd_tipo"
+		maxLength="10"
+		inputSize="10"
+		inputType="TEXT"
+		label="cd_tipo" />
+	<fieldProperty
+		name="ds_tipo"
+		property="ds_tipo"
+		maxLength="200"
+		inputSize="200"
+		inputType="TEXT"
+		label="ds_tipo"
+		caseSensitiveSearch="false" />
+
+	<formFieldProperty
+		name="root" />
+	<formFieldProperty
+		name="cd_tipo" />
+	<formFieldProperty
+		name="ds_tipo" />
+
+	<columnFieldProperty
+		name="root" />
+	<columnFieldProperty
+		name="cd_tipo" />
+	<columnFieldProperty
+		name="ds_tipo" />
+
+	<findFieldProperty
+		name="root" />
+	<findFieldProperty
+		name="cd_tipo" />
+	<findFieldProperty
+		name="ds_tipo" />
+
+</bulkInfo>

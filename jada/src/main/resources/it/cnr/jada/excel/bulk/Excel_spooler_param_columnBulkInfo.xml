@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<bulkInfo
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns="http://contab.cnr.it/schema/SIGLA" 
+		xsi:schemaLocation="http://contab.cnr.it/schema/SIGLA http://contab.cnr.it/schema/SIGLA/BulkInfo_1_5.xsd">
+	<fieldProperty
+		name="pg_estrazione"
+		property="pg_estrazione"
+		inputType="TEXT"
+		inputSize="10"
+		maxLength="10"
+		label="pg_estrazione" />
+	<fieldProperty
+		name="pg_column"
+		property="pg_column"
+		inputType="TEXT"
+		inputSize="10"
+		maxLength="10"
+		label="pg_column" />
+	<fieldProperty
+		name="id_key"
+		property="id_key"
+		inputType="TEXTAREA"
+		cols="60"
+		rows="5"
+		maxLength="300"
+		label="id_key" />
+	<fieldProperty
+		name="value"
+		property="value"
+		inputType="TEXTAREA"
+		cols="60"
+		rows="5"
+		maxLength="300"
+		label="value" />
+
+	<formFieldProperty
+		name="pg_estrazione" />
+	<formFieldProperty
+		name="pg_column" />
+	<formFieldProperty
+		name="id_key" />
+	<formFieldProperty
+		name="value" />
+
+	<findFieldProperty
+		name="pg_estrazione" />
+	<findFieldProperty
+		name="pg_column" />
+	<findFieldProperty
+		name="id_key" />
+	<findFieldProperty
+		name="value" />
+
+	<columnFieldProperty
+		name="pg_estrazione" />
+	<columnFieldProperty
+		name="pg_column" />
+	<columnFieldProperty
+		name="id_key" />
+	<columnFieldProperty
+		name="value" />
+</bulkInfo>
