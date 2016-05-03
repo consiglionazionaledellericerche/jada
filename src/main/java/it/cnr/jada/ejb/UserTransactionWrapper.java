@@ -2,6 +2,7 @@ package it.cnr.jada.ejb;
 
 import java.lang.reflect.InvocationTargetException;
 import java.rmi.RemoteException;
+
 import javax.ejb.Remote;
 import javax.transaction.RollbackException;
 

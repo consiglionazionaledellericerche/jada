@@ -512,8 +512,9 @@ public class SelezionatoreListaBP extends AbstractSelezionatoreBP
 	public void setIterator(ActionContext actioncontext, RemoteIterator remoteiterator, int i, int j)
 		throws RemoteException, BusinessProcessException
 	{
-		EJBCommonServices.closeRemoteIterator(iterator);
-		iterator = EJBCommonServices.openRemoteIterator(actioncontext, remoteiterator);
+		EJBCommonServices.closeRemoteIterator(actioncontext, iterator);
+		remoteiterator = EJBCommonServices.openRemoteIterator(actioncontext, remoteiterator);
+		iterator = remoteiterator;
 		if(remoteiterator instanceof RemotePagedIterator)
 			pagedIterator = (RemotePagedIterator)remoteiterator;
 		pageFrameSize = j;

@@ -61,7 +61,7 @@ public class ExcelSpoolerBP extends SelezionatoreListaBP {
 	}
 	public void refresh(ActionContext context) throws BusinessProcessException {
 		try {
-			EJBCommonServices.closeRemoteIterator(getIterator());			
+			EJBCommonServices.closeRemoteIterator(context, getIterator());			
 			setIterator(context,createComponentSession().queryJobs(
 				context.getUserContext()));
 		} catch(Throwable e) {

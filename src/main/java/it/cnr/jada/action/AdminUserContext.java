@@ -6,6 +6,7 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 
 import it.cnr.jada.UserContext;
+import it.cnr.jada.UserTransaction;
 
 public class AdminUserContext implements UserContext {
 	private static final long serialVersionUID = 7472364126199935204L;
@@ -61,5 +62,4 @@ public class AdminUserContext implements UserContext {
 	public Hashtable<String, Serializable> getAttributes() {
 		return attributes;
 	}
-
 }

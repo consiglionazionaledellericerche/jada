@@ -6,7 +6,7 @@ public class ConfigurazioneJadaComponentSessionBean  extends it.cnr.jada.ejb.Gen
 	private it.cnr.jada.conf.comp.ConfigurazioneJadaComponent componentObj;
 	
 	@PostConstruct
-		public void ejbCreate() throws javax.ejb.CreateException {
+		public void ejbCreate() {
 		componentObj = new it.cnr.jada.conf.comp.ConfigurazioneJadaComponent();
 	}
 	public static 

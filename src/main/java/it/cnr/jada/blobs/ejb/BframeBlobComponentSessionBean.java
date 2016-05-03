@@ -18,7 +18,7 @@ import javax.ejb.Stateless;
 @Stateless(name="BFRAMEBLOBS_EJB_BframeBlobComponentSession")
 public class BframeBlobComponentSessionBean extends it.cnr.jada.ejb.RicercaComponentSessionBean implements BframeBlobComponentSession{
 	@PostConstruct
-	public void ejbCreate() throws javax.ejb.CreateException {
+	public void ejbCreate() {
 		componentObj = new BframeBlobComponent();
 	}
 	@Remove

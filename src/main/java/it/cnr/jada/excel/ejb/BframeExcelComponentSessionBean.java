@@ -26,7 +26,7 @@ public class BframeExcelComponentSessionBean extends it.cnr.jada.ejb.GenericComp
 		componentObj.release();
 	}
 	@PostConstruct
-	public void ejbCreate() throws javax.ejb.CreateException {
+	public void ejbCreate() {
 		componentObj = new ExcelComponent();
 	}
 	public static BframeExcelComponentSessionBean newInstance() throws EJBException {

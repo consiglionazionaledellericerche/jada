@@ -189,11 +189,11 @@ public class HttpActionContext
 			} 
 			else{
 				setBusinessProcess(businessprocess.getParent());
-				// non può essere richiamato il closed perchè chiude anche i figli
+				// non pu essere richiamato il closed perch chiude anche i figli
 		        if (businessprocess instanceof SelezionatoreListaBP)
 					try
 					{
-						EJBCommonServices.closeRemoteIterator(((SelezionatoreListaBP)businessprocess).getIterator());
+						EJBCommonServices.closeRemoteIterator(this,((SelezionatoreListaBP)businessprocess).getIterator());
 					}
 					catch(RemoteException remoteexception)
 					{			

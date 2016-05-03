@@ -69,14 +69,14 @@ public class HttpEJBCleaner implements Serializable {
 			for(; obj instanceof Handle; obj = ((Handle)obj).getEJBObject());
 			if(obj instanceof BulkLoaderIterator){            
 				((BulkLoaderIterator)obj).ejbRemove();
-			}else if (obj instanceof TransactionalBulkLoaderIterator){
+			} else if (obj instanceof TransactionalBulkLoaderIterator){
 				((TransactionalBulkLoaderIterator)obj).ejbRemove();
-			}else if(obj instanceof it.cnr.jada.UserTransaction){
+			} else if(obj instanceof it.cnr.jada.UserTransaction){
 				((it.cnr.jada.UserTransaction)obj).remove();
 			}                
 		}catch(javax.ejb.NoSuchEJBException ex){	
-		}catch(Throwable _ex) {
-			_ex.printStackTrace();
+		}catch(Exception _ex) {
+			log.warn(_ex);
 		}
 	}
 

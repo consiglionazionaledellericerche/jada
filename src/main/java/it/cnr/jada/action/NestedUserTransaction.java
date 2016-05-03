@@ -5,6 +5,7 @@ import it.cnr.jada.UserTransaction;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.rmi.RemoteException;
+
 import javax.ejb.*;
 
 // Referenced classes of package it.cnr.jada.action:

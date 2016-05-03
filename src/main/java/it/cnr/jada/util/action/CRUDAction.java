@@ -48,14 +48,14 @@ public class CRUDAction extends BulkAction
                 RemoteIterator remoteiterator = crudbp.lastFind(actioncontext);
                 if(remoteiterator == null || remoteiterator.countElements() == 0)
                 {
-                    EJBCommonServices.closeRemoteIterator(remoteiterator);
+                    EJBCommonServices.closeRemoteIterator(actioncontext, remoteiterator);
                     crudbp.setMessage("La ricerca non ha fornito alcun risultato.");
                     return actioncontext.findDefaultForward();
                 }
                 if(remoteiterator.countElements() == 1)
                 {
                     OggettoBulk oggettobulk1 = (OggettoBulk)remoteiterator.nextElement();
-                    EJBCommonServices.closeRemoteIterator(remoteiterator);
+                    EJBCommonServices.closeRemoteIterator(actioncontext, remoteiterator);
                     crudbp.setMessage("La ricerca ha fornito un solo risultato.");
                     return doRiportaSelezione(actioncontext, oggettobulk1);
                 } else
@@ -86,14 +86,14 @@ public class CRUDAction extends BulkAction
             RemoteIterator remoteiterator = crudbp.find(actioncontext, null, oggettobulk);
             if(remoteiterator == null || remoteiterator.countElements() == 0)
             {
-                EJBCommonServices.closeRemoteIterator(remoteiterator);
+                EJBCommonServices.closeRemoteIterator(actioncontext, remoteiterator);
                 crudbp.setMessage("La ricerca non ha fornito alcun risultato.");
                 return actioncontext.findDefaultForward();
             }
             if(remoteiterator.countElements() == 1)
             {
                 OggettoBulk oggettobulk1 = (OggettoBulk)remoteiterator.nextElement();
-                EJBCommonServices.closeRemoteIterator(remoteiterator);
+                EJBCommonServices.closeRemoteIterator(actioncontext, remoteiterator);
                 crudbp.setMessage("La ricerca ha fornito un solo risultato.");
                 return doRiportaSelezione(actioncontext, oggettobulk1);
             } else

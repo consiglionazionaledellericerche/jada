@@ -794,17 +794,17 @@ public class BulkAction extends FormAction
         try
         {
             BulkBP bulkbp = (BulkBP)actioncontext.getBusinessProcess();
-            EJBCommonServices.openRemoteIterator(actioncontext, remoteiterator);
+            remoteiterator = EJBCommonServices.openRemoteIterator(actioncontext, remoteiterator);
             if(remoteiterator == null || remoteiterator.countElements() == 0)
             {
-                EJBCommonServices.closeRemoteIterator(remoteiterator);
+                EJBCommonServices.closeRemoteIterator(actioncontext, remoteiterator);
                 bulkbp.setMessage("La ricerca non ha fornito alcun risultato.");
                 return actioncontext.findDefaultForward();
             }
             if(remoteiterator.countElements() == 1)
             {
                 doBringBackSearchResult(actioncontext, formfield, (OggettoBulk)remoteiterator.nextElement());
-                EJBCommonServices.closeRemoteIterator(remoteiterator);
+                EJBCommonServices.closeRemoteIterator(actioncontext, remoteiterator);
                 return actioncontext.findDefaultForward();
             } else
             {

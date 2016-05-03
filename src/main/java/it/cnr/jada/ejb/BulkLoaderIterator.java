@@ -25,7 +25,7 @@ public interface BulkLoaderIterator extends RemotePagedIterator, RemoteOrderable
     public abstract int countElements()
         throws DetailedRuntimeException, RemoteException;
     /**
-     * Restituisce il numero di pagine che l'iterator è in grado di scorrere.
+     * Restituisce il numero di pagine che l'iterator   in grado di scorrere.
      */
     public abstract int countPages()
         throws DetailedRuntimeException, RemoteException;
@@ -34,7 +34,7 @@ public interface BulkLoaderIterator extends RemotePagedIterator, RemoteOrderable
         throws DetailedRuntimeException, RemoteException;
     /**
      * Description copied from interface:
-     * Restituisce false se il cursore è arrivato oltre l'ultimo elemento della collezione
+     * Restituisce false se il cursore   arrivato oltre l'ultimo elemento della collezione
      */
     public abstract boolean hasMoreElements()
         throws DetailedRuntimeException, RemoteException;
@@ -67,7 +67,7 @@ public interface BulkLoaderIterator extends RemotePagedIterator, RemoteOrderable
         throws DetailedRuntimeException, RemoteException;
     /**
      * Description copied from interface:
-     * Legge l'intero contenuto della pagina corrente; all'uscita il cursore del ricevente è posizionato all'inizio della pagina successiva
+     * Legge l'intero contenuto della pagina corrente; all'uscita il cursore del ricevente   posizionato all'inizio della pagina successiva
      */
     public abstract Object[] nextPage()
         throws DetailedRuntimeException, RemoteException;
