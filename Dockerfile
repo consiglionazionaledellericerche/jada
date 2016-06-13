@@ -1,0 +1,3 @@
+FROM alpine
+
+echo JADA
