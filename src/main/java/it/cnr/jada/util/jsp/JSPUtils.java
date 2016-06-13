@@ -375,6 +375,18 @@ public class JSPUtils
 		pagecontext.getOut().print("<BASE href=\"");
 		pagecontext.getOut().print(getAppRoot((HttpServletRequest)pagecontext.getRequest()));
 		pagecontext.getOut().println("\">");
+		
+		pagecontext.getOut().println("<!--[if IE]><script type=\"text/javascript\">");
+		pagecontext.getOut().println("// Fix for IE ignoring relative base tags.");
+		pagecontext.getOut().println("(function() {");
+		pagecontext.getOut().println("	var baseTag = document.getElementsByTagName('base')[0];");
+		pagecontext.getOut().print("baseTag.href = window.location.protocol + \"//\" + window.location.hostname + (window.location.port ? ':' + window.location.port: '') + \"");
+		pagecontext.getOut().print(getAppRoot((HttpServletRequest)pagecontext.getRequest()));
+		pagecontext.getOut().println("\"");		
+		
+		pagecontext.getOut().println("})();");
+		pagecontext.getOut().println("</script><![endif]-->");
+		
 		printCloneUrl(pagecontext);
 		printMetaData(pagecontext);
 	}
