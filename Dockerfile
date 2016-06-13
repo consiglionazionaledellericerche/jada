@@ -1,3 +1,3 @@
 FROM alpine
 
-echo JADA
+RUN echo JADA
