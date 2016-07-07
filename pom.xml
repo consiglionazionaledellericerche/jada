@@ -9,7 +9,7 @@
 	<parent>
 	    	<artifactId>archetype</artifactId>
     		<groupId>it.cnr.si</groupId>
-    		<version>0.20</version>
+    		<version>1.0.1</version>
   	</parent>		
 	<properties>
 		<project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
