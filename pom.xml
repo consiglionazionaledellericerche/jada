@@ -212,6 +212,6 @@
 	<scm>
     <connection>scm:git:ssh://git@git.si.cnr.it/dev/jada.git</connection>
     <developerConnection>scm:git:ssh://git@git.si.cnr.it/dev/jada.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>wildfly</tag>
   </scm>
 </project>
