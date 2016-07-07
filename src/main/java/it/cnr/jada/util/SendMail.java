@@ -45,20 +45,21 @@ public class SendMail {
 				try{
 				   mail_session = (javax.mail.Session) ctx.lookup("java:comp/env/mail/MailSession");
 				}catch(NamingException e){
-				   mail_session = (javax.mail.Session) ctx.lookup("java:mail/MailSession");		   
+				   mail_session = (javax.mail.Session) ctx.lookup("java:jboss/mail/Default");		   
 				}           	
            }
-           if (addressTO == null){
-        	   addressTO = new java.util.ArrayList<String>();
-        	   addressTO.add(mail_session.getProperty("mail.user"));
-           }
 		   MimeMessage msg = new MimeMessage(mail_session);	   
-		   msg.setRecipients(javax.mail.Message.RecipientType.TO, indirizzi(addressTO));
+		   msg.setFrom();
+           if (addressTO == null){
+    		   msg.setRecipients(javax.mail.Message.RecipientType.TO, msg.getFrom());        	   
+           } else {
+    		   msg.setRecipients(javax.mail.Message.RecipientType.TO, indirizzi(addressTO));        	   
+           }		   
 		   if(addressCC != null)
 		     msg.setRecipients(javax.mail.Message.RecipientType.CC, indirizzi(addressCC));
 		   if(addressBCC != null)  
 		     msg.setRecipients(javax.mail.Message.RecipientType.BCC, indirizzi(addressBCC));
-		   msg.setFrom(new InternetAddress(mail_session.getProperty("mail.from")));
+
 		   msg.setSubject(subject + " Hostname:"+ hostname);
 		   javax.mail.internet.MimeMultipart multipart = new javax.mail.internet.MimeMultipart();
 		   javax.mail.internet.MimeBodyPart messageBodyPart = new javax.mail.internet.MimeBodyPart();
