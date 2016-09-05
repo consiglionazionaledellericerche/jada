@@ -345,8 +345,8 @@ public class EJBCommonServices implements Serializable{
 				if (actioncontext.getUserInfo().getUserTransaction() != null) {
 					if (remoteiterator instanceof UserTransactionalBulkLoaderIterator)
 						return remoteiterator;
-					remoteiterator = new UserTransactionalBulkLoaderIterator(actioncontext.getUserInfo().getUserTransaction(), remoteiterator); 
 					HttpEJBCleaner.register(actioncontext, remoteiterator);
+					remoteiterator = new UserTransactionalBulkLoaderIterator(actioncontext.getUserInfo().getUserTransaction(), remoteiterator); 
 					return remoteiterator;
 				} else {
 					((TransactionalBulkLoaderIterator)remoteiterator).open(actioncontext.getUserContext());					
