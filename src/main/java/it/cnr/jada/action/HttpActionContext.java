@@ -171,7 +171,7 @@ public class HttpActionContext
 		} else
 		{
 			setBusinessProcess(businessprocess.getParent());
-			businessprocess.getParent().removeChild(businessprocess.getName());
+			businessprocess.getParent().removeChild(this, businessprocess.getName());
 			return businessprocess;
 		}
 	}

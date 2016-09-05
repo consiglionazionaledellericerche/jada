@@ -517,14 +517,20 @@ public class BusinessProcess implements Forward, Serializable{
     /**
      * Rimuove un business process dall'elenco dei figli del ricevente.
      */
-	public BusinessProcess removeChild(String name) throws BusinessProcessException{
+	public BusinessProcess removeChild(ActionContext context, String name) throws BusinessProcessException{
 		synchronized(children){
 			BusinessProcess businessprocess = getChild(name);
 			if(businessprocess != null)
-				businessprocess.closed();
+				businessprocess.closed(context);
 			children.remove(name);
 			return businessprocess;
 		}
+	}	
+    /**
+     * Rimuove un business process dall'elenco dei figli del ricevente.
+     */
+	public BusinessProcess removeChild(String name) throws BusinessProcessException{
+		return removeChild(null, name);
 	}
     /**
      * Rimuove un hook dall'elenco degli hook del ricevente.
