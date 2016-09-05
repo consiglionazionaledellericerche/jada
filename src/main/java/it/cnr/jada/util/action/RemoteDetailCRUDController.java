@@ -382,6 +382,7 @@ public class RemoteDetailCRUDController extends AbstractDetailCRUDController imp
 
 	public void closed() throws RemoteException {
 		if (remoteIterator != null)
-			EJBCommonServices.closeRemoteIterator(remoteIterator);			
+			//TODO closeRemoteIterator
+			EJBCommonServices.closeRemoteIterator((ActionContext)null,remoteIterator);			
 	}
 }

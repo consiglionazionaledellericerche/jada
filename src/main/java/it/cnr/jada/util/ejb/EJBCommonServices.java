@@ -35,6 +35,7 @@ import javax.jms.QueueConnectionFactory;
 import javax.naming.InitialContext;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
+import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 import javax.transaction.UserTransaction;
 
@@ -60,8 +61,12 @@ public class EJBCommonServices implements Serializable{
 		closeRemoteIterator(remoteiterator);
 		HttpEJBCleaner.unregister(actioncontext, remoteiterator);
 	}
+	public static final void closeRemoteIterator(HttpSession session, RemoteIterator remoteiterator) throws RemoteException{
+		closeRemoteIterator(remoteiterator);
+		HttpEJBCleaner.unregister(session, remoteiterator);
+	}
 
-	public static final void closeRemoteIterator(RemoteIterator remoteiterator) throws RemoteException{
+	private static final void closeRemoteIterator(RemoteIterator remoteiterator) throws RemoteException{
 		try{
 			if(remoteiterator != null){
 				remoteiterator.close();

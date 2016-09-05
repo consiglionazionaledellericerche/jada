@@ -161,6 +161,31 @@ public class BusinessProcess implements Forward, Serializable{
 		busy = false;
 	}
 
+	public void closeAllChildren(ActionContext context) throws BusinessProcessException{
+		synchronized(children){
+			for(Iterator iterator = children.values().iterator(); iterator.hasNext(); iterator.remove()){
+				BusinessProcess businessprocess = (BusinessProcess)iterator.next();
+				businessprocess.closed(context);
+			}
+		}
+	}
+    /**
+     * Metodo invocato all'atto della chiusura di un business process. 
+     * L'implementazione di default invoca lo stesso metodo sui business process figli.
+     */
+	protected void closed(ActionContext context) throws BusinessProcessException{
+		synchronized(children){
+			for(Iterator iterator = children.values().iterator(); iterator.hasNext(); ((BusinessProcess)iterator.next()).closed(context));
+		}
+		if(getUserTransaction() != null)
+			try{
+				getUserTransaction().remove();
+			}catch(Throwable throwable){
+				throw new BusinessProcessException(throwable);
+			}
+		parent = null;
+	}	
+	
 	public void closeAllChildren() throws BusinessProcessException{
 		synchronized(children){
 			for(Iterator iterator = children.values().iterator(); iterator.hasNext(); iterator.remove()){

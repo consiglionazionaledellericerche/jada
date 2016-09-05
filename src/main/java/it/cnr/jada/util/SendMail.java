@@ -69,7 +69,7 @@ public class SendMail {
 		   internetHeaders.addHeader("Content-Type","text/plain");
 		   multipart.addBodyPart(new javax.mail.internet.MimeBodyPart(internetHeaders,text.getBytes("ISO-8859-1")));
 		   msg.setContent(multipart);
-           msg.setSentDate(EJBCommonServices.getServerTimestamp());
+           msg.setSentDate(EJBCommonServices.getServerTimestamp());           
            Transport.send(msg);			
 		}catch(Exception e){}		   
 	}

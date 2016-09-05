@@ -3,8 +3,6 @@ package it.cnr.jada.util.action;
 import it.cnr.jada.DetailedRuntimeException;
 import it.cnr.jada.UserContext;
 import it.cnr.jada.action.ActionContext;
-import it.cnr.jada.action.ActionServlet;
-import it.cnr.jada.action.BusinessProcess;
 import it.cnr.jada.action.BusinessProcessException;
 import it.cnr.jada.action.Forward;
 import it.cnr.jada.bulk.BulkInfo;
@@ -12,7 +10,13 @@ import it.cnr.jada.bulk.OggettoBulk;
 import it.cnr.jada.ejb.BulkLoaderIterator;
 import it.cnr.jada.ejb.TransactionalBulkLoaderIterator;
 import it.cnr.jada.persistency.sql.Query;
-import it.cnr.jada.util.*;
+import it.cnr.jada.util.ArrayEnumeration;
+import it.cnr.jada.util.Config;
+import it.cnr.jada.util.Log;
+import it.cnr.jada.util.ObjectReplacer;
+import it.cnr.jada.util.RemoteIterator;
+import it.cnr.jada.util.RemoteOrderable;
+import it.cnr.jada.util.RemotePagedIterator;
 import it.cnr.jada.util.ejb.EJBCommonServices;
 import it.cnr.jada.util.jsp.Button;
 import it.cnr.jada.util.jsp.JSPUtils;
@@ -26,8 +30,6 @@ import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.jsp.JspWriter;
@@ -73,7 +75,20 @@ public class SelezionatoreListaBP extends AbstractSelezionatoreBP
 		super.closed();
 		try
 		{
-			EJBCommonServices.closeRemoteIterator(iterator);
+			//TODO closeRemoteIterator
+			EJBCommonServices.closeRemoteIterator((ActionContext)null, iterator);
+		}
+		catch(RemoteException remoteexception)
+		{
+			throw handleException(remoteexception);
+		}
+	}
+
+	protected void closed(ActionContext context) throws BusinessProcessException {
+		super.closed(context);
+		try
+		{
+			EJBCommonServices.closeRemoteIterator(context, iterator);
 		}
 		catch(RemoteException remoteexception)
 		{
