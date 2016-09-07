@@ -10,13 +10,12 @@ import it.cnr.jada.util.ejb.UserTransactionTimeoutException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import javax.ejb.CreateException;
 import javax.ejb.EJBException;
 import javax.ejb.Remove;
 import javax.ejb.SessionContext;
@@ -42,7 +41,7 @@ public class UserTransactionWrapperBean implements UserTransactionWrapper{
     
 	private static final Log logger = Log.getInstance(UserTransactionWrapperBean.class);
     static final long serialVersionUID = 0x2c7e5503d9bf9553L;
-    private List<Object> ejbObjectsToBeRemoved;
+    private Map<String, Object> ejbObjectsToBeRemoved;
 
     public UserTransactionWrapperBean(){
         ejbObjectsToBeRemoved = null;
@@ -50,14 +49,16 @@ public class UserTransactionWrapperBean implements UserTransactionWrapper{
 
     public void addToEjbObjectsToBeRemoved(Object ejbobject){
         if(ejbObjectsToBeRemoved == null)
-            ejbObjectsToBeRemoved = new ArrayList<Object>();
-        ejbObjectsToBeRemoved.add(ejbobject);
+            ejbObjectsToBeRemoved = new HashMap<String, Object>();
+        ejbObjectsToBeRemoved.put(ejbobject.toString(), ejbobject);
     }
 
     private Object basicInvoke(Object ejbobject, String s, Object aobj[]) throws InvocationTargetException{
         try{
             if (aobj == null || aobj.length == 0) {
                 Object obj = Introspector.invoke(ejbobject, s, aobj);
+                if (s.equals("ejbRemove"))
+                	ejbObjectsToBeRemoved.remove(ejbobject.toString());
                 return obj;            	
             } else {
             	if(aobj.length > 0 && (aobj[0] instanceof UserContext)) {
@@ -134,7 +135,7 @@ public class UserTransactionWrapperBean implements UserTransactionWrapper{
     @Remove
     public void ejbRemove() throws RemoteException{
     	if(ejbObjectsToBeRemoved != null){
-            for(Iterator<Object> iterator = ejbObjectsToBeRemoved.iterator(); iterator.hasNext();)
+            for(Iterator<Object> iterator = ejbObjectsToBeRemoved.values().iterator(); iterator.hasNext();)
                 try{
                 	Object obj = iterator.next();
                 	if (obj instanceof TransactionalBulkLoaderIterator){

@@ -33,4 +33,6 @@ public interface UserTransactionWrapper{
     
     public abstract void ejbRemove() 
     	throws RemoteException;
+    
+    public abstract void addToEjbObjectsToBeRemoved(Object ejbobject);
 }

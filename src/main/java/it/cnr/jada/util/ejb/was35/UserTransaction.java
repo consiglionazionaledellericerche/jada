@@ -251,6 +251,11 @@ class UserTransaction implements Serializable, it.cnr.jada.UserTransaction{
             }
     }
 
+	@Override
+	public void addToEjbObjectsToBeRemoved(Object ejbobject) {
+		userTransactionWrapper.addToEjbObjectsToBeRemoved(ejbobject);
+	}
+
     public String toString(){
         if(userTransactionWrapper != null)
             return getClass().getName() + "@" + userTransactionWrapper;

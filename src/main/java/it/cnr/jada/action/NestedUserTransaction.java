@@ -14,6 +14,7 @@ import javax.ejb.*;
 class NestedUserTransaction
     implements Serializable, UserTransaction
 {
+    private final UserTransaction parent;
 
     private NestedUserTransaction(UserTransaction usertransaction)
     {
@@ -62,5 +63,8 @@ class NestedUserTransaction
     {
     }
 
-    private final UserTransaction parent;
+	@Override
+	public void addToEjbObjectsToBeRemoved(Object ejbobject) {
+		parent.addToEjbObjectsToBeRemoved(ejbobject);
+	}
 }

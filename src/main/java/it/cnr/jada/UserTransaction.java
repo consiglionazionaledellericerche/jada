@@ -28,4 +28,6 @@ public interface UserTransaction extends Serializable{
 
     public abstract void rollback()
         throws RemoteException, EJBException; 
+    
+    public abstract void addToEjbObjectsToBeRemoved(Object ejbobject);
 }

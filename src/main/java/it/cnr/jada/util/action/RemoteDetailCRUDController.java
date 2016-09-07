@@ -380,9 +380,8 @@ public class RemoteDetailCRUDController extends AbstractDetailCRUDController imp
 				calcPageCount(remoteIterator.countElements()));
 	}
 
-	public void closed() throws RemoteException {
+	public void closed(ActionContext context) throws RemoteException {
 		if (remoteIterator != null)
-			//TODO closeRemoteIterator
-			EJBCommonServices.closeRemoteIterator((ActionContext)null,remoteIterator);			
+			EJBCommonServices.closeRemoteIterator(context,remoteIterator);			
 	}
 }

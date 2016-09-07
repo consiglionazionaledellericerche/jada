@@ -132,8 +132,9 @@ public class UserTransactionalBulkLoaderIterator implements TransactionalBulkLoa
 	@Override
 	public void open(UserContext usercontext) throws ComponentException,
 			RemoteException, DetailedRuntimeException {
-		try {
+		try {			
 			userTransaction.invoke(remoteiterator, "open", new Object[]{usercontext});
+			userTransaction.addToEjbObjectsToBeRemoved(remoteiterator);
 		} catch (InvocationTargetException e) {
 			throw new RuntimeException(e);
 		}						
@@ -205,6 +206,14 @@ public class UserTransactionalBulkLoaderIterator implements TransactionalBulkLoa
 		} catch (InvocationTargetException | RemoteException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public UserTransaction getUserTransaction() {
+		return userTransaction;
+	}
+
+	public RemoteIterator getRemoteiterator() {
+		return remoteiterator;
 	}
 
 }
