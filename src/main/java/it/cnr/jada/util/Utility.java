@@ -1,11 +1,13 @@
 package it.cnr.jada.util;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import it.actalis.ellips.capi.CapiException;
-import it.actalis.ellips.capi.Util;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.IOUtils;
 
 public class Utility {
 	/**
@@ -44,8 +46,8 @@ public class Utility {
 		File d = new File(pathDir);
 		d.mkdirs();
 		try {
-			Util.saveToFile(Util.base64Decode(Util.getBytes(data), true), pathDir+"/"+pathFile);
-		} catch (CapiException e) {
+			IOUtils.copy(new ByteArrayInputStream(Base64.decodeBase64(data.getBytes())), new FileOutputStream(pathDir+"/"+pathFile));
+		} catch (Exception e) {
 			throw new IOException(e.getMessage());
 		}
 	}

@@ -1,22 +1,6 @@
 package it.cnr.jada.firma.bp;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.nio.CharBuffer;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.mail.MessagingException;
-import javax.naming.NamingException;
-import javax.servlet.http.HttpServletRequest;
-import javax.xml.bind.JAXBException;
-
-import it.actalis.ellips.capi.CapiException;
 import it.cnr.jada.action.ActionContext;
-import it.cnr.jada.action.ActionServlet;
 import it.cnr.jada.action.BusinessProcess;
 import it.cnr.jada.action.BusinessProcessException;
 import it.cnr.jada.bulk.OggettoBulk;
@@ -26,10 +10,10 @@ import it.cnr.jada.firma.FirmaInfos;
 import it.cnr.jada.firma.Verifica;
 import it.cnr.jada.firma.bulk.Doc_firma_digitaleBulk;
 import it.cnr.jada.util.Log;
-import it.cnr.jada.util.RemoteIterator;
 import it.cnr.jada.util.action.SimpleCRUDBP;
-import it.cnr.jada.util.jsp.JSPUtils;
 import it.cnr.jada.util.upload.UploadedFile;
+
+import java.io.File;
 
 public class CRUDFirmaBP extends SimpleCRUDBP {
 	private static final long LUNGHEZZA_MAX=0x1000000;

@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>it.cnr</groupId>
 	<artifactId>jada</artifactId>
-	<version>3.0.15</version>
+	<version>3.0.16</version>
 	<packaging>ejb</packaging>
 	<name>jada</name>
 	<parent>
@@ -99,12 +99,6 @@
 		<dependency>
 			<groupId>it.cnr.jada-libs</groupId>
 			<artifactId>Base64</artifactId>
-			<version>1.0.1</version>
-			<type>jar</type>
-		</dependency>
-		<dependency>
-			<groupId>it.cnr.jada-libs</groupId>
-			<artifactId>capi-full-30-all14</artifactId>
 			<version>1.0.1</version>
 			<type>jar</type>
 		</dependency>
