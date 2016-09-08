@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>it.cnr</groupId>
 	<artifactId>jada</artifactId>
-	<version>3.0.14</version>
+	<version>3.0.15</version>
 	<packaging>ejb</packaging>
 	<name>jada</name>
 	<parent>
@@ -178,7 +178,7 @@
 		<dependency>
 			<groupId>it.cnr.commons</groupId>
 			<artifactId>firmadigitale</artifactId>
-			<version>1.4</version>
+			<version>1.5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
