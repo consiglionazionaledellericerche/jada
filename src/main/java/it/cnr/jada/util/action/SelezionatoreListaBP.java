@@ -32,6 +32,7 @@ import java.util.Enumeration;
 import java.util.Iterator;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 
@@ -96,6 +97,18 @@ public class SelezionatoreListaBP extends AbstractSelezionatoreBP
 		}
 	}
 
+	protected void closed(HttpSession session) throws BusinessProcessException {
+		super.closed();
+		try
+		{
+			EJBCommonServices.closeRemoteIterator(session, iterator);
+		}
+		catch(RemoteException remoteexception)
+		{
+			throw handleException(remoteexception);
+		}
+	}
+	
 	public Button[] createNavigatorToolbar()
 	{
 		Button abutton[] = new Button[4];

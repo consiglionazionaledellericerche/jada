@@ -93,7 +93,7 @@ public class HttpActionContext
 		} catch (RemoteException e) {
 			throw new BusinessProcessException(e);
 		}
-		getBusinessProcess().addChild(businessprocess);
+		getBusinessProcess().addChild(businessprocess, this);
 		setBusinessProcess(businessprocess);
 		return businessprocess;
 	}

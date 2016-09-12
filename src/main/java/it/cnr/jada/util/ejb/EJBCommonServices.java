@@ -59,11 +59,13 @@ public class EJBCommonServices implements Serializable{
 
 	public static final void closeRemoteIterator(ActionContext actioncontext, RemoteIterator remoteiterator) throws RemoteException{
 		closeRemoteIterator(remoteiterator);
-		HttpEJBCleaner.unregister(actioncontext, remoteiterator);
+		if (remoteiterator != null)
+			HttpEJBCleaner.unregister(actioncontext, remoteiterator);
 	}
 	public static final void closeRemoteIterator(HttpSession session, RemoteIterator remoteiterator) throws RemoteException{
 		closeRemoteIterator(remoteiterator);
-		HttpEJBCleaner.unregister(session, remoteiterator);
+		if (remoteiterator != null)
+			HttpEJBCleaner.unregister(session, remoteiterator);
 	}
 
 	private static final void closeRemoteIterator(RemoteIterator remoteiterator) throws RemoteException{

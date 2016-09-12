@@ -119,18 +119,23 @@ public class BusinessProcess implements Forward, Serializable{
      * viene prima chiuso quello gi  esistente
      */
 	public void addChild(BusinessProcess businessprocess) throws BusinessProcessException{
+		addChild(businessprocess, (ActionContext)null);
+	}
+	
+	public void addChild(BusinessProcess businessprocess, ActionContext actionContext) throws BusinessProcessException{
 		if(businessprocess.getName() == null)
 			return;
 		BusinessProcess businessprocess1 = getChild(businessprocess.getName());
 		if(businessprocess1 != null)
-			businessprocess1.closed();
+			businessprocess1.closed(actionContext);
 		synchronized(children){
 			children.put(businessprocess.getName(), businessprocess);
 			businessprocess.parent = this;
 			businessprocess.path = path + "/" + businessprocess.getName();
 		}
 	}
-	 /**  
+
+	/**  
      * Aggiunge un business process come figlio del ricevente. 
      */
 	public void addChild(BusinessProcess businessprocess,boolean remove) throws BusinessProcessException{

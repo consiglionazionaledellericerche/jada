@@ -54,13 +54,13 @@ public class HttpEJBCleaner implements Serializable {
 
 	public static void register(HttpSession httpsession, Object obj){
 		HttpEJBCleaner httpejbcleaner = bindToHttpSession(httpsession);
-		if(httpejbcleaner != null)
+		if(obj != null)
 			httpejbcleaner.register(obj);
 	}
 
 	public static void unregister(HttpSession httpsession, Object obj){
 		HttpEJBCleaner httpejbcleaner = bindToHttpSession(httpsession);
-		if(httpejbcleaner != null)
+		if(obj != null)
 			httpejbcleaner.unregister(obj);
 	}
 	
