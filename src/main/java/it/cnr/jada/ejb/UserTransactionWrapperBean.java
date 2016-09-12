@@ -57,7 +57,7 @@ public class UserTransactionWrapperBean implements UserTransactionWrapper{
         try{
             if (aobj == null || aobj.length == 0) {
                 Object obj = Introspector.invoke(ejbobject, s, aobj);
-                if (s.equals("ejbRemove"))
+                if (s.equals("ejbRemove") && ejbObjectsToBeRemoved != null)
                 	ejbObjectsToBeRemoved.remove(ejbobject.toString());
                 return obj;            	
             } else {

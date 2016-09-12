@@ -596,7 +596,7 @@ public class BusinessProcess implements Forward, Serializable{
 		path = "";
 	}
 	/**
-	 * Inserisce nella Tabella APPLICATION_ERROR gli errori procedurali, ed invia l'E-Mail con l'errore
+	 * Invia l'E-Mail con l'errore
 	 * @param context
 	 * @param user
 	 * @param esercizio
@@ -605,44 +605,7 @@ public class BusinessProcess implements Forward, Serializable{
 	 */
     public void insertError(ActionContext context, String user, Integer esercizio, String cd_unita_organizzativa, String stack_trace){
 		String text = "Errore interno del Server Esercizio:"+esercizio+" Utente:"+user+" UO:"+cd_unita_organizzativa;
-		SendMail.sendErrorMail(text,getPath()+"<BR>"+stack_trace);
-		try {   	
-			java.sql.Connection conn = null;
-			try {
-				conn = it.cnr.jada.util.ejb.EJBCommonServices.getConnection(context);				
-				it.cnr.jada.persistency.sql.HomeCache homeCache = new it.cnr.jada.persistency.sql.HomeCache(conn);
-				Application_errorBulk error = new Application_errorBulk();
-				Application_errorHome home = (Application_errorHome)homeCache.getHome(error);
-				error.setCd_utente(user);
-				error.setEsercizio(esercizio);
-				error.setCd_unita_organizzativa(cd_unita_organizzativa);
-				home.initializePrimaryKeyForInsert(context.getUserContext(),error);
-				error.setUser(context.getUserInfo().getUser());				
-				error.setToBeCreated();				
-				home.insert(error, context.getUserContext());
-				java.io.InputStream is=new java.io.ByteArrayInputStream(stack_trace.getBytes());
-				byte[] byteArr = new byte[1024];
-				oracle.sql.BLOB blob = (oracle.sql.BLOB)homeCache.getHome(error).getSQLBlob(error,"STACK_TRACE");
-				java.io.OutputStream os = new java.io.BufferedOutputStream(blob.getBinaryOutputStream());
-				int len;						
-				while ((len = is.read(byteArr))>0){
-					os.write(byteArr,0,len);
-				}
-				os.close();
-				is.close();
-				home.update(error, context.getUserContext());
-				conn.commit();			
-			} catch (Exception e) {
-				if (conn != null)
-					conn.rollback();
-			}finally{
-				if (conn != null){
-					conn.close(); 
-					conn = null;					
-				}
-			}
-		} catch (SQLException e1) {
-		}			
+		SendMail.sendErrorMail(text,getPath()+"<BR>"+stack_trace);		
     }
     /**
      * 
