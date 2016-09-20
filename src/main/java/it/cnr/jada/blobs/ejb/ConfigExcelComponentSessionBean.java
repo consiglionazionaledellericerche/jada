@@ -10,7 +10,7 @@ import it.cnr.jada.persistency.PersistencyException;
 @Stateless(name="BFRAMEBLOBS_EJB_ConfigExcelComponentSession")
 public class ConfigExcelComponentSessionBean extends it.cnr.jada.ejb.CRUDComponentSessionBean implements ConfigExcelComponentSession {
 @PostConstruct
-	public void ejbCreate() throws javax.ejb.CreateException {
+	public void ejbCreate() {
 	componentObj = new it.cnr.jada.blobs.comp.ConfigExcelComponent();
 }
 public static it.cnr.jada.ejb.CRUDComponentSessionBean newInstance() throws javax.ejb.EJBException {

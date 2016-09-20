@@ -384,9 +384,6 @@ public class JSPUtils
 		pagecontext.getOut().print(getAppRoot((HttpServletRequest)pagecontext.getRequest()));
 		pagecontext.getOut().println("\"");		
 		
-		pagecontext.getOut().println("})();");
-		pagecontext.getOut().println("</script><![endif]-->");
-		
 		printCloneUrl(pagecontext);
 		printMetaData(pagecontext);
 	}

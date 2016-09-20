@@ -1,6 +1,5 @@
 package it.cnr.jada.comp;
 
-import it.cnr.jada.DetailedException;
 import it.cnr.jada.UserContext;
 import it.cnr.jada.bulk.BulkCollection;
 import it.cnr.jada.bulk.BulkHome;
@@ -16,17 +15,14 @@ import it.cnr.jada.bulk.ROWrapper;
 import it.cnr.jada.ejb.BulkLoaderIterator;
 import it.cnr.jada.ejb.TransactionalBulkLoaderIterator;
 import it.cnr.jada.persistency.IntrospectionException;
-import it.cnr.jada.persistency.Introspector;
 import it.cnr.jada.persistency.Keyed;
 import it.cnr.jada.persistency.KeyedPersistent;
 import it.cnr.jada.persistency.ObjectNotFoundException;
 import it.cnr.jada.persistency.PersistencyException;
 import it.cnr.jada.persistency.Persistent;
-import it.cnr.jada.persistency.Persister;
 import it.cnr.jada.persistency.sql.ApplicationPersistencyDiscardedException;
 import it.cnr.jada.persistency.sql.ApplicationPersistencyException;
 import it.cnr.jada.persistency.sql.BusyRecordException;
-import it.cnr.jada.persistency.sql.ColumnMap;
 import it.cnr.jada.persistency.sql.ColumnMapping;
 import it.cnr.jada.persistency.sql.DuplicateKeyException;
 import it.cnr.jada.persistency.sql.HomeCache;
@@ -34,7 +30,6 @@ import it.cnr.jada.persistency.sql.LockedRecordException;
 import it.cnr.jada.persistency.sql.Query;
 import it.cnr.jada.persistency.sql.ReferentialIntegrityException;
 import it.cnr.jada.persistency.sql.SQLExceptionHandler;
-import it.cnr.jada.persistency.sql.SQLPersister;
 import it.cnr.jada.persistency.sql.ValueTooLargeException;
 import it.cnr.jada.util.EmptyRemoteIterator;
 import it.cnr.jada.util.RemoteIterator;
@@ -46,23 +41,18 @@ import java.io.Serializable;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Iterator;
+
 import javax.ejb.CreateException;
-import javax.ejb.EJB;
-import javax.ejb.EJBContext;
 import javax.ejb.EJBException;
-import javax.persistence.PersistenceContext;
 
 /**
- * Classe di utilità da usare come superclasse per tutte le componenti applicative che compiono 
+ * Classe di utilit  da usare come superclasse per tutte le componenti applicative che compiono 
  * operazioni di persistenza su OggettiBulk
  */
 public class GenericComponent implements Component, Serializable, Cloneable{
@@ -82,28 +72,28 @@ public class GenericComponent implements Component, Serializable, Cloneable{
         return new ROWrapper(oggettobulk, new MTUStuff(message));
     }
     /**
-     * Effettua un controllo di validità dell'OggettoBulk con le informazioni di persistenza. 
-     * Viene effettuato un controllo di validità su tutti gli attributi mappati nella defaulColumnMap 
+     * Effettua un controllo di validit  dell'OggettoBulk con le informazioni di persistenza. 
+     * Viene effettuato un controllo di validit  su tutti gli attributi mappati nella defaulColumnMap 
      * dell'OggettoBulk per le seguenti condizioni: 
-     * Un attributo nullo è mappato su una colonna NOT_NULLABLE; 
+     * Un attributo nullo   mappato su una colonna NOT_NULLABLE; 
      * viene generata una CRUDNotNullConstraintException 
-     * Un attributo di tipo String contiene una stringa troppo lunga per la colonna su cui è mappato; 
+     * Un attributo di tipo String contiene una stringa troppo lunga per la colonna su cui   mappato; 
      * viene generata una CRUDTooLargeConstraintException. 
-     * Un attributo numerico contiene una numero troppo grande per la colonna su cui è mappato; 
+     * Un attributo numerico contiene una numero troppo grande per la colonna su cui   mappato; 
      * viene generata una CRUDTooLargeConstraintException.
      */
     protected final void checkSQLConstraints(UserContext usercontext, OggettoBulk oggettobulk) throws ComponentException{
         checkSQLConstraints(usercontext, oggettobulk, true, true);
     }
     /**
-     * Effettua un controllo di validità dell'OggettoBulk con le informazioni di persistenza. 
-     * Viene effettuato un controllo di validità su tutti gli attributi mappati nella defaulColumnMap 
+     * Effettua un controllo di validit  dell'OggettoBulk con le informazioni di persistenza. 
+     * Viene effettuato un controllo di validit  su tutti gli attributi mappati nella defaulColumnMap 
      * dell'OggettoBulk per le seguenti condizioni: 
-     * Un attributo nullo è mappato su una colonna NOT_NULLABLE; 
+     * Un attributo nullo   mappato su una colonna NOT_NULLABLE; 
      * viene generata una CRUDNotNullConstraintException 
-     * Un attributo di tipo String contiene una stringa troppo lunga per la colonna su cui è mappato; 
+     * Un attributo di tipo String contiene una stringa troppo lunga per la colonna su cui   mappato; 
      * viene generata una CRUDTooLargeConstraintException. 
-     * Un attributo numerico contiene una numero troppo grande per la colonna su cui è mappato; 
+     * Un attributo numerico contiene una numero troppo grande per la colonna su cui   mappato; 
      * viene generata una CRUDTooLargeConstraintException.
      */
     protected final void checkSQLConstraints(UserContext usercontext, OggettoBulk oggettobulk, boolean flag, boolean flag1) throws ComponentException{
@@ -159,8 +149,8 @@ public class GenericComponent implements Component, Serializable, Cloneable{
     /**
      * Effettua il caricamento di un attributo "options" di OggettoBulk. 
      * L'implementazione standard semplicemente invoca il corrispondente metodo sull'Home dell'OggettoBulk specificato; 
-     * è possibile reimplementarlo per fornire un comportamento specifico per la componente. 
-     * L'operazione di lettura viene effettuata con una FetchPolicy il cui nome è ottenuto concatenando il nome 
+     *   possibile reimplementarlo per fornire un comportamento specifico per la componente. 
+     * L'operazione di lettura viene effettuata con una FetchPolicy il cui nome   ottenuto concatenando il nome 
      * della component con la stringa ".findOptions." e il nome della optionsProperty
      */
     protected final Object findOptions(UserContext usercontext, OggettoBulk oggettobulk, FieldProperty fieldproperty) throws ComponentException{

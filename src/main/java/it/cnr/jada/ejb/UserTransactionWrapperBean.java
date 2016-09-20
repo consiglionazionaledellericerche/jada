@@ -3,19 +3,19 @@ package it.cnr.jada.ejb;
 import it.cnr.jada.DetailedRuntimeException;
 import it.cnr.jada.UserContext;
 import it.cnr.jada.util.Introspector;
+import it.cnr.jada.util.Log;
 import it.cnr.jada.util.ejb.EJBCommonServices;
 import it.cnr.jada.util.ejb.EJBTracer;
 import it.cnr.jada.util.ejb.UserTransactionTimeoutException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import javax.ejb.CreateException;
 import javax.ejb.EJBException;
 import javax.ejb.Remove;
 import javax.ejb.SessionContext;
@@ -28,6 +28,7 @@ import javax.transaction.NotSupportedException;
 import javax.transaction.RollbackException;
 import javax.transaction.Status;
 import javax.transaction.SystemException;
+import javax.transaction.TransactionSynchronizationRegistry;
 import javax.transaction.UserTransaction;
 
 @Stateful(name="JADAEJB_UserTransactionWrapper")
@@ -36,8 +37,11 @@ import javax.transaction.UserTransaction;
 public class UserTransactionWrapperBean implements UserTransactionWrapper{
 
     @Resource private SessionContext mySessionCtx;
-    private static final long serialVersionUID = 0x2c7e5503d9bf9553L;
-    private List ejbObjectsToBeRemoved;
+    @Resource private TransactionSynchronizationRegistry registry;
+    
+	private static final Log logger = Log.getInstance(UserTransactionWrapperBean.class);
+    static final long serialVersionUID = 0x2c7e5503d9bf9553L;
+    private Map<String, Object> ejbObjectsToBeRemoved;
 
     public UserTransactionWrapperBean(){
         ejbObjectsToBeRemoved = null;
@@ -45,17 +49,25 @@ public class UserTransactionWrapperBean implements UserTransactionWrapper{
 
     public void addToEjbObjectsToBeRemoved(Object ejbobject){
         if(ejbObjectsToBeRemoved == null)
-            ejbObjectsToBeRemoved = new ArrayList();
-        ejbObjectsToBeRemoved.add(ejbobject);
+            ejbObjectsToBeRemoved = new HashMap<String, Object>();
+        ejbObjectsToBeRemoved.put(ejbobject.toString(), ejbobject);
     }
 
     private Object basicInvoke(Object ejbobject, String s, Object aobj[]) throws InvocationTargetException{
         try{
-            if(aobj.length > 0 && (aobj[0] instanceof UserContext))
-                ((UserContext)aobj[0]).setTransactional(true);
-            Object obj = Introspector.invoke(ejbobject, s, aobj);
-            addToEjbObjectsToBeRemoved(ejbobject);
-            return obj;
+            if (aobj == null || aobj.length == 0) {
+                Object obj = Introspector.invoke(ejbobject, s, aobj);
+                if (s.equals("ejbRemove") && ejbObjectsToBeRemoved != null)
+                	ejbObjectsToBeRemoved.remove(ejbobject.toString());
+                return obj;            	
+            } else {
+            	if(aobj.length > 0 && (aobj[0] instanceof UserContext)) {
+                    addToEjbObjectsToBeRemoved(ejbobject);
+                    ((UserContext)aobj[0]).setTransactional(true);                    
+            	}
+                Object obj = Introspector.invoke(ejbobject, s, aobj);
+                return obj;            	
+            }
         }catch(NoSuchMethodException nosuchmethodexception){
             throw new InvocationTargetException(nosuchmethodexception);
         }catch(IllegalAccessException illegalaccessexception){
@@ -116,14 +128,14 @@ public class UserTransactionWrapperBean implements UserTransactionWrapper{
         }
     }
     @PostConstruct
-    public void ejbCreate() throws CreateException{
+    public void ejbCreate() {
         EJBTracer.getInstance().incrementActiveUserTransactionCounter();
     }
     
     @Remove
     public void ejbRemove() throws RemoteException{
     	if(ejbObjectsToBeRemoved != null){
-            for(Iterator iterator = ejbObjectsToBeRemoved.iterator(); iterator.hasNext();)
+            for(Iterator<Object> iterator = ejbObjectsToBeRemoved.values().iterator(); iterator.hasNext();)
                 try{
                 	Object obj = iterator.next();
                 	if (obj instanceof TransactionalBulkLoaderIterator){
@@ -131,7 +143,9 @@ public class UserTransactionWrapperBean implements UserTransactionWrapper{
                 	}else if (obj instanceof GenericComponentSession) {
                 		((GenericComponentSession)obj).ejbRemove();
 					}
-                }catch(Throwable _ex) { }
+                }catch(Throwable _ex) { 
+                	logger.error("Exception while remove EJB:", _ex);
+                }
             ejbObjectsToBeRemoved = null;
         }
         EJBTracer.getInstance().decrementActiveUserTransactionCounter();
@@ -158,6 +172,7 @@ public class UserTransactionWrapperBean implements UserTransactionWrapper{
     }
 
     public void ping(){
+    	logger.debug("Ping userTransaction:" + registry.getTransactionKey());
     }
 
     public void rollback() throws RemoteException{

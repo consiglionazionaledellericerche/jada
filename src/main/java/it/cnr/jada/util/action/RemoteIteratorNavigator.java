@@ -88,7 +88,7 @@ public class RemoteIteratorNavigator extends Navigator
     public void setIterator(ActionContext actioncontext, RemoteIterator remoteiterator, int i, int j)
         throws RemoteException, BusinessProcessException
     {
-        EJBCommonServices.closeRemoteIterator(iterator);
+        EJBCommonServices.closeRemoteIterator(actioncontext, iterator);
         iterator = remoteiterator;
         if(remoteiterator instanceof RemotePagedIterator)
             pagedIterator = (RemotePagedIterator)remoteiterator;

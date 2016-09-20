@@ -19,7 +19,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Inherited
 public @interface ColumnSetAnnotation {
-	/** Nome logico del ColumnSet, l'attributo è obbligatorio, ed è univoco all'interno del documento.*/
+	/** Nome logico del ColumnSet, l'attributo e' obbligatorio, ed e' univoco all'interno del documento.*/
 	public String name() default "default";
 	/** Array di ColumnFieldProperty che compongono il ColumnSet.*/
 	public FieldPropertyAnnotation[] value();

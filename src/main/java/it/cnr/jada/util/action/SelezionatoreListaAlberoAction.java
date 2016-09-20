@@ -2,6 +2,7 @@ package it.cnr.jada.util.action;
 
 import it.cnr.jada.action.*;
 import it.cnr.jada.bulk.OggettoBulk;
+import it.cnr.jada.util.RemoteIterator;
 import it.cnr.jada.util.ejb.EJBCommonServices;
 
 import java.io.Serializable;
@@ -36,7 +37,8 @@ public class SelezionatoreListaAlberoAction extends SelezionatoreListaAction
             selezionatorelistaalberobp.setParentElement(oggettobulk);
             selezionatorelistaalberobp.getSelection().clear();
             selezionatorelistaalberobp.setLeafElement(false);
-            selezionatorelistaalberobp.setIterator(actioncontext, EJBCommonServices.openRemoteIterator(actioncontext, selezionatorelistaalberobp.getChildren(actioncontext, oggettobulk)));
+            RemoteIterator ri = EJBCommonServices.openRemoteIterator(actioncontext, selezionatorelistaalberobp.getChildren(actioncontext, oggettobulk));
+            selezionatorelistaalberobp.setIterator(actioncontext, ri);
             return actioncontext.findDefaultForward();
         }
         catch(BusinessProcessException businessprocessexception)
@@ -63,7 +65,8 @@ public class SelezionatoreListaAlberoAction extends SelezionatoreListaAction
                 selezionatorelistaalberobp.setParentElement((OggettoBulk)selezionatorelistaalberobp.getHistory().pop());
                 selezionatorelistaalberobp.getSelection().clear();
                 selezionatorelistaalberobp.setLeafElement(false);
-                selezionatorelistaalberobp.setIterator(actioncontext, EJBCommonServices.openRemoteIterator(actioncontext, selezionatorelistaalberobp.getChildren(actioncontext, selezionatorelistaalberobp.getParentElement())));
+                RemoteIterator ri = EJBCommonServices.openRemoteIterator(actioncontext, selezionatorelistaalberobp.getChildren(actioncontext, selezionatorelistaalberobp.getParentElement()));
+                selezionatorelistaalberobp.setIterator(actioncontext, ri);
             }
             return actioncontext.findDefaultForward();
         }

@@ -74,13 +74,14 @@ public Forward doElimina(ActionContext context) {
 			// Aggiorno il remoteIterator
 			bp.refresh(context);
 
-			// Se nella directory corrente non è rimasto nessun file o altra directory
+			// Se nella directory corrente non  rimasto nessun file o altra directory
 			while(bp.getElementsCount() == 0 && bp.getHistory().size() > 0) {
 				// torno indietro di una directory
 				bp.setParentElement((OggettoBulk)bp.getHistory().pop());
 				bp.getSelection().clear();
 				bp.setLeafElement(false);
-				bp.setIterator(context,it.cnr.jada.util.ejb.EJBCommonServices.openRemoteIterator(context,bp.getChildren(context,bp.getParentElement())));
+				RemoteIterator ri = it.cnr.jada.util.ejb.EJBCommonServices.openRemoteIterator(context, bp.getChildren(context,bp.getParentElement()));
+				bp.setIterator(context,ri);
 			}
 		}
 		return context.findDefaultForward();

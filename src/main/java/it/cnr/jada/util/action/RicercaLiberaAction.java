@@ -138,7 +138,7 @@ public class RicercaLiberaAction extends FormAction
             if(remoteiterator == null || remoteiterator.countElements() == 0)
             {
                 ricercaliberabp.setMessage("La ricerca non ha fornito alcun risultato.");
-                EJBCommonServices.closeRemoteIterator(remoteiterator);
+                EJBCommonServices.closeRemoteIterator(actioncontext, remoteiterator);
                 return actioncontext.findDefaultForward();
             }
             if(ricercaliberabp.isShowSearchResult())

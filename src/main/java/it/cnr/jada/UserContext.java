@@ -21,6 +21,5 @@ public interface UserContext
     
     public abstract Dictionary getHiddenColumns();
 
-    public abstract Hashtable<String, Serializable> getAttributes();
-    
+    public abstract Hashtable<String, Serializable> getAttributes();    
 }

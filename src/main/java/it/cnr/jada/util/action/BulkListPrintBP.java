@@ -63,7 +63,7 @@ public class BulkListPrintBP extends AbstractPrintBP
 		{
 			try
 			{
-				EJBCommonServices.closeRemoteIterator(iterator);
+				EJBCommonServices.closeRemoteIterator(pagecontext.getSession(), iterator);
 			}
 			catch(RemoteException _ex) { }
 		}
@@ -95,7 +95,7 @@ public class BulkListPrintBP extends AbstractPrintBP
 		{
 			try
 			{
-				EJBCommonServices.closeRemoteIterator(iterator);
+				EJBCommonServices.closeRemoteIterator(pagecontext.getSession(), iterator);
 			}
 			catch(RemoteException _ex) { }
 		}
@@ -120,7 +120,7 @@ public class BulkListPrintBP extends AbstractPrintBP
 		{
 			try
 			{
-				EJBCommonServices.closeRemoteIterator(iterator);
+				EJBCommonServices.closeRemoteIterator(pagecontext.getSession(),iterator);
 			}
 			catch(RemoteException _ex) { }
 		}

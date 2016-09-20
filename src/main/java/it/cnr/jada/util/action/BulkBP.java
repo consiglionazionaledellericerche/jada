@@ -126,7 +126,7 @@ public abstract class BulkBP extends FormBP
                     }
                     finally
                     {
-                        EJBCommonServices.closeRemoteIterator(remoteiterator);
+                        EJBCommonServices.closeRemoteIterator(actioncontext, remoteiterator);
                     }
                 }
             }

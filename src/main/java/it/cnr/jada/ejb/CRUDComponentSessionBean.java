@@ -20,7 +20,7 @@ public class CRUDComponentSessionBean extends RicercaComponentSessionBean implem
     public CRUDComponentSessionBean(){
     }
     @PostConstruct
-	public void ejbCreate() throws CreateException{
+	public void ejbCreate() {
         componentObj = new CRUDComponent();
     }
     public static CRUDComponentSessionBean newInstance() throws EJBException{

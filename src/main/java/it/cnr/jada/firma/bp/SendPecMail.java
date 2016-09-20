@@ -27,6 +27,7 @@ import it.cnr.jada.firma.jaxb.Titolo;
 import it.cnr.jada.firma.jaxb.Toponimo;
 import it.cnr.jada.firma.jaxb.UnitaOrganizzativa;
 import it.cnr.jada.util.ejb.EJBCommonServices;
+import it.cnr.jada.util.mail.SimplePECMail;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -53,58 +54,58 @@ import javax.xml.bind.Marshaller;
 public class SendPecMail {
 	private static javax.mail.Session mail_session;
 	public static void sendMail(String subject, String text, File attach, Address[] addressTO, DatiPEC datiPEC, Address[] addressCC, Address[] addressBCC) throws MessagingException, NamingException, JAXBException, IOException{
-		   javax.naming.InitialContext ctx = new javax.naming.InitialContext();
-		   if (mail_session == null){
-				try{
-				   mail_session = (javax.mail.Session) ctx.lookup("java:comp/env/mail/PecMailSession");
-				}catch(NamingException e){
-				   mail_session = (javax.mail.Session) ctx.lookup("java:mail/PecMailSession");		   
-				}           	
-		   }
-		   MimeMessage msg = new MimeMessage(mail_session);	   
-		   msg.setRecipients(javax.mail.Message.RecipientType.TO, addressTO);
-		   if(addressCC != null)
-			 msg.setRecipients(javax.mail.Message.RecipientType.CC, addressCC);
-		   if(addressBCC != null)  
-			 msg.setRecipients(javax.mail.Message.RecipientType.BCC, addressBCC);
-		   msg.setFrom(new InternetAddress(mail_session.getProperty("mail.from")));
-		   msg.setSubject(subject);	   
-		   javax.mail.internet.MimeMultipart multipart = new javax.mail.internet.MimeMultipart();
-		   javax.mail.internet.MimeBodyPart messageBodyPart = new javax.mail.internet.MimeBodyPart();
-		   javax.mail.internet.InternetHeaders internetHeaders = new javax.mail.internet.InternetHeaders();
-		   internetHeaders = new javax.mail.internet.InternetHeaders();
-		   internetHeaders.addHeader("Content-Description","test.html");
-		   internetHeaders.addHeader("Content-Type","text/html");
-		   multipart.addBodyPart(new javax.mail.internet.MimeBodyPart(internetHeaders,text.getBytes("ISO-8859-1")));
-		   // allego il file firmato
-		   MimeBodyPart attachmentPart = new MimeBodyPart();
-		   if (attach!=null) {
-			   FileDataSource fileDataSource = new FileDataSource(attach) {
-				   	@Override
-				   	public String getContentType() {
-				   		return "application/octet-stream";
-				   	}
-				   };
-				   attachmentPart.setDataHandler(new DataHandler(fileDataSource));
-				   attachmentPart.setFileName(attach.getName());
-				   multipart.addBodyPart(attachmentPart);
-		   }
-		   // allego il file segnatura.xml
-		   MimeBodyPart attachmentPartSegnatura = new MimeBodyPart();
-		   File fileSegnatura = generaSegnaturaXML(datiPEC, attach.getName());
-		   FileDataSource fileDataSourceSegnatura = new FileDataSource(fileSegnatura) {
+		javax.naming.InitialContext ctx = new javax.naming.InitialContext();
+		if (mail_session == null){
+			try{
+				mail_session = (javax.mail.Session) ctx.lookup("java:comp/env/mail/PecMailSession");
+			}catch(NamingException e){
+				mail_session = (javax.mail.Session) ctx.lookup("java:jboss/mail/PecMailSession");		   
+			}           	
+		}
+		MimeMessage msg = new MimeMessage(mail_session);	   
+		msg.setRecipients(javax.mail.Message.RecipientType.TO, addressTO);
+		if(addressCC != null)
+			msg.setRecipients(javax.mail.Message.RecipientType.CC, addressCC);
+		if(addressBCC != null)  
+			msg.setRecipients(javax.mail.Message.RecipientType.BCC, addressBCC);
+		msg.setFrom();
+		msg.setSubject(subject);	   
+		javax.mail.internet.MimeMultipart multipart = new javax.mail.internet.MimeMultipart();
+		javax.mail.internet.MimeBodyPart messageBodyPart = new javax.mail.internet.MimeBodyPart();
+		javax.mail.internet.InternetHeaders internetHeaders = new javax.mail.internet.InternetHeaders();
+		internetHeaders = new javax.mail.internet.InternetHeaders();
+		internetHeaders.addHeader("Content-Description","test.html");
+		internetHeaders.addHeader("Content-Type","text/html");
+		multipart.addBodyPart(new javax.mail.internet.MimeBodyPart(internetHeaders,text.getBytes("ISO-8859-1")));
+		// allego il file firmato
+		MimeBodyPart attachmentPart = new MimeBodyPart();
+		if (attach!=null) {
+			FileDataSource fileDataSource = new FileDataSource(attach) {
+				@Override
+				public String getContentType() {
+					return "application/octet-stream";
+				}
+			};
+			attachmentPart.setDataHandler(new DataHandler(fileDataSource));
+			attachmentPart.setFileName(attach.getName());
+			multipart.addBodyPart(attachmentPart);
+		}
+		// allego il file segnatura.xml
+		MimeBodyPart attachmentPartSegnatura = new MimeBodyPart();
+		File fileSegnatura = generaSegnaturaXML(datiPEC, attach.getName());
+		FileDataSource fileDataSourceSegnatura = new FileDataSource(fileSegnatura) {
 			@Override
 			public String getContentType() {
 				return "application/xml";
 			}
-		   };
-		   attachmentPartSegnatura.setDataHandler(new DataHandler(fileDataSourceSegnatura));
-		   attachmentPartSegnatura.setFileName("Segnatura.xml");
-		   multipart.addBodyPart(attachmentPartSegnatura);
+		};
+		attachmentPartSegnatura.setDataHandler(new DataHandler(fileDataSourceSegnatura));
+		attachmentPartSegnatura.setFileName("Segnatura.xml");
+		multipart.addBodyPart(attachmentPartSegnatura);
 
-		   msg.setContent(multipart);
-		   msg.setSentDate(EJBCommonServices.getServerTimestamp());
-		   Transport.send(msg);
+		msg.setContent(multipart);
+		msg.setSentDate(EJBCommonServices.getServerTimestamp());
+		Transport.send(msg);
 	}
 	public static void sendMail(String subject, String text, File attach, java.util.List<String> addressTO, DatiPEC datiPEC, java.util.List<String> addressCC, java.util.List<String> addressBCC) throws MessagingException, NamingException, JAXBException, IOException{
 		sendMail(subject,text, attach, indirizzi(addressTO), datiPEC,indirizzi(addressCC),indirizzi(addressBCC));
@@ -133,20 +134,20 @@ public class SendPecMail {
 		JAXBContext jaxbContext = JAXBContext.newInstance("it.cnr.jada.firma.jaxb");
 		Marshaller marshaller=jaxbContext.createMarshaller();
 		marshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, 
-	              Boolean.TRUE );
+				Boolean.TRUE );
 		it.cnr.jada.firma.jaxb.ObjectFactory factory = new it.cnr.jada.firma.jaxb.ObjectFactory();
 		//String fileName = "Segnatura.xml";
 		File file = File.createTempFile("segnatura", ".xml", new File(System.getProperty("tmp.dir.SIGLAWeb")+"/tmp/"));
 		//File file = new File(System.getProperty("tmp.dir.SIGLAWeb")+"/tmp/",fileName);
 		FileOutputStream fileOutputStream = new FileOutputStream(file);
-		
+
 		Segnatura segnatura = factory.createSegnatura();
 
 		// inizio <Intestazione>
 		Intestazione intestazione = factory.createIntestazione();
 		segnatura.setIntestazione(intestazione);
 
-		
+
 		Identificatore identificatore = factory.createIdentificatore();
 		identificatore.setCodiceAmministrazione("000000");
 		identificatore.setCodiceAOO("AMMCNT");
@@ -156,8 +157,8 @@ public class SendPecMail {
 			identificatore.setNumeroRegistrazione(datiPEC.getNumeroRegistrazione());
 
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        java.util.Date date = new java.util.Date();
-        String sdate = dateFormat.format(date);
+		java.util.Date date = new java.util.Date();
+		String sdate = dateFormat.format(date);
 		identificatore.setDataRegistrazione(sdate);
 		intestazione.setIdentificatore(identificatore);
 
@@ -167,7 +168,7 @@ public class SendPecMail {
 		indirizzoTelematico.setTipo("smtp");
 		indirizzoTelematico.setvalue("sisca@pec.cnr.it");
 		origine.setIndirizzoTelematico(indirizzoTelematico);
-		
+
 		Mittente mittente = (Mittente) factory.createMittente();
 		Amministrazione amministrazione = factory.createAmministrazione();
 		Denominazione denominazione = factory.createDenominazione();
@@ -178,7 +179,7 @@ public class SendPecMail {
 		//unitaOrganizzativa.setIdentificativo(datiPEC.getUo());
 		List<Object> listAmministrazione =  amministrazione.getUnitaOrganizzativaOrRuoloOrPersonaOrIndirizzoPostaleOrIndirizzoTelematicoOrTelefonoOrFax();
 		listAmministrazione.add(unitaOrganizzativa);
-		
+
 		Denominazione denominazioneAmm = factory.createDenominazione();
 		denominazioneAmm.setvalue(datiPEC.getDsUo());
 		unitaOrganizzativa.setDenominazione(denominazioneAmm);
@@ -215,13 +216,13 @@ public class SendPecMail {
 		listIndirizzoPostale.add(cap);
 		listIndirizzoPostale.add(comune);
 		listIndirizzoPostale.add(provincia);
-		
+
 		IndirizzoTelematico indirizzoTelematicoPers = factory.createIndirizzoTelematico();
 		indirizzoTelematicoPers.setvalue("");
-		
+
 		Telefono telefono = factory.createTelefono();
 		telefono.setvalue("");
-		
+
 		Fax fax = factory.createFax();
 		fax.setvalue("");
 
@@ -232,7 +233,7 @@ public class SendPecMail {
 		listUnitaOrganizzativa.add(indirizzoTelematicoPers);
 		listUnitaOrganizzativa.add(telefono);
 		listUnitaOrganizzativa.add(fax);
-		
+
 		AOO aoo = factory.createAOO();
 		Denominazione denominazioneAoo = factory.createDenominazione();
 		denominazioneAoo.setvalue("CNR - "+datiPEC.getDsUo());
@@ -251,7 +252,7 @@ public class SendPecMail {
 		indirizzoTelematicoDest.setvalue(datiPEC.getEmailServizio());
 		Destinatario destinatario = factory.createDestinatario();
 		destinazione.setIndirizzoTelematico(indirizzoTelematicoDest);
-		
+
 		Amministrazione amministrazioneDest = factory.createAmministrazione();
 		Denominazione denominazioneDest = factory.createDenominazione();
 		denominazioneDest.setvalue("CNR - Consiglio Nazionale delle Ricerche");
@@ -259,14 +260,14 @@ public class SendPecMail {
 		amministrazioneDest.setCodiceAmministrazione("000000");
 		UnitaOrganizzativa unitaOrganizzativaDest = factory.createUnitaOrganizzativa();
 		unitaOrganizzativaDest.setIdentificativo(null);
-		
+
 		Denominazione denominazioneUoDest = factory.createDenominazione();
 		//denominazioneUoDest.setvalue("Amministrazione Centrale - Ufficio del protocollo");
 		denominazioneUoDest.setvalue(datiPEC.getDenominazioneServizio());
 		unitaOrganizzativaDest.setDenominazione(denominazioneUoDest);
 		List<Object> listAmministrazioneDest = amministrazioneDest.getUnitaOrganizzativaOrRuoloOrPersonaOrIndirizzoPostaleOrIndirizzoTelematicoOrTelefonoOrFax();
 		listAmministrazioneDest.add(unitaOrganizzativaDest);
-		
+
 		Persona personaDest = factory.createPersona();
 		List<Object> listPersonaDest = personaDest.getDenominazioneOrNomeOrCognomeOrTitoloOrCodiceFiscale();
 		Nome nomeDest = factory.createNome();
@@ -296,23 +297,23 @@ public class SendPecMail {
 		listIndirizzoPostaleDest.add(capDest);
 		listIndirizzoPostaleDest.add(comuneDest);
 		listIndirizzoPostaleDest.add(provinciaDest);
-		
+
 		IndirizzoTelematico indirizzoTelematicoPersDest = factory.createIndirizzoTelematico();
 		indirizzoTelematicoPersDest.setvalue("");
-		
+
 		Telefono telefonoDest = factory.createTelefono();
 		telefonoDest.setvalue("");
-		
+
 		Fax faxDest = factory.createFax();
 		faxDest.setvalue("");
-		
+
 		List<Object> listUnitaOrganizzativaDest =  unitaOrganizzativaDest.getUnitaOrganizzativaOrRuoloOrPersonaOrIndirizzoPostaleOrIndirizzoTelematicoOrTelefonoOrFax();
 		listUnitaOrganizzativaDest.add(personaDest);
 		listUnitaOrganizzativaDest.add(indirizzoPostaleDest);
 		listUnitaOrganizzativaDest.add(indirizzoTelematicoPersDest);
 		listUnitaOrganizzativaDest.add(telefonoDest);
 		listUnitaOrganizzativaDest.add(faxDest);
-		
+
 		AOO aooDest = factory.createAOO();
 		Denominazione denominazioneAooDest = factory.createDenominazione();
 		denominazioneAooDest.setvalue("");
@@ -323,7 +324,7 @@ public class SendPecMail {
 		listAmmDestinatari.add(aooDest);
 		List<Destinazione> listDestinazioni = intestazione.getDestinazione();
 		listDestinazioni.add(destinazione);
-		
+
 		List<Destinatario> listDestinatari = destinazione.getDestinatario();
 		listDestinatari.add(destinatario);
 		intestazione.setOggetto(datiPEC.getOggetto());
@@ -337,14 +338,14 @@ public class SendPecMail {
 		documento.setNome(nomefile);
 		documento.setTipoRiferimento("MIME");
 		documentoOrTestoDelMessaggio.add(documento);
-		
+
 		segnatura.setDescrizione(descrizione);
 		// fine <Descrizione>
-		
+
 		marshaller.marshal(segnatura, fileOutputStream);
 		fileOutputStream.flush();
 		fileOutputStream.close();
-		
+
 		return file;
-    }
+	}
 }

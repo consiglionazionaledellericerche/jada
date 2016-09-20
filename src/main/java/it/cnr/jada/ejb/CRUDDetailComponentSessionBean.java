@@ -2,14 +2,14 @@ package it.cnr.jada.ejb;
 
 import it.cnr.jada.UserContext;
 import it.cnr.jada.bulk.OggettoBulk;
-import it.cnr.jada.comp.*;
+import it.cnr.jada.comp.CRUDDetailComponent;
+import it.cnr.jada.comp.ComponentException;
+import it.cnr.jada.comp.NoRollbackException;
 import it.cnr.jada.persistency.sql.CompoundFindClause;
 import it.cnr.jada.util.RemoteIterator;
 
 import javax.annotation.PostConstruct;
-import javax.ejb.CreateException;
 import javax.ejb.EJBException;
-import javax.ejb.Stateless;
 
 public class CRUDDetailComponentSessionBean extends CRUDComponentSessionBean implements CRUDDetailComponentSession{
 
@@ -17,7 +17,7 @@ public class CRUDDetailComponentSessionBean extends CRUDComponentSessionBean imp
     }
 
     @PostConstruct
-	public void ejbCreate() throws CreateException{
+	public void ejbCreate(){
         componentObj = new CRUDDetailComponent();
     }
 

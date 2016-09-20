@@ -8,7 +8,7 @@ import javax.ejb.Stateless;
 @Stateless(name="JADAEJB_EJB_FirmaComponentSession")
 public class FirmaComponentSessionBean extends it.cnr.jada.ejb.CRUDComponentSessionBean implements FirmaComponentSession {
 	@PostConstruct
-	public void ejbCreate() throws javax.ejb.CreateException {
+	public void ejbCreate() {
 		componentObj = new it.cnr.jada.firma.comp.FirmaComponent();
 	}
 	@Remove

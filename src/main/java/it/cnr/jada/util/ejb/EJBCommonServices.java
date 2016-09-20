@@ -24,7 +24,9 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Hashtable;
+import java.util.List;
 
 import javax.ejb.EJBException;
 import javax.ejb.EJBHome;
@@ -33,6 +35,7 @@ import javax.jms.QueueConnectionFactory;
 import javax.naming.InitialContext;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
+import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 import javax.transaction.UserTransaction;
 
@@ -56,9 +59,16 @@ public class EJBCommonServices implements Serializable{
 
 	public static final void closeRemoteIterator(ActionContext actioncontext, RemoteIterator remoteiterator) throws RemoteException{
 		closeRemoteIterator(remoteiterator);
+		if (remoteiterator != null)
+			HttpEJBCleaner.unregister(actioncontext, remoteiterator);
+	}
+	public static final void closeRemoteIterator(HttpSession session, RemoteIterator remoteiterator) throws RemoteException{
+		closeRemoteIterator(remoteiterator);
+		if (remoteiterator != null)
+			HttpEJBCleaner.unregister(session, remoteiterator);
 	}
 
-	public static final void closeRemoteIterator(RemoteIterator remoteiterator) throws RemoteException{
+	private static final void closeRemoteIterator(RemoteIterator remoteiterator) throws RemoteException{
 		try{
 			if(remoteiterator != null){
 				remoteiterator.close();
@@ -99,14 +109,30 @@ public class EJBCommonServices implements Serializable{
 		}
 	}
 
+	@SuppressWarnings("unused")
 	public static final Object createRemoteEJB(String jndiName){
+		List<String> modules = Arrays.asList("jada", "sigla-ejb", "sigla-sdi", "sigla-ws", "sigla-ws-ns");
+		Object obj = null;
 		try {
 			if (earAppName==null)
 				loadEarAppName();
 			return getInitialContext().lookup(earAppName+"/"+jndiName+"/remote");
 		} catch (NamingException e) {
-			throw new EJBException(e);
+			for (String module : modules) {
+				try {
+					return createRemoteEJBInternal("/" + module +"/" + jndiName);					
+				} catch (NamingException e1) {
+					logger.debug("NamingException", e1);
+				}
+			}
+			if (obj == null)
+				throw new EJBException(e);
 		}
+		return obj;		
+	}
+	
+	private static final Object createRemoteEJBInternal(String jndiName) throws NamingException{
+		return getInitialContext().lookup("java:global/" + earAppName + jndiName);		
 	}
 
 	public static final TransactionalSessionImpl createEJB(it.cnr.jada.UserTransaction usertransaction, String jndiName) throws EJBException, RemoteException{
@@ -161,21 +187,31 @@ public class EJBCommonServices implements Serializable{
 		return traceUserConnection(usercontext, getConnection());
 	}
 
+
 	public static final DataSource getDatasource() throws SQLException, EJBException{
 		if (dataSourceName==null)
 			loadDataSourceName();
-		return getDatasource("java:"+dataSourceName);
+		try {
+			return getDatasource("java:"+dataSourceName);
+		} catch (EJBException e) {
+			try {
+				return getDatasource("java:/"+dataSourceName);
+			} catch (EJBException e1) {
+				throw e1;				
+			}
+		}
 	}
 
-	public static final DataSource getDatasource(String s) throws EJBException, SQLException{
+	public static final DataSource getDatasource(String s) throws EJBException, SQLException {
 		DataSource datasource = (DataSource)dataSources.get(s);
 		if(datasource == null)
 			try{
 				InitialContext initialcontext = getInitialContext();
 				dataSources.put(s, datasource = (DataSource)initialcontext.lookup(s));
-			}catch(NameNotFoundException namenotfoundexception){
-				throw new EJBException(namenotfoundexception);
-			}catch(NamingException namingexception){
+			} catch(NameNotFoundException namingexception){
+				dataSources = new Hashtable();
+				throw new EJBException(namingexception);
+			} catch(NamingException namingexception){
 				dataSources = new Hashtable();
 				throw new EJBException(namingexception);
 			}
@@ -303,11 +339,21 @@ public class EJBCommonServices implements Serializable{
 
 	public static final RemoteIterator openRemoteIterator(ActionContext actioncontext, RemoteIterator remoteiterator) throws RemoteException{
 		try{
-			HttpEJBCleaner.register(actioncontext, remoteiterator);
-			if(remoteiterator instanceof BulkLoaderIterator)
+			if(remoteiterator instanceof BulkLoaderIterator) {
+				HttpEJBCleaner.register(actioncontext, remoteiterator);				
 				((BulkLoaderIterator)remoteiterator).open(actioncontext.getUserContext());
-			if(remoteiterator instanceof TransactionalBulkLoaderIterator)
-				((TransactionalBulkLoaderIterator)remoteiterator).open(actioncontext.getUserContext());
+			}
+			if(remoteiterator instanceof TransactionalBulkLoaderIterator) {
+				if (actioncontext.getUserInfo().getUserTransaction() != null) {
+					if (remoteiterator instanceof UserTransactionalBulkLoaderIterator)
+						return remoteiterator;
+					HttpEJBCleaner.register(actioncontext, remoteiterator);
+					remoteiterator = new UserTransactionalBulkLoaderIterator(actioncontext.getUserInfo().getUserTransaction(), remoteiterator); 					
+					return remoteiterator;
+				} else {
+					((TransactionalBulkLoaderIterator)remoteiterator).open(actioncontext.getUserContext());					
+				}
+			}
 		}catch(ComponentException componentexception){
 			throw new DetailedRuntimeException(componentexception);
 		}

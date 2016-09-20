@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.rmi.NoSuchObjectException;
 import java.rmi.RemoteException;
+
 import javax.ejb.EJBException;
 import javax.ejb.EJBObject;
 import javax.naming.Context;
@@ -249,6 +250,11 @@ class UserTransaction implements Serializable, it.cnr.jada.UserTransaction{
             }catch(Throwable _ex) { 
             }
     }
+
+	@Override
+	public void addToEjbObjectsToBeRemoved(Object ejbobject) {
+		userTransactionWrapper.addToEjbObjectsToBeRemoved(ejbobject);
+	}
 
     public String toString(){
         if(userTransactionWrapper != null)

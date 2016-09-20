@@ -1,7 +1,16 @@
 package it.cnr.jada.util.action;
 
-import it.cnr.jada.action.*;
-import it.cnr.jada.comp.*;
+import it.cnr.jada.action.AbstractAction;
+import it.cnr.jada.action.ActionContext;
+import it.cnr.jada.action.ActionPerformingError;
+import it.cnr.jada.action.BusinessProcess;
+import it.cnr.jada.action.BusinessProcessException;
+import it.cnr.jada.action.Forward;
+import it.cnr.jada.action.HookForward;
+import it.cnr.jada.action.MessageToUser;
+import it.cnr.jada.comp.ApplicationException;
+import it.cnr.jada.comp.ComponentException;
+import it.cnr.jada.comp.OptionRequestException;
 import it.cnr.jada.util.Introspector;
 
 import java.io.Serializable;
@@ -95,9 +104,9 @@ public class FormAction extends AbstractAction implements Serializable{
     /**
      * Description copied from class:
      * Gestisce in maniera standard le eccezioni generate da un perform di una action. 
-     * La gestione standard prevede: Se l'eccezione è una RemoteException ne viene estratto il detail e 
+     * La gestione standard prevede: Se l'eccezione  una RemoteException ne viene estratto il detail e 
      * passato reinvocato ricorsivamente allo stesso metodo. 
-     * Se l'eccezione è org.omg.CORBA.COMM_FAILURE viene cercato e restituito un forward a "serviceUnavailable"; 
+     * Se l'eccezione  org.omg.CORBA.COMM_FAILURE viene cercato e restituito un forward a "serviceUnavailable"; 
      * Per ogni altra eccezione viene impostato viene generata un ActionPerformingError che ha 
      * come detail l'eccezione originale.
      */

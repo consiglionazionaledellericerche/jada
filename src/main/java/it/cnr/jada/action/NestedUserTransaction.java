@@ -5,6 +5,7 @@ import it.cnr.jada.UserTransaction;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.rmi.RemoteException;
+
 import javax.ejb.*;
 
 // Referenced classes of package it.cnr.jada.action:
@@ -13,6 +14,7 @@ import javax.ejb.*;
 class NestedUserTransaction
     implements Serializable, UserTransaction
 {
+    private final UserTransaction parent;
 
     private NestedUserTransaction(UserTransaction usertransaction)
     {
@@ -61,5 +63,8 @@ class NestedUserTransaction
     {
     }
 
-    private final UserTransaction parent;
+	@Override
+	public void addToEjbObjectsToBeRemoved(Object ejbobject) {
+		parent.addToEjbObjectsToBeRemoved(ejbobject);
+	}
 }

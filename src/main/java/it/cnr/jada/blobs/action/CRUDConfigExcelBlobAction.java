@@ -1,15 +1,9 @@
 package it.cnr.jada.blobs.action;
 
-import java.io.File;
-import java.io.FileInputStream;
-
-import it.cnr.jada.action.*;
-import it.cnr.jada.blobs.bp.*;
-import it.cnr.jada.blobs.bulk.*;
-import it.cnr.jada.blobs.comp.*;
-import it.cnr.jada.blobs.ejb.*;
-import it.cnr.jada.bulk.*;
-import it.cnr.jada.util.*;
+import it.cnr.jada.action.ActionContext;
+import it.cnr.jada.action.Forward;
+import it.cnr.jada.blobs.bp.CRUDConfigExcelBlobBP;
+import it.cnr.jada.blobs.bulk.Excel_blobBulk;
 import it.cnr.jada.util.upload.UploadedFile;
 
 /**
@@ -37,7 +31,7 @@ public Forward doSalva(ActionContext context) {
 		throw new it.cnr.jada.comp.ApplicationException("Attenzione: selezionare un File da caricare.");
 	  }
 	  if (file.length() > LUNGHEZZA_MAX){
-		throw new it.cnr.jada.comp.ApplicationException("Attenzione: la dimensione del file è superiore alla massima consentita (10 Mb).");
+		throw new it.cnr.jada.comp.ApplicationException("Attenzione: la dimensione del file e' superiore alla massima consentita (10 Mb).");
 	  }		
 	  /* Nome (compreso di Path) del file selezionato*/
 	  String fileName = file.getName();	
@@ -45,7 +39,7 @@ public Forward doSalva(ActionContext context) {
       if (excelBlobBulk.getNome_file()==null){
 		Excel_blobBulk excel = (Excel_blobBulk)((it.cnr.jada.blobs.ejb.ConfigExcelComponentSession)it.cnr.jada.util.ejb.EJBCommonServices.createEJB("BFRAMEBLOBS_EJB_ConfigExcelComponentSession", it.cnr.jada.blobs.ejb.ConfigExcelComponentSession.class)).completaOggetto(context.getUserContext(), excelBlobBulk, fileName);
 		if(excel != null)
-		  throw new it.cnr.jada.comp.ApplicationException("Attenzione: il file '"+Excel_blobBulk.parseFilename(fileName)+"' è già presente in archivio.");
+		  throw new it.cnr.jada.comp.ApplicationException("Attenzione: il file '"+Excel_blobBulk.parseFilename(fileName)+"' e' gia presente in archivio.");
 		excelBlobBulk.setNome_file(Excel_blobBulk.parseFilename(fileName));		  		            
       }
 	  super.doSalva(context);
