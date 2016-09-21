@@ -50,7 +50,8 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspWriter;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
 * Classe che descrive le propriet� di un input field da visualizzare in una FORM HTML 
 * per visualizzare/modificare il valore di un attributo di un OggettoBulk. 

@@ -13,10 +13,11 @@ import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+
 
 public class RestForward implements Forward {
 
@@ -28,14 +29,14 @@ public class RestForward implements Forward {
 		response.setContentType("application/json");
 		try {
 			JsonFactory jfactory = new JsonFactory();
-		    JsonGenerator jGenerator = jfactory.createJsonGenerator(response.getWriter());
+		    JsonGenerator jGenerator = jfactory.createGenerator(response.getWriter());
 		    jGenerator.writeStartObject();
 		    jGenerator.writeNumberField("totalNumItems", bp.getElementsCount());
 		    jGenerator.writeNumberField("maxItemsPerPage", bp.getPageSize());
 		    jGenerator.writeNumberField("activePage", bp.getCurrentPage());
 		    jGenerator.writeArrayFieldStart("elements");
 			ObjectMapper mapper = new ObjectMapper();
-			mapper.configure(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false);
+			mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
 			Enumeration<OggettoBulk> elements = bp.fetchPage(httpactioncontext);
 			while(elements.hasMoreElements()) {
 				jGenerator.writeStartObject();

@@ -11,7 +11,8 @@ import java.lang.reflect.InvocationTargetException;
 
 import javax.servlet.jsp.JspWriter;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 public class ColumnFieldProperty extends FieldProperty implements Serializable{
 	@JsonIgnore

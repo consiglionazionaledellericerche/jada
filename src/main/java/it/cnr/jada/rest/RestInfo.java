@@ -11,10 +11,11 @@ import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+
 
 public class RestInfo implements Forward {
 	private final Dictionary<String, FieldProperty> columns;
@@ -31,12 +32,12 @@ public class RestInfo implements Forward {
 		response.setContentType("application/json");
 		try {
 			JsonFactory jfactory = new JsonFactory();
-		    JsonGenerator jGenerator = jfactory.createJsonGenerator(response.getWriter());
+		    JsonGenerator jGenerator = jfactory.createGenerator(response.getWriter());
 		    jGenerator.writeStartObject();
 		    jGenerator.writeStringField("title", bp.getBulkInfo().getShortDescription());	    
 		    jGenerator.writeArrayFieldStart("fields");
 			ObjectMapper mapper = new ObjectMapper();
-			mapper.configure(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false);
+			mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
 			Enumeration<FieldProperty> fields = columns.elements();
 			while(fields.hasMoreElements()) {
 				jGenerator.writeRawValue(mapper.writeValueAsString(fields.nextElement()));				
