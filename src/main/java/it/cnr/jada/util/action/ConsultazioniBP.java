@@ -6,22 +6,20 @@
  */
 package it.cnr.jada.util.action;
 
+import it.cnr.jada.action.ActionContext;
+import it.cnr.jada.action.BusinessProcessException;
+import it.cnr.jada.bulk.OggettoBulk;
+import it.cnr.jada.persistency.sql.CompoundFindClause;
+import it.cnr.jada.util.Config;
+import it.cnr.jada.util.RemoteIterator;
+import it.cnr.jada.util.jsp.Button;
+import it.cnr.jada.util.jsp.JSPUtils;
+
 import java.io.IOException;
 import java.util.BitSet;
 
 import javax.servlet.ServletException;
 import javax.servlet.jsp.JspWriter;
-
-import it.cnr.jada.action.ActionContext;
-import it.cnr.jada.action.BusinessProcessException;
-import it.cnr.jada.bulk.BulkInfo;
-import it.cnr.jada.bulk.OggettoBulk;
-import it.cnr.jada.persistency.sql.CompoundFindClause;
-import it.cnr.jada.persistency.sql.SQLBuilder;
-import it.cnr.jada.util.Config;
-import it.cnr.jada.util.RemoteIterator;
-import it.cnr.jada.util.jsp.Button;
-import it.cnr.jada.util.jsp.JSPUtils;
 
 /**
  * @author Marco Spasiano
@@ -74,7 +72,7 @@ public class ConsultazioniBP extends SelezionatoreListaBP
 			   setMultiSelection(true);			      
 			setPageSize(getRecordPerPagina().intValue());
 			//TODO Da testare Mario
-			if (context.getBusinessProcess() != null && context.getBusinessProcess().getBPLevel() == 1)
+			if (isAutoQuery(context))
 			  openIterator(context);
 					
 		}catch(Throwable e) {
@@ -82,6 +80,13 @@ public class ConsultazioniBP extends SelezionatoreListaBP
 		}
 	}		
 
+	protected Boolean isAutoQuery(it.cnr.jada.action.ActionContext context){
+		if (context.getBusinessProcess() != null && context.getBusinessProcess().getBPLevel() == 1){
+			return true;
+		}
+		return false;
+
+	}
 	public void openIterator(it.cnr.jada.action.ActionContext context) throws it.cnr.jada.action.BusinessProcessException {
 		try	{	
 			OggettoBulk model = (OggettoBulk)getBulkInfo().getBulkClass().newInstance();
@@ -142,7 +147,7 @@ public class ConsultazioniBP extends SelezionatoreListaBP
 	 * Metodo che permette di aggiungere dei Bottoni
 	 * a quelli di default nel caso di Multiselezione
 	 * i Bottoni sono quattro: "Toolbar.print", "Toolbar.excel", "Toolbar.selectAll", "Toolbar.deselectAll"
-	 * se invece non � una multiselezione sono due: "Toolbar.print", "Toolbar.excel"
+	 * se invece non e una multiselezione sono due: "Toolbar.print", "Toolbar.excel"
 	 * 
 	 * @param listButton
 	 * @return
@@ -265,7 +270,7 @@ public class ConsultazioniBP extends SelezionatoreListaBP
 		bulkClass = newBulkClass;
 	}
 	/**
-	 * Imposta il valore della propriet� 'bulkClassName'
+	 * Imposta il valore della proprieta 'bulkClassName'
 	 *
 	 * @param bulkClassName	Il valore da assegnare a 'bulkClassName'
 	 * @throws ClassNotFoundException	
@@ -437,7 +442,5 @@ public class ConsultazioniBP extends SelezionatoreListaBP
 
 	public void setFilterEnabled(java.lang.String filterEnabled) {
 		this.filterEnabled = filterEnabled;
-	}
-	
-
+	}	
 }
