@@ -5,6 +5,7 @@ import java.rmi.RemoteException;
 
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
+import javax.ejb.NoSuchEJBException;
 
 import it.cnr.jada.DetailedRuntimeException;
 import it.cnr.jada.UserContext;
@@ -33,7 +34,10 @@ public class UserTransactionalBulkLoaderIterator implements TransactionalBulkLoa
 		} catch (javax.ejb.ConcurrentAccessTimeoutException _ex) {
 			logger.warn("Access timeout to EJB", _ex);
 		} catch (InvocationTargetException e) {
-			throw new RuntimeException(e);
+			if (e.getTargetException() instanceof UserTransactionTimeoutException || e.getTargetException() instanceof NoSuchEJBException)
+				logger.warn("Exception while closing EJB", e.getTargetException());
+			else 
+				throw new RuntimeException(e);
 		}
 	}
 
@@ -209,7 +213,12 @@ public class UserTransactionalBulkLoaderIterator implements TransactionalBulkLoa
 			userTransaction.invoke(remoteiterator, "ejbRemove");
 		} catch (javax.ejb.ConcurrentAccessTimeoutException _ex) {
 			logger.warn("Access timeout to EJB", _ex);
-		} catch (InvocationTargetException | RemoteException e) {
+		} catch (InvocationTargetException e) {
+			if (e.getTargetException() instanceof UserTransactionTimeoutException || e.getTargetException() instanceof NoSuchEJBException)
+				logger.warn("Exception while closing EJB", e.getTargetException());
+			else
+				throw new RuntimeException(e);				
+		} catch (RemoteException e) {
 			throw new RuntimeException(e);
 		}
 	}
