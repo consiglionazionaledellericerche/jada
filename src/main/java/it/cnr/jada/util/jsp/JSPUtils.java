@@ -376,13 +376,13 @@ public class JSPUtils
 		pagecontext.getOut().print(getAppRoot((HttpServletRequest)pagecontext.getRequest()));
 		pagecontext.getOut().println("\">");
 		
-		pagecontext.getOut().println("<!--[if IE]><script type=\"text/javascript\">");
+		pagecontext.getOut().println("<!--[if IE]><!--><script type=\"text/javascript\">");
 		pagecontext.getOut().println("// Fix for IE ignoring relative base tags.");
-		pagecontext.getOut().println("(function() {");
-		pagecontext.getOut().println("	var baseTag = document.getElementsByTagName('base')[0];");
+		pagecontext.getOut().println("	var baseTag = document.getElementsByTagName('BASE')[0];");
 		pagecontext.getOut().print("baseTag.href = window.location.protocol + \"//\" + window.location.hostname + (window.location.port ? ':' + window.location.port: '') + \"");
 		pagecontext.getOut().print(getAppRoot((HttpServletRequest)pagecontext.getRequest()));
-		pagecontext.getOut().println("\"");		
+		pagecontext.getOut().println("\";");		
+		pagecontext.getOut().println("</script><!--<![endif]-->");
 		
 		printCloneUrl(pagecontext);
 		printMetaData(pagecontext);
@@ -396,10 +396,6 @@ public class JSPUtils
 		inetaddress.hashCode();
 		pagecontext.getOut().println("\tHost Address\t:\t" + inetaddress.getHostAddress());
 		pagecontext.getOut().println("\tHost Name\t:\t" + inetaddress.getHostName());
-		//String s = WebSphereServices.getInstance().getCloneIndex();
-		//String s1 = WebSphereServices.getInstance().getQueueName();
-		//pagecontext.getOut().println("\tQueue Name\t:\t" + (s1 != null ? s1 : "None"));
-		//pagecontext.getOut().println("\tClone Index\t:\t" + (s != null ? s : "None"));
 		pagecontext.getOut().println("-->");
 	}
 	public static void printMetaData(PageContext pagecontext) throws IOException{
