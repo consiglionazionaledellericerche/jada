@@ -83,10 +83,7 @@ public class ExcelSpoolerBP extends SelezionatoreListaBP {
 		Button[] toolbar = getToolbar();
 		Excel_spoolerBulk excel_spooler = (Excel_spoolerBulk)getFocusedElement();
 		if (excel_spooler != null && excel_spooler.isEseguita())
-			toolbar[1].setHref("doPrint('"+JSPUtils.buildAbsoluteUrl(
-				pageContext,
-				null,
-				"offline_excel/"+excel_spooler.getNome_file()+"?pg="+excel_spooler.getPg_estrazione().longValue()+"')"));
+			toolbar[1].setHref("doPrint('offline_excel/"+excel_spooler.getNome_file()+"?pg="+excel_spooler.getPg_estrazione().longValue()+"')");
 		else
 			toolbar[1].setHref(null);
 		writeToolbar(pageContext.getOut(),toolbar);
