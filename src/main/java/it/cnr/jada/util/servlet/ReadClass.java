@@ -8,17 +8,13 @@ package it.cnr.jada.util.servlet;
 import it.cnr.jada.ejb.AdminSession;
 import it.cnr.jada.util.ejb.EJBCommonServices;
 
-import java.io.*;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 
 import javax.ejb.EJBException;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
-import org.xml.sax.*;
-import org.xml.sax.helpers.*;
 import org.apache.xerces.parsers.SAXParser;
+import org.xml.sax.Attributes;
+import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * @author mspasiano

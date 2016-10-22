@@ -1,9 +1,12 @@
 package it.cnr.jada.action;
 
+import it.cnr.jada.bulk.OggettoBulk;
+import it.cnr.jada.ejb.AdminSession;
 import it.cnr.jada.firma.FirmaInfos;
 import it.cnr.jada.firma.bp.CRUDFirmaBP;
 import it.cnr.jada.util.Log;
 import it.cnr.jada.util.Utility;
+import it.cnr.jada.util.ejb.EJBCommonServices;
 import it.cnr.jada.util.jsp.JSPUtils;
 import it.cnr.jada.util.servlet.MultipartWrapper;
 import it.cnr.jada.util.servlet.ReadClass;
@@ -13,6 +16,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
+import java.rmi.RemoteException;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
@@ -285,16 +290,11 @@ public class ActionServlet extends HttpServlet implements Serializable{
         uploadsTempDir.mkdirs();
         try{
             mappings = ActionUtil.reloadActions(actionDirFile);
-			if (System.getProperty("it.cnr.readBulkInfos","Y").equalsIgnoreCase("Y"))
-				loadPersistentInfos();
         }catch(ActionMappingsConfigurationException actionmappingsconfigurationexception){
             throw new ServletException("Action mappings configuration exception", actionmappingsconfigurationexception);
         }
     }
     
-	public synchronized void loadPersistentInfos() throws ServletException{    
-		new ReadClass(getServletContext().getRealPath("/bulkinfos/BulkClassList.xml"));		
-	}
 
     void traceRequest(HttpActionContext httpactioncontext){
     	if (httpactioncontext.getUserContext() == null)

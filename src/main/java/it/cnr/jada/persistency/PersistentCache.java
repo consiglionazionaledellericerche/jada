@@ -2,21 +2,21 @@ package it.cnr.jada.persistency;
 
 import java.io.Serializable;
 import java.util.*;
-
-// Referenced classes of package it.cnr.jada.persistency:
-//            IntrospectionException, FetchAllPolicy, FetchPolicy, FetchNonePolicy, 
-//            Introspector, PersistentInfo, PersistentProperty, KeyedPersistent, 
-//            Persistent
+import java.util.Map.Entry;
 
 public class PersistentCache
     implements Serializable
 {
 
+    Map<Object, Persistent> cache;
+    HashMap<Persistent, FetchPolicy> fetchQueue;
+    HashMap<Persistent, FetchPolicy> fetchedQueue;
+
     public PersistentCache()
     {
-        cache = new HashMap();
-        fetchQueue = new HashMap();
-        fetchedQueue = new HashMap();
+        cache = new HashMap<Object, Persistent>();
+        fetchQueue = new HashMap<Persistent, FetchPolicy>();
+        fetchedQueue = new HashMap<Persistent, FetchPolicy>();
     }
 
     public void addToFetchQueue(Introspector introspector, Persistent persistent)
@@ -119,6 +119,18 @@ public class PersistentCache
             fetchedQueue.put(persistent, fetchpolicy.addFetchPolicy((FetchPolicy)fetchedQueue.get(persistent)));
         }
         FetchPolicy fetchpolicy2 = (FetchPolicy)fetchQueue.remove(persistent);
+        if (fetchpolicy2 == null) {
+        	for (Iterator<Entry<Persistent, FetchPolicy>> iterator = fetchQueue.entrySet().iterator(); iterator.hasNext();) {
+        		Entry<Persistent, FetchPolicy> persistentKey = iterator.next();
+        		fetchpolicy2 = persistentKey.getValue();
+        		if(persistentKey.getKey().equals(persistent)) {
+        			if (fetchQueue.size() == 1)
+        				fetchQueue.clear();
+        			else
+        				iterator.remove();        			
+        		}
+			}
+        }
         if(fetchpolicy2 != null)
         {
             fetchpolicy2 = fetchpolicy2.removeFetchPolicy(fetchpolicy);
@@ -135,8 +147,4 @@ public class PersistentCache
             }
         }
     }
-
-    Map cache;
-    HashMap fetchQueue;
-    HashMap fetchedQueue;
 }

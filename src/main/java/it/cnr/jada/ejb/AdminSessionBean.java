@@ -12,7 +12,9 @@ import java.beans.Introspector;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.rmi.RemoteException;
 import java.util.zip.GZIPOutputStream;
+
 import javax.ejb.Stateless;
 
 @Stateless (name="JADAEJB_AdminSession")
@@ -67,18 +69,14 @@ public class AdminSessionBean implements AdminSession{
     }
 
 	public void loadBulkInfos(Class class1){
-		try {		
-		  BulkInfo.getBulkInfo(class1);
-		} catch (Exception e) {
-			System.out.println("Errore nel loadBulkInfos() - " + e.getMessage());
-		}	
+	  BulkInfo.getBulkInfo(class1);
 	}
 
 	public void loadPersistentInfos(Class class1){
 		try {
 			BeanIntrospector.getSQLInstance().getPersistentInfo(class1);
 		} catch (Exception e) {
-			System.out.println("Errore nel loadPersistentInfos() - " + class1);
+			throw new RuntimeException("Cannot load PersistentInfos for class " + class1.getName(), e);
 		}	
 	}
 	
