@@ -31,6 +31,7 @@ import java.rmi.RemoteException;
 import java.text.ParseException;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -49,6 +50,21 @@ import org.xml.sax.SAXException;
 public class HttpActionContext
 	implements Serializable, ActionContext
 {
+
+	private File actionDirFile;
+	private HttpServlet servlet;
+	private HttpServletRequest request;
+	private HttpServletResponse response;
+	private ActionMapping actionMapping;
+	private String command;
+	private BusinessProcess businessProcess;
+	private Forward caller;
+	private static final String requestTracingUserAttributeName = "it.cnr.jada.action.HttpActionContext.requestTracingUsers";
+	private static final String tracingSessionDescriptionAttributeName = "it.cnr.jada.action.HttpActionContext.tracingSessionDescription";
+	
+	public void setActionMapping(ActionMapping actionMapping) {
+		this.actionMapping = actionMapping;
+	}
 
 	public HttpActionContext(HttpServlet actionservlet, HttpServletRequest httpservletrequest, HttpServletResponse httpservletresponse)
 		throws ServletException
@@ -206,6 +222,12 @@ public class HttpActionContext
 	public BusinessProcess createBusinessProcess(String s)
 		throws BusinessProcessException
 	{
+		if (actionMapping == null) {
+			try {
+				actionMapping = ActionUtil.reloadActions(actionDirFile).findActionMapping("/Login");
+			} catch (ActionMappingsConfigurationException e) {				
+			}
+		}
 		return actionMapping.createBusinessProcess(s, this);
 	}
 
@@ -221,32 +243,32 @@ public class HttpActionContext
 		pagecontext.getOut().print("<INPUT TYPE=HIDDEN NAME=\"actionCounter\" VALUE=\"");
 		HttpServletRequest httpservletrequest = (HttpServletRequest)pagecontext.getRequest();
 		HttpSession httpsession = getSession(httpservletrequest);
-		String s = httpservletrequest.getParameter("actionCounter");
-		if(s == null)
-		{
-			Long long1 = (Long)httpsession.getAttribute("it.cnr.jada.action.HttpActionContext.actionCounter.frame");
-			if(long1 == null)
-				long1 = new Long(0L);
-			else
-				long1 = new Long(long1.longValue() + 1L);
-			getSession(httpservletrequest).setAttribute("it.cnr.jada.action.HttpActionContext.actionCounter.frame", long1);
-			getSession(httpservletrequest).setAttribute("it.cnr.jada.action.HttpActionContext.actionCounter." + long1, new Long(0L));
-			pagecontext.getOut().print(long1.toString() + "-0");
-		} else
-		{
-			int i = s.indexOf('-');
-			String s1 = "it.cnr.jada.action.HttpActionContext.actionCounter";
-			if(i >= 0)
-				s1 = s1 + '.' + s.substring(0, i);
-			Long long2 = (Long)httpsession.getAttribute(s1);
-			long l = -1L;
-			if(long2 != null)
-				l = long2.longValue();
-			if(i >= 0)
-				s = s.substring(0, i + 1) + l;
-			else
-				s = String.valueOf(l);
-			pagecontext.getOut().print(s);
+		if (httpsession != null) {
+			String s = httpservletrequest.getParameter("actionCounter");
+			if(s == null) {
+				Long long1 = (Long)httpsession.getAttribute("it.cnr.jada.action.HttpActionContext.actionCounter.frame");
+				if(long1 == null)
+					long1 = new Long(0L);
+				else
+					long1 = new Long(long1.longValue() + 1L);
+				httpsession.setAttribute("it.cnr.jada.action.HttpActionContext.actionCounter.frame", long1);
+				httpsession.setAttribute("it.cnr.jada.action.HttpActionContext.actionCounter." + long1, new Long(0L));
+				pagecontext.getOut().print(long1.toString() + "-0");
+			} else {
+				int i = s.indexOf('-');
+				String s1 = "it.cnr.jada.action.HttpActionContext.actionCounter";
+				if(i >= 0)
+					s1 = s1 + '.' + s.substring(0, i);
+				Long long2 = (Long)httpsession.getAttribute(s1);
+				long l = -1L;
+				if(long2 != null)
+					l = long2.longValue();
+				if(i >= 0)
+					s = s.substring(0, i + 1) + l;
+				else
+					s = String.valueOf(l);
+				pagecontext.getOut().print(s);
+			}			
 		}
 		pagecontext.getOut().println("\">");
 	}
@@ -571,7 +593,7 @@ public class HttpActionContext
 
 	public static HttpSession getSession(HttpServletRequest httpservletrequest)
 	{
-		return getSession(httpservletrequest, true);
+		return getSession(httpservletrequest, false);
 	}
 
 	public static HttpSession getSession(HttpServletRequest httpservletrequest, boolean flag)
@@ -607,6 +629,11 @@ public class HttpActionContext
 		return (String)getSession().getAttribute("it.cnr.jada.action.HttpActionContext.tracingSessionDescription");
 	}
 
+	public UserContext getUserContext(boolean createSession)
+	{
+		return getUserContext(getSession(false));
+	}
+	
 	public UserContext getUserContext()
 	{
 		return getUserContext(getSession());
@@ -614,7 +641,7 @@ public class HttpActionContext
 
 	public static UserContext getUserContext(HttpSession httpsession)
 	{
-		return (UserContext)httpsession.getAttribute("UserContext");
+		return Optional.ofNullable(httpsession).map(session -> (UserContext)session.getAttribute("UserContext")).orElse(null);
 	}
 
 	public UserInfo getUserInfo()
@@ -859,19 +886,5 @@ public class HttpActionContext
 	public void traceException(Throwable throwable)
 	{
 		request.setAttribute("it.cnr.jada.action.HttpActionContext.traceException", throwable);
-	}
-
-	private File actionDirFile;
-	private HttpServlet servlet;
-	private HttpServletRequest request;
-	private HttpServletResponse response;
-	private ActionMapping actionMapping;
-	private String command;
-	private BusinessProcess businessProcess;
-	private Forward caller;
-	private static final String requestTracingUserAttributeName = "it.cnr.jada.action.HttpActionContext.requestTracingUsers";
-	private static final String tracingSessionDescriptionAttributeName = "it.cnr.jada.action.HttpActionContext.tracingSessionDescription";
-	public void setActionMapping(ActionMapping actionMapping) {
-		this.actionMapping = actionMapping;
 	}
 }

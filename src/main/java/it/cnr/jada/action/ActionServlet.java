@@ -1,23 +1,11 @@
 package it.cnr.jada.action;
 
-import it.cnr.jada.bulk.OggettoBulk;
-import it.cnr.jada.ejb.AdminSession;
-import it.cnr.jada.firma.FirmaInfos;
-import it.cnr.jada.firma.bp.CRUDFirmaBP;
 import it.cnr.jada.util.Log;
-import it.cnr.jada.util.Utility;
-import it.cnr.jada.util.ejb.EJBCommonServices;
-import it.cnr.jada.util.jsp.JSPUtils;
 import it.cnr.jada.util.servlet.MultipartWrapper;
-import it.cnr.jada.util.servlet.ReadClass;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
 import java.io.Serializable;
-import java.rmi.RemoteException;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
@@ -27,11 +15,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.fileupload.FileItemIterator;
-import org.apache.commons.fileupload.FileItemStream;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.commons.fileupload.util.Streams;
 /**
  * Servlet per la gestione di action. 
  * ActionServlet smista le richieste in seguito ad una SUBMIT di una form HTML ad una istanza 
@@ -93,160 +76,30 @@ public class ActionServlet extends HttpServlet implements Serializable{
      * Gestisce una richiesta di action sotto forma di GET.
      */
     protected void doGet(HttpServletRequest httpservletrequest, HttpServletResponse httpservletresponse) throws ServletException, IOException {
-        String s = httpservletrequest.getServletPath();
-        if(!s.endsWith(actionExtension))
-            throw new ServletException("Le actions devono terminare con \".do\"");
-        s = s.substring(0, s.length() - actionExtension.length());
-        ActionMapping actionmapping = mappings.findActionMapping(s);
-        if(actionmapping == null)
-            throw new ServletException("Action not found ["+s+"]");
-		String type = httpservletrequest.getHeader("Content-Type");
-	    if (!(type == null || !type.startsWith("multipart/form-data"))) {
-	    	try{
-				httpservletrequest = new MultipartWrapper(httpservletrequest,getServletContext().getRealPath("/tmp/"));
-	    	}catch(Exception e){
-	    		log.error(e, "Errore Multipart :");
-			}
-		}  
-
-	    String signedData;
-	    String ellipsApplet = httpservletrequest.getParameter("EllipsApplet");
-	    String signFilename = httpservletrequest.getParameter("sign_nome_file");
-	    String signError = httpservletrequest.getParameter("Error");
-	    String sessionId=null;
-	    if (httpservletrequest.getSession()!=null)
-	    	sessionId=httpservletrequest.getSession().getId();
-        String pathFirmaTempDir = getServletContext().getRealPath("/tmp/"+httpservletrequest.getSession().getId());
-	    if (ellipsApplet!=null) {
-		    // Check that we have a file upload request
-		    boolean isMultipart = ServletFileUpload.isMultipartContent(httpservletrequest);
-		    
-	    	if (type != null && type.startsWith("application/x-www-form-urlencoded")) {
-	    		if (isMultipart) {
-			    	try{
-			    		/*
-			    		 * per ora questa parte non � gestita dato che il file 
-			    		 * firmato non viene trasferito come multipart
-			    		 */
-			    		// Create a new file upload handler
-				    	ServletFileUpload upload = new ServletFileUpload();
-				        
-				    	// Parse the request
-				    	FileItemIterator iter = upload.getItemIterator(httpservletrequest);
-				    	while (iter.hasNext()) {
-				    	    FileItemStream item = iter.next();
-				    	    String name = item.getFieldName();
-				    	    InputStream stream = item.openStream();
-				    	    if (item.isFormField()) {
-				    	    	log.info("Form field " + name + " with value "
-				    	            + Streams.asString(stream) + " detected.");
-				    	    } else {
-				    	    	log.info("File field " + name + " with file name "
-				    	            + item.getName() + " detected.");
-				    	        // Process the input stream
-				    	    }
-				    	}
-			    	}catch(Exception e){
-			    		log.error(e, "Errore Form urlencoded :");
-					}
-			    }
-		    	else {
-			        signedData = httpservletrequest.getParameter("Signature");
-			        if (signedData!=null) {
-			        	//Utility.saveFile(signFilename+".p7m", pathFirmaTempDir, signedData);
-			        	Utility.decodeAndSaveFile(signFilename+".p7m", pathFirmaTempDir, signedData);
-			        }
-
-		    	}
-	    		
-	    		PrintWriter out = httpservletresponse.getWriter();
-	    		String path = httpservletrequest.getServletPath();
-	    		String url = JSPUtils.buildAbsoluteUrl(httpservletrequest, null, path);
-			    String signBPPath = httpservletrequest.getParameter("sign_bp_path");
-	    		String params=null;
-	    		if (signError==null) {
-		    		params = "sign_file_ricevuto="+signFilename+".p7m"+"&sign_bp_path="+signBPPath;
-	    		}
-	    		else {
-		    		params = "sign_file_errore=Y"+"&sign_bp_path="+signBPPath;
-	    		}
-	    		out.println("Location: "+url+"?"+params);
-			}
-	    }
-	    else {
-
-		    String signFileRicevuto = httpservletrequest.getParameter("sign_file_ricevuto");
-		    String signFileErrore = httpservletrequest.getParameter("sign_file_errore");
-		    String signBPPath = httpservletrequest.getParameter("sign_bp_path");
-	    	if (signFileErrore!=null) {
-
-	    		HttpActionContext httpactioncontext = new HttpActionContext(this, httpservletrequest, httpservletresponse);
-
-		    	BusinessProcess bp = httpactioncontext.getBusinessProcess(signBPPath);
-		    	BusinessProcess.setBusinessProcess(httpservletrequest, bp);
-	        	httpactioncontext.setBusinessProcess(bp);
-	        	httpactioncontext.setActionMapping(actionmapping);
-
-	        	try{
-		            traceRequest(httpactioncontext);
-		            httpactioncontext.perform(null, actionmapping, null);
-		        }catch(ActionPerformingError actionperformingerror)        {
-		            httpactioncontext.forwardUncaughtException(actionperformingerror.getDetail());
-		        }catch(RuntimeException runtimeexception){
-		            httpactioncontext.forwardUncaughtException(runtimeexception);
-		        }
-	    	}
-	    	else if (signFileRicevuto!=null) {
-
-		    	HttpActionContext httpactioncontext = new HttpActionContext(this, httpservletrequest, httpservletresponse);
-
-		    	BusinessProcess bp = httpactioncontext.getBusinessProcess(signBPPath);
-		    	BusinessProcess.setBusinessProcess(httpservletrequest, bp);
-	        	httpactioncontext.setBusinessProcess(bp);
-	        	httpactioncontext.setActionMapping(actionmapping);
-	        	String fileNameCompleto = pathFirmaTempDir+"/"+signFileRicevuto;
-	        	
-		    	CRUDFirmaBP firmabp=null;
-		    	boolean bTipoPersistenzaEsterna=false;
-		    	if (bp instanceof FirmaInfos) {
-		    		if (((FirmaInfos)bp).tipoPersistenza().equals(FirmaInfos.TIPO_PERSISTENZA_ESTERNA))
-		    			bTipoPersistenzaEsterna=true;
-		    	}
-		        try {
-		        	if (bTipoPersistenzaEsterna) {
-		                traceRequest(httpactioncontext);
-			            httpactioncontext.perform(null, actionmapping, "doPersist");
-		        	} else {
-		                firmabp = (CRUDFirmaBP)
-	                	httpactioncontext.createBusinessProcess
-	                	("CRUDFirmaBP", new Object[] {"M", bp, fileNameCompleto});
-		                httpactioncontext.addBusinessProcess(firmabp);
-
-		                traceRequest(httpactioncontext);
-			            httpactioncontext.perform(null, actionmapping, null);
-		        	}
-
-		        }catch(ActionPerformingError actionperformingerror)        {
-		            httpactioncontext.forwardUncaughtException(actionperformingerror.getDetail());
-		        }catch(RuntimeException runtimeexception){
-		            httpactioncontext.forwardUncaughtException(runtimeexception);
-		        } catch(Throwable throwable) {
-		            httpactioncontext.forwardUncaughtException(throwable);
-		        }
-	    	}
-		    else {
-		    	
-		    	HttpActionContext httpactioncontext = new HttpActionContext(this, httpservletrequest, httpservletresponse);
-		        try{
-		            traceRequest(httpactioncontext);
-		            httpactioncontext.perform(null, actionmapping, null);
-		        }catch(ActionPerformingError actionperformingerror)        {
-		            httpactioncontext.forwardUncaughtException(actionperformingerror.getDetail());
-		        }catch(RuntimeException runtimeexception){
-		            httpactioncontext.forwardUncaughtException(runtimeexception);
-		        }
-		    }
-	    }
+    	String s = httpservletrequest.getServletPath();
+    	if(!s.endsWith(actionExtension))
+    		throw new ServletException("Le actions devono terminare con \".do\"");
+    	s = s.substring(0, s.length() - actionExtension.length());
+    	ActionMapping actionmapping = mappings.findActionMapping(s);
+    	if(actionmapping == null)
+    		throw new ServletException("Action not found ["+s+"]");
+    	String type = httpservletrequest.getHeader("Content-Type");
+    	if (!(type == null || !type.startsWith("multipart/form-data"))) {
+    		try{
+    			httpservletrequest = new MultipartWrapper(httpservletrequest,getServletContext().getRealPath("/tmp/"));
+    		}catch(Exception e){
+    			log.error(e, "Errore Multipart :");
+    		}
+    	} 
+    	HttpActionContext httpactioncontext = new HttpActionContext(this, httpservletrequest, httpservletresponse);
+    	try{
+    		traceRequest(httpactioncontext);
+    		httpactioncontext.perform(null, actionmapping, null);
+    	}catch(ActionPerformingError actionperformingerror)        {
+    		httpactioncontext.forwardUncaughtException(actionperformingerror.getDetail());
+    	}catch(RuntimeException runtimeexception){
+    		httpactioncontext.forwardUncaughtException(runtimeexception);
+    	}
 
     }
     /**
@@ -266,7 +119,7 @@ public class ActionServlet extends HttpServlet implements Serializable{
         Object obj = (Set)servletrequest.getAttribute("parameterNames");
         if(obj == null){
             int i = 0;
-            for(Enumeration enumeration = servletrequest.getParameterNames(); enumeration.hasMoreElements();){
+            for(Enumeration<?> enumeration = servletrequest.getParameterNames(); enumeration.hasMoreElements();){
                 enumeration.nextElement();
                 i++;
             }
@@ -297,7 +150,7 @@ public class ActionServlet extends HttpServlet implements Serializable{
     
 
     void traceRequest(HttpActionContext httpactioncontext){
-    	if (httpactioncontext.getUserContext() == null)
+    	if (httpactioncontext.getUserContext(false) == null)
     		return;
     	HttpServletRequest httpservletrequest = httpactioncontext.getRequest();
         StringBuffer infoUser = new StringBuffer();
@@ -305,7 +158,7 @@ public class ActionServlet extends HttpServlet implements Serializable{
         infoUser.append(" RemoteHost:"+httpservletrequest.getRemoteAddr());
         String comando = null;
     	log.debug("======INIZIO SUBMIT======");
-        for(Enumeration enumeration = httpservletrequest.getParameterNames(); enumeration.hasMoreElements();){
+        for(Enumeration<?> enumeration = httpservletrequest.getParameterNames(); enumeration.hasMoreElements();){
             StringBuffer detailInfoUser = new StringBuffer();
         	String campo = (String)enumeration.nextElement();
         	if (campo.equalsIgnoreCase("comando"))

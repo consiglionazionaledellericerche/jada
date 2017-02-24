@@ -1,8 +1,6 @@
 package it.cnr.jada.action;
 
 import it.cnr.jada.UserTransaction;
-import it.cnr.jada.error.bulk.Application_errorBulk;
-import it.cnr.jada.error.bulk.Application_errorHome;
 import it.cnr.jada.util.Config;
 import it.cnr.jada.util.SendMail;
 import it.cnr.jada.util.ejb.EJBCommonServices;
@@ -10,12 +8,12 @@ import it.cnr.jada.util.ejb.EJBCommonServices;
 import java.io.IOException;
 import java.io.Serializable;
 import java.rmi.RemoteException;
-import java.sql.SQLException;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
@@ -52,15 +50,16 @@ import javax.servlet.jsp.PageContext;
  */
 public class BusinessProcess implements Forward, Serializable{
 
-	private final Map children;
+	private static final long serialVersionUID = 1L;
+	private Map<String, BusinessProcess> children;
 	public static final String ROOTBPNAME = "rootbp";
 	private BusinessProcess parent;
 	private BusinessProcessMapping mapping;
 	private String path;
 	private String name;
-	private final Map hooks;
+	private Map<String, Forward> hooks;
 	private UserTransaction userTransaction;
-	private final int transactionPolicy;
+	private int transactionPolicy;
 	private boolean busy;
 	private Properties resources;
 	private Character function;
@@ -70,10 +69,10 @@ public class BusinessProcess implements Forward, Serializable{
 	public static final int REQUIRES_TRANSACTION = 3;
 
 	protected BusinessProcess(){
-		children = new HashMap();
+		children = new Hashtable<String, BusinessProcess>();
 		path = "";
-		name = "rootbp";
-		hooks = new HashMap();
+		name = ROOTBPNAME;
+		hooks = new Hashtable<String, Forward>();
 		busy = false;
 		transactionPolicy = 0;
 	}
@@ -83,10 +82,10 @@ public class BusinessProcess implements Forward, Serializable{
      * La modalit  transazionale di default   "Th"
      */
 	protected BusinessProcess(String function){
-		children = new HashMap();
+		children = new Hashtable<String, BusinessProcess>();
 		path = "";
-		name = "rootbp";
-		hooks = new HashMap();
+		name = ROOTBPNAME;
+		hooks = new Hashtable<String, Forward>();
 		busy = false;
 		if (function.length() > 0)
 			this.function = function.charAt(0);  
@@ -168,7 +167,7 @@ public class BusinessProcess implements Forward, Serializable{
 
 	public void closeAllChildren(ActionContext context) throws BusinessProcessException{
 		synchronized(children){
-			for(Iterator iterator = children.values().iterator(); iterator.hasNext(); iterator.remove()){
+			for(Iterator<BusinessProcess> iterator = children.values().iterator(); iterator.hasNext(); iterator.remove()){
 				BusinessProcess businessprocess = (BusinessProcess)iterator.next();
 				businessprocess.closed(context);
 			}
@@ -180,7 +179,7 @@ public class BusinessProcess implements Forward, Serializable{
      */
 	protected void closed(ActionContext context) throws BusinessProcessException{
 		synchronized(children){
-			for(Iterator iterator = children.values().iterator(); iterator.hasNext(); ((BusinessProcess)iterator.next()).closed(context));
+			for(Iterator<BusinessProcess> iterator = children.values().iterator(); iterator.hasNext(); ((BusinessProcess)iterator.next()).closed(context));
 		}
 		if(getUserTransaction() != null)
 			try{
@@ -193,7 +192,7 @@ public class BusinessProcess implements Forward, Serializable{
 	
 	public void closeAllChildren() throws BusinessProcessException{
 		synchronized(children){
-			for(Iterator iterator = children.values().iterator(); iterator.hasNext(); iterator.remove()){
+			for(Iterator<BusinessProcess> iterator = children.values().iterator(); iterator.hasNext(); iterator.remove()){
 				BusinessProcess businessprocess = (BusinessProcess)iterator.next();
 				businessprocess.closed();
 			}
@@ -205,7 +204,7 @@ public class BusinessProcess implements Forward, Serializable{
      */
 	protected void closed() throws BusinessProcessException{
 		synchronized(children){
-			for(Iterator iterator = children.values().iterator(); iterator.hasNext(); ((BusinessProcess)iterator.next()).closed());
+			for(Iterator<BusinessProcess> iterator = children.values().iterator(); iterator.hasNext(); ((BusinessProcess)iterator.next()).closed());
 		}
 		if(getUserTransaction() != null)
 			try{
@@ -230,7 +229,7 @@ public class BusinessProcess implements Forward, Serializable{
     /**
      * Crea una componente per il ricevente.
      */
-	public Object createComponentSession(String jndiName, Class sessionClass) throws BusinessProcessException{
+	public Object createComponentSession(String jndiName, Class<?> sessionClass) throws BusinessProcessException{
 		return createComponentSession(jndiName);
 	}
     /**
@@ -352,7 +351,8 @@ public class BusinessProcess implements Forward, Serializable{
 				throw new NoSuchSessionException();
 			bpname = bpname.substring(0, i);
 		}
-		BusinessProcess businessprocess = getBusinessProcessRoot(httpservletrequest);
+		BusinessProcess businessprocess = Optional.ofNullable(getBusinessProcessRoot(httpservletrequest)).
+				orElse((BusinessProcess)httpservletrequest.getAttribute(it.cnr.jada.action.BusinessProcess.class.getName()));
 		for(StringTokenizer stringtokenizer = new StringTokenizer(bpname, "/"); businessprocess != null && stringtokenizer.hasMoreTokens();)
 			if((businessprocess = businessprocess.getChild(stringtokenizer.nextToken())) == null)
 				throw new NoSuchBusinessProcessException("BusinessProcess inesistente ["+bpname+"]", bpname);
@@ -362,9 +362,11 @@ public class BusinessProcess implements Forward, Serializable{
      * Recupera il business process root dalla HttpSession associata ad una HttpRequest.
      */
 	public static BusinessProcess getBusinessProcessRoot(HttpServletRequest httpservletrequest){
-		return (BusinessProcess)HttpActionContext.getSession(httpservletrequest).getAttribute("rootbp");
+		return Optional.ofNullable(HttpActionContext.getSession(httpservletrequest)).
+				map(session -> (BusinessProcess)session.getAttribute(ROOTBPNAME)).orElse(null);
 	}
-    /**
+
+	/**
      * Restituisce il figlio del ricevente dal nome specificato,
      */
 	public BusinessProcess getChild(String bpname){
@@ -377,7 +379,7 @@ public class BusinessProcess implements Forward, Serializable{
     /**
      * Restituisce una enumeration dei figli del ricevente.
      */
-	public Enumeration getChildren(){
+	public Enumeration<BusinessProcess> getChildren(){
 		return Collections.enumeration(children.values());
 	}
     /**
@@ -506,7 +508,7 @@ public class BusinessProcess implements Forward, Serializable{
 	public synchronized boolean isBusy(){
 		if(busy)
 			return true;
-		for(Iterator iterator = children.values().iterator(); iterator.hasNext();){
+		for(Iterator<BusinessProcess> iterator = children.values().iterator(); iterator.hasNext();){
 			BusinessProcess businessprocess = (BusinessProcess)iterator.next();
 			if(businessprocess.isBusy())
 				return true;
@@ -566,7 +568,10 @@ public class BusinessProcess implements Forward, Serializable{
      */
 	public static void setBusinessProcessRoot(HttpServletRequest httpservletrequest, BusinessProcess businessprocess){
 		businessprocess.setRoot();
-		HttpActionContext.getSession(httpservletrequest).setAttribute("rootbp", businessprocess);
+		Optional.ofNullable(HttpActionContext.getSession(httpservletrequest)).map(session -> {
+			session.setAttribute(ROOTBPNAME, businessprocess);
+			return session;
+		});
 	}
 
 	public synchronized boolean setBusy(){
