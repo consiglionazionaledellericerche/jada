@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>it.cnr</groupId>
 	<artifactId>jada</artifactId>
-	<version>4.0.10-SNAPSHOT</version>
+	<version>4.0.10</version>
 	<packaging>ejb</packaging>
 	<name>jada</name>
 	<parent>
@@ -198,6 +198,6 @@
 	<scm>
     <connection>scm:git:ssh://git@git.si.cnr.it/dev/jada.git</connection>
     <developerConnection>scm:git:ssh://git@git.si.cnr.it/dev/jada.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>jada-4.0.10</tag>
   </scm>
 </project>
