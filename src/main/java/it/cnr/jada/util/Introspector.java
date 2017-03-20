@@ -563,68 +563,78 @@ label0:
 			return method.invoke(obj, aobj);
 	}
 
-	public static synchronized Object invoke(Object obj, String s, Object obj1)
+	public static Object invoke(Object obj, String s, Object obj1)
 		throws NoSuchMethodException, IllegalAccessException, InvocationTargetException
 	{
-		arr1[0] = obj1;
-		Method method = getMethod(obj.getClass(), s, arr1);
-		if(method == null)
-			throw new NoSuchMethodException("No method " + s + " in class " + obj.getClass() + " with parameters specified.");
-		else
-			return method.invoke(obj, arr1);
+		synchronized (obj) {
+			arr1[0] = obj1;
+			Method method = getMethod(obj.getClass(), s, arr1);
+			if(method == null)
+				throw new NoSuchMethodException("No method " + s + " in class " + obj.getClass() + " with parameters specified.");
+			else
+				return method.invoke(obj, arr1);			
+		}
 	}
 
-	public static synchronized Object invoke(Object obj, String s, Object obj1, Object obj2)
+	public static Object invoke(Object obj, String s, Object obj1, Object obj2)
 		throws NoSuchMethodException, IllegalAccessException, InvocationTargetException
 	{
-		arr2[0] = obj1;
-		arr2[1] = obj2;
-		Method method = getMethod(obj.getClass(), s, arr2);
-		if(method == null)
-			throw new NoSuchMethodException("No method " + s + " in class " + obj.getClass() + " with parameters specified.");
-		else
-			return method.invoke(obj, arr2);
+		synchronized (obj) {	
+			arr2[0] = obj1;
+			arr2[1] = obj2;
+			Method method = getMethod(obj.getClass(), s, arr2);
+			if(method == null)
+				throw new NoSuchMethodException("No method " + s + " in class " + obj.getClass() + " with parameters specified.");
+			else
+				return method.invoke(obj, arr2);
+		}
 	}
 
-	public static synchronized Object invoke(Object obj, String s, Object obj1, Object obj2, Object obj3)
+	public static Object invoke(Object obj, String s, Object obj1, Object obj2, Object obj3)
 		throws NoSuchMethodException, IllegalAccessException, InvocationTargetException
 	{
-		arr3[0] = obj1;
-		arr3[1] = obj2;
-		arr3[2] = obj3;
-		Method method = getMethod(obj.getClass(), s, arr3);
-		if(method == null)
-			throw new NoSuchMethodException("No method " + s + " in class " + obj.getClass() + " with parameters specified.");
-		else
-			return method.invoke(obj, arr3);
+		synchronized (obj) {	
+			arr3[0] = obj1;
+			arr3[1] = obj2;
+			arr3[2] = obj3;
+			Method method = getMethod(obj.getClass(), s, arr3);
+			if(method == null)
+				throw new NoSuchMethodException("No method " + s + " in class " + obj.getClass() + " with parameters specified.");
+			else
+				return method.invoke(obj, arr3);			
+		}
 	}
 
-	public static synchronized Object invoke(Object obj, String s, Object obj1, Object obj2, Object obj3, Object obj4)
+	public static Object invoke(Object obj, String s, Object obj1, Object obj2, Object obj3, Object obj4)
 		throws NoSuchMethodException, IllegalAccessException, InvocationTargetException
 	{
-		arr4[0] = obj1;
-		arr4[1] = obj2;
-		arr4[2] = obj3;
-		arr4[3] = obj4;
-		Method method = getMethod(obj.getClass(), s, arr4);
-		if(method == null)
-			throw new NoSuchMethodException("No method " + s + " in class " + obj.getClass() + " with parameters specified.");
-		else
-			return method.invoke(obj, arr4);
+		synchronized (obj) {			
+			arr4[0] = obj1;
+			arr4[1] = obj2;
+			arr4[2] = obj3;
+			arr4[3] = obj4;
+			Method method = getMethod(obj.getClass(), s, arr4);
+			if(method == null)
+				throw new NoSuchMethodException("No method " + s + " in class " + obj.getClass() + " with parameters specified.");
+			else
+				return method.invoke(obj, arr4);
+		}
 	}
 
-	public static synchronized Object invoke(Object obj, String s, Object obj1, Object obj2, Object obj3, Object obj4, Object obj5) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException{
-		arr5[0] = obj1;
-		arr5[1] = obj2;
-		arr5[2] = obj3;
-		arr5[3] = obj4;
-		arr5[4] = obj5;
-		
-		Method method = getMethod(obj.getClass(), s, arr5);
-		if(method == null)
-			throw new NoSuchMethodException("No method " + s + " in class " + obj.getClass() + " with parameters specified.");
-		else
-			return method.invoke(obj, arr5);
+	public static Object invoke(Object obj, String s, Object obj1, Object obj2, Object obj3, Object obj4, Object obj5) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException{
+		synchronized (obj) {	
+			arr5[0] = obj1;
+			arr5[1] = obj2;
+			arr5[2] = obj3;
+			arr5[3] = obj4;
+			arr5[4] = obj5;
+			
+			Method method = getMethod(obj.getClass(), s, arr5);
+			if(method == null)
+				throw new NoSuchMethodException("No method " + s + " in class " + obj.getClass() + " with parameters specified.");
+			else
+				return method.invoke(obj, arr5);			
+		}
 	}
 
 	public static Object invoke(Object obj, String s, String s1, Object aobj[])
@@ -633,31 +643,31 @@ label0:
 		return invoke(obj, buildMetodName(s, s1), aobj);
 	}
 
-	public static synchronized Object invoke(Object obj, String s, String s1, Object obj1)
+	public static Object invoke(Object obj, String s, String s1, Object obj1)
 		throws NoSuchMethodException, IllegalAccessException, InvocationTargetException
 	{
 		return invoke(obj, buildMetodName(s, s1), obj1);
 	}
 
-	public static synchronized Object invoke(Object obj, String s, String s1, Object obj1, Object obj2)
+	public static Object invoke(Object obj, String s, String s1, Object obj1, Object obj2)
 		throws NoSuchMethodException, IllegalAccessException, InvocationTargetException
 	{
 		return invoke(obj, buildMetodName(s, s1), obj1, obj2);
 	}
 
-	public static synchronized Object invoke(Object obj, String s, String s1, Object obj1, Object obj2, Object obj3)
+	public static Object invoke(Object obj, String s, String s1, Object obj1, Object obj2, Object obj3)
 		throws NoSuchMethodException, IllegalAccessException, InvocationTargetException
 	{
 		return invoke(obj, buildMetodName(s, s1), obj1, obj2, obj3);
 	}
 
-	public static synchronized Object invoke(Object obj, String s, String s1, Object obj1, Object obj2, Object obj3, Object obj4)
+	public static Object invoke(Object obj, String s, String s1, Object obj1, Object obj2, Object obj3, Object obj4)
 		throws NoSuchMethodException, IllegalAccessException, InvocationTargetException
 	{
 		return invoke(obj, buildMetodName(s, s1), obj1, obj2, obj3, obj4);
 	}
 
-	public static synchronized Object invoke(Object obj, String s, String s1, Object obj1, Object obj2, Object obj3, Object obj4, Object obj5) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException{
+	public static Object invoke(Object obj, String s, String s1, Object obj1, Object obj2, Object obj3, Object obj4, Object obj5) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException{
 		return invoke(obj, buildMetodName(s, s1), obj1, obj2, obj3, obj4, obj5);
 	}
 	
@@ -751,7 +761,7 @@ label0:
 			return constructor.newInstance(aobj);
 	}
 
-	public static synchronized Object newInstance(Class class1, Object obj)
+	public static Object newInstance(Class class1, Object obj)
 		throws NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException
 	{
 		arr1[0] = obj;
@@ -762,7 +772,7 @@ label0:
 			return constructor.newInstance(arr1);
 	}
 
-	public static synchronized Object newInstance(Class class1, Object obj, Object obj1)
+	public static Object newInstance(Class class1, Object obj, Object obj1)
 		throws NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException
 	{
 		arr2[0] = obj;
@@ -774,7 +784,7 @@ label0:
 			return constructor.newInstance(arr2);
 	}
 
-	public static synchronized Object newInstance(Class class1, Object obj, Object obj1, Object obj2)
+	public static Object newInstance(Class class1, Object obj, Object obj1, Object obj2)
 		throws NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException
 	{
 		arr3[0] = obj;
@@ -787,7 +797,7 @@ label0:
 			return constructor.newInstance(arr3);
 	}
 
-	public static synchronized Object newInstance(Class class1, Object obj, Object obj1, Object obj2, Object obj3)
+	public static Object newInstance(Class class1, Object obj, Object obj1, Object obj2, Object obj3)
 		throws NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException
 	{
 		arr4[0] = obj;
