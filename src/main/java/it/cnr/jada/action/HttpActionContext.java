@@ -887,4 +887,12 @@ public class HttpActionContext
 	{
 		request.setAttribute("it.cnr.jada.action.HttpActionContext.traceException", throwable);
 	}
+	
+	public static boolean isFromBootstrap(PageContext pagecontext) {
+		Optional<UserContext> optContext = Optional.ofNullable(pagecontext.getSession())
+				.map(session -> (UserContext)session.getAttribute("UserContext"));
+		if (optContext.isPresent()) 
+			return (boolean) optContext.get().getAttributes().getOrDefault("bootstrap", false);		
+		return false;
+	}
 }

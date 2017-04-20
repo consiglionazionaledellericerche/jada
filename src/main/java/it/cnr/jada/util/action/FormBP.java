@@ -241,12 +241,42 @@ public class FormBP extends BusinessProcess implements Serializable{
             pagecontext.getOut().print(encType);
             pagecontext.getOut().print('"');
         }
-        pagecontext.getOut().println(" method=post onSubmit=\"return disableDblClick()\">");
+        if (HttpActionContext.isFromBootstrap(pagecontext)) {
+            pagecontext.getOut().println(" method=post>");        	        	
+        } else {
+            pagecontext.getOut().println(" method=post onSubmit=\"return disableDblClick()\">");        	
+        }
         pagecontext.getOut().println("<input type=hidden name=\"comando\">");
         BusinessProcess.encode(this, pagecontext);
         HttpActionContext.encodeActionCounter(pagecontext);
         JSPUtils.scrollSupport(pagecontext);
-        writeMessage(pagecontext.getOut());
+        if (HttpActionContext.isFromBootstrap(pagecontext)) {
+            String s = getAndClearMessage();
+            String s1 = null;
+            if(s != null) {
+                switch(getMessageStatus()){
+	                case WARNING_MESSAGE:
+	                    s1 = "alert-warning";
+	                    break;
+	
+	                case ERROR_MESSAGE:
+	                    s1 = "alert-danger";
+	                    break;
+	
+	                case QUESTION_MESSAGE:
+	                    s1 = "alert-info";
+	                    break;
+                }
+                pagecontext.getOut().println("<div class=\"alert " + s1 + " alert-dismissible fade show\" role=\"alert\">");
+                pagecontext.getOut().println("<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">");
+                pagecontext.getOut().println("<span aria-hidden=\"true\">&times;</span>");
+                pagecontext.getOut().println("</button>");
+                pagecontext.getOut().println(s);
+                pagecontext.getOut().println("</div>");
+            }            
+        } else {
+            writeMessage(pagecontext.getOut());        	
+        }
     }
     /**
      * Disegna una FORM e una tabella HTML con la barra del titolo e la toolbar. 
@@ -262,7 +292,8 @@ public class FormBP extends BusinessProcess implements Serializable{
     public void openFormWindow(PageContext pagecontext, String action, String target) throws IOException, ServletException{
         openForm(pagecontext, action, target);
         pagecontext.getOut().println("<table id=\"mainWindow\" class=\"Form\" width=\"100%\" height=\"100%\" cellspacing=\"0\" cellpadding=\"2\">");
-        writeTitleBar(pagecontext);
+        if (!HttpActionContext.isFromBootstrap(pagecontext))
+        	writeTitleBar(pagecontext);
         writeToolbar(pagecontext);
         pagecontext.getOut().println("<!-- FORM BODY -->");
         pagecontext.getOut().println("<tr height=\"100%\" valign=\"top\"><td>");
@@ -422,14 +453,31 @@ public class FormBP extends BusinessProcess implements Serializable{
             writeToolbar(jspwriter, abutton);
     }
 
+    public void writeToolbarBootstrap(JspWriter jspwriter) throws IOException, ServletException{
+        Button abutton[] = getToolbar();
+        if(abutton != null)
+        	writeToolbarBootstrap(jspwriter, abutton);
+    }
+
     protected void writeToolbar(JspWriter jspwriter, Button abutton[]) throws IOException, ServletException{
         openToolbar(jspwriter);
         JSPUtils.toolbar(jspwriter, abutton, this);
         closeToolbar(jspwriter);
     }
+    
+    protected void writeToolbarBootstrap(JspWriter jspwriter, Button abutton[]) throws IOException, ServletException{
+        jspwriter.println("<!-- TOOLBAR -->");
+        jspwriter.println("<div class=\"btn-toolbar\" role=\"toolbar\" aria-label=\"Toolbar with button groups\">");
+        JSPUtils.toolbar(jspwriter, abutton, this);
+        jspwriter.println("</div>");
+    }
 
     public void writeToolbar(PageContext pagecontext) throws IOException, ServletException{
-        writeToolbar(pagecontext.getOut());
+    	if (HttpActionContext.isFromBootstrap(pagecontext)){
+    		writeToolbarBootstrap(pagecontext.getOut());   
+    	} else {
+            writeToolbar(pagecontext.getOut());    		
+    	}
     }
 
 	public Button getPreferitiButton() {

@@ -1,5 +1,6 @@
 package it.cnr.jada.util.jsp;
 
+import it.cnr.jada.action.HttpActionContext;
 import it.cnr.jada.bulk.ColumnFieldProperty;
 import it.cnr.jada.bulk.FieldProperty;
 import it.cnr.jada.util.*;
@@ -12,6 +13,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Dictionary;
 import java.util.Enumeration;
+
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -515,8 +517,8 @@ public class JSPUtils
 			{
 				jspwriter.print("<button ");
 				if(!flag)
-					jspwriter.print("disabled ");
-				jspwriter.print("class=\"TabLabel\" style=\"border: 1px outset;border-bottom: 0px;margin: 0px;");
+					jspwriter.print("disabled ");				
+				jspwriter.print("class=\"TabLabel btn-primary hand\" style=\"border: 1px outset;border-bottom: 0px;margin: 0px;");
 				if(flag1)
 					jspwriter.print("border-left: 0px;");
 				if(flag3)
@@ -545,7 +547,11 @@ public class JSPUtils
 
 		jspwriter.println("<td width=\"100%\">&nbsp;</td>");
 		jspwriter.println("</tr><tr>");
-		jspwriter.println("<td style=\"border-top: 1px outset;border-left: 1px outset\"><img src=\"img/spacer.gif\"></td>");
+		if (HttpActionContext.isFromBootstrap(pagecontext)) {
+			jspwriter.println("<td style=\"border-top: 1px outset;border-left: 1px outset\"></td>");
+		} else {
+			jspwriter.println("<td style=\"border-top: 1px outset;border-left: 1px outset\"><img src=\"img/spacer.gif\"></td>");			
+		}
 		flag1 = false;
 		flag3 = as[0][0].equals(s1);
 		for(int j = 0; j < as.length;)
@@ -556,11 +562,18 @@ public class JSPUtils
 			jspwriter.print("<td nowrap ");
 			if(!flag4)
 				jspwriter.print(" style=\"border-top: 1px outset\"");
-			jspwriter.println("><img src=\"img/spacer.gif\"></td>");
+			if (HttpActionContext.isFromBootstrap(pagecontext)) {
+				jspwriter.println("></td>");
+			} else {
+				jspwriter.println("><img src=\"img/spacer.gif\"></td>");				
+			}
 			boolean flag2 = flag4;
 		}
-
-		jspwriter.println("<td style=\"border-top: 1px outset;border-right: 1px outset\"><img src=\"img/spacer.gif\"></td>");
+		if (HttpActionContext.isFromBootstrap(pagecontext)) {
+			jspwriter.println("<td style=\"border-top: 1px outset;border-right: 1px outset\"></td>");
+		} else {
+			jspwriter.println("<td style=\"border-top: 1px outset;border-right: 1px outset\"><img src=\"img/spacer.gif\"></td>");			
+		}
 		jspwriter.println("</tr>");
 		jspwriter.println("</table>");
 		jspwriter.println("</td></tr>");
