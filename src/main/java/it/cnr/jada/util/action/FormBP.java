@@ -13,10 +13,14 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.io.StringWriter;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
@@ -62,7 +66,8 @@ public class FormBP extends BusinessProcess implements Serializable{
     public void closeForm(PageContext pagecontext)
         throws IOException, ServletException
     {
-        pagecontext.getOut().println("</table>");
+        if (!this.getParentRoot().isBootstrap())
+        	pagecontext.getOut().println("</table>");
         pagecontext.getOut().println("</form>");
         Throwable throwable = (Throwable)pagecontext.getRequest().getAttribute("it.cnr.jada.action.HttpActionContext.traceException");
         if(throwable != null)
@@ -79,9 +84,11 @@ public class FormBP extends BusinessProcess implements Serializable{
      */
     public void closeFormWindow(PageContext pagecontext) throws IOException, ServletException{
         pagecontext.getOut().println("<!-- FINE FORM BODY -->");
-        pagecontext.getOut().println("</td></tr>");
+        if (!this.getParentRoot().isBootstrap())
+        	pagecontext.getOut().println("</td></tr>");
         closeForm(pagecontext);
-        pagecontext.getOut().println("<script>initializeWindow('mainWindow')</script>");
+        if (!this.getParentRoot().isBootstrap())
+        	pagecontext.getOut().println("<script>initializeWindow('mainWindow')</script>");
     }
     /**
      * Completa il disegno della TOOLBAR iniziato da openToolbar
@@ -291,12 +298,15 @@ public class FormBP extends BusinessProcess implements Serializable{
      */
     public void openFormWindow(PageContext pagecontext, String action, String target) throws IOException, ServletException{
         openForm(pagecontext, action, target);
-        pagecontext.getOut().println("<table id=\"mainWindow\" class=\"Form\" width=\"100%\" height=\"100%\" cellspacing=\"0\" cellpadding=\"2\">");
-        if (!HttpActionContext.isFromBootstrap(pagecontext))
+        if (!this.getParentRoot().isBootstrap()){
+        	pagecontext.getOut().println("<table id=\"mainWindow\" class=\"Form\" width=\"100%\" height=\"100%\" cellspacing=\"0\" cellpadding=\"2\">");
         	writeTitleBar(pagecontext);
+        }
         writeToolbar(pagecontext);
-        pagecontext.getOut().println("<!-- FORM BODY -->");
-        pagecontext.getOut().println("<tr height=\"100%\" valign=\"top\"><td>");
+        if (!this.getParentRoot().isBootstrap()){        
+	        pagecontext.getOut().println("<!-- FORM BODY -->");
+	        pagecontext.getOut().println("<tr height=\"100%\" valign=\"top\"><td>");
+        }
     }
     /**
      * Disegna latoolbar HTML del ricevente. Per completare il disegno   necessario invocare closeToolbar
@@ -397,10 +407,10 @@ public class FormBP extends BusinessProcess implements Serializable{
     	JSPUtils.tabbed(pagecontext, name, pages, page, align, width, height, enabled);
     }
 
-    public void writeTitleBar(JspWriter jspwriter) throws IOException, ServletException{
+    public void writeTitleBar(JspWriter jspwriter, boolean isBootstrap) throws IOException, ServletException{
         jspwriter.println("<tr><td class=\"FormTitle\">");
-        getMaximizeButton().writeWithoutRollover(jspwriter, true);
-        getCloseButton().writeWithoutRollover(jspwriter, true);
+        getMaximizeButton().writeWithoutRollover(jspwriter, true, isBootstrap);
+        getCloseButton().writeWithoutRollover(jspwriter, true, isBootstrap);
         jspwriter.print("&nbsp;");
         jspwriter.print(getFormTitle());
         jspwriter.println("</td>");
@@ -424,9 +434,9 @@ public class FormBP extends BusinessProcess implements Serializable{
         stringbuffer.append("help");
         stringbuffer.append(httpservletrequest.getServletPath());
         getHelpButton().setHref("javascript:doHelp('" + stringbuffer.toString() + "')");
-        getHelpButton().writeWithoutRollover(jspwriter, true);
-        getMaximizeButton().writeWithoutRollover(jspwriter, true);
-        getCloseButton().writeWithoutRollover(jspwriter, true);
+        getHelpButton().writeWithoutRollover(jspwriter, true, HttpActionContext.isFromBootstrap(pagecontext));
+        getMaximizeButton().writeWithoutRollover(jspwriter, true, HttpActionContext.isFromBootstrap(pagecontext));
+        getCloseButton().writeWithoutRollover(jspwriter, true, HttpActionContext.isFromBootstrap(pagecontext));
         jspwriter.print("&nbsp;");
         jspwriter.print(getFormTitle());
         jspwriter.println("</td>");
@@ -436,7 +446,7 @@ public class FormBP extends BusinessProcess implements Serializable{
         	if (isPreferitiButtonHiddenParent != null && isPreferitiButtonHiddenParent.equalsIgnoreCase("false")){
         		if (isPreferitiButtonHidden == null || (isPreferitiButtonHidden != null && isPreferitiButtonHidden.equalsIgnoreCase("false"))){
         	        jspwriter.println("<td class=\"FormTitle\" align=\"right\">");
-        	        getPreferitiButton().writeWithoutRollover(jspwriter, true);
+        	        getPreferitiButton().writeWithoutRollover(jspwriter, true, HttpActionContext.isFromBootstrap(pagecontext));
         	        jspwriter.println("</td>");
         		}
         	}
@@ -455,21 +465,24 @@ public class FormBP extends BusinessProcess implements Serializable{
 
     public void writeToolbarBootstrap(JspWriter jspwriter) throws IOException, ServletException{
         Button abutton[] = getToolbar();
-        if(abutton != null)
-        	writeToolbarBootstrap(jspwriter, abutton);
+        if(abutton != null) {
+        	writeToolbarBootstrap(jspwriter, Stream.concat(Arrays.stream(abutton), Stream.of(getCloseButton())).collect(Collectors.toList()));
+        }
     }
 
     protected void writeToolbar(JspWriter jspwriter, Button abutton[]) throws IOException, ServletException{
         openToolbar(jspwriter);
-        JSPUtils.toolbar(jspwriter, abutton, this);
+        JSPUtils.toolbar(jspwriter, abutton, this, this.getParentRoot().isBootstrap());
         closeToolbar(jspwriter);
     }
     
-    protected void writeToolbarBootstrap(JspWriter jspwriter, Button abutton[]) throws IOException, ServletException{
-        jspwriter.println("<!-- TOOLBAR -->");
-        jspwriter.println("<div class=\"btn-toolbar\" role=\"toolbar\" aria-label=\"Toolbar with button groups\">");
-        JSPUtils.toolbar(jspwriter, abutton, this);
+    protected void writeToolbarBootstrap(JspWriter jspwriter, List<Button> abutton) throws IOException, ServletException{
+        jspwriter.println("<!-- TOOLBAR BOOTSTRAP -->");
+        jspwriter.println("<div id=\"crudToolbar\" class=\"btn-group\" role=\"group\" aria-label=\"Toolbar with button groups\">");
+        JSPUtils.toolbarBootstrap(jspwriter, abutton, this);
         jspwriter.println("</div>");
+        jspwriter.println("<!-- FINE TOOLBAR BOOTSTRAP -->");
+
     }
 
     public void writeToolbar(PageContext pagecontext) throws IOException, ServletException{

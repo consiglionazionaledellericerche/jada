@@ -2,24 +2,21 @@ package it.cnr.jada.util.jsp;
 
 import it.cnr.jada.action.HttpActionContext;
 import it.cnr.jada.bulk.ColumnFieldProperty;
-import it.cnr.jada.bulk.FieldProperty;
-import it.cnr.jada.util.*;
+import it.cnr.jada.util.Config;
 import it.cnr.jada.util.action.RigaAlbero;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Dictionary;
 import java.util.Enumeration;
+import java.util.List;
 
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
-import javax.servlet.http.HttpServletResponse;
 public class JSPUtils
 	implements Serializable
 {
@@ -52,58 +49,58 @@ public class JSPUtils
 		return buildAbsoluteUrl((HttpServletRequest)pagecontext.getRequest(), s, s1);
 	}
 
-	public static void button(JspWriter jspwriter, String s, String s1)
+	public static void button(JspWriter jspwriter, String s, String s1, boolean isBootstrap)
 		throws IOException
 	{
-		Button.write(jspwriter, s, null, s1);
+		Button.write(jspwriter, s, null, s1, isBootstrap);
 	}
-	public static void buttonWithTitle(JspWriter jspwriter, String s, String s1, String title)
+	public static void buttonWithTitle(JspWriter jspwriter, String s, String s1, String title, boolean isBootstrap)
 		throws IOException
 	{
-		Button.write(jspwriter, null, s, true, null, 1, s1, null, title, null);
+		Button.write(jspwriter, null, s, true, null, 1, s1, null, title, null, isBootstrap);
 	}
-	public static void button(JspWriter jspwriter, String s, String s1, String s2)
+	public static void button(JspWriter jspwriter, String img, String label, String href, boolean isBootstrap)
 		throws IOException
 	{
-		Button.write(jspwriter, s, s1, s2, null);
-	}
-
-	public static void button(JspWriter jspwriter, String s, String s1, String s2, String s3)
-		throws IOException
-	{
-		Button.write(jspwriter, s, s1, s2, s3);
+		Button.write(jspwriter, img, label, href, null, isBootstrap);
 	}
 
-	public static void button(JspWriter jspwriter, String s, String s1, String s2, String s3, String s4, boolean flag)
+	public static void button(JspWriter jspwriter, String s, String s1, String s2, String s3, boolean isBootstrap)
+		throws IOException
+	{
+		Button.write(jspwriter, s, s1, s2, s3, isBootstrap);
+	}
+
+	public static void button(JspWriter jspwriter, String s, String s1, String s2, String s3, String s4, boolean flag, boolean isBootstrap)
 		throws IOException
 	{
 		if(flag)
-			Button.write(jspwriter, s, s2, s3, s4);
+			Button.write(jspwriter, s, s2, s3, s4, isBootstrap);
 		else
-			Button.write(jspwriter, s1, s2, null, s4);
+			Button.write(jspwriter, s1, s2, null, s4, isBootstrap);
 	}
-	public static void button(JspWriter jspwriter, String s, String s1, String s2, String s3, String s4, boolean flag, String accessKey)
+	public static void button(JspWriter jspwriter, String s, String s1, String s2, String s3, String s4, boolean flag, String accessKey, boolean isBootstrap)
 		throws IOException
 	{
 		if(flag)
-			Button.writeWhithAccessKey(jspwriter, s, s2, s3, s4, accessKey);
+			Button.writeWhithAccessKey(jspwriter, s, s2, s3, s4, accessKey, isBootstrap);
 		else
-			Button.writeWhithAccessKey(jspwriter, s1, s2, null, s4, accessKey);
+			Button.writeWhithAccessKey(jspwriter, s1, s2, null, s4, accessKey, isBootstrap);
 	}
 
-	public static void button(JspWriter jspwriter, String s, String s1, String s2, String s3, boolean flag)
+	public static void button(JspWriter jspwriter, String s, String s1, String s2, String s3, boolean flag, boolean isBootstrap)
 		throws IOException
 	{
 		if(flag)
-			Button.write(jspwriter, s, s2, s3);
+			Button.write(jspwriter, s, s2, s3, isBootstrap);
 		else
-			Button.write(jspwriter, s1, s2, null);
+			Button.write(jspwriter, s1, s2, null, isBootstrap);
 	}
 
-	public static void button(PageContext pagecontext, String s, String s1)
+	public static void button(PageContext pagecontext, String s, String s1, boolean isBootstrap)
 		throws IOException
 	{
-		Button.write(pagecontext.getOut(), s, s1);
+		Button.write(pagecontext.getOut(), s, s1, isBootstrap);
 	}
 
 	public static String encodeHtmlString(String s)
@@ -518,7 +515,7 @@ public class JSPUtils
 				jspwriter.print("<button ");
 				if(!flag)
 					jspwriter.print("disabled ");				
-				jspwriter.print("class=\"TabLabel btn-primary hand\" style=\"border: 1px outset;border-bottom: 0px;margin: 0px;");
+				jspwriter.print("class=\"TabLabel btn-primary hand h5\" style=\"border: 1px outset;border-bottom: 0px;margin: 0px;");
 				if(flag1)
 					jspwriter.print("border-left: 0px;");
 				if(flag3)
@@ -530,7 +527,7 @@ public class JSPUtils
 				jspwriter.print("')\">");
 			} else
 			{
-				jspwriter.print("<span class=\"TabLabel\">");
+				jspwriter.print("<span class=\"TabLabel h5\">");
 			}
 			if(flag5)
 				s5 = as1[2];
@@ -596,7 +593,7 @@ public class JSPUtils
 		jspwriter.println(" -->");
 	}
 
-	public static void toolbar(JspWriter jspwriter, Button abutton[], boolean aflag[])
+	public static void toolbar(JspWriter jspwriter, Button abutton[], boolean aflag[], boolean isBootstrap)
 		throws IOException, ServletException
 	{
 		jspwriter.println("<table class=\"ToolBar\" cellspacing=\"0\" cellpadding=\"2\">");
@@ -604,7 +601,7 @@ public class JSPUtils
 		for(int i = 0; i < abutton.length; i++)
 		{
 			jspwriter.print("<td>");
-			abutton[i].write(jspwriter, aflag[i]);
+			abutton[i].write(jspwriter, aflag[i], isBootstrap);
 			jspwriter.println("</td>");
 		}
 
@@ -613,12 +610,25 @@ public class JSPUtils
 		jspwriter.println("</table>");
 	}
 
-	public static void toolbar(JspWriter jspwriter, Button abutton[], Object obj)
+	public static void toolbar(JspWriter jspwriter, Button abutton[], Object obj, boolean isBootstrap)
 		throws IOException, ServletException
 	{
-		toolbar(jspwriter, abutton, obj, "&nbsp;");
+		toolbar(jspwriter, abutton, obj, "&nbsp;", isBootstrap);
 	}
-	public static void toolbar(JspWriter jspwriter, Button abutton[], Object obj, String descrizione)
+
+	public static void toolbarBootstrap(JspWriter jspwriter, List<Button> abutton, Object obj) throws IOException, ServletException{
+		toolbarBootstrap(jspwriter, abutton, obj, "&nbsp;");
+	}
+
+	public static void toolbarBootstrap(JspWriter jspwriter, List<Button> abutton, Object obj, String descrizione) throws IOException, ServletException {
+		for (Button button : abutton) {
+			if(!button.isHidden(obj)){
+				button.write(jspwriter, obj, true);
+			}
+		}
+	}
+
+	public static void toolbar(JspWriter jspwriter, Button abutton[], Object obj, String descrizione, boolean isBootstrap)
 		throws IOException, ServletException
 	{
 		jspwriter.println("<table class=\"ToolBar\" cellspacing=\"0\" cellpadding=\"2\">");
@@ -630,7 +640,7 @@ public class JSPUtils
 				if(abutton[i].hasSeparator())
 					jspwriter.print(" class=\"VSeparator\"");
 				jspwriter.print(">");
-				abutton[i].write(jspwriter, obj);
+				abutton[i].write(jspwriter, obj, isBootstrap);
 				jspwriter.println("</td>");
 			}
 
@@ -667,7 +677,7 @@ public class JSPUtils
 		jspwriter.println("</table>");
 	}
 
-	public static void toolbarButton(PageContext pagecontext, String s, String s1, String s2, boolean flag)
+	public static void toolbarButton(PageContext pagecontext, String s, String s1, String s2, boolean flag, boolean isBootstrap)
 		throws IOException, ServletException
 	{
 		JspWriter jspwriter = pagecontext.getOut();
@@ -675,11 +685,11 @@ public class JSPUtils
 		if(flag)
 			jspwriter.print(" class=\"VSeparator\"");
 		jspwriter.print(">");
-		Button.write(pagecontext.getOut(), null, s, true, s1, 1, s2, null, null, null);
+		Button.write(pagecontext.getOut(), null, s, true, s1, 1, s2, null, null, null, isBootstrap);
 		jspwriter.print("</td>");
 	}
 
-	public static void toolbarButton(PageContext pagecontext, String s, String s1, boolean flag)
+	public static void toolbarButton(PageContext pagecontext, String s, String s1, boolean flag, boolean isBootstrap)
 		throws IOException, ServletException
 	{
 		JspWriter jspwriter = pagecontext.getOut();
@@ -692,11 +702,11 @@ public class JSPUtils
 		 * dei numeri di pagina
 		 */
 		//Button.write(jspwriter, null, s, true, null, 1, s1, null, null, null);
-		Button.write(jspwriter, null, null, true, s, 1, s1, null, null, null);
+		Button.write(jspwriter, null, null, true, s, 1, s1, null, null, null, isBootstrap);
 		jspwriter.print("</td>");
 	}
 
-	public static void toolbarButton(PageContext pagecontext, String s, String s1, boolean flag, String s2)
+	public static void toolbarButton(PageContext pagecontext, String s, String s1, boolean flag, String s2, boolean isBootstrap)
 		throws IOException, ServletException
 	{
 		JspWriter jspwriter = pagecontext.getOut();
@@ -704,7 +714,7 @@ public class JSPUtils
 		if(flag)
 			jspwriter.print(" class=\"VSeparator\"");
 		jspwriter.print(">");
-		Button.write(jspwriter, null, s, true, null, 1, s1, null, s2, null);
+		Button.write(jspwriter, null, s, true, null, 1, s1, null, s2, null, isBootstrap);
 		jspwriter.print("</td>");
 	}
 

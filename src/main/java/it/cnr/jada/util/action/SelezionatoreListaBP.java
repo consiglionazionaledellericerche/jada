@@ -623,42 +623,114 @@ public class SelezionatoreListaBP extends AbstractSelezionatoreBP
 		throws IOException, ServletException
 	{
 		Button abutton[] = getNavigatorToolbar();
-		jspwriter.println("<div class=\"Toolbar\">");
-		jspwriter.println("<table cellspacing=\"0\" cellpadding=\"0\">");
-		jspwriter.println("<tr align=center valign=middle>");
-		jspwriter.print("<td>");
-		abutton[0].write(jspwriter, this);
-		jspwriter.println("</td>");
-		jspwriter.print("<td>");
-		abutton[1].write(jspwriter, this);
-		jspwriter.println("</td>");
-		getLastPage();
-		for(int i = getFirstPage(); i < getLastPage(); i++)
-		{
-			jspwriter.print("<td width=\"16\">");
-			if(getCurrentPage() != i)
-				JSPUtils.button(jspwriter, null, String.valueOf(i), "javascript:submitForm('doGotoPage(" + i + ")')");
-			else
-				JSPUtils.button(jspwriter, null, String.valueOf(i), null, "background: Highlight;color: HighlightText;");
-			jspwriter.println("</td>");
-		}
+		boolean isBootstrap = this.getParentRoot().isBootstrap();
+		if (isBootstrap) {
+			jspwriter.println("<nav aria-label=\"Page navigation example\"><ul class=\"pagination justify-content-center\">");
+			
+			jspwriter.println("<li class=\"page-item ");
+			if (!isPreviousFrameButtonEnabled())
+				jspwriter.print("disabled");
+			jspwriter.print("\">");
+			jspwriter.println("<a class=\"page-link ");
+			if (isPreviousFrameButtonEnabled())
+				jspwriter.print("text-primary");
+			jspwriter.print("\" ");
+			jspwriter.print("onclick=\"javascript:submitForm('doPreviousFrame')\">");
+			jspwriter.println("<i class=\"fa fa-fast-backward\" aria-hidden=\"true\"></i>");
+			jspwriter.println("</a>");
 
-		jspwriter.print("<td>");
-		abutton[2].write(jspwriter, this);
-		jspwriter.println("</td>");
-		jspwriter.print("<td>");
-		abutton[3].write(jspwriter, this);
-		jspwriter.println("</td>");
-		for(int j = 4; j < abutton.length; j++)
-		{
+			jspwriter.println("<li class=\"page-item ");
+			if (!isPreviousButtonEnabled())
+				jspwriter.print("disabled");
+			jspwriter.print("\">");
+			jspwriter.println("<a class=\"page-link ");
+			if (isPreviousButtonEnabled())
+				jspwriter.print("text-primary");
+			jspwriter.print("\" ");
+			jspwriter.print("onclick=\"javascript:submitForm('doPreviousPage')\">");
+			jspwriter.println("<i class=\"fa fa-backward\" aria-hidden=\"true\"></i>");
+			jspwriter.println("</a>");
+			getLastPage();
+			for(int i = getFirstPage(); i < getLastPage(); i++) {
+				jspwriter.println("<li class=\"page-item ");
+				if(getCurrentPage() != i) {
+					jspwriter.print("\">");
+					jspwriter.println("<a class=\"page-link text-primary\" ");
+					jspwriter.print("onclick=\"" + "javascript:submitForm('doGotoPage(" + i + ")')" + "\">");
+					jspwriter.print(i);
+					jspwriter.print("</a>");					
+				} else {
+					jspwriter.print("active\">");
+					jspwriter.println("<span class=\"page-link\">");
+					jspwriter.print(i);
+					jspwriter.print(" <span class=\"sr-only\">(current)</span></span>");										
+				}
+				jspwriter.println("</li>");
+			}
+			
+			jspwriter.println("<li class=\"page-item ");
+			if (!isNextButtonEnabled())
+				jspwriter.print("disabled");
+			jspwriter.print("\">");
+			jspwriter.println("<a class=\"page-link ");
+			if (isNextButtonEnabled())
+				jspwriter.print("text-primary");
+			jspwriter.print("\" ");
+			jspwriter.print("onclick=\"javascript:submitForm('doNextPage')\">");
+			jspwriter.println("<i class=\"fa fa-forward\" aria-hidden=\"true\"></i>");
+			jspwriter.println("</a>");
+			
+			jspwriter.println("<li class=\"page-item ");
+			if (!isNextFrameButtonEnabled())
+				jspwriter.print("disabled");
+			jspwriter.print("\">");
+			jspwriter.println("<a class=\"page-link ");
+			if (isNextFrameButtonEnabled())
+				jspwriter.print("text-primary");
+			jspwriter.print("\" ");
+			jspwriter.print("onclick=\"javascript:submitForm('doNextFrame')\">");
+			jspwriter.println("<i class=\"fa fa-fast-forward\" aria-hidden=\"true\"></i>");
+			jspwriter.println("</a>");
+
+			for(int j = 4; j < abutton.length; j++) {
+				abutton[j].write(jspwriter, this, isBootstrap);
+			}			
+			jspwriter.println("</ul></nav>");
+		} else {
+			jspwriter.println("<div class=\"Toolbar\">");
+			jspwriter.println("<table cellspacing=\"0\" cellpadding=\"0\">");
+			jspwriter.println("<tr align=center valign=middle>");
 			jspwriter.print("<td>");
-			abutton[j].write(jspwriter, this);
+			abutton[0].write(jspwriter, this, isBootstrap);
 			jspwriter.println("</td>");
-		}
+			jspwriter.print("<td>");
+			abutton[1].write(jspwriter, this, isBootstrap);
+			jspwriter.println("</td>");
+			getLastPage();
+			for(int i = getFirstPage(); i < getLastPage(); i++) {
+				jspwriter.print("<td width=\"16\">");
+				if(getCurrentPage() != i)
+					JSPUtils.button(jspwriter, null, String.valueOf(i), "javascript:submitForm('doGotoPage(" + i + ")')", isBootstrap);
+				else
+					JSPUtils.button(jspwriter, null, String.valueOf(i), null, "background: Highlight;color: HighlightText;", isBootstrap);
+				jspwriter.println("</td>");
+			}
 
-		jspwriter.println("</tr>");
-		jspwriter.println("</table>");
-		jspwriter.println("</div>");
+			jspwriter.print("<td>");
+			abutton[2].write(jspwriter, this, isBootstrap);
+			jspwriter.println("</td>");
+			jspwriter.print("<td>");
+			abutton[3].write(jspwriter, this, isBootstrap);
+			jspwriter.println("</td>");
+			for(int j = 4; j < abutton.length; j++) {
+				jspwriter.print("<td>");
+				abutton[j].write(jspwriter, this, isBootstrap);
+				jspwriter.println("</td>");
+			}
+			jspwriter.println("</tr>");
+			jspwriter.println("</table>");
+			jspwriter.println("</div>");			
+		}
 	}
 
 	public void writeHTMLTable(PageContext pagecontext, String s, String s1) throws IOException, ServletException{
@@ -675,7 +747,7 @@ public class SelezionatoreListaBP extends AbstractSelezionatoreBP
 			UserContext userContext = (UserContext) pagecontext.getSession().getAttribute("UserContext");
 			hiddenColumns = userContext.getHiddenColumns();
 		}
-		table.writeScrolledTable(bp, pagecontext.getOut(), s, s1, getFieldValidationMap(), currentPage * pageSize, mostraHideColumns, hiddenColumns, getPath());
+		table.writeScrolledTable(bp, pagecontext.getOut(), s, s1, getFieldValidationMap(), currentPage * pageSize, mostraHideColumns, hiddenColumns, getPath(), this.getParentRoot().isBootstrap());
 	}
 	
 	public boolean isHiddenColumnButtonHidden(){

@@ -1,7 +1,9 @@
 package it.cnr.jada.util.action;
 
 import it.cnr.jada.action.ActionContext;
+import it.cnr.jada.action.BusinessProcess;
 import it.cnr.jada.action.BusinessProcessException;
+import it.cnr.jada.action.HttpActionContext;
 import it.cnr.jada.bulk.*;
 import it.cnr.jada.persistency.sql.CompoundFindClause;
 import it.cnr.jada.util.*;
@@ -23,6 +25,17 @@ import javax.servlet.jsp.PageContext;
 public abstract class AbstractDetailCRUDController extends NestedFormController
     implements Serializable, CRUDController, Orderable
 {
+    protected int modelIndex;
+    private Table table;
+    protected boolean paged;
+    private int currentPage;
+    private int pageSize;
+    private int pageFrameSize;
+    private int currentPageFrame;
+    protected Selection selection;
+    private boolean enabled;
+    private Button crudToolbar[];
+    private Button navigatorToolbar[];
 
     public AbstractDetailCRUDController(String s, FormController formcontroller)
     {
@@ -532,7 +545,7 @@ public abstract class AbstractDetailCRUDController extends NestedFormController
         {
             Button button = crudToolbar[0];
             button.setHref("javascript:submitForm('doAddToCRUD(" + getInputPrefix() + ")')");
-            button.writeToolbarButton(pagecontext.getOut(), isGrowable());
+            button.writeToolbarButton(pagecontext.getOut(), isGrowable(), HttpActionContext.isFromBootstrap(pagecontext));
         }
         if(flag1)
         {
@@ -546,19 +559,19 @@ public abstract class AbstractDetailCRUDController extends NestedFormController
                 button1 = crudToolbar[1];
                 button1.setHref("javascript:submitForm('doFilterCRUD(" + getInputPrefix() + ")')");
             }
-            button1.writeToolbarButton(pagecontext.getOut(), true);
+            button1.writeToolbarButton(pagecontext.getOut(), true, HttpActionContext.isFromBootstrap(pagecontext));
         }
         if(flag2)
         {
             Button button2 = crudToolbar[2];
             button2.setHref("javascript:submitForm('doRemoveFromCRUD(" + getInputPrefix() + ")')");
-            button2.writeToolbarButton(pagecontext.getOut(), isShrinkable());
+            button2.writeToolbarButton(pagecontext.getOut(), isShrinkable(), HttpActionContext.isFromBootstrap(pagecontext));
         }
         if(flag2 && paged)
         {
             Button button3 = crudToolbar[3];
             button3.setHref("javascript:submitForm('doRemoveAllFromCRUD(" + getInputPrefix() + ")')");
-            button3.writeToolbarButton(pagecontext.getOut(), isShrinkable());
+            button3.writeToolbarButton(pagecontext.getOut(), isShrinkable(), HttpActionContext.isFromBootstrap(pagecontext));
         }
     }
 
@@ -571,25 +584,25 @@ public abstract class AbstractDetailCRUDController extends NestedFormController
         getNavigatorToolbar();
         Button button = navigatorToolbar[0];
         button.setHref("javascript:doNavigate('" + getInputPrefix() + "'," + ((currentPage - 1) / pageFrameSize) * pageFrameSize + ")");
-        button.writeToolbarButton(jspwriter, flag);
+        button.writeToolbarButton(jspwriter, flag, HttpActionContext.isFromBootstrap(pagecontext));
         button = navigatorToolbar[1];
         button.setHref("javascript:doNavigate('" + getInputPrefix() + "'," + (currentPage - 1) + ")");
-        button.writeToolbarButton(jspwriter, flag);
+        button.writeToolbarButton(jspwriter, flag, HttpActionContext.isFromBootstrap(pagecontext));
         int j = currentPageFrame * pageFrameSize;
         for(int k = 0; k < pageFrameSize && j < i; j++)
         {
             jspwriter.print("<td>");
-			it.cnr.jada.util.jsp.JSPUtils.toolbarButton(pagecontext, null, String.valueOf(j + 1), j == currentPage ? null : "javascript:doNavigate('" + getInputPrefix() + "'," + j + ")", false);
+			it.cnr.jada.util.jsp.JSPUtils.toolbarButton(pagecontext, null, String.valueOf(j + 1), j == currentPage ? null : "javascript:doNavigate('" + getInputPrefix() + "'," + j + ")", false, HttpActionContext.isFromBootstrap(pagecontext));
             jspwriter.print("</td>");
             k++;
         }
 
         button = navigatorToolbar[2];
         button.setHref("javascript:doNavigate('" + getInputPrefix() + "'," + (currentPage + 1) + ")");
-        button.writeToolbarButton(jspwriter, flag1);
+        button.writeToolbarButton(jspwriter, flag1, HttpActionContext.isFromBootstrap(pagecontext));
         button = navigatorToolbar[3];
         button.setHref("javascript:doNavigate('" + getInputPrefix() + "'," + Math.min(((currentPage + pageFrameSize + 1) / pageFrameSize) * pageFrameSize - 1, i - 1) + ")");
-        button.writeToolbarButton(jspwriter, flag);
+        button.writeToolbarButton(jspwriter, flag, HttpActionContext.isFromBootstrap(pagecontext));
     }
 
     protected void writeHTMLPagedTable(PageContext pagecontext, String s, boolean flag, boolean flag1, boolean flag2, String s1, String s2, 
@@ -608,11 +621,11 @@ public abstract class AbstractDetailCRUDController extends NestedFormController
         {
             jspwriter.println("<table class=\"Panel\" style=\"width:100%;height=100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">");
             jspwriter.println("<tr style=\"height:" + s2 + "\"><td style=\"width:" + s1 + "\">");
-            table.writeScrolledTable(this, pagecontext.getOut(), "100%", "100%", getFieldValidationMap(), currentPage * pageSize);
+            table.writeScrolledTable(this, pagecontext.getOut(), "100%", "100%", getFieldValidationMap(), currentPage * pageSize, isBootstrap(pagecontext));
             jspwriter.println("</td></tr>");
         } else
         {
-            table.writeScrolledTable(this, pagecontext.getOut(), s1, s2, getFieldValidationMap(), currentPage * pageSize);
+            table.writeScrolledTable(this, pagecontext.getOut(), s1, s2, getFieldValidationMap(), currentPage * pageSize, isBootstrap(pagecontext));
         }
         if(flag4)
             jspwriter.println("<tr><td style=\"width:" + s1 + "\">");
@@ -663,11 +676,11 @@ public abstract class AbstractDetailCRUDController extends NestedFormController
         {
             jspwriter.println("<table class=\"Panel\" style=\"width:100%;height=100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">");
             jspwriter.println("<tr style=\"height:" + s2 + "\"><td style=\"width:" + s1 + "\">");
-            table.writeScrolledTable(this,pagecontext.getOut(), "100%", "100%", getFieldValidationMap(), 0);
+            table.writeScrolledTable(this,pagecontext.getOut(), "100%", "100%", getFieldValidationMap(), 0, isBootstrap(pagecontext));
             jspwriter.println("</td></tr>");
         } else
         {
-            table.writeScrolledTable(this,pagecontext.getOut(), s1, s2, getFieldValidationMap(), 0);
+            table.writeScrolledTable(this,pagecontext.getOut(), s1, s2, getFieldValidationMap(), 0, isBootstrap(pagecontext));
         }
         if(enabled)
         {
@@ -695,19 +708,11 @@ public abstract class AbstractDetailCRUDController extends NestedFormController
         writeHTMLToolbar(pagecontext, flag, flag1, flag2);
     }
 
+    private boolean isBootstrap(PageContext pagecontext) {
+    	return HttpActionContext.isFromBootstrap(pagecontext);
+    }
     public abstract int getOrderBy(String s);
 
     public abstract void setOrderBy(ActionContext actioncontext, String s, int i);
 
-    protected int modelIndex;
-    private Table table;
-    protected boolean paged;
-    private int currentPage;
-    private int pageSize;
-    private int pageFrameSize;
-    private int currentPageFrame;
-    protected Selection selection;
-    private boolean enabled;
-    private Button crudToolbar[];
-    private Button navigatorToolbar[];
 }

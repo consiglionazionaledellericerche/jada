@@ -27,7 +27,7 @@ public class BulkPrintBP extends AbstractPrintBP
     public void print(PageContext pagecontext)
         throws ServletException, IOException, BusinessProcessException
     {
-        bulk.writeForm(pagecontext.getOut(), 2, getFieldValidationMap());
+        bulk.writeForm(pagecontext.getOut(), 2, getFieldValidationMap(), this.getParentRoot().isBootstrap());
     }
 
     public void setBulk(OggettoBulk oggettobulk)

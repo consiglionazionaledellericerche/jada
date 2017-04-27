@@ -213,7 +213,7 @@ public abstract class BulkListBP extends FormBP
         table.setSelection(selection);
         table.setColumns(getColumns());
         table.setRows(Collections.enumeration(pageContents != null ? ((java.util.Collection) (pageContents)) : ((java.util.Collection) (Collections.EMPTY_LIST))));
-        table.writeScrolledTable(this,pagecontext.getOut(), s1, s2, getFieldValidationMap(), 0);
+        table.writeScrolledTable(this,pagecontext.getOut(), s1, s2, getFieldValidationMap(), 0, this.getParentRoot().isBootstrap());
         jspwriter.println("<div class=\"Toolbar\"><table witdth=\"100%\" cellspacing=\"0\" cellpadding=\"0\"><tr>");
         jspwriter.println("</tr></table></div>");
     }

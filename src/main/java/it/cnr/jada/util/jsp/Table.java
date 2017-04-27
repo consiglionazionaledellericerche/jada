@@ -1,12 +1,11 @@
 package it.cnr.jada.util.jsp;
 
-import it.cnr.jada.UserContext;
-import it.cnr.jada.action.BusinessProcess;
-import it.cnr.jada.bulk.*;
-import it.cnr.jada.util.*;
-import it.cnr.jada.util.action.AbstractDetailCRUDController;
-import it.cnr.jada.util.action.AbstractSelezionatoreBP;
-import it.cnr.jada.util.action.BulkListBP;
+import it.cnr.jada.bulk.ColumnFieldProperty;
+import it.cnr.jada.bulk.FieldValidationMap;
+import it.cnr.jada.bulk.OggettoBulk;
+import it.cnr.jada.util.Config;
+import it.cnr.jada.util.Orderable;
+import it.cnr.jada.util.Prefix;
 import it.cnr.jada.util.action.Selection;
 import it.cnr.jada.util.action.SelezionatoreListaBP;
 
@@ -24,6 +23,23 @@ import javax.servlet.jsp.JspWriter;
 public class Table
     implements Serializable
 {
+    private String name;
+    private transient Enumeration rows;
+    private Dictionary columns;
+    private String onselect;
+    private Selection selection;
+    private boolean multiSelection;
+    private boolean readonly;
+    private Button checkAllButton;
+    private int status;
+    private boolean selectable;
+    private boolean editableOnFocus;
+    private Object selectedElement;
+    private boolean singleSelection;
+    private TableCustomizer customizer;
+    private Orderable orderable;
+    private String onsort;
+    private String onHiddenColumn;
 
     public Table(String s)
     {
@@ -198,24 +214,24 @@ public class Table
         status = i;
     }
 
-    public void write(JspWriter jspwriter, FieldValidationMap fieldvalidationmap)
+    public void write(JspWriter jspwriter, FieldValidationMap fieldvalidationmap, boolean isBootstrap)
         throws IOException
     {
-        write(jspwriter, fieldvalidationmap, 0);
+        write(jspwriter, fieldvalidationmap, 0, isBootstrap);
     }
-	public void writeTableWithoutColumnHeader(JspWriter jspwriter, FieldValidationMap fieldvalidationmap, int i) throws IOException{
-		writeTableWithoutColumnHeader(null, jspwriter, fieldvalidationmap, i);		
+	public void writeTableWithoutColumnHeader(JspWriter jspwriter, FieldValidationMap fieldvalidationmap, int i, boolean isBootstrap) throws IOException{
+		writeTableWithoutColumnHeader(null, jspwriter, fieldvalidationmap, i, isBootstrap);		
 	}
-	public void writeTableWithoutColumnHeader(Object bp, JspWriter jspwriter, FieldValidationMap fieldvalidationmap, int i) throws IOException{
-		writeTableWithoutColumnHeader(bp, jspwriter, fieldvalidationmap, i,false);
+	public void writeTableWithoutColumnHeader(Object bp, JspWriter jspwriter, FieldValidationMap fieldvalidationmap, int i, boolean isBootstrap) throws IOException{
+		writeTableWithoutColumnHeader(bp, jspwriter, fieldvalidationmap, i,false, isBootstrap);
 	}
-	public void writeTableWithoutColumnHeader(Object bp, JspWriter jspwriter, FieldValidationMap fieldvalidationmap, int i,boolean nascondiColonne) throws IOException{
-		writeTableWithoutColumnHeader(bp, jspwriter, fieldvalidationmap, i,false, null);
+	public void writeTableWithoutColumnHeader(Object bp, JspWriter jspwriter, FieldValidationMap fieldvalidationmap, int i,boolean nascondiColonne, boolean isBootstrap) throws IOException{
+		writeTableWithoutColumnHeader(bp, jspwriter, fieldvalidationmap, i,false, null, isBootstrap);
 	}
-	public void writeTableWithoutColumnHeader(Object bp, JspWriter jspwriter, FieldValidationMap fieldvalidationmap, int i,boolean nascondiColonne,Dictionary hiddenColumns) throws IOException{
-		writeTableWithoutColumnHeader(bp, jspwriter, fieldvalidationmap, i,false, null, null);
+	public void writeTableWithoutColumnHeader(Object bp, JspWriter jspwriter, FieldValidationMap fieldvalidationmap, int i,boolean nascondiColonne,Dictionary hiddenColumns, boolean isBootstrap) throws IOException{
+		writeTableWithoutColumnHeader(bp, jspwriter, fieldvalidationmap, i,false, null, null, isBootstrap);
 	}
-	public void writeTableWithoutColumnHeader(Object bp, JspWriter jspwriter, FieldValidationMap fieldvalidationmap, int i,boolean nascondiColonne,Dictionary hiddenColumns, String pathBP) throws IOException{
+	public void writeTableWithoutColumnHeader(Object bp, JspWriter jspwriter, FieldValidationMap fieldvalidationmap, int i,boolean nascondiColonne,Dictionary hiddenColumns, String pathBP, boolean isBootstrap) throws IOException{
 		colonne : for(Enumeration enumeration = columns.elements(); enumeration.hasMoreElements(); jspwriter.println("</td>"))
 		{
 			ColumnFieldProperty columnfieldproperty = (ColumnFieldProperty)enumeration.nextElement();
@@ -230,45 +246,68 @@ public class Table
 				jspwriter.print(" nowrap");
 		    
 			jspwriter.print(">");
-			if(onsort != null && orderable != null && orderable.isOrderableBy(columnfieldproperty.getProperty()))
-			{
-				int k = orderable.getOrderBy(columnfieldproperty.getProperty());
-				switch(k)
-				{
-				case 0: // '\0'
-					Button.write(jspwriter, "img/sortable16.gif", null, onsort + "('" + name + "','" + columnfieldproperty.getProperty() + "')", "vertical-align:middle;");
-					break;
-
-				case 1: // '\001'
-					Button.write(jspwriter, "img/sorted_asc16.gif", null, onsort + "('" + name + "','" + columnfieldproperty.getProperty() + "')", "vertical-align:middle;");
-					break;
-
-				case -1: 
-					Button.write(jspwriter, "img/sorted_desc16.gif", null, onsort + "('" + name + "','" + columnfieldproperty.getProperty() + "')", "vertical-align:middle;");
-					break;
-				}
-			}
-			if (nascondiColonne){
-				jspwriter.print("&nbsp;");
-				Button.write(jspwriter, null, "img/meno8.gif", null, 1, getOnHiddenColumn() + "('" + name + "','" + columnfieldproperty.getName() + "')", "vertical-align:middle;","Nascondi colonna ("+columnfieldproperty.getLabel()+")");
-			}
+			writeButtonOnTableHeader(jspwriter, columnfieldproperty, nascondiColonne, isBootstrap);
 			columnfieldproperty.writeLabel(bp, jspwriter, null);
 		}
 		
 	}
-	public void writeTableWithColumnHeader(JspWriter jspwriter, FieldValidationMap fieldvalidationmap, int i,Hashtable labelHeader) throws IOException{
-		writeTableWithColumnHeader(null, jspwriter, fieldvalidationmap, i, labelHeader);
+	public void writeTableWithColumnHeader(JspWriter jspwriter, FieldValidationMap fieldvalidationmap, int i,Hashtable labelHeader, boolean isBootstrap) throws IOException{
+		writeTableWithColumnHeader(null, jspwriter, fieldvalidationmap, i, labelHeader, isBootstrap);
 	}	
-	public void writeTableWithColumnHeader(Object bp, JspWriter jspwriter, FieldValidationMap fieldvalidationmap, int i,Hashtable labelHeader) throws IOException{
-		writeTableWithColumnHeader(bp, jspwriter, fieldvalidationmap, i,labelHeader,false);
+	public void writeTableWithColumnHeader(Object bp, JspWriter jspwriter, FieldValidationMap fieldvalidationmap, int i,Hashtable labelHeader, boolean isBootstrap) throws IOException{
+		writeTableWithColumnHeader(bp, jspwriter, fieldvalidationmap, i,labelHeader,false, isBootstrap);
 	}
-	public void writeTableWithColumnHeader(Object bp, JspWriter jspwriter, FieldValidationMap fieldvalidationmap, int i,Hashtable labelHeader, boolean nascondiColonne) throws IOException{
-		writeTableWithColumnHeader(bp, jspwriter, fieldvalidationmap, i,labelHeader,false, null);
+	public void writeTableWithColumnHeader(Object bp, JspWriter jspwriter, FieldValidationMap fieldvalidationmap, int i,Hashtable labelHeader, boolean nascondiColonne, boolean isBootstrap) throws IOException{
+		writeTableWithColumnHeader(bp, jspwriter, fieldvalidationmap, i,labelHeader,false, null, isBootstrap);
 	}	
-	public void writeTableWithColumnHeader(Object bp, JspWriter jspwriter, FieldValidationMap fieldvalidationmap, int i,Hashtable labelHeader, boolean nascondiColonne,Dictionary hiddenColumns) throws IOException{
-		writeTableWithColumnHeader(bp, jspwriter, fieldvalidationmap, i,labelHeader,false, null, null);
+	
+	public void writeTableWithColumnHeader(Object bp, JspWriter jspwriter, FieldValidationMap fieldvalidationmap, int i,Hashtable labelHeader, boolean nascondiColonne,Dictionary hiddenColumns, boolean isBootstrap) throws IOException{
+		writeTableWithColumnHeader(bp, jspwriter, fieldvalidationmap, i,labelHeader,false, null, null, isBootstrap);
 	}
-	public void writeTableWithColumnHeader(Object bp, JspWriter jspwriter, FieldValidationMap fieldvalidationmap, int i,Hashtable labelHeader, boolean nascondiColonne,Dictionary hiddenColumns,String pathBP) throws IOException{
+	
+	public void writeButtonOnTableHeader(JspWriter jspwriter, ColumnFieldProperty columnfieldproperty, boolean nascondiColonne, boolean isBootstrap) throws IOException {
+		Button sort = new Button();
+		sort.setHref( onsort + "('" + name + "','" + columnfieldproperty.getProperty() + "')");
+		sort.setImg("img/sortable16.gif");
+		sort.setStyle("vertical-align:middle;");
+		sort.setIconClass("fa fa-sort");
+		sort.setButtonClass("btn-secondary btn-sm btn-link float-right");
+
+		Button sortasc = sort.clone();
+		sortasc.setImg("img/sorted_asc16.gif");
+		sortasc.setIconClass("fa fa-sort-asc");
+		
+		Button sortdesc = sort.clone();
+		sortdesc.setImg("img/sorted_desc6.gif");
+		sortdesc.setIconClass("fa fa-sort-desc");
+		
+		if(onsort != null && orderable != null && orderable.isOrderableBy(columnfieldproperty.getProperty()))
+		{
+			int k = orderable.getOrderBy(columnfieldproperty.getProperty());
+			switch(k){
+				case 0: // '\0'
+					sort.write(jspwriter, true, isBootstrap);
+					break;
+	
+				case 1: // '\001'
+					sortasc.write(jspwriter, true, isBootstrap);
+					break;
+	
+				case -1: 
+					sortdesc.write(jspwriter, true, isBootstrap);
+					break;
+			}
+		}
+		if (nascondiColonne){
+			if (!isBootstrap){
+				jspwriter.print("&nbsp;");
+				Button.write(jspwriter, null, "img/meno8.gif", null, 1, getOnHiddenColumn() + "('" + name + "','" + columnfieldproperty.getName() + "')", "vertical-align:middle;","Nascondi colonna ("+columnfieldproperty.getLabel()+")", isBootstrap);
+			}
+		}
+	}
+	
+	public void writeTableWithColumnHeader(Object bp, JspWriter jspwriter, FieldValidationMap fieldvalidationmap, int i, 
+			Hashtable labelHeader, boolean nascondiColonne,Dictionary hiddenColumns,String pathBP, boolean isBootstrap) throws IOException{
 		colonne : for(Enumeration enumeration = columns.elements(); enumeration.hasMoreElements(); jspwriter.println("</td>"))
 		{
 			ColumnFieldProperty columnfieldproperty = (ColumnFieldProperty)enumeration.nextElement();
@@ -285,28 +324,7 @@ public class Table
 					
 				jspwriter.print(" valign=center rowspan=2");			    
 				jspwriter.print(">");
-				if(onsort != null && orderable != null && orderable.isOrderableBy(columnfieldproperty.getProperty()))
-				{
-					int k = orderable.getOrderBy(columnfieldproperty.getProperty());
-					switch(k)
-					{
-					case 0: // '\0'
-						Button.write(jspwriter, "img/sortable16.gif", null, onsort + "('" + name + "','" + columnfieldproperty.getProperty() + "')", "vertical-align:middle;");
-						break;
-	
-					case 1: // '\001'
-						Button.write(jspwriter, "img/sorted_asc16.gif", null, onsort + "('" + name + "','" + columnfieldproperty.getProperty() + "')", "vertical-align:middle;");
-						break;
-	
-					case -1: 
-						Button.write(jspwriter, "img/sorted_desc16.gif", null, onsort + "('" + name + "','" + columnfieldproperty.getProperty() + "')", "vertical-align:middle;");
-						break;
-					}
-				}
-				if (nascondiColonne){
-					jspwriter.print("&nbsp;");
-					Button.write(jspwriter, "img/meno8.gif", null, getOnHiddenColumn() + "('" + name + "','" + columnfieldproperty.getName() + "')", "vertical-align:middle;");
-				}
+				writeButtonOnTableHeader(jspwriter, columnfieldproperty, nascondiColonne, isBootstrap);
 				columnfieldproperty.writeLabel(bp,jspwriter, null);
 			}else{
 				if(labelHeader.containsKey(columnfieldproperty.getHeaderLabel())){
@@ -337,38 +355,19 @@ public class Table
 					jspwriter.print(" nowrap");
 			    
 				jspwriter.print(">");
-				if(onsort != null && orderable != null && orderable.isOrderableBy(columnfieldproperty.getProperty()))
-				{
-					int k = orderable.getOrderBy(columnfieldproperty.getProperty());
-					switch(k)
-					{
-					case 0: // '\0'
-						Button.write(jspwriter, "img/sortable16.gif", null, onsort + "('" + name + "','" + columnfieldproperty.getProperty() + "')", "vertical-align:middle;");
-						break;
-	
-					case 1: // '\001'
-						Button.write(jspwriter, "img/sorted_asc16.gif", null, onsort + "('" + name + "','" + columnfieldproperty.getProperty() + "')", "vertical-align:middle;");
-						break;
-	
-					case -1: 
-						Button.write(jspwriter, "img/sorted_desc16.gif", null, onsort + "('" + name + "','" + columnfieldproperty.getProperty() + "')", "vertical-align:middle;");
-						break;
-					}
-				}
-				if (nascondiColonne){
-					jspwriter.print("&nbsp;");
-					Button.write(jspwriter, "img/meno8.gif", null, getOnHiddenColumn() + "('" + name + "','" + columnfieldproperty.getName() + "')", "vertical-align:middle;");
-				}
+				writeButtonOnTableHeader(jspwriter, columnfieldproperty, nascondiColonne, isBootstrap);
 				columnfieldproperty.writeLabel(bp, jspwriter, null);
 			}
 		}		
 	}
-	public void write(JspWriter jspwriter, FieldValidationMap fieldvalidationmap, int i)
+	public void write(JspWriter jspwriter, FieldValidationMap fieldvalidationmap, int i, boolean isBootstrap)
 		throws IOException
 	{
-		write(null, jspwriter, fieldvalidationmap, i);
+		write(null, jspwriter, fieldvalidationmap, i, isBootstrap);
 	}
-    public void write(Object bp, JspWriter jspwriter, FieldValidationMap fieldvalidationmap, int i, boolean nascondiColonne,Dictionary hiddenColumns,String pathBP) throws IOException{
+	
+    public void write(Object bp, JspWriter jspwriter, FieldValidationMap fieldvalidationmap, int i, boolean nascondiColonne, 
+    		Dictionary hiddenColumns,String pathBP, boolean isBootstrap) throws IOException{
 		/*
 		 * Cerco le headerLabel
 		 */ 
@@ -401,15 +400,16 @@ public class Table
               jspwriter.print("<td class=\"TableHeader\" align=\"center\" valign=\"center\">");
             else
 			  jspwriter.print("<td rowspan=2 class=\"TableHeader\" align=\"center\" valign=\"center\">");
-            checkAllButton.write(jspwriter, true);
+
+	        checkAllButton.write(jspwriter, true, isBootstrap);				
             jspwriter.print("</td>");
         }
         if(selectable && singleSelection)
             jspwriter.print("<td class=\"TableHeader\" align=\"center\" valign=\"center\">&nbsp;</td>");
 		if(!presenteHeader)			    
-		  writeTableWithoutColumnHeader(bp,jspwriter, fieldvalidationmap, i, nascondiColonne,hiddenColumns,pathBP);
+		  writeTableWithoutColumnHeader(bp,jspwriter, fieldvalidationmap, i, nascondiColonne,hiddenColumns,pathBP, isBootstrap);
 		else
-		  writeTableWithColumnHeader(bp,jspwriter, fieldvalidationmap, i, labelHeader, nascondiColonne,hiddenColumns,pathBP);  
+		  writeTableWithColumnHeader(bp,jspwriter, fieldvalidationmap, i, labelHeader, nascondiColonne,hiddenColumns,pathBP, isBootstrap);  
 		
         jspwriter.println("</tr>");
         jspwriter.println("</thead>");
@@ -527,7 +527,7 @@ public class Table
                 if(columnfieldproperty1.isNoWrap())
                     jspwriter.print(" nowrap");
                 jspwriter.print(">");
-                columnfieldproperty1.writeInput(jspwriter, obj, flag1, null, null, s, l, fieldvalidationmap);
+                columnfieldproperty1.writeInput(jspwriter, obj, flag1, null, null, s, l, fieldvalidationmap, false);
             }
 
             jspwriter.println("</tr>");
@@ -542,10 +542,11 @@ public class Table
             jspwriter.println(" -->");
             i++;
         }
-
-        jspwriter.print("<tr height=\"100%\"><td colspan=\"");
-        jspwriter.print(columns.size());
-        jspwriter.println("\"></td></tr>");
+        if (!isBootstrap) {
+            jspwriter.print("<tr height=\"100%\"><td colspan=\"");
+            jspwriter.print(columns.size());
+            jspwriter.println("\"></td></tr>");        	
+        }
         jspwriter.println("</tbody>");
         if(!singleSelection)
         {
@@ -560,69 +561,89 @@ public class Table
             jspwriter.println("\">");
         }
     }
-    public void write(Object bp, JspWriter jspwriter, FieldValidationMap fieldvalidationmap, int i, boolean nascondiColonne,Dictionary hiddenColumns) throws IOException{
-		write(bp, jspwriter, fieldvalidationmap, i,nascondiColonne,null,null);
+    public void write(Object bp, JspWriter jspwriter, FieldValidationMap fieldvalidationmap, int i, boolean nascondiColonne,Dictionary hiddenColumns, boolean isBootstrap) throws IOException{
+		write(bp, jspwriter, fieldvalidationmap, i, nascondiColonne, null, null, isBootstrap);
     }    
-    public void write(Object bp, JspWriter jspwriter, FieldValidationMap fieldvalidationmap, int i, boolean nascondiColonne) throws IOException{
-		write(bp, jspwriter, fieldvalidationmap, i,nascondiColonne,null);
+    public void write(Object bp, JspWriter jspwriter, FieldValidationMap fieldvalidationmap, int i, boolean nascondiColonne, boolean isBootstrap) throws IOException{
+		write(bp, jspwriter, fieldvalidationmap, i,nascondiColonne,null, isBootstrap);
     }
-	public void write(Object bp, JspWriter jspwriter, FieldValidationMap fieldvalidationmap, int i) throws IOException{
-		write(bp, jspwriter, fieldvalidationmap, i,false);
+	public void write(Object bp, JspWriter jspwriter, FieldValidationMap fieldvalidationmap, int i, boolean isBootstrap) throws IOException{
+		write(bp, jspwriter, fieldvalidationmap, i,false, isBootstrap);
     }
 	
 
-    public void write(JspWriter jspwriter, FieldValidationMap fieldvalidationmap, Enumeration enumeration)
+    public void write(JspWriter jspwriter, FieldValidationMap fieldvalidationmap, Enumeration enumeration, boolean isBootstrap)
         throws IOException
     {
         setRows(enumeration);
-        write(jspwriter, fieldvalidationmap);
+        write(jspwriter, fieldvalidationmap, isBootstrap);
     }
 
-    public void write(JspWriter jspwriter, FieldValidationMap fieldvalidationmap, Enumeration enumeration, int i)
+    public void write(JspWriter jspwriter, FieldValidationMap fieldvalidationmap, Enumeration enumeration, int i, boolean isBootstrap)
         throws IOException
     {
         setRows(enumeration);
-        write(jspwriter, fieldvalidationmap, i);
+        write(jspwriter, fieldvalidationmap, i, isBootstrap);
     }
 
-    public void writeScrolledTable(Object bp, JspWriter jspwriter, String s, String s1, FieldValidationMap fieldvalidationmap, int i, boolean nascondiColonne,Dictionary hiddenColumns,String pathBP) throws IOException{
-    	if(bp instanceof SelezionatoreListaBP)
-    		jspwriter.print("<div style=\"background-color:white;border:thin groove;");
-    	else
-    		jspwriter.print("<div style=\"overflow:auto;background-color:white;border:thin groove;");
+    public void writeScrolledTable(Object bp, JspWriter jspwriter, String s, String s1, FieldValidationMap fieldvalidationmap, int i, boolean nascondiColonne,
+    			Dictionary hiddenColumns,String pathBP, boolean isBootstrap) throws IOException{
+    	if (!isBootstrap) {
+        	if(bp instanceof SelezionatoreListaBP)
+        		jspwriter.print("<div style=\"background-color:white;border:thin groove;");
+        	else
+        		jspwriter.print("<div style=\"overflow:auto;background-color:white;border:thin groove;");    		
+	        if(s1 != null)
+	        {
+	            jspwriter.print("height:");
+	            jspwriter.print(s1);
+	            jspwriter.print(';');
+	        }
+	        if(s != null)
+	        {
+	            jspwriter.print("width:");
+	            jspwriter.print(s);
+	            jspwriter.print(';');
+	        }
+	        jspwriter.println("\">");
+		    jspwriter.println("<!-- INIZIO TABLE -->");
+	        jspwriter.println("\t<table style=\"background:white;width:100%;height:100%\" cellpadding=\"0\" cellspacing=\"0\">");
+	        write(bp, jspwriter, fieldvalidationmap, i,nascondiColonne,hiddenColumns,pathBP,isBootstrap);
+	        jspwriter.println("\t</table>");
+	        jspwriter.println("<!-- FINE TABLE -->");
+            jspwriter.println("</div>");    		
+    	} else {
+    		jspwriter.print("<div class=\"div-sigla-table table-responsive ");
+	        if(s1 != null && !s1.equalsIgnoreCase("100%")) {
+	        	jspwriter.print("\" style=\"height:");
+	            jspwriter.print(s1);
+	            jspwriter.print(";\"");
+	        } else {
+	        	jspwriter.print("col-sm-12\"");
+	        }
+	        jspwriter.println(">");
     		
-        if(s1 != null)
-        {
-            jspwriter.print("height:");
-            jspwriter.print(s1);
-            jspwriter.print(';');
-        }
-        if(s != null)
-        {
-            jspwriter.print("width:");
-            jspwriter.print(s);
-            jspwriter.print(';');
-        }
-        jspwriter.println("\">");
-        jspwriter.println("<!-- INIZIO TABLE -->");
-        jspwriter.println("\t<table style=\"background:white;width:100%;height:100%\" cellpadding=\"0\" cellspacing=\"0\">");
-        write(bp, jspwriter, fieldvalidationmap, i,nascondiColonne,hiddenColumns,pathBP);
-        jspwriter.println("\t</table>");
-        jspwriter.println("<!-- FINE TABLE -->");
-        jspwriter.println("</div>");
+		    jspwriter.println("<!-- INIZIO TABLE -->");
+	        jspwriter.println("<table class=\"sigla-table table table-bordered table-hover table-striped table-sm\">");
+	        write(bp, jspwriter, fieldvalidationmap, i,nascondiColonne,hiddenColumns,pathBP, isBootstrap);
+	        jspwriter.println("</table>");
+	        jspwriter.println("<!-- FINE TABLE -->"); 
+            jspwriter.println("</div>");    		
+
+    	}
     }    
-    public void writeScrolledTable(Object bp, JspWriter jspwriter, String s, String s1, FieldValidationMap fieldvalidationmap, int i, boolean nascondiColonne,Dictionary hiddenColumns) throws IOException{
-    	writeScrolledTable(bp, jspwriter, s, s1, fieldvalidationmap, i, nascondiColonne, null, null);
+    public void writeScrolledTable(Object bp, JspWriter jspwriter, String s, String s1, FieldValidationMap fieldvalidationmap, int i, boolean nascondiColonne,Dictionary hiddenColumns, boolean isBootstrap) throws IOException{
+    	writeScrolledTable(bp, jspwriter, s, s1, fieldvalidationmap, i, nascondiColonne, null, null, isBootstrap);
     }
-    public void writeScrolledTable(Object bp, JspWriter jspwriter, String s, String s1, FieldValidationMap fieldvalidationmap, int i, boolean nascondiColonne) throws IOException{
-    	writeScrolledTable(bp, jspwriter, s, s1, fieldvalidationmap, i, nascondiColonne, null);
+    public void writeScrolledTable(Object bp, JspWriter jspwriter, String s, String s1, FieldValidationMap fieldvalidationmap, int i, boolean nascondiColonne, boolean isBootstrap) throws IOException{
+    	writeScrolledTable(bp, jspwriter, s, s1, fieldvalidationmap, i, nascondiColonne, null, isBootstrap);
     }
     
-    public void writeScrolledTable(Object bp, JspWriter jspwriter, String s, String s1, FieldValidationMap fieldvalidationmap, int i) throws IOException{
-    	writeScrolledTable(bp, jspwriter, s, s1, fieldvalidationmap, i,false);
+    public void writeScrolledTable(Object bp, JspWriter jspwriter, String s, String s1, FieldValidationMap fieldvalidationmap, int i, boolean isBootstrap) throws IOException{
+    	writeScrolledTable(bp, jspwriter, s, s1, fieldvalidationmap, i,false, isBootstrap);
     }
 	    
-	public void writeScrolledTable(JspWriter jspwriter, String s, String s1, FieldValidationMap fieldvalidationmap, int i)
+	public void writeScrolledTable(JspWriter jspwriter, String s, String s1, FieldValidationMap fieldvalidationmap, int i, boolean isBootstrap)
 		throws IOException
 	{
 		jspwriter.print("<div style=\"overflow:auto;background-color:white;border:thin groove;");
@@ -641,28 +662,12 @@ public class Table
 		jspwriter.println("\">");
 		jspwriter.println("<!-- INIZIO TABLE -->");
 		jspwriter.println("\t<table style=\"background:white;width:100%;height:100%\" cellpadding=\"0\" cellspacing=\"0\">");
-		write(jspwriter, fieldvalidationmap, i);
+		write(jspwriter, fieldvalidationmap, i, isBootstrap);
 		jspwriter.println("\t</table>");
 		jspwriter.println("<!-- FINE TABLE -->");
 		jspwriter.println("</div>");
 	}	
-    private String name;
-    private transient Enumeration rows;
-    private Dictionary columns;
-    private String onselect;
-    private Selection selection;
-    private boolean multiSelection;
-    private boolean readonly;
-    private Button checkAllButton;
-    private int status;
-    private boolean selectable;
-    private boolean editableOnFocus;
-    private Object selectedElement;
-    private boolean singleSelection;
-    private TableCustomizer customizer;
-    private Orderable orderable;
-    private String onsort;
-    private String onHiddenColumn;
+
 	public String getOnHiddenColumn() {
 		return onHiddenColumn;
 	}

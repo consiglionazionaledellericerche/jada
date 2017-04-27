@@ -2,12 +2,14 @@ package it.cnr.jada.util.action;
 
 import it.cnr.jada.UserTransaction;
 import it.cnr.jada.action.ActionContext;
+import it.cnr.jada.action.BusinessProcess;
 import it.cnr.jada.action.BusinessProcessException;
 import it.cnr.jada.bulk.*;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
+
 import javax.servlet.jsp.JspWriter;
 
 // Referenced classes of package it.cnr.jada.util.action:
@@ -16,6 +18,15 @@ import javax.servlet.jsp.JspWriter;
 public abstract class NestedFormController
     implements Serializable, FormController
 {
+
+    private OggettoBulk model;
+    private final String name;
+    private FormController parent;
+    private Map children;
+    private String inputPrefix;
+    private boolean readonly;
+    private boolean dirty;
+    private final FieldValidationMap fieldValidationMap = new FieldValidationMap();
 
     public NestedFormController(String s, FormController formcontroller)
     {
@@ -218,55 +229,55 @@ public abstract class NestedFormController
     public void writeForm(JspWriter jspwriter)
         throws IOException
     {
-        getBulkInfo().writeForm(jspwriter, getModel(), null, null, null, getInputPrefix(), getStatus(), isInputReadonly(), getFieldValidationMap());
+        getBulkInfo().writeForm(jspwriter, getModel(), null, null, null, getInputPrefix(), getStatus(), isInputReadonly(), getFieldValidationMap(), ((BusinessProcess)this.getParentController()).getParentRoot().isBootstrap());
     }
 
     public void writeForm(JspWriter jspwriter, String s)
         throws IOException
     {
-        getBulkInfo().writeForm(this, jspwriter, getModel(), s, null, null, getInputPrefix(), getStatus(), isInputReadonly(), getFieldValidationMap());
+        getBulkInfo().writeForm(this, jspwriter, getModel(), s, null, null, getInputPrefix(), getStatus(), isInputReadonly(), getFieldValidationMap(), ((BusinessProcess)this.getParentController()).getParentRoot().isBootstrap());
     }
 
     public void writeFormField(JspWriter jspwriter, String s)
         throws IOException
     {
-        getBulkInfo().writeFormField(this, jspwriter, getModel(), null, s, getInputPrefix(), 1, 1, getStatus(), isInputReadonly(), getFieldValidationMap());
+        getBulkInfo().writeFormField(this, jspwriter, getModel(), null, s, getInputPrefix(), 1, 1, getStatus(), isInputReadonly(), getFieldValidationMap(), ((BusinessProcess)this.getParentController()).getParentRoot().isBootstrap());
     }
 
     public void writeFormField(JspWriter jspwriter, String s, String s1)
         throws IOException
     {
-        getBulkInfo().writeFormField(this, jspwriter, getModel(), s, s1, getInputPrefix(), 1, 1, getStatus(), isInputReadonly(), getFieldValidationMap());
+        getBulkInfo().writeFormField(this, jspwriter, getModel(), s, s1, getInputPrefix(), 1, 1, getStatus(), isInputReadonly(), getFieldValidationMap(), ((BusinessProcess)this.getParentController()).getParentRoot().isBootstrap());
     }
 
     public void writeFormField(JspWriter jspwriter, String s, String s1, int i, int j)
         throws IOException
     {
-        getBulkInfo().writeFormField(this, jspwriter, getModel(), s, s1, getInputPrefix(), i, j, getStatus(), isInputReadonly(), getFieldValidationMap());
+        getBulkInfo().writeFormField(this, jspwriter, getModel(), s, s1, getInputPrefix(), i, j, getStatus(), isInputReadonly(), getFieldValidationMap(), ((BusinessProcess)this.getParentController()).getParentRoot().isBootstrap());
     }
 
     public void writeFormInput(JspWriter jspwriter, String s)
         throws IOException
     {
-        getBulkInfo().writeFormInput(jspwriter, getModel(), null, s, isInputReadonly(), null, null, getInputPrefix(), getStatus(), getFieldValidationMap());
+        getBulkInfo().writeFormInput(jspwriter, getModel(), null, s, isInputReadonly(), null, null, getInputPrefix(), getStatus(), getFieldValidationMap(), ((BusinessProcess)this.getParentController()).getParentRoot().isBootstrap());
     }
 
     public void writeFormInput(JspWriter jspwriter, String s, String s1)
         throws IOException
     {
-        getBulkInfo().writeFormInput(jspwriter, getModel(), s, s1, isInputReadonly(), null, null, getInputPrefix(), getStatus(), getFieldValidationMap());
+        getBulkInfo().writeFormInput(jspwriter, getModel(), s, s1, isInputReadonly(), null, null, getInputPrefix(), getStatus(), getFieldValidationMap(), ((BusinessProcess)this.getParentController()).getParentRoot().isBootstrap());
     }
 
     public void writeFormInput(JspWriter jspwriter, String s, String s1, boolean flag, String s2, String s3)
         throws IOException
     {
-        getBulkInfo().writeFormInput(jspwriter, getModel(), s, s1, flag || isInputReadonly(), s2, s3, getInputPrefix(), getStatus(), getFieldValidationMap());
+        getBulkInfo().writeFormInput(jspwriter, getModel(), s, s1, flag || isInputReadonly(), s2, s3, getInputPrefix(), getStatus(), getFieldValidationMap(), ((BusinessProcess)this.getParentController()).getParentRoot().isBootstrap());
     }
 
     public void writeFormInputByStatus(JspWriter jspwriter, String s)
         throws IOException
     {
-        getBulkInfo().writeFormInput(jspwriter, getModel(), null, s, isInputReadonly(), null, null, getInputPrefix(), getStatus(), getFieldValidationMap());
+        getBulkInfo().writeFormInput(jspwriter, getModel(), null, s, isInputReadonly(), null, null, getInputPrefix(), getStatus(), getFieldValidationMap(), ((BusinessProcess)this.getParentController()).getParentRoot().isBootstrap());
     }
 
     public void writeFormLabel(JspWriter jspwriter, String s)
@@ -286,13 +297,4 @@ public abstract class NestedFormController
     {
         getBulkInfo().writeFormLabel(this, jspwriter, getModel(), s, s1, s2);
     }
-
-    private OggettoBulk model;
-    private final String name;
-    private FormController parent;
-    private Map children;
-    private String inputPrefix;
-    private boolean readonly;
-    private boolean dirty;
-    private final FieldValidationMap fieldValidationMap = new FieldValidationMap();
 }

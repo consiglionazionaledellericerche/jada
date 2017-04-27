@@ -625,8 +625,8 @@ public class BusinessProcess implements Forward, Serializable{
 	public void setFunction(Character function) {
 		this.function = function;
 	}
-	public BusinessProcess getParent(int liv)
-	{
+	
+	public BusinessProcess getParent(int liv) {
 		BusinessProcess bp=this;
 	 	if(liv!=0) 
 			for(int i=1;i<liv;i++){
@@ -636,4 +636,15 @@ public class BusinessProcess implements Forward, Serializable{
 		return bp;
 	}
 	
+	public BusinessProcess getParentRoot() {
+		BusinessProcess bp = this;
+		while(bp.getParent() != null) {
+			bp = bp.getParent();
+		}
+		return bp;
+	}	
+	
+	public boolean isBootstrap() {
+		return false;
+	}
  }

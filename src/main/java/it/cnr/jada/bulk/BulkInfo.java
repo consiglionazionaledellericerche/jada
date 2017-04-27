@@ -541,13 +541,18 @@ public class BulkInfo implements Serializable{
     /**
      * Scrive una form HTML standard con tutte le FormFieldProperties.
      */
-	public void writeForm(JspWriter out, Object bean, String formName, String labelClass, String inputClass, String prefix, int status, boolean readonly, int j, boolean showLabels, FieldValidationMap fieldvalidationmap) throws IOException{
-		writeForm(null, out, bean, formName, labelClass, inputClass, prefix, status, readonly, j, showLabels, fieldvalidationmap);
+	public void writeForm(JspWriter out, Object bean, String formName, String labelClass, String inputClass, String prefix, int status, boolean readonly, int j, boolean showLabels, FieldValidationMap fieldvalidationmap, boolean isBootstrap) throws IOException{
+		writeForm(null, out, bean, formName, labelClass, inputClass, prefix, status, readonly, j, showLabels, fieldvalidationmap, isBootstrap);
 	}
-    /**
+
+	public void writeFormForSearchTool(JspWriter out, Object bean, String formName, String labelClass, String inputClass, String prefix, int status, boolean readonly, int j, boolean showLabels, FieldValidationMap fieldvalidationmap, boolean isBootstrap) throws IOException{
+		writeFormForSearchTool(null, out, bean, formName, labelClass, inputClass, prefix, status, readonly, j, showLabels, fieldvalidationmap, isBootstrap);
+	}
+
+	/**
      * Scrive una form HTML standard con tutte le formFieldProperties.
      */
-    public void writeForm(Object bp, JspWriter out, Object bean, String formName, String labelClass, String inputClass, String prefix, int status, boolean readonly, int layout, boolean showLabels, FieldValidationMap fieldvalidationmap) throws IOException{
+    public void writeForm(Object bp, JspWriter out, Object bean, String formName, String labelClass, String inputClass, String prefix, int status, boolean readonly, int layout, boolean showLabels, FieldValidationMap fieldvalidationmap, boolean isBootstrap) throws IOException{
         if(layout == 1)
             out.println("<tr>");
         for(Enumeration enumeration = getFormFieldProperties(formName); enumeration.hasMoreElements();){
@@ -560,7 +565,7 @@ public class BulkInfo implements Serializable{
                 out.println("</td>");
             }
             out.print("<td>");
-            fieldproperty.writeInput(out, bean, readonly, inputClass, null, prefix, status, fieldvalidationmap);
+            fieldproperty.writeInput(out, bean, readonly, inputClass, null, prefix, status, fieldvalidationmap, isBootstrap);
             out.println("</td>");
             if(layout == 0)
                 out.println("</tr>");
@@ -568,28 +573,38 @@ public class BulkInfo implements Serializable{
         if(layout == 1)
             out.println("</tr>");
     }
+	/**
+     * Scrive una form HTML standard con tutte le formFieldProperties.
+     */
+    public void writeFormForSearchTool(Object bp, JspWriter out, Object bean, String formName, String labelClass, String inputClass, String prefix, int status, boolean readonly, int layout, boolean showLabels, FieldValidationMap fieldvalidationmap, boolean isBootstrap) throws IOException{
+        for(Enumeration enumeration = getFormFieldProperties(formName); enumeration.hasMoreElements();){
+            FieldProperty fieldproperty = (FieldProperty)enumeration.nextElement();
+            fieldproperty.writeInput(out, bean, readonly, inputClass, null, prefix, status, fieldvalidationmap, isBootstrap);
+        }
+    }
+
     /**
      * Scrive una form HTML standard con tutte le formFieldProperties.
      */
-	public void writeForm(Object bp, JspWriter out, Object bean, String formName, String labelClass, String inputClass, String prefix, int status, boolean readonly, FieldValidationMap fieldvalidationmap) throws IOException{
-		writeForm(bp, out, bean, formName, labelClass, inputClass, prefix, status, readonly, 0, true, fieldvalidationmap);
+	public void writeForm(Object bp, JspWriter out, Object bean, String formName, String labelClass, String inputClass, String prefix, int status, boolean readonly, FieldValidationMap fieldvalidationmap, boolean isBootstrap) throws IOException{
+		writeForm(bp, out, bean, formName, labelClass, inputClass, prefix, status, readonly, 0, true, fieldvalidationmap, isBootstrap);
 	}
     /**
      * Scrive una form HTML standard con tutte le formFieldProperties.
      */	
-    public void writeForm(JspWriter out, Object bean, String formName, String labelClass, String inputClass, String prefix, int status, boolean readonly, FieldValidationMap fieldvalidationmap) throws IOException{
-        writeForm(out, bean, formName, labelClass, inputClass, prefix, status, readonly, 0, true, fieldvalidationmap);
+    public void writeForm(JspWriter out, Object bean, String formName, String labelClass, String inputClass, String prefix, int status, boolean readonly, FieldValidationMap fieldvalidationmap, boolean isBootstrap) throws IOException{
+        writeForm(out, bean, formName, labelClass, inputClass, prefix, status, readonly, 0, true, fieldvalidationmap, isBootstrap);
     }
     /**
      * Scrive un campo di input HTML con la sua label associato a una formFieldProperty
      */    
-	public void writeFormField(JspWriter out, Object bean, String formName, String name, String prefix, int labelColspan, int inputColspan, int status, boolean readonly, FieldValidationMap fieldvalidationmap) throws IOException{
-		writeFormField(null, out, bean, formName, name, prefix, labelColspan, inputColspan, status, readonly, fieldvalidationmap);
+	public void writeFormField(JspWriter out, Object bean, String formName, String name, String prefix, int labelColspan, int inputColspan, int status, boolean readonly, FieldValidationMap fieldvalidationmap, boolean isBootstrap) throws IOException{
+		writeFormField(null, out, bean, formName, name, prefix, labelColspan, inputColspan, status, readonly, fieldvalidationmap, isBootstrap);
 	}
     /**
      * Scrive un campo di input HTML con la sua label associato a una formFieldProperty
      */	
-    public void writeFormField(Object bp, JspWriter out, Object bean, String formName, String name, String prefix, int labelColspan, int inputColspan, int status, boolean readonly, FieldValidationMap fieldvalidationmap) throws IOException{
+    public void writeFormField(Object bp, JspWriter out, Object bean, String formName, String name, String prefix, int labelColspan, int inputColspan, int status, boolean readonly, FieldValidationMap fieldvalidationmap, boolean isBootstrap) throws IOException{
         FieldProperty fieldproperty = getFormFieldProperty(formName, name);
         if(fieldproperty != null){
             out.print("<td");
@@ -607,17 +622,17 @@ public class BulkInfo implements Serializable{
                 out.print("\"");
             }
             out.print(">");
-            fieldproperty.writeInput(out, bean, readonly, "FormInput", null, prefix, status, fieldvalidationmap);
+            fieldproperty.writeInput(out, bean, readonly, "FormInput", null, prefix, status, fieldvalidationmap, isBootstrap);
             out.print("</td>");
         }
     }
     /**
      * Scrive un campo di input HTML senza label associato a una formFieldProperty
      */
-    public void writeFormInput(JspWriter out, Object bean, String formName, String name, boolean readonly, String cssClass, String attributes, String prefix, int status, FieldValidationMap fieldvalidationmap) throws IOException{
+    public void writeFormInput(JspWriter out, Object bean, String formName, String name, boolean readonly, String cssClass, String attributes, String prefix, int status, FieldValidationMap fieldvalidationmap, boolean isBootstrap) throws IOException{
         FieldProperty fieldproperty = getFormFieldProperty(formName, name);
         if(fieldproperty != null)
-            fieldproperty.writeInput(out, bean, readonly, cssClass, attributes, prefix, status, fieldvalidationmap);
+            fieldproperty.writeInput(out, bean, readonly, cssClass, attributes, prefix, status, fieldvalidationmap, isBootstrap);
     }
     /**
      * Scrive la label di un campo di input HTML associato a una formFieldProperty

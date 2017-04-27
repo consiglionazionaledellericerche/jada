@@ -377,55 +377,55 @@ public abstract class BulkBP extends FormBP
     public void writeForm(JspWriter jspwriter)
         throws IOException
     {
-        getBulkInfo().writeForm(jspwriter, getModel(), null, null, null, getInputPrefix(), getStatus(), isInputReadonly(), getFieldValidationMap());
+        getBulkInfo().writeForm(jspwriter, getModel(), null, null, null, getInputPrefix(), getStatus(), isInputReadonly(), getFieldValidationMap(), this.getParentRoot().isBootstrap());
     }
 
     public void writeForm(JspWriter jspwriter, String s)
         throws IOException
     {
-        getBulkInfo().writeForm(jspwriter, getModel(), s, null, null, getInputPrefix(), getStatus(), isInputReadonly(), getFieldValidationMap());
+        getBulkInfo().writeForm(jspwriter, getModel(), s, null, null, getInputPrefix(), getStatus(), isInputReadonly(), getFieldValidationMap(), this.getParentRoot().isBootstrap());
     }
 
     public void writeFormField(JspWriter jspwriter, String s)
         throws IOException
     {
-        getBulkInfo().writeFormField(this, jspwriter, getModel(), null, s, getInputPrefix(), 1, 1, getStatus(), isInputReadonly(), getFieldValidationMap());
+        getBulkInfo().writeFormField(this, jspwriter, getModel(), null, s, getInputPrefix(), 1, 1, getStatus(), isInputReadonly(), getFieldValidationMap(), this.getParentRoot().isBootstrap());
     }
 
     public void writeFormField(JspWriter jspwriter, String s, String s1)
         throws IOException
     {
-        getBulkInfo().writeFormField(this, jspwriter, getModel(), s, s1, getInputPrefix(), 1, 1, getStatus(), isInputReadonly(), getFieldValidationMap());
+        getBulkInfo().writeFormField(this, jspwriter, getModel(), s, s1, getInputPrefix(), 1, 1, getStatus(), isInputReadonly(), getFieldValidationMap(), this.getParentRoot().isBootstrap());
     }
 
     public void writeFormField(JspWriter jspwriter, String s, String s1, int i, int j)
         throws IOException
     {
-        getBulkInfo().writeFormField(this, jspwriter, getModel(), s, s1, getInputPrefix(), i, j, getStatus(), isInputReadonly(), getFieldValidationMap());
+        getBulkInfo().writeFormField(this, jspwriter, getModel(), s, s1, getInputPrefix(), i, j, getStatus(), isInputReadonly(), getFieldValidationMap(), this.getParentRoot().isBootstrap());
     }
 
     public void writeFormInput(JspWriter jspwriter, String s)
         throws IOException
     {
-        getBulkInfo().writeFormInput(jspwriter, getModel(), null, s, isInputReadonly(), null, null, getInputPrefix(), getStatus(), getFieldValidationMap());
+        getBulkInfo().writeFormInput(jspwriter, getModel(), null, s, isInputReadonly(), null, null, getInputPrefix(), getStatus(), getFieldValidationMap(), this.getParentRoot().isBootstrap());
     }
 
     public void writeFormInput(JspWriter jspwriter, String s, String s1)
         throws IOException
     {
-        getBulkInfo().writeFormInput(jspwriter, getModel(), s, s1, isInputReadonly(), null, null, getInputPrefix(), getStatus(), getFieldValidationMap());
+        getBulkInfo().writeFormInput(jspwriter, getModel(), s, s1, isInputReadonly(), null, null, getInputPrefix(), getStatus(), getFieldValidationMap(), this.getParentRoot().isBootstrap());
     }
 
     public void writeFormInput(JspWriter jspwriter, String s, String s1, boolean flag, String s2, String s3)
         throws IOException
-    {
-        getBulkInfo().writeFormInput(jspwriter, getModel(), s, s1, flag || isInputReadonly(), s2, s3, getInputPrefix(), getStatus(), getFieldValidationMap());
+    {    	
+        getBulkInfo().writeFormInput(jspwriter, getModel(), s, s1, flag || isInputReadonly(), s2, s3, getInputPrefix(), getStatus(), getFieldValidationMap(), this.getParentRoot().isBootstrap());
     }
 
     public void writeFormInputByStatus(JspWriter jspwriter, String s)
         throws IOException
     {
-        getBulkInfo().writeFormInput(jspwriter, getModel(), null, s, getStatus() == 2 || isInputReadonly(), null, null, getInputPrefix(), getStatus(), getFieldValidationMap());
+        getBulkInfo().writeFormInput(jspwriter, getModel(), null, s, getStatus() == 2 || isInputReadonly(), null, null, getInputPrefix(), getStatus(), getFieldValidationMap(), this.getParentRoot().isBootstrap());
     }
 
     public void writeFormLabel(JspWriter jspwriter, String s)
