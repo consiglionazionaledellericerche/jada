@@ -44,6 +44,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Vector;
 
 import javax.servlet.ServletException;
@@ -1622,7 +1623,7 @@ public class FieldProperty implements Serializable{
 	}
 
 	protected void writeCheckBox(JspWriter jspwriter, Object obj, boolean flag, Object obj1, String s, String s1, String s2, 
-			int i, FieldValidationMap fieldvalidationmap)
+			int i, FieldValidationMap fieldvalidationmap, boolean isBootstrap)
 		throws IOException, IntrospectionException, InvocationTargetException
 	{
 		String s3 = mergePrefix(s2, name);
@@ -1654,7 +1655,7 @@ public class FieldProperty implements Serializable{
 			jspwriter.print(command);
 			jspwriter.print("')\"");
 		}
-		jspwriter.print(">");
+		jspwriter.print(">");		
 	}
 
 	protected void writeCRUDTool(JspWriter jspwriter, Object obj, boolean flag, Object obj1, String s, String s1, String s2, 
@@ -1739,85 +1740,85 @@ public class FieldProperty implements Serializable{
 		writeInput((Object)null, jspwriter, obj, obj1, flag, s, s1, s2, 
 					i, fieldvalidationmap, isBootstrap);
 	}
-	public void writeInput(Object bp, JspWriter jspwriter, Object obj, Object obj1, boolean flag, String s, String s1, String s2, 
+	public void writeInput(Object bp, JspWriter jspwriter, Object obj, Object obj1, boolean readonly, String cssClass, String s1, String s2, 
 			int i, FieldValidationMap fieldvalidationmap, boolean isBootstrap)
 		throws IOException
 	{
 		try
 		{
-			if(!flag||isEnabledOnView())
-				flag = isReadonly(obj, i);
+			if(!readonly||isEnabledOnView())
+				readonly = isReadonly(obj, i);
 			switch(inputType)
 			{
 			case 7: // '\007'
-				writeText(jspwriter, obj, flag, obj1, s, s1, s2, i, fieldvalidationmap, isBootstrap);
+				writeText(jspwriter, obj, readonly, obj1, cssClass, s1, s2, i, fieldvalidationmap, isBootstrap);
 				break;
 
 			case 2: // '\002'
-				writePassword(jspwriter, obj, flag, obj1, s, s1, s2, i, fieldvalidationmap);
+				writePassword(jspwriter, obj, readonly, obj1, cssClass, s1, s2, i, fieldvalidationmap);
 				break;
 
 			case 8: // '\b'
-				writeTextArea(jspwriter, obj, flag, obj1, s, s1, s2, i, fieldvalidationmap);
+				writeTextArea(jspwriter, obj, readonly, obj1, cssClass, s1, s2, i, fieldvalidationmap);
 				break;
 
 			case 6: // '\006'
-				writeSelect(jspwriter, obj, flag, obj1, s, s1, s2, i, fieldvalidationmap);
+				writeSelect(jspwriter, obj, readonly, obj1, cssClass, s1, s2, i, fieldvalidationmap);
 				break;
 
 			case 3: // '\003'
-				writeRadioGroup(jspwriter, obj, flag, obj1, s, s1, s2, i, fieldvalidationmap);
+				writeRadioGroup(jspwriter, obj, readonly, obj1, cssClass, s1, s2, i, fieldvalidationmap, isBootstrap);
 				break;
 
-			case 9: // '\t'
-				writeCheckBox(jspwriter, obj, flag, obj1, s, s1, s2, i, fieldvalidationmap);
+			case CHECKBOX: // '\t'
+				writeCheckBox(jspwriter, obj, readonly, obj1, cssClass, s1, s2, i, fieldvalidationmap, isBootstrap);
 				break;
 
 			case 4: // '\004'
-				writeReadonlyText(jspwriter, obj, flag, obj1, s, s1, s2, i, fieldvalidationmap, isBootstrap);
+				writeReadonlyText(jspwriter, obj, readonly, obj1, cssClass, s1, s2, i, fieldvalidationmap, isBootstrap);
 				break;
 
 			case 5: // '\005'
-				writeSearchTool(jspwriter, obj, flag, obj1, s, s1, s2, i, fieldvalidationmap, isBootstrap);
+				writeSearchTool(jspwriter, obj, readonly, obj1, cssClass, s1, s2, i, fieldvalidationmap, isBootstrap);
 				break;
 
 			case 10: // '\n'
-				writeCRUDTool(jspwriter, obj, flag, obj1, s, s1, s2, i, fieldvalidationmap, isBootstrap);
+				writeCRUDTool(jspwriter, obj, readonly, obj1, cssClass, s1, s2, i, fieldvalidationmap, isBootstrap);
 				break;
 
 			case 1: // '\001'
-				writeHidden(jspwriter, obj, flag, obj1, s, s1, s2, i, fieldvalidationmap);
+				writeHidden(jspwriter, obj, readonly, obj1, cssClass, s1, s2, i, fieldvalidationmap);
 				break;
 
 			case 11: // '\013'
-				writeButton(jspwriter, obj, flag, obj1, s, s1, s2, i, fieldvalidationmap, isBootstrap);
+				writeButton(jspwriter, obj, readonly, obj1, cssClass, s1, s2, i, fieldvalidationmap, isBootstrap);
 				break;
 
 			case 12: // '\f'
-				writeTable(jspwriter, obj, flag, obj1, s, s1, s2, i, fieldvalidationmap, isBootstrap);
+				writeTable(jspwriter, obj, readonly, obj1, cssClass, s1, s2, i, fieldvalidationmap, isBootstrap);
 				break;
 
 			case 13: // '\r'
-				writeForm(jspwriter, obj, flag, obj1, s, s1, s2, i, fieldvalidationmap, isBootstrap);
+				writeForm(jspwriter, obj, readonly, obj1, cssClass, s1, s2, i, fieldvalidationmap, isBootstrap);
 				break;
                 
 			case FILE:
-				writeFile(jspwriter, obj, flag, obj1, s, s1, s2, i, fieldvalidationmap, isBootstrap);
+				writeFile(jspwriter, obj, readonly, obj1, cssClass, s1, s2, i, fieldvalidationmap, isBootstrap);
 				break;                
 
 			case DESCTOOL: 
-				writeDescTool(jspwriter, obj, flag, obj1, s, s1, s2, i, fieldvalidationmap, isBootstrap);
+				writeDescTool(jspwriter, obj, readonly, obj1, cssClass, s1, s2, i, fieldvalidationmap, isBootstrap);
 				break;
 
 			case LABEL: 
-				writeLabel(jspwriter, obj, flag, obj1, s, s1, s2, i, fieldvalidationmap);
+				writeLabel(jspwriter, obj, readonly, obj1, cssClass, s1, s2, i, fieldvalidationmap);
 				break;
 
 			default:
 				if(optionsProperty != null)
-					writeSelect(bp, jspwriter, obj, flag, obj1, s, s1, s2, i, fieldvalidationmap);
+					writeSelect(bp, jspwriter, obj, readonly, obj1, cssClass, s1, s2, i, fieldvalidationmap);
 				else
-					writeReadonlyText(jspwriter, obj, false, obj1, s, s1, s2, i, fieldvalidationmap, isBootstrap);
+					writeReadonlyText(jspwriter, obj, false, obj1, cssClass, s1, s2, i, fieldvalidationmap, isBootstrap);
 				break;
 			}
 		}
@@ -1830,20 +1831,20 @@ public class FieldProperty implements Serializable{
 			writeException(jspwriter, throwable);
 		}
 	}
-	public void writeInput(JspWriter jspwriter, Object obj, boolean flag, String s, String s1, String s2, int i, 
+	public void writeInput(JspWriter jspwriter, Object obj, boolean readonly, String cssClass, String s1, String s2, int i, 
 			FieldValidationMap fieldvalidationmap, boolean isBootstrap)
 		throws IOException
 	{
-		writeInput((Object)null, jspwriter, obj, flag, s, s1, s2, i, 
+		writeInput((Object)null, jspwriter, obj, readonly, cssClass, s1, s2, i, 
 					fieldvalidationmap, isBootstrap);
 	}
-	public void writeInput(Object bp, JspWriter jspwriter, Object obj, boolean flag, String s, String s1, String s2, int i, 
+	public void writeInput(Object bp, JspWriter jspwriter, Object obj, boolean readonly, String cssClass, String s1, String s2, int i, 
 			FieldValidationMap fieldvalidationmap, boolean isBootstrap)
 		throws IOException
 	{
 		try
 		{
-			writeInput(bp, jspwriter, obj, Introspector.getPropertyValue(obj, property), flag, s, s1, s2, i, fieldvalidationmap, isBootstrap);
+			writeInput(bp, jspwriter, obj, Introspector.getPropertyValue(obj, property), readonly, cssClass, s1, s2, i, fieldvalidationmap, isBootstrap);
 		}
 		catch(IOException ioexception)
 		{
@@ -1855,26 +1856,26 @@ public class FieldProperty implements Serializable{
 		}
 	}
 
-	protected void writeInputStyle(JspWriter jspwriter, String s, String s1, Object obj, Object obj1)
+	protected void writeInputStyle(JspWriter jspwriter, String cssClass, String s1, Object obj, Object obj1)
 		throws IOException
 	{
-		writeStyle(jspwriter, s != null ? s : "FormInput", JSPUtils.mergeStyles(s1, getFormatStyle(obj)), obj);
+		writeStyle(jspwriter, cssClass != null ? cssClass : "FormInput", JSPUtils.mergeStyles(s1, getFormatStyle(obj)), obj);
 	}
-	public void writeLabel(JspWriter jspwriter, Object obj)
+	public void writeLabel(JspWriter jspwriter, Object obj, boolean isBootstrap)
 		throws IOException
 	{
-		writeLabel(null, jspwriter, obj);
+		writeLabel(null, jspwriter, obj, isBootstrap);
 	}
 
-	public void writeLabel(Object bp, JspWriter jspwriter, Object obj)
+	public void writeLabel(Object bp, JspWriter jspwriter, Object obj, boolean isBootstrap)
 		throws IOException
 	{
-		writeLabel(bp, jspwriter, obj, null);
+		writeLabel(bp, jspwriter, obj, null, isBootstrap);
 	}
-	public void writeLabel(JspWriter jspwriter, Object obj, String s)throws IOException{
-		writeLabel(null, jspwriter, obj, s);
+	public void writeLabel(JspWriter jspwriter, Object obj, String s, boolean isBootstrap)throws IOException{
+		writeLabel(null, jspwriter, obj, s, isBootstrap);
 	}
-	public void writeLabel(Object bp, JspWriter jspwriter, Object obj, String s)
+	public void writeLabel(Object bp, JspWriter jspwriter, Object obj, String s, boolean isBootstrap)
 		throws IOException
 	{
 		if(inputType == 11)
@@ -1952,18 +1953,22 @@ public class FieldProperty implements Serializable{
 		jspwriter.print(">");
 	}
 
-	protected void writeRadioGroup(JspWriter jspwriter, Object obj, boolean flag, Object obj1, String s, String s1, String s2, 
-			int i, FieldValidationMap fieldvalidationmap)
+	protected void writeRadioGroup(JspWriter jspwriter, Object obj, boolean flag, Object obj1, String cssClass, String s1, String s2, 
+			int i, FieldValidationMap fieldvalidationmap, boolean isBootstrap)
 		throws IOException, IntrospectionException, InvocationTargetException
 	{
 		jspwriter.print("<div");
-		writeInputStyle(jspwriter, s, style, obj, obj1);
-		jspwriter.println('>');
+		if (!isBootstrap)
+			writeInputStyle(jspwriter, cssClass, style, obj, obj1);
+		jspwriter.print('>');
 		if(optionsProperty != null)
 		{
 			int j = 0;
 			for(Enumeration enumeration = getOptionsFrom(obj); enumeration.hasMoreElements();)
 			{
+				if (isBootstrap) {
+					jspwriter.println("<label class=\"form-check-label\">");
+				}
 				Object obj2 = enumeration.nextElement();
 				jspwriter.print("<input type=\"radio\" name=\"");
 				jspwriter.print(mergePrefix(s2, name));
@@ -1975,6 +1980,9 @@ public class FieldProperty implements Serializable{
 					jspwriter.print(' ');
 					jspwriter.print(s1);
 				}
+				if (isBootstrap) {
+					jspwriter.print(" class=\"form-check-input\" ");
+				}
 				jspwriter.print(" value=\"");
 				jspwriter.print(j++);
 				jspwriter.print('"');
@@ -1984,8 +1992,11 @@ public class FieldProperty implements Serializable{
 				jspwriter.print(" onclick=\"cancelBubble(event)\"");
 				jspwriter.print(">");
 				jspwriter.print(encodeHtmlText(getStringValueFrom(obj, obj2)));
+				if (isBootstrap) {
+					jspwriter.println("</label>");
+				}				
 				if(layout != 1)
-					jspwriter.print("<br>");
+					jspwriter.print("<br>");				
 			}
 
 		} else
@@ -1996,6 +2007,9 @@ public class FieldProperty implements Serializable{
 			{
 				for(Enumeration enumeration1 = dictionary.keys(); enumeration1.hasMoreElements();)
 				{
+					if (isBootstrap) {
+						jspwriter.println("<label class=\"form-check-label\">");
+					}
 					Object obj3 = enumeration1.nextElement();
 					jspwriter.print("<input type=\"radio\" name=\"");
 					jspwriter.print(mergePrefix(s2, name));
@@ -2007,6 +2021,9 @@ public class FieldProperty implements Serializable{
 						jspwriter.print(' ');
 						jspwriter.print(s1);
 					}
+					if (isBootstrap) {
+						jspwriter.print(" class=\"form-check-input\" ");
+					}
 					jspwriter.print(" value=\"");
 					jspwriter.print(format(obj3));
 					jspwriter.print('"');
@@ -2016,8 +2033,12 @@ public class FieldProperty implements Serializable{
 					jspwriter.print(" onclick=\"cancelBubble(event)\"");
 					jspwriter.print(">");
 					jspwriter.print(encodeHtmlText(format(dictionary.get(obj3))));
+					if (isBootstrap) {
+						jspwriter.println("</label>");
+					}
 					if(layout != 1)
 						jspwriter.print("<br>");
+
 				}
 
 			}
@@ -2126,14 +2147,14 @@ public class FieldProperty implements Serializable{
 		  jspwriter.print("title=\""+ JSPUtils.encodeHtmlString((String)Introspector.getPropertyValue(obj, getDescProperty()))+"\">");
 		}		  
 	}
-	protected void writeSelect(JspWriter jspwriter, Object obj, boolean flag, Object obj1, String s, String s1, String s2, 
+	protected void writeSelect(JspWriter jspwriter, Object obj, boolean flag, Object obj1, String cssClass, String s1, String s2, 
 			int i, FieldValidationMap fieldvalidationmap)
 		throws IOException, IntrospectionException, InvocationTargetException
 	{
-		writeSelect(null, jspwriter, obj, flag, obj1, s, s1, s2, 
+		writeSelect(null, jspwriter, obj, flag, obj1, cssClass, s1, s2, 
 					i, fieldvalidationmap);
 	}
-	protected void writeSelect(Object bp, JspWriter jspwriter, Object obj, boolean flag, Object obj1, String s, String s1, String s2, 
+	protected void writeSelect(Object bp, JspWriter jspwriter, Object obj, boolean flag, Object obj1, String cssClass, String s1, String s2, 
 			int i, FieldValidationMap fieldvalidationmap)
 		throws IOException, IntrospectionException, InvocationTargetException
 	{
@@ -2216,7 +2237,7 @@ public class FieldProperty implements Serializable{
 		{
 			writeMandatoryStyle(jspwriter, i);
 		}
-		writeInputStyle(jspwriter, s, s3, obj, obj1);
+		writeInputStyle(jspwriter, cssClass, s3, obj, obj1);
 		if(s1 != null)
 		{
 			jspwriter.print(' ');
@@ -2287,7 +2308,7 @@ public class FieldProperty implements Serializable{
 		table.writeScrolledTable(jspwriter, "100%", "100px", fieldvalidationmap, 0, isBootstrap);
 	}
 
-	protected void writeText(JspWriter jspwriter, Object obj, boolean flag, Object obj1, String s, String s1, String s2, 
+	protected void writeText(JspWriter jspwriter, Object obj, boolean flag, Object obj1, String cssClass, String s1, String s2, 
 			int i, FieldValidationMap fieldvalidationmap, boolean isBootstrap)
 		throws IOException, IntrospectionException, InvocationTargetException
 	{
@@ -2313,7 +2334,8 @@ public class FieldProperty implements Serializable{
 		if(flag || obj == null)
 		{
 			jspwriter.print(" readonly");
-			s4 = mergeStyles(s4, "background-color:transparent;color:BlackText;");
+			if (!isBootstrap)
+				s4 = mergeStyles(s4, "background-color:transparent;color:BlackText;");
 		}
 		if(s1 != null)
 		{
@@ -2334,7 +2356,7 @@ public class FieldProperty implements Serializable{
 		}
 		//int j = maxLength;
 		int j = getMaxLength(obj);
-		writeInputStyle(jspwriter, s, s4, obj, obj1);
+		writeInputStyle(jspwriter, Optional.ofNullable(cssClass).orElseGet(() -> isBootstrap ? "form-control" : null), s4, obj, obj1);
 		if(obj != null && j == 0 && getPropertyType((OggettoBulk)obj) == java.lang.String.class || j == 0 && getPropertyType() == java.lang.String.class)
 			try
 			{
@@ -2349,12 +2371,13 @@ public class FieldProperty implements Serializable{
 			catch(it.cnr.jada.persistency.IntrospectionException _ex) { }
 		/* -- add by Stentella - 16/7/04 */        
 			   String sqlt = "";
-
-			   if ((sqlt = getBulkInfo().getFieldProperty(name).getFormatName())!=null){
-				   if (sqlt.equalsIgnoreCase("timestamp"))
-						   jspwriter.print(" onKeyUp=\"DateTimeFormat(this,this.value,event,false,'3')\" onBlur=\"DateTimeFormat(this,this.value,event,true,'3'); modalInputChanged(this)\"");
-				   else if (sqlt.equalsIgnoreCase("date_short"))
-						   jspwriter.print(" onKeyUp=\"DateFormat(this,this.value,event,false,'3')\" onBlur=\"DateFormat(this,this.value,event,true,'3'); modalInputChanged(this)\"");
+			   if (!isBootstrap) {
+				   if ((sqlt = getBulkInfo().getFieldProperty(name).getFormatName())!=null){
+					   if (sqlt.equalsIgnoreCase("timestamp"))
+							   jspwriter.print(" onKeyUp=\"DateTimeFormat(this,this.value,event,false,'3')\" onBlur=\"DateTimeFormat(this,this.value,event,true,'3'); modalInputChanged(this)\"");
+					   else if (sqlt.equalsIgnoreCase("date_short"))
+							   jspwriter.print(" onKeyUp=\"DateFormat(this,this.value,event,false,'3')\" onBlur=\"DateFormat(this,this.value,event,true,'3'); modalInputChanged(this)\"");
+				   }				   
 			   }
 
 		if(j > 0)
@@ -2379,13 +2402,16 @@ public class FieldProperty implements Serializable{
 		}
 	}
     
-	protected void writeFile(JspWriter jspwriter, Object obj, boolean flag, Object obj1, String s, String s1, String s2, 
+	protected void writeFile(JspWriter jspwriter, Object obj, boolean flag, Object obj1, String cssClass, String s1, String s2, 
 			int i, FieldValidationMap fieldvalidationmap, boolean isBootstrap)
 		throws IOException, IntrospectionException, InvocationTargetException
 	{
 		FieldValidationException fieldvalidationexception = fieldvalidationmap.get(s2, name);
 		if(fieldvalidationexception != null)
 			obj1 = fieldvalidationexception.getText();
+		if (isBootstrap) {
+			jspwriter.println("<label class=\"custom-file\">");
+		}
 		jspwriter.print("<input type=file name=\"");
 		String s3 = mergePrefix(s2, name);
 		jspwriter.print(s3);
@@ -2397,8 +2423,6 @@ public class FieldProperty implements Serializable{
 			obj1 = getStringValueFrom(obj, obj1);
 		if(printProperty != null)
 			flag = true;
-		s4 = mergeStyles(s4, getMandatoryStyle(i));
-		s4 = mergeStyles(s4, writeFillExceptionStyle(jspwriter, fieldvalidationexception));
 		if(flag || obj == null)
 		{
 			jspwriter.print(" readonly disabled");
@@ -2422,7 +2446,8 @@ public class FieldProperty implements Serializable{
 			jspwriter.print("\"");
 		}
 		int j = maxLength;
-		writeInputStyle(jspwriter, s, s4, obj, obj1);
+		cssClass = "custom-file-input";
+		writeInputStyle(jspwriter, cssClass, s4, obj, obj1);
 		if(obj != null && j == 0 && getPropertyType((OggettoBulk)obj) == java.lang.String.class || j == 0 && getPropertyType() == java.lang.String.class)
 			try
 			{
@@ -2447,6 +2472,9 @@ public class FieldProperty implements Serializable{
 		}
 		jspwriter.print(" onclick=\"cancelBubble(event)\"");
 		jspwriter.print(">");
+		if (isBootstrap) {
+			jspwriter.println("<span class=\"custom-file-control\"></span></label>");
+		}
 		if(command != null && !flag && i != 4)
 		{
 			getConfirmButton().write(jspwriter, !flag, "confirmModalInputChange(this,'" + s3 + "','" + command + "')", "name = \"" + s3 + ".confirm\" onfocus=\"modalInputButtonFocused(this,'" + s3 + "')\"", isBootstrap);

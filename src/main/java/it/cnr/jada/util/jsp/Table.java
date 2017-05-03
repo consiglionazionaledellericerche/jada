@@ -247,7 +247,7 @@ public class Table
 		    
 			jspwriter.print(">");
 			writeButtonOnTableHeader(jspwriter, columnfieldproperty, nascondiColonne, isBootstrap);
-			columnfieldproperty.writeLabel(bp, jspwriter, null);
+			columnfieldproperty.writeLabel(bp, jspwriter, null, isBootstrap);
 		}
 		
 	}
@@ -325,7 +325,7 @@ public class Table
 				jspwriter.print(" valign=center rowspan=2");			    
 				jspwriter.print(">");
 				writeButtonOnTableHeader(jspwriter, columnfieldproperty, nascondiColonne, isBootstrap);
-				columnfieldproperty.writeLabel(bp,jspwriter, null);
+				columnfieldproperty.writeLabel(bp,jspwriter, null, isBootstrap);
 			}else{
 				if(labelHeader.containsKey(columnfieldproperty.getHeaderLabel())){
 					jspwriter.print("<td");
@@ -356,7 +356,7 @@ public class Table
 			    
 				jspwriter.print(">");
 				writeButtonOnTableHeader(jspwriter, columnfieldproperty, nascondiColonne, isBootstrap);
-				columnfieldproperty.writeLabel(bp, jspwriter, null);
+				columnfieldproperty.writeLabel(bp, jspwriter, null, isBootstrap);
 			}
 		}		
 	}

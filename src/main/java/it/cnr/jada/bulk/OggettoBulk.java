@@ -452,7 +452,7 @@ public abstract class OggettoBulk implements Cloneable, FetchListener, Persisten
         {
             FieldProperty fieldproperty = (FieldProperty)enumeration.nextElement();
             jspwriter.print("<tr><td>");
-            fieldproperty.writeLabel(jspwriter, this, s1);
+            fieldproperty.writeLabel(jspwriter, this, s1, isBootstrap);
             jspwriter.print("</td><td>");
             fieldproperty.writeInput(jspwriter, this, false, s2, null, s3, i, fieldvalidationmap, isBootstrap);
         }
@@ -466,7 +466,7 @@ public abstract class OggettoBulk implements Cloneable, FetchListener, Persisten
         if(fieldproperty != null)
         {
             jspwriter.print("<td>");
-            fieldproperty.writeLabel(jspwriter, this, null);
+            fieldproperty.writeLabel(jspwriter, this, null, isBootstrap);
             jspwriter.print("</td><td>");
             fieldproperty.writeInput(jspwriter, this, false, null, null, null, i, fieldvalidationmap, isBootstrap);
             jspwriter.print("</td>");
@@ -488,7 +488,7 @@ public abstract class OggettoBulk implements Cloneable, FetchListener, Persisten
                 jspwriter.print("\"");
             }
             jspwriter.print(">");
-            fieldproperty.writeLabel(jspwriter, this, null);
+            fieldproperty.writeLabel(jspwriter, this, null, isBootstrap);
             jspwriter.print("</td><td");
             if(j > 1)
             {
@@ -536,23 +536,23 @@ public abstract class OggettoBulk implements Cloneable, FetchListener, Persisten
             fieldproperty.writeInput(bp, jspwriter, this, flag, s2, s3, s4, i, fieldvalidationmap, isBootstrap);
     }
 
-    public void writeFormLabel(JspWriter jspwriter, String s)
+    public void writeFormLabel(JspWriter jspwriter, String s, boolean isBootstrap)
         throws IOException
     {
-        writeFormLabel(jspwriter, null, s, null);
+        writeFormLabel(jspwriter, null, s, null, isBootstrap);
     }
 
-    public void writeFormLabel(JspWriter jspwriter, String s, String s1)
+    public void writeFormLabel(JspWriter jspwriter, String s, String s1, boolean isBootstrap)
         throws IOException
     {
-        writeFormLabel(jspwriter, s, s1, null);
+        writeFormLabel(jspwriter, s, s1, null, isBootstrap);
     }
 
-    public void writeFormLabel(JspWriter jspwriter, String s, String s1, String s2)
+    public void writeFormLabel(JspWriter jspwriter, String s, String s1, String s2, boolean isBootstrap)
         throws IOException
     {
         FieldProperty fieldproperty = getBulkInfo().getFormFieldProperty(s, s1);
         if(fieldproperty != null)
-            fieldproperty.writeLabel(jspwriter, this, s2);
+            fieldproperty.writeLabel(jspwriter, this, s2, isBootstrap);
     }
 }

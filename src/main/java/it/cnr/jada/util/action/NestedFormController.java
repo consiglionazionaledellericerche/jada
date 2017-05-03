@@ -283,18 +283,18 @@ public abstract class NestedFormController
     public void writeFormLabel(JspWriter jspwriter, String s)
         throws IOException
     {
-        getBulkInfo().writeFormLabel(this, jspwriter, getModel(), null, s, null);
+        getBulkInfo().writeFormLabel(this, jspwriter, getModel(), null, s, null, ((BusinessProcess)this.getParentController()).getParentRoot().isBootstrap());
     }
 
     public void writeFormLabel(JspWriter jspwriter, String s, String s1)
         throws IOException
     {
-        getBulkInfo().writeFormLabel(this, jspwriter, getModel(), s, s1, null);
+        getBulkInfo().writeFormLabel(this, jspwriter, getModel(), s, s1, null, ((BusinessProcess)this.getParentController()).getParentRoot().isBootstrap());
     }
 
     public void writeFormLabel(JspWriter jspwriter, String s, String s1, String s2)
         throws IOException
     {
-        getBulkInfo().writeFormLabel(this, jspwriter, getModel(), s, s1, s2);
+        getBulkInfo().writeFormLabel(this, jspwriter, getModel(), s, s1, s2, ((BusinessProcess)this.getParentController()).getParentRoot().isBootstrap());
     }
 }

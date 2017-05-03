@@ -410,9 +410,6 @@ public class Button implements Serializable, Cloneable {
 			jspwriter.print(Optional.ofNullable(title).orElse(label));
 			jspwriter.print("\"");			
 		}	
-		if (isBootstrap) {
-			jspwriter.print(" data-toggle=\"tooltip\" data-placement=\"right\" ");
-		}
 		jspwriter.print(">");
 		if(s1 != null) {
 			if (!isBootstrap) {

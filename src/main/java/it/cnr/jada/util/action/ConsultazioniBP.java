@@ -159,50 +159,131 @@ public class ConsultazioniBP extends SelezionatoreListaBP
 		throws IOException, ServletException
 	{
 		Button abutton[] = getNavigatorToolbar();
-		jspwriter.println("<div class=\"Toolbar\">");
-		jspwriter.println("<table cellspacing=\"0\" cellpadding=\"0\">");
-		jspwriter.println("<tr align=center valign=middle>");
-		for (int i = 0; i<getNavPosition();i++) {
-			jspwriter.print("<td>");
-			abutton[i].write(jspwriter, this, this.getParentRoot().isBootstrap());
-			jspwriter.println("</td>");
-		}
-		jspwriter.print("<td");
-		if(abutton[getNavPosition()].hasSeparator())
-			jspwriter.print(" class=\"VSeparator\"");
-		jspwriter.print(">");
-		abutton[getNavPosition()].write(jspwriter, this, this.getParentRoot().isBootstrap());
-		jspwriter.println("</td>");
-		jspwriter.print("<td>");
-		abutton[getNavPosition()+1].write(jspwriter, this, this.getParentRoot().isBootstrap());
-		jspwriter.println("</td>");
-		getLastPage();
-		for(int i = getFirstPage(); i < getLastPage(); i++)
-		{
-			jspwriter.print("<td width=\"16\">");
-			if(getCurrentPage() != i)
-				JSPUtils.button(jspwriter, null, String.valueOf(i), "javascript:submitForm('doGotoPage(" + i + ")')", this.getParentRoot().isBootstrap());
-			else
-				JSPUtils.button(jspwriter, null, String.valueOf(i), null, "background: Highlight;color: HighlightText;", this.getParentRoot().isBootstrap());
-			jspwriter.println("</td>");
-		}
+		boolean isBootstrap = this.getParentRoot().isBootstrap();
+		if (isBootstrap) {
+			jspwriter.println("<nav aria-label=\"Page navigation example\"><ul class=\"pagination justify-content-center\">");
+			for (int i = 0; i<getNavPosition();i++) {
+				jspwriter.print("<li class=\"page-item\">");
+				abutton[i].write(jspwriter, this, this.getParentRoot().isBootstrap());
+				jspwriter.println("</li>");
+			}			
+			jspwriter.println("<li class=\"page-item ");
+			if (!isPreviousFrameButtonEnabled())
+				jspwriter.print("disabled");
+			jspwriter.print("\">");
+			jspwriter.println("<a class=\"page-link ");
+			if (isPreviousFrameButtonEnabled())
+				jspwriter.print("text-primary");
+			jspwriter.print("\" ");
+			jspwriter.print("onclick=\"javascript:submitForm('doPreviousFrame')\">");
+			jspwriter.println("<i class=\"fa fa-fast-backward\" aria-hidden=\"true\"></i>");
+			jspwriter.println("</a>");
 
-		jspwriter.print("<td>");
-		abutton[getNavPosition()+2].write(jspwriter, this, this.getParentRoot().isBootstrap());
-		jspwriter.println("</td>");
-		jspwriter.print("<td>");
-		abutton[getNavPosition()+3].write(jspwriter, this, this.getParentRoot().isBootstrap());
-		jspwriter.println("</td>");
-		for(int j = getNavPosition()+4; j < abutton.length; j++)
-		{
-			jspwriter.print("<td>");
-			abutton[getNavPosition()+j].write(jspwriter, this, this.getParentRoot().isBootstrap());
+			jspwriter.println("<li class=\"page-item ");
+			if (!isPreviousButtonEnabled())
+				jspwriter.print("disabled");
+			jspwriter.print("\">");
+			jspwriter.println("<a class=\"page-link ");
+			if (isPreviousButtonEnabled())
+				jspwriter.print("text-primary");
+			jspwriter.print("\" ");
+			jspwriter.print("onclick=\"javascript:submitForm('doPreviousPage')\">");
+			jspwriter.println("<i class=\"fa fa-backward\" aria-hidden=\"true\"></i>");
+			jspwriter.println("</a>");
+			getLastPage();
+			for(int i = getFirstPage(); i < getLastPage(); i++) {
+				jspwriter.println("<li class=\"page-item ");
+				if(getCurrentPage() != i) {
+					jspwriter.print("\">");
+					jspwriter.println("<a class=\"page-link text-primary\" ");
+					jspwriter.print("onclick=\"" + "javascript:submitForm('doGotoPage(" + i + ")')" + "\">");
+					jspwriter.print(i);
+					jspwriter.print("</a>");					
+				} else {
+					jspwriter.print("active\">");
+					jspwriter.println("<span class=\"page-link\">");
+					jspwriter.print(i);
+					jspwriter.print(" <span class=\"sr-only\">(current)</span></span>");										
+				}
+				jspwriter.println("</li>");
+			}
+			
+			jspwriter.println("<li class=\"page-item ");
+			if (!isNextButtonEnabled())
+				jspwriter.print("disabled");
+			jspwriter.print("\">");
+			jspwriter.println("<a class=\"page-link ");
+			if (isNextButtonEnabled())
+				jspwriter.print("text-primary");
+			jspwriter.print("\" ");
+			jspwriter.print("onclick=\"javascript:submitForm('doNextPage')\">");
+			jspwriter.println("<i class=\"fa fa-forward\" aria-hidden=\"true\"></i>");
+			jspwriter.println("</a>");
+			
+			jspwriter.println("<li class=\"page-item ");
+			if (!isNextFrameButtonEnabled())
+				jspwriter.print("disabled");
+			jspwriter.print("\">");
+			jspwriter.println("<a class=\"page-link ");
+			if (isNextFrameButtonEnabled())
+				jspwriter.print("text-primary");
+			jspwriter.print("\" ");
+			jspwriter.print("onclick=\"javascript:submitForm('doNextFrame')\">");
+			jspwriter.println("<i class=\"fa fa-fast-forward\" aria-hidden=\"true\"></i>");
+			jspwriter.println("</a>");
+			for(int j = getNavPosition()+4; j < abutton.length; j++)
+			{
+				jspwriter.print("<li class=\"page-item\">");
+				abutton[getNavPosition()+j].write(jspwriter, this, this.getParentRoot().isBootstrap());
+				jspwriter.println("</li>");
+			}
+			jspwriter.println("</ul></nav>");
+		} else {		
+			jspwriter.println("<div class=\"Toolbar\">");
+			jspwriter.println("<table cellspacing=\"0\" cellpadding=\"0\">");
+			jspwriter.println("<tr align=center valign=middle>");
+			for (int i = 0; i<getNavPosition();i++) {
+				jspwriter.print("<td>");
+				abutton[i].write(jspwriter, this, this.getParentRoot().isBootstrap());
+				jspwriter.println("</td>");
+			}
+			jspwriter.print("<td");
+			if(abutton[getNavPosition()].hasSeparator())
+				jspwriter.print(" class=\"VSeparator\"");
+			jspwriter.print(">");
+			abutton[getNavPosition()].write(jspwriter, this, this.getParentRoot().isBootstrap());
 			jspwriter.println("</td>");
+			jspwriter.print("<td>");
+			abutton[getNavPosition()+1].write(jspwriter, this, this.getParentRoot().isBootstrap());
+			jspwriter.println("</td>");
+			getLastPage();
+			for(int i = getFirstPage(); i < getLastPage(); i++)
+			{
+				jspwriter.print("<td width=\"16\">");
+				if(getCurrentPage() != i)
+					JSPUtils.button(jspwriter, null, String.valueOf(i), "javascript:submitForm('doGotoPage(" + i + ")')", this.getParentRoot().isBootstrap());
+				else
+					JSPUtils.button(jspwriter, null, String.valueOf(i), null, "background: Highlight;color: HighlightText;", this.getParentRoot().isBootstrap());
+				jspwriter.println("</td>");
+			}
+	
+			jspwriter.print("<td>");
+			abutton[getNavPosition()+2].write(jspwriter, this, this.getParentRoot().isBootstrap());
+			jspwriter.println("</td>");
+			jspwriter.print("<td>");
+			abutton[getNavPosition()+3].write(jspwriter, this, this.getParentRoot().isBootstrap());
+			jspwriter.println("</td>");
+			for(int j = getNavPosition()+4; j < abutton.length; j++)
+			{
+				jspwriter.print("<td>");
+				abutton[getNavPosition()+j].write(jspwriter, this, this.getParentRoot().isBootstrap());
+				jspwriter.println("</td>");
+			}
+	
+			jspwriter.println("</tr>");
+			jspwriter.println("</table>");
+			jspwriter.println("</div>");
 		}
-
-		jspwriter.println("</tr>");
-		jspwriter.println("</table>");
-		jspwriter.println("</div>");
 	}
 
 	public RemoteIterator search(

@@ -41,11 +41,11 @@ public class ColumnFieldProperty extends FieldProperty implements Serializable{
         headerStyle = s;
     }
 
-    protected void writeCheckBox(JspWriter jspwriter, Object obj, boolean flag, Object obj1, String s, String s1, String s2, int i, FieldValidationMap fieldvalidationmap) throws IOException, IntrospectionException, InvocationTargetException{
+    protected void writeCheckBox(JspWriter jspwriter, Object obj, boolean flag, Object obj1, String s, String s1, String s2, int i, FieldValidationMap fieldvalidationmap, boolean isBootstrap) throws IOException, IntrospectionException, InvocationTargetException{
         if(i == 5)
             writeReadonlyText(jspwriter, obj, s, s1);
         else
-            super.writeCheckBox(jspwriter, obj, flag, obj1, s, s1, s2, i, fieldvalidationmap);
+            super.writeCheckBox(jspwriter, obj, flag, obj1, s, s1, s2, i, fieldvalidationmap, isBootstrap);
     }
 
     public void writeColumnStyle(JspWriter jspwriter, Object obj, String s) throws IOException{
@@ -80,11 +80,11 @@ public class ColumnFieldProperty extends FieldProperty implements Serializable{
         writeStyle(jspwriter, s != null ? s : "TableInput", s1, obj);
     }
 
-    public void writeLabel(JspWriter jspwriter, Object obj, String s) throws IOException{
+    public void writeLabel(JspWriter jspwriter, Object obj, String s, boolean isBootstrap) throws IOException{
         if(getLabel() == null)
             jspwriter.print("&nbsp;");
         else
-            super.writeLabel(jspwriter, obj, s);
+            super.writeLabel(jspwriter, obj, s, isBootstrap);
     }
     
     protected void writePassword(JspWriter jspwriter, Object obj, boolean flag, Object obj1, String s, String s1, String s2, int i, FieldValidationMap fieldvalidationmap) throws IOException, IntrospectionException, InvocationTargetException{
@@ -94,11 +94,11 @@ public class ColumnFieldProperty extends FieldProperty implements Serializable{
             super.writePassword(jspwriter, obj, flag, obj1, s, s1, s2, i, fieldvalidationmap);
     }
 
-    protected void writeRadioGroup(JspWriter jspwriter, Object obj, boolean flag, Object obj1, String s, String s1, String s2, int i, FieldValidationMap fieldvalidationmap) throws IOException, IntrospectionException, InvocationTargetException{
+    protected void writeRadioGroup(JspWriter jspwriter, Object obj, boolean flag, Object obj1, String s, String s1, String s2, int i, FieldValidationMap fieldvalidationmap, boolean isBootstrap) throws IOException, IntrospectionException, InvocationTargetException{
         if(i == 5)
             writeReadonlyText(jspwriter, obj, s, s1);
         else
-            super.writeRadioGroup(jspwriter, obj, flag, obj1, s, s1, s2, i, fieldvalidationmap);
+            super.writeRadioGroup(jspwriter, obj, flag, obj1, s, s1, s2, i, fieldvalidationmap, isBootstrap);
     }
 
     public void writeReadonlyText(JspWriter jspwriter, Object obj, String s, String s1) throws IOException{

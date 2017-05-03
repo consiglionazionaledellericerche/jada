@@ -12,6 +12,7 @@ import java.net.UnknownHostException;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -304,7 +305,7 @@ public class JSPUtils
 			jspwriter.print("<td");
 			columnfieldproperty.writeHeaderStyle(jspwriter, null, "TableHeader");
 			jspwriter.print(">"+closeHeader);
-			columnfieldproperty.writeLabel(jspwriter, null);
+			columnfieldproperty.writeLabel(jspwriter, null, HttpActionContext.isFromBootstrap(pagecontext));
 		}
 
 		jspwriter.print("</tr>");
@@ -343,7 +344,7 @@ public class JSPUtils
 			jspwriter.print("<td");
 			columnfieldproperty.writeHeaderStyle(jspwriter, null, "TableHeader");
 			jspwriter.print("><H4>");
-			columnfieldproperty.writeLabel(jspwriter, null);
+			columnfieldproperty.writeLabel(jspwriter, null, HttpActionContext.isFromBootstrap(pagecontext));
 		}
 
 		jspwriter.print("</tr>");
@@ -718,8 +719,39 @@ public class JSPUtils
 		jspwriter.print("</td>");
 	}
 
-	public static void tree(JspWriter jspwriter, int i, String s, String s1, String s2, String s3, String s4, String s5, 
-			String s6, int j, Enumeration enumeration)
+	public static void treeBootstrap(JspWriter jspwriter, int i, String selezionaCondizione, String clausolaimg, int rigaSelezionata, Enumeration enumeration) throws IOException{
+		int k = 0;
+		jspwriter.println("<ul class=\"freesearch\">");
+		for(Enumeration enumeration1 = enumeration; enumeration1.hasMoreElements();) {
+			RigaAlbero rigaalbero = (RigaAlbero)enumeration1.nextElement();
+			jspwriter.print("<li");
+			if(rigaSelezionata == k)
+				jspwriter.print(" class=\"SelectedRow\"");
+			jspwriter.println(">");
+			if(rigaalbero.getNodo().getObject() != null)
+			{
+				jspwriter.print("<a border=\"0\" href=\"javascript:");
+				jspwriter.print(selezionaCondizione);
+				jspwriter.print("('");
+				jspwriter.print(k);
+				jspwriter.print("')\">");
+			} else
+			{
+				jspwriter.print("<span>");
+			}
+			jspwriter.print(Optional.ofNullable(clausolaimg).map(x -> "<i class=\"" + x + "\" aria-hidden=\"true\"></i> ").orElse(""));
+			jspwriter.print(rigaalbero.getNodo().getDescrizioneNodo());
+			if(rigaalbero.getNodo().getObject() != null)
+				jspwriter.print("</a>");
+			else
+				jspwriter.print("</span>");
+			jspwriter.println("</li>");
+			k++;
+		}
+		jspwriter.println("</ul>");
+	}
+	public static void tree(JspWriter jspwriter, int i, String selezionaCondizione, String treejoinimg, String treejoinimg2, String treejoinimg3, String clausolaimg, String s5, 
+			String s6, int j, Enumeration enumeration, boolean isBootstrap)
 		throws IOException
 	{
 		boolean aflag[] = new boolean[i];
@@ -755,11 +787,8 @@ public class JSPUtils
 			for(int l = 0; l < rigaalbero.getLivello() - 1; l++)
 			{
 				jspwriter.print("<TD>");
-				if(!aflag[l])
-				{
-					jspwriter.print("<IMG src=\"");
-					jspwriter.print(s3);
-					jspwriter.println("\">");
+				if(!aflag[l]) {
+					jspwriter.print(Optional.ofNullable(treejoinimg3).map(x -> "<img src=\"" + x + "\">").orElse(""));
 				}
 				jspwriter.print("</TD>");
 			}
@@ -768,17 +797,12 @@ public class JSPUtils
 			{
 				if(!rigaalbero.isUltimo())
 				{
-					jspwriter.print("<TD>");
-					jspwriter.print("<IMG src=\"");
-					jspwriter.print(s2);
-					jspwriter.print("\">");
+					jspwriter.print("<td>");
+					jspwriter.print(Optional.ofNullable(treejoinimg2).map(x -> "<img src=\"" + x + "\">").orElse(""));
 					jspwriter.println("</td>");
-				} else
-				{
+				} else {
 					jspwriter.print("<TD>");
-					jspwriter.print("<IMG src=\"");
-					jspwriter.print(s1);
-					jspwriter.print("\">");
+					jspwriter.print(Optional.ofNullable(treejoinimg).map(x -> "<img src=\"" + x + "\">").orElse(""));
 					jspwriter.println("</td>");
 				}
 				aflag[rigaalbero.getLivello() - 1] = rigaalbero.isUltimo();
@@ -786,13 +810,15 @@ public class JSPUtils
 			jspwriter.print("<td  colspan=\"");
 			jspwriter.print((i - rigaalbero.getLivello()) + 1);
 			jspwriter.print("\">");
-			jspwriter.print("<img align=\"middle\" border=\"0\" src=\"");
-			jspwriter.print(s4);
-			jspwriter.print("\">");
+			if (isBootstrap) {
+				jspwriter.print(Optional.ofNullable(clausolaimg).map(x -> "<i class=\"" + x + "\" aria-hidden=\"true\"></i>").orElse(""));
+			} else {
+				jspwriter.print(Optional.ofNullable(clausolaimg).map(x -> "<img align=\"middle\" border=\"0\" src=\"" + x + "\">").orElse(""));				
+			}
 			if(rigaalbero.getNodo().getObject() != null)
 			{
 				jspwriter.print("<a border=\"0\" href=\"javascript:");
-				jspwriter.print(s);
+				jspwriter.print(selezionaCondizione);
 				jspwriter.print("('");
 				jspwriter.print(k);
 				jspwriter.print("')\" class=\"TreeItem\">");

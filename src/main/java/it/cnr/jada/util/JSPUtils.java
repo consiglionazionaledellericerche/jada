@@ -1,11 +1,13 @@
 package it.cnr.jada.util;
 
+import it.cnr.jada.action.HttpActionContext;
 import it.cnr.jada.bulk.*;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Dictionary;
 import java.util.Enumeration;
+
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -240,7 +242,7 @@ public class JSPUtils
             jspwriter.print("<td");
             columnfieldproperty.writeHeaderStyle(jspwriter, null, "TableHeader");
             jspwriter.print(">");
-            columnfieldproperty.writeLabel(jspwriter, null);
+            columnfieldproperty.writeLabel(jspwriter, null, HttpActionContext.isFromBootstrap(pagecontext));
         }
 
         for(int j = 0; j < as.length; j++)
@@ -304,7 +306,7 @@ public class JSPUtils
             jspwriter.print("<td");
             columnfieldproperty.writeHeaderStyle(jspwriter, null, "TableHeader");
             jspwriter.print(">");
-            columnfieldproperty.writeLabel(jspwriter, null);
+            columnfieldproperty.writeLabel(jspwriter, null, HttpActionContext.isFromBootstrap(pagecontext));
         }
 
         for(int k = 0; k < as.length; k++)
@@ -382,7 +384,7 @@ public class JSPUtils
             jspwriter.print("<td");
             columnfieldproperty.writeHeaderStyle(jspwriter, null, "TableHeader");
             jspwriter.print(">");
-            columnfieldproperty.writeLabel(jspwriter, null);
+            columnfieldproperty.writeLabel(jspwriter, null, HttpActionContext.isFromBootstrap(pagecontext));
         }
 
         if(as != null)
@@ -462,7 +464,7 @@ public class JSPUtils
             jspwriter.print("<td");
             columnfieldproperty.writeHeaderStyle(jspwriter, null, "TableHeader");
             jspwriter.print(">");
-            columnfieldproperty.writeLabel(jspwriter, null);
+            columnfieldproperty.writeLabel(jspwriter, null, HttpActionContext.isFromBootstrap(pagecontext));
         }
 
         for(int j = 0; j < as.length; j++)

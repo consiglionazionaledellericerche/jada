@@ -561,11 +561,11 @@ public class BulkInfo implements Serializable{
                 out.println("<tr>");
             if(showLabels){
                 out.print("<td>");
-                fieldproperty.writeLabel(bp, out, bean, labelClass);
+                fieldproperty.writeLabel(bp, out, bean, labelClass, isBootstrap);
                 out.println("</td>");
             }
             out.print("<td>");
-            fieldproperty.writeInput(out, bean, readonly, inputClass, null, prefix, status, fieldvalidationmap, isBootstrap);
+            fieldproperty.writeInput(out, bean, readonly, Optional.ofNullable(inputClass).orElseGet(() -> isBootstrap ? "form-control" : "FormInput"), null, prefix, status, fieldvalidationmap, isBootstrap);
             out.println("</td>");
             if(layout == 0)
                 out.println("</tr>");
@@ -614,7 +614,7 @@ public class BulkInfo implements Serializable{
                 out.print("\"");
             }
             out.print(">");
-            fieldproperty.writeLabel(bp, out, bean, "FormLabel");
+            fieldproperty.writeLabel(bp, out, bean, "FormLabel", isBootstrap);
             out.print("</td><td");
             if(inputColspan > 1){
                 out.print(" colspan=\"");
@@ -622,7 +622,7 @@ public class BulkInfo implements Serializable{
                 out.print("\"");
             }
             out.print(">");
-            fieldproperty.writeInput(out, bean, readonly, "FormInput", null, prefix, status, fieldvalidationmap, isBootstrap);
+            fieldproperty.writeInput(out, bean, readonly, isBootstrap ? "form-control" : "FormInput", null, prefix, status, fieldvalidationmap, isBootstrap);
             out.print("</td>");
         }
     }
@@ -632,20 +632,20 @@ public class BulkInfo implements Serializable{
     public void writeFormInput(JspWriter out, Object bean, String formName, String name, boolean readonly, String cssClass, String attributes, String prefix, int status, FieldValidationMap fieldvalidationmap, boolean isBootstrap) throws IOException{
         FieldProperty fieldproperty = getFormFieldProperty(formName, name);
         if(fieldproperty != null)
-            fieldproperty.writeInput(out, bean, readonly, cssClass, attributes, prefix, status, fieldvalidationmap, isBootstrap);
+            fieldproperty.writeInput(out, bean, readonly, Optional.ofNullable(cssClass).orElseGet(() -> isBootstrap ? "form-control" : "FormInput"), attributes, prefix, status, fieldvalidationmap, isBootstrap);
     }
     /**
      * Scrive la label di un campo di input HTML associato a una formFieldProperty
      */    
-	public void writeFormLabel(JspWriter out, Object bean, String formName, String name, String cssClass) throws IOException{
-		writeFormLabel(null, out, bean, formName, name, cssClass);
+	public void writeFormLabel(JspWriter out, Object bean, String formName, String name, String cssClass, boolean isBootstrap) throws IOException{
+		writeFormLabel(null, out, bean, formName, name, cssClass, isBootstrap);
 	}
     /**
      * Scrive la label di un campo di input HTML associato a una formFieldProperty
      */	
-    public void writeFormLabel(Object bp, JspWriter out, Object bean, String formName, String name, String cssClass) throws IOException{
+    public void writeFormLabel(Object bp, JspWriter out, Object bean, String formName, String name, String cssClass, boolean isBootstrap) throws IOException{
         FieldProperty fieldproperty = getFormFieldProperty(formName, name);
         if(fieldproperty != null)
-            fieldproperty.writeLabel(bp, out, bean, cssClass);
+            fieldproperty.writeLabel(bp, out, bean, cssClass, isBootstrap);
     }
 }

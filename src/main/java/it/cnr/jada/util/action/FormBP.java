@@ -275,7 +275,7 @@ public class FormBP extends BusinessProcess implements Serializable{
 	                    break;
                 }
                 pagecontext.getOut().println("<div class=\"alert " + s1 + " alert-dismissible fade show\" role=\"alert\">");
-                pagecontext.getOut().println("<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">");
+                pagecontext.getOut().println("<button type=\"button\" onclick=\"hideAlert(this);\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">");
                 pagecontext.getOut().println("<span aria-hidden=\"true\">&times;</span>");
                 pagecontext.getOut().println("</button>");
                 pagecontext.getOut().println(s);
