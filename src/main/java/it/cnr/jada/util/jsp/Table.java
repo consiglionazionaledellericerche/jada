@@ -527,7 +527,7 @@ public class Table
                 if(columnfieldproperty1.isNoWrap())
                     jspwriter.print(" nowrap");
                 jspwriter.print(">");
-                columnfieldproperty1.writeInput(jspwriter, obj, flag1, null, null, s, l, fieldvalidationmap, false);
+                columnfieldproperty1.writeInput(jspwriter, obj, flag1, null, null, s, l, fieldvalidationmap, isBootstrap);
             }
 
             jspwriter.println("</tr>");

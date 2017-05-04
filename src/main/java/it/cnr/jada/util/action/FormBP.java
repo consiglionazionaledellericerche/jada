@@ -301,6 +301,10 @@ public class FormBP extends BusinessProcess implements Serializable{
         if (!this.getParentRoot().isBootstrap()){
         	pagecontext.getOut().println("<table id=\"mainWindow\" class=\"Form\" width=\"100%\" height=\"100%\" cellspacing=\"0\" cellpadding=\"2\">");
         	writeTitleBar(pagecontext);
+        } else {
+        	pagecontext.getOut().print("<sigla-page-title class=\"hidden-xs-up\">");
+        	pagecontext.getOut().print(getFormTitle().replace("<script>document.write(document.title)</script>", ""));
+        	pagecontext.getOut().print("</sigla-page-title>");
         }
         writeToolbar(pagecontext);
         if (!this.getParentRoot().isBootstrap()){        

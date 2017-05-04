@@ -286,6 +286,10 @@ public class FieldProperty implements Serializable{
 	private int ordinalPosition;
 	@JsonIgnore
 	private String accessKey;
+	@JsonIgnore
+	private String iconClass;
+	@JsonIgnore
+	private String buttonClass;
 	
 	static{
 		formats = new HashMap();
@@ -513,6 +517,11 @@ public class FieldProperty implements Serializable{
 			freeSearchSet = fieldproperty.freeSearchSet;
 		if(accessKey == null)
 			accessKey = fieldproperty.accessKey;
+		if(iconClass == null)
+			iconClass = fieldproperty.iconClass;
+		if(buttonClass == null)
+			buttonClass = fieldproperty.buttonClass;
+
 		if(CRUDBusinessProcessName == null)
 			CRUDBusinessProcessName = fieldproperty.CRUDBusinessProcessName;
 			
@@ -1348,6 +1357,22 @@ public class FieldProperty implements Serializable{
 		editFormat = format1;
 	}
 
+	public String getIconClass() {
+		return iconClass;
+	}
+
+	public void setIconClass(String iconClass) {
+		this.iconClass = iconClass;
+	}
+
+	public String getButtonClass() {
+		return buttonClass;
+	}
+
+	public void setButtonClass(String buttonClass) {
+		this.buttonClass = buttonClass;
+	}
+
 	public void setEditFormatName(String s)
 	{
 		editFormat = (Format)formats.get(editFormatName = s);
@@ -1619,7 +1644,7 @@ public class FieldProperty implements Serializable{
 			int i, FieldValidationMap fieldvalidationmap, boolean isBootstrap)
 		throws IOException, IntrospectionException, InvocationTargetException, ServletException
 	{
-		JSPUtils.button(jspwriter, img, img, label, href, style, !flag , accessKey, isBootstrap);
+		JSPUtils.button(jspwriter, isBootstrap ? iconClass : img, isBootstrap ? iconClass : img, label, href, style, !flag , accessKey, isBootstrap);
 	}
 
 	protected void writeCheckBox(JspWriter jspwriter, Object obj, boolean flag, Object obj1, String s, String s1, String s2, 
@@ -2143,8 +2168,15 @@ public class FieldProperty implements Serializable{
 		throws IOException, IntrospectionException, InvocationTargetException
 	{
 		if (Introspector.getPropertyValue(obj, getDescProperty()) != null){
-		  jspwriter.print("<img src=\"img/zoom16.gif\" ");
-		  jspwriter.print("title=\""+ JSPUtils.encodeHtmlString((String)Introspector.getPropertyValue(obj, getDescProperty()))+"\">");
+			if (isBootstrap) {
+				jspwriter.print("<i class=\"fa fa-info-circle hand text-primary\" aria-hidden=\"true\" ");
+				jspwriter.print("title=\""+ JSPUtils.encodeHtmlString((String)Introspector.getPropertyValue(obj, getDescProperty()))+"\"");
+				jspwriter.print("></i>");
+
+			} else {
+				jspwriter.print("<img src=\"img/zoom16.gif\" ");
+				jspwriter.print("title=\""+ JSPUtils.encodeHtmlString((String)Introspector.getPropertyValue(obj, getDescProperty()))+"\">");
+			}
 		}		  
 	}
 	protected void writeSelect(JspWriter jspwriter, Object obj, boolean flag, Object obj1, String cssClass, String s1, String s2, 

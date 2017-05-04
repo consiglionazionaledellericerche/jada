@@ -394,6 +394,10 @@ public class Button implements Serializable, Cloneable {
 		if(flag && !isBootstrap)
 			jspwriter.print(" onMouseOver=\"mouseOver(this)\" onMouseOut=\"mouseOut(this)\" onMouseDown=\"mouseDown(this)\" onMouseUp=\"mouseUp(this)\"");
 		
+		if (isBootstrap) {
+			jspwriter.print(" data-toggle=\"tooltip\" data-placement=\"top\" ");
+		}
+		
 		if(title != null && !isBootstrap)
 		{
 			jspwriter.print(" title=\"");
