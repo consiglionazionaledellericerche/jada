@@ -376,13 +376,17 @@ public class Button implements Serializable, Cloneable {
 				jspwriter.print(buttonStyle);
 				jspwriter.print('"');				
 			} else {
-				jspwriter.print(" class=\"btn btn-secondary ");
+				jspwriter.print(" class=\"btn btn-secondary ");				
 				jspwriter.print(buttonStyle);
 				jspwriter.print('"');				
 			}
 		} else {
 			if (isBootstrap) {
-				jspwriter.print(" class=\"btn btn-secondary\" ");				
+				jspwriter.print(" class=\"btn btn-secondary ");
+				if (s1 == null) {
+					jspwriter.print(" btn-sm text-primary");
+				}
+				jspwriter.print("\"");
 			}
 		}
 		if(href != null)
@@ -446,6 +450,13 @@ public class Button implements Serializable, Cloneable {
 				jspwriter.println("<i class=\"");
 				jspwriter.print(s1);
 				jspwriter.print("\" aria-hidden=\"true\"></i>");				
+			}
+		} else {
+			/**
+			 * Serve per scrivere i numeri di pagina nella toolbar
+			 */
+			if (isBootstrap) {
+				jspwriter.print(label);
 			}
 		}
 		if(label != null && !isBootstrap)
