@@ -719,6 +719,18 @@ public class JSPUtils
 		jspwriter.print("</td>");
 	}
 
+	public static void toolbarButton(PageContext pagecontext, String s, String s1, boolean flag, String s2, String buttonStyle, boolean isBootstrap)
+			throws IOException, ServletException
+		{
+			JspWriter jspwriter = pagecontext.getOut();
+			jspwriter.print("<td");
+			if(flag)
+				jspwriter.print(" class=\"VSeparator\"");
+			jspwriter.print(">");
+			Button.write(jspwriter, null, s, true, null, 1, s1, buttonStyle, s2, null, null, isBootstrap);
+			jspwriter.print("</td>");
+		}
+
 	public static void treeBootstrap(JspWriter jspwriter, int i, String selezionaCondizione, String clausolaimg, int rigaSelezionata, Enumeration enumeration) throws IOException{
 		int k = 0;
 		jspwriter.println("<ul class=\"freesearch\">");
