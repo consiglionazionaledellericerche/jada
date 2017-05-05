@@ -749,6 +749,15 @@ public class FieldProperty implements Serializable{
 			return null;
 	}
 
+	protected String getMandatoryStyleBootstrap(int i)
+			throws IOException
+		{
+			if(!nullable && i != 0 && i != 5 && i != 4)
+				return " required";
+			else
+				return "";
+		}
+
 	public int getMaxLength()
 	{
 		return maxLength;
@@ -1784,11 +1793,11 @@ public class FieldProperty implements Serializable{
 				break;
 
 			case 8: // '\b'
-				writeTextArea(jspwriter, obj, readonly, obj1, cssClass, s1, s2, i, fieldvalidationmap);
+				writeTextArea(jspwriter, obj, readonly, obj1, cssClass, s1, s2, i, fieldvalidationmap, isBootstrap);
 				break;
 
 			case 6: // '\006'
-				writeSelect(jspwriter, obj, readonly, obj1, cssClass, s1, s2, i, fieldvalidationmap);
+				writeSelect(jspwriter, obj, readonly, obj1, cssClass, s1, s2, i, fieldvalidationmap, isBootstrap);
 				break;
 
 			case 3: // '\003'
@@ -1841,7 +1850,7 @@ public class FieldProperty implements Serializable{
 
 			default:
 				if(optionsProperty != null)
-					writeSelect(bp, jspwriter, obj, readonly, obj1, cssClass, s1, s2, i, fieldvalidationmap);
+					writeSelect(bp, jspwriter, obj, readonly, obj1, cssClass, s1, s2, i, fieldvalidationmap, isBootstrap);
 				else
 					writeReadonlyText(jspwriter, obj, false, obj1, cssClass, s1, s2, i, fieldvalidationmap, isBootstrap);
 				break;
@@ -1856,20 +1865,20 @@ public class FieldProperty implements Serializable{
 			writeException(jspwriter, throwable);
 		}
 	}
-	public void writeInput(JspWriter jspwriter, Object obj, boolean readonly, String cssClass, String s1, String s2, int i, 
+	public void writeInput(JspWriter jspwriter, Object obj, boolean readonly, String cssClass, String s1, String s2, int status, 
 			FieldValidationMap fieldvalidationmap, boolean isBootstrap)
 		throws IOException
 	{
-		writeInput((Object)null, jspwriter, obj, readonly, cssClass, s1, s2, i, 
+		writeInput((Object)null, jspwriter, obj, readonly, cssClass, s1, s2, status, 
 					fieldvalidationmap, isBootstrap);
 	}
-	public void writeInput(Object bp, JspWriter jspwriter, Object obj, boolean readonly, String cssClass, String s1, String s2, int i, 
+	public void writeInput(Object bp, JspWriter jspwriter, Object obj, boolean readonly, String cssClass, String s1, String s2, int status, 
 			FieldValidationMap fieldvalidationmap, boolean isBootstrap)
 		throws IOException
 	{
 		try
 		{
-			writeInput(bp, jspwriter, obj, Introspector.getPropertyValue(obj, property), readonly, cssClass, s1, s2, i, fieldvalidationmap, isBootstrap);
+			writeInput(bp, jspwriter, obj, Introspector.getPropertyValue(obj, property), readonly, cssClass, s1, s2, status, fieldvalidationmap, isBootstrap);
 		}
 		catch(IOException ioexception)
 		{
@@ -1930,7 +1939,13 @@ public class FieldProperty implements Serializable{
 	protected void writeLabelStyle(JspWriter jspwriter, String s, String s1, Object obj)
 		throws IOException
 	{
-		writeStyle(jspwriter, s != null ? s : "FormLabel", s1, obj);
+		String cssClass = "FormLabel";
+		if (!nullable && !(this instanceof ColumnFieldProperty)) {
+			cssClass += " required";
+			if (s != null)
+				s += " required";
+		}
+		writeStyle(jspwriter, s != null ? s : cssClass, s1, obj);
 	}
 
 	protected void writeMandatoryStyle(JspWriter jspwriter, int i)
@@ -2180,14 +2195,14 @@ public class FieldProperty implements Serializable{
 		}		  
 	}
 	protected void writeSelect(JspWriter jspwriter, Object obj, boolean flag, Object obj1, String cssClass, String s1, String s2, 
-			int i, FieldValidationMap fieldvalidationmap)
+			int i, FieldValidationMap fieldvalidationmap, boolean isBootstrap)
 		throws IOException, IntrospectionException, InvocationTargetException
 	{
 		writeSelect(null, jspwriter, obj, flag, obj1, cssClass, s1, s2, 
-					i, fieldvalidationmap);
+					i, fieldvalidationmap, isBootstrap);
 	}
 	protected void writeSelect(Object bp, JspWriter jspwriter, Object obj, boolean flag, Object obj1, String cssClass, String s1, String s2, 
-			int i, FieldValidationMap fieldvalidationmap)
+			int i, FieldValidationMap fieldvalidationmap, boolean isBootstrap)
 		throws IOException, IntrospectionException, InvocationTargetException
 	{
 		boolean flag1 = false;
@@ -2261,13 +2276,12 @@ public class FieldProperty implements Serializable{
 		jspwriter.print("<select name=\"");
 		jspwriter.print(s4);
 		jspwriter.print('"');
-		if(flag || obj == null || !flag1)
-		{
+		if(flag || obj == null || !flag1){
 			jspwriter.print(" disabled");
 			s3 = mergeStyles(s3, "background-color:ButtonFace");
-		} else
-		{
-			writeMandatoryStyle(jspwriter, i);
+		} else {
+			if (!isBootstrap)
+				writeMandatoryStyle(jspwriter, i);
 		}
 		writeInputStyle(jspwriter, cssClass, s3, obj, obj1);
 		if(s1 != null)
@@ -2361,7 +2375,8 @@ public class FieldProperty implements Serializable{
 			obj1 = getStringValueFrom(obj, obj1);
 		if(printProperty != null)
 			flag = true;
-		s4 = mergeStyles(s4, getMandatoryStyle(i));
+		if (!isBootstrap)
+			s4 = mergeStyles(s4, getMandatoryStyle(i));
 		s4 = mergeStyles(s4, writeFillExceptionStyle(jspwriter, fieldvalidationexception));
 		if(flag || obj == null)
 		{
@@ -2388,7 +2403,9 @@ public class FieldProperty implements Serializable{
 		}
 		//int j = maxLength;
 		int j = getMaxLength(obj);
-		writeInputStyle(jspwriter, Optional.ofNullable(cssClass).orElseGet(() -> isBootstrap ? "form-control" : null), s4, obj, obj1);
+		String css = Optional.ofNullable(cssClass).orElseGet(() -> isBootstrap ? "form-control" : "");
+		css += getMandatoryStyleBootstrap(i);
+		writeInputStyle(jspwriter, css, s4, obj, obj1);
 		if(obj != null && j == 0 && getPropertyType((OggettoBulk)obj) == java.lang.String.class || j == 0 && getPropertyType() == java.lang.String.class)
 			try
 			{
@@ -2515,7 +2532,7 @@ public class FieldProperty implements Serializable{
 	}    
 
 	protected void writeTextArea(JspWriter jspwriter, Object obj, boolean flag, Object obj1, String s, String s1, String s2, 
-			int i, FieldValidationMap fieldvalidationmap)
+			int i, FieldValidationMap fieldvalidationmap, boolean isBootstrap)
 		throws IOException, IntrospectionException, InvocationTargetException
 	{
 		FieldValidationException fieldvalidationexception = fieldvalidationmap.get(s2, name);
@@ -2527,7 +2544,8 @@ public class FieldProperty implements Serializable{
 		jspwriter.print('"');
 		if(printProperty != null)
 			flag = true;
-		s3 = mergeStyles(s3, getMandatoryStyle(i));
+		if (!isBootstrap)
+			s3 = mergeStyles(s3, getMandatoryStyle(i));
 		s3 = mergeStyles(s3, writeFillExceptionStyle(jspwriter, fieldvalidationexception));
 		if(flag || obj == null)
 		{

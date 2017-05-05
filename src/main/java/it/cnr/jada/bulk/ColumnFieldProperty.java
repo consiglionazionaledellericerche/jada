@@ -136,11 +136,11 @@ public class ColumnFieldProperty extends FieldProperty implements Serializable{
             jspwriter.print("&nbsp;");
     }
 
-    protected void writeSelect(JspWriter jspwriter, Object obj, boolean flag, Object obj1, String s, String s1, String s2,  int i, FieldValidationMap fieldvalidationmap) throws IOException, IntrospectionException, InvocationTargetException{
+    protected void writeSelect(JspWriter jspwriter, Object obj, boolean flag, Object obj1, String s, String s1, String s2,  int i, FieldValidationMap fieldvalidationmap, boolean isBootstrap) throws IOException, IntrospectionException, InvocationTargetException{
         if(i == 5)
             writeReadonlyText(jspwriter, obj, s, s1);
         else
-            super.writeSelect(jspwriter, obj, flag, obj1, s, s1, s2, i, fieldvalidationmap);
+            super.writeSelect(jspwriter, obj, flag, obj1, s, s1, s2, i, fieldvalidationmap, isBootstrap);
     }
 
     protected void writeText(JspWriter jspwriter, Object obj, boolean flag, Object obj1, String s, String s1, String s2, int i, FieldValidationMap fieldvalidationmap, boolean isBootstrap) throws IOException, IntrospectionException, InvocationTargetException{
@@ -150,11 +150,11 @@ public class ColumnFieldProperty extends FieldProperty implements Serializable{
             super.writeText(jspwriter, obj, flag, obj1, s, s1, s2, i, fieldvalidationmap, isBootstrap);
     }
 
-    protected void writeTextArea(JspWriter jspwriter, Object obj, boolean flag, Object obj1, String s, String s1, String s2, int i, FieldValidationMap fieldvalidationmap) throws IOException, IntrospectionException, InvocationTargetException{
+    protected void writeTextArea(JspWriter jspwriter, Object obj, boolean flag, Object obj1, String s, String s1, String s2, int i, FieldValidationMap fieldvalidationmap, boolean isBootstrap) throws IOException, IntrospectionException, InvocationTargetException{
         if(i == 5 || flag)
             writeReadonlyText(jspwriter, obj, s, s1);
         else
-            super.writeTextArea(jspwriter, obj, flag, obj1, s, s1, s2, i, fieldvalidationmap);
+            super.writeTextArea(jspwriter, obj, flag, obj1, s, s1, s2, i, fieldvalidationmap, isBootstrap);
     }
 	public void writeLabel(Object bp, JspWriter jspwriter, Object obj, String s) throws IOException{
 		if(getInputType().equals("BUTTON")){

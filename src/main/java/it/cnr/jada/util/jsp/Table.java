@@ -392,7 +392,7 @@ public class Table
     	
         int j = selection != null ? selection.getFocus() : -1;
         jspwriter.println("<!-- INIZIO TABLE HEADER -->");
-        jspwriter.println("<thead>");
+        jspwriter.println("<thead class=\"table-info\">");
         jspwriter.println("<tr valign=\"top\">");
         if(selectable && multiSelection)
         {
