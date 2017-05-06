@@ -429,7 +429,7 @@ public class Table
             String s = name + ".[" + i;
             jspwriter.print("<tr class=\"");
             if(!singleSelection && j == i){
-                jspwriter.print((resto == 0?"SelectedTableRow":"SelectedTableRowPar"));
+                jspwriter.print((resto == 0?"SelectedTableRow bg-primary text-white":"SelectedTableRowPar bg-primary text-white"));
             }else{
             	jspwriter.print((resto == 0?"TableRow":"TableRowPar"));
             }
