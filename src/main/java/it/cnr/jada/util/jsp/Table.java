@@ -533,9 +533,15 @@ public class Table
             jspwriter.println("</tr>");
             if(!singleSelection && j == i)
             {
-                jspwriter.print("<script>addOnloadHandler(function() { scrollIntoView('");
-                jspwriter.print(Prefix.prependPrefix(s, "selectdTR"));
-                jspwriter.print("'); },101)</script>");
+            	if (isBootstrap) {
+                    jspwriter.print("<script>scrollIntoView('");
+                    jspwriter.print(Prefix.prependPrefix(s, "selectdTR"));
+                    jspwriter.print("');</script>");            		            		
+            	} else {
+                    jspwriter.print("<script>addOnloadHandler(function() { scrollIntoView('");
+                    jspwriter.print(Prefix.prependPrefix(s, "selectdTR"));
+                    jspwriter.print("'); },101)</script>");            		
+            	}
             }
             jspwriter.print("<!-- FINE RIGA ");
             jspwriter.print(i);
