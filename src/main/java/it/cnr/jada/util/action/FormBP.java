@@ -482,7 +482,7 @@ public class FormBP extends BusinessProcess implements Serializable{
     
     protected void writeToolbarBootstrap(JspWriter jspwriter, List<Button> abutton) throws IOException, ServletException{
         jspwriter.println("<!-- TOOLBAR BOOTSTRAP -->");
-        jspwriter.println("<div id=\"crudToolbar\" class=\"btn-group\" role=\"group\" aria-label=\"Toolbar with button groups\">");
+        jspwriter.println("<div id=\"crudToolbar\" class=\"btn-toolbar\" role=\"toolbar\" aria-label=\"Toolbar with button groups\">");
         JSPUtils.toolbarBootstrap(jspwriter, abutton, this);
         jspwriter.println("</div>");
         jspwriter.println("<!-- FINE TOOLBAR BOOTSTRAP -->");

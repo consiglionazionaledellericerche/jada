@@ -6,9 +6,14 @@
  */
 package it.cnr.jada.excel.bp;
 
+import java.util.Arrays;
+
+import javax.servlet.http.HttpServletRequest;
+
 import it.cnr.jada.action.ActionContext;
 import it.cnr.jada.action.BusinessProcessException;
 import it.cnr.jada.action.Config;
+import it.cnr.jada.action.HttpActionContext;
 import it.cnr.jada.bulk.BulkInfo;
 import it.cnr.jada.bulk.OggettoBulk;
 import it.cnr.jada.excel.bulk.Excel_spoolerBulk;
@@ -41,11 +46,12 @@ public class ExcelSpoolerBP extends SelezionatoreListaBP {
 		     BframeExcelComponentSession.class);
 	}
 	public it.cnr.jada.util.jsp.Button[] createToolbar() {
-		Button[] toolbar = new Button[3];
+		Button[] toolbar = new Button[4];
 		int i = 0;
 		toolbar[i++] = new it.cnr.jada.util.jsp.Button(it.cnr.jada.util.Config.getHandler().getProperties(getClass()),"Toolbar.refresh");
 		toolbar[i++] = new it.cnr.jada.util.jsp.Button(it.cnr.jada.util.Config.getHandler().getProperties(getClass()),"Toolbar.download");
 		toolbar[i++] = new it.cnr.jada.util.jsp.Button(it.cnr.jada.util.Config.getHandler().getProperties(getClass()),"Toolbar.delete");
+		toolbar[i++] = new it.cnr.jada.util.jsp.Button(it.cnr.jada.util.Config.getHandler().getProperties(getClass()),"Toolbar.close");
 		return toolbar;
 	}
 	protected void init(Config config,ActionContext context) throws BusinessProcessException {
@@ -61,7 +67,6 @@ public class ExcelSpoolerBP extends SelezionatoreListaBP {
 	}
 	public void refresh(ActionContext context) throws BusinessProcessException {
 		try {
-			EJBCommonServices.closeRemoteIterator(context, getIterator());			
 			setIterator(context,createComponentSession().queryJobs(
 				context.getUserContext()));
 		} catch(Throwable e) {
@@ -83,10 +88,13 @@ public class ExcelSpoolerBP extends SelezionatoreListaBP {
 		Button[] toolbar = getToolbar();
 		Excel_spoolerBulk excel_spooler = (Excel_spoolerBulk)getFocusedElement();
 		if (excel_spooler != null && excel_spooler.isEseguita())
-			toolbar[1].setHref("doPrint('offline_excel/"+excel_spooler.getNome_file()+"?pg="+excel_spooler.getPg_estrazione().longValue()+"')");
+			toolbar[1].setHref("doPrint('" + JSPUtils.getAppRoot((HttpServletRequest) pageContext.getRequest()) + "offline_excel/"+excel_spooler.getNome_file()+"?pg="+excel_spooler.getPg_estrazione().longValue()+"')");
 		else
 			toolbar[1].setHref(null);
-		writeToolbar(pageContext.getOut(),toolbar);
+		if (HttpActionContext.isFromBootstrap(pageContext))
+			writeToolbarBootstrap(pageContext.getOut(), Arrays.asList(toolbar));		
+		else
+			writeToolbar(pageContext.getOut(),toolbar);
 	}
 	public boolean isEMailEnabled(){
 		if (this.getModel()!=null &&((Excel_spoolerBulk)this.getModel()).getFl_email() != null && (((Excel_spoolerBulk)this.getModel()).getFl_email()))

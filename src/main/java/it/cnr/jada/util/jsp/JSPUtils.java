@@ -622,11 +622,17 @@ public class JSPUtils
 	}
 
 	public static void toolbarBootstrap(JspWriter jspwriter, List<Button> abutton, Object obj, String descrizione) throws IOException, ServletException {
+        jspwriter.println("<div class=\"btn-group mr-2\" role=\"group\">");		
 		for (Button button : abutton) {
 			if(!button.isHidden(obj)){
+				if (button.hasSeparator()) {
+					jspwriter.println("</div>");		
+			        jspwriter.println("<div class=\"btn-group mr-2\" role=\"group\">");
+				}
 				button.write(jspwriter, obj, true);
-			}
+			}			
 		}
+		jspwriter.println("</div>");		
 	}
 
 	public static void toolbar(JspWriter jspwriter, Button abutton[], Object obj, String descrizione, boolean isBootstrap)

@@ -217,9 +217,17 @@ public class Button implements Serializable, Cloneable {
 		throws IOException
 	{
 		if(!Introspector.getBoolean(obj, hiddenProperty, false))
-			write(jspwriter, Optional.of(isBootstrap).filter(x -> x.equals(Boolean.TRUE)).map(x-> iconClass).orElse(img), 
-					Optional.of(isBootstrap).filter(x -> x.equals(Boolean.TRUE)).map(x-> iconClass).orElse(disabledImg), label, labelPosition, href, 
-					Optional.of(isBootstrap).filter(x -> x.equals(Boolean.TRUE)).map(x-> buttonClass).orElse(style), title, enabledProperty != null ? Introspector.getBoolean(obj, enabledProperty, false) : true, accessKey, isBootstrap);
+			write(jspwriter, 
+					Optional.of(isBootstrap).filter(x -> x.equals(Boolean.TRUE)).map(x-> iconClass).orElse(img), 
+					Optional.of(isBootstrap).filter(x -> x.equals(Boolean.TRUE)).map(x-> iconClass).orElse(disabledImg), 
+					label, 
+					labelPosition, 
+					href, 
+					isBootstrap ? buttonClass : style,
+					title, 
+					enabledProperty != null ? Introspector.getBoolean(obj, enabledProperty, false) : true, 
+					accessKey, 
+					isBootstrap);
 	}
 	
 	
@@ -376,7 +384,7 @@ public class Button implements Serializable, Cloneable {
 				jspwriter.print(buttonStyle);
 				jspwriter.print('"');				
 			} else {
-				jspwriter.print(" class=\"btn btn-secondary ");				
+				jspwriter.print(" class=\"btn ");				
 				jspwriter.print(buttonStyle);
 				jspwriter.print('"');				
 			}
