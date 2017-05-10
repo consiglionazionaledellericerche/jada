@@ -91,10 +91,7 @@ public class ExcelSpoolerBP extends SelezionatoreListaBP {
 			toolbar[1].setHref("doPrint('" + JSPUtils.getAppRoot((HttpServletRequest) pageContext.getRequest()) + "offline_excel/"+excel_spooler.getNome_file()+"?pg="+excel_spooler.getPg_estrazione().longValue()+"')");
 		else
 			toolbar[1].setHref(null);
-		if (HttpActionContext.isFromBootstrap(pageContext))
-			writeToolbarBootstrap(pageContext.getOut(), Arrays.asList(toolbar));		
-		else
-			writeToolbar(pageContext.getOut(),toolbar);
+		writeToolbar(pageContext.getOut(),toolbar);
 	}
 	public boolean isEMailEnabled(){
 		if (this.getModel()!=null &&((Excel_spoolerBulk)this.getModel()).getFl_email() != null && (((Excel_spoolerBulk)this.getModel()).getFl_email()))

@@ -467,34 +467,22 @@ public class FormBP extends BusinessProcess implements Serializable{
             writeToolbar(jspwriter, abutton);
     }
 
-    public void writeToolbarBootstrap(JspWriter jspwriter) throws IOException, ServletException{
-        Button abutton[] = getToolbar();
-        if(abutton != null) {
-        	writeToolbarBootstrap(jspwriter, Stream.concat(Arrays.stream(abutton), Stream.of(getCloseButton())).collect(Collectors.toList()));
-        }
-    }
-
     protected void writeToolbar(JspWriter jspwriter, Button abutton[]) throws IOException, ServletException{
-        openToolbar(jspwriter);
-        JSPUtils.toolbar(jspwriter, abutton, this, this.getParentRoot().isBootstrap());
-        closeToolbar(jspwriter);
+    	if (this.getParentRoot().isBootstrap()) {
+            jspwriter.println("<!-- TOOLBAR BOOTSTRAP -->");
+            jspwriter.println("<div id=\"crudToolbar\" class=\"btn-toolbar\" role=\"toolbar\" aria-label=\"Toolbar with button groups\">");
+            JSPUtils.toolbarBootstrap(jspwriter, Stream.concat(Arrays.stream(abutton), Stream.of(getCloseButton())).collect(Collectors.toList()), this);
+            jspwriter.println("</div>");
+            jspwriter.println("<!-- FINE TOOLBAR BOOTSTRAP -->");    		
+    	} else {
+            openToolbar(jspwriter);
+            JSPUtils.toolbar(jspwriter, abutton, this, this.getParentRoot().isBootstrap());
+            closeToolbar(jspwriter);    		
+    	}
     }
     
-    protected void writeToolbarBootstrap(JspWriter jspwriter, List<Button> abutton) throws IOException, ServletException{
-        jspwriter.println("<!-- TOOLBAR BOOTSTRAP -->");
-        jspwriter.println("<div id=\"crudToolbar\" class=\"btn-toolbar\" role=\"toolbar\" aria-label=\"Toolbar with button groups\">");
-        JSPUtils.toolbarBootstrap(jspwriter, abutton, this);
-        jspwriter.println("</div>");
-        jspwriter.println("<!-- FINE TOOLBAR BOOTSTRAP -->");
-
-    }
-
     public void writeToolbar(PageContext pagecontext) throws IOException, ServletException{
-    	if (HttpActionContext.isFromBootstrap(pagecontext)){
-    		writeToolbarBootstrap(pagecontext.getOut());   
-    	} else {
-            writeToolbar(pagecontext.getOut());    		
-    	}
+        writeToolbar(pagecontext.getOut());    		
     }
 
 	public Button getPreferitiButton() {
