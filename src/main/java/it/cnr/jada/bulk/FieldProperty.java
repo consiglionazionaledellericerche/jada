@@ -290,6 +290,8 @@ public class FieldProperty implements Serializable{
 	private String iconClass;
 	@JsonIgnore
 	private String buttonClass;
+	@JsonIgnore
+	private String inputCssClass;
 	
 	static{
 		formats = new HashMap();
@@ -521,6 +523,8 @@ public class FieldProperty implements Serializable{
 			iconClass = fieldproperty.iconClass;
 		if(buttonClass == null)
 			buttonClass = fieldproperty.buttonClass;
+		if(inputCssClass == null)
+			inputCssClass = fieldproperty.inputCssClass;
 
 		if(CRUDBusinessProcessName == null)
 			CRUDBusinessProcessName = fieldproperty.CRUDBusinessProcessName;
@@ -1605,6 +1609,14 @@ public class FieldProperty implements Serializable{
 		rows = i;
 	}
 
+	public String getInputCssClass() {
+		return inputCssClass;
+	}
+
+	public void setInputCssClass(String inputCssClass) {
+		this.inputCssClass = inputCssClass;
+	}
+
 	private Object setStringValueOn(Object obj, String s)
 		throws ParseException, IntrospectionException, InvocationTargetException
 	{
@@ -2403,7 +2415,8 @@ public class FieldProperty implements Serializable{
 		}
 		//int j = maxLength;
 		int j = getMaxLength(obj);
-		String css = Optional.ofNullable(cssClass).orElseGet(() -> isBootstrap ? "form-control" : "");
+		String css = Optional.ofNullable(cssClass)
+				.orElseGet(() -> isBootstrap ? Optional.ofNullable(getInputCssClass()).orElse("form-control") : "");
 		css += getMandatoryStyleBootstrap(i);
 		writeInputStyle(jspwriter, css, s4, obj, obj1);
 		if(obj != null && j == 0 && getPropertyType((OggettoBulk)obj) == java.lang.String.class || j == 0 && getPropertyType() == java.lang.String.class)

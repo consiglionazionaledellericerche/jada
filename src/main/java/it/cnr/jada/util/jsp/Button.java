@@ -433,9 +433,9 @@ public class Button implements Serializable, Cloneable {
 			jspwriter.print(' ');
 			jspwriter.print(s6);
 		}
-		if(label != null && isBootstrap) {
+		if(isBootstrap) {
 			jspwriter.print(" title=\"");
-			jspwriter.print(Optional.ofNullable(title).orElse(label));
+			jspwriter.print(Optional.ofNullable(title).orElse(Optional.ofNullable(label).orElse("")));
 			jspwriter.print("\"");			
 		}	
 		jspwriter.print(">");

@@ -143,11 +143,11 @@ public class ColumnFieldProperty extends FieldProperty implements Serializable{
             super.writeSelect(jspwriter, obj, flag, obj1, s, s1, s2, i, fieldvalidationmap, isBootstrap);
     }
 
-    protected void writeText(JspWriter jspwriter, Object obj, boolean flag, Object obj1, String s, String s1, String s2, int i, FieldValidationMap fieldvalidationmap, boolean isBootstrap) throws IOException, IntrospectionException, InvocationTargetException{
+    protected void writeText(JspWriter jspwriter, Object obj, boolean flag, Object obj1, String cssClass, String s1, String s2, int i, FieldValidationMap fieldvalidationmap, boolean isBootstrap) throws IOException, IntrospectionException, InvocationTargetException{
         if(i == 5 || flag)
-            writeReadonlyText(jspwriter, obj, s, s1);
+            writeReadonlyText(jspwriter, obj, cssClass, s1);
         else
-            super.writeText(jspwriter, obj, flag, obj1, s, s1, s2, i, fieldvalidationmap, isBootstrap);
+            super.writeText(jspwriter, obj, flag, obj1, cssClass, s1, s2, i, fieldvalidationmap, isBootstrap);
     }
 
     protected void writeTextArea(JspWriter jspwriter, Object obj, boolean flag, Object obj1, String s, String s1, String s2, int i, FieldValidationMap fieldvalidationmap, boolean isBootstrap) throws IOException, IntrospectionException, InvocationTargetException{
