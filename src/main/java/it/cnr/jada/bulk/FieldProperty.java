@@ -1665,7 +1665,8 @@ public class FieldProperty implements Serializable{
 			int i, FieldValidationMap fieldvalidationmap, boolean isBootstrap)
 		throws IOException, IntrospectionException, InvocationTargetException, ServletException
 	{
-		JSPUtils.button(jspwriter, isBootstrap ? iconClass : img, isBootstrap ? iconClass : img, label, href, style, !flag , accessKey, isBootstrap);
+		JSPUtils.button(jspwriter, isBootstrap ? iconClass : img, isBootstrap ? iconClass : img, label, href, 
+				isBootstrap ? buttonClass : style, !flag , accessKey, isBootstrap);
 	}
 
 	protected void writeCheckBox(JspWriter jspwriter, Object obj, boolean flag, Object obj1, String s, String s1, String s2, 
