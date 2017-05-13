@@ -496,7 +496,7 @@ public class JSPUtils
 		}
 		jspwriter.println(">");
 		jspwriter.println("<tr><td>");
-		jspwriter.println("<table cellspacing=\"0\" cellpadding=\"0\" align=\"left\">");
+		jspwriter.println("<table cellspacing=\"0\" cellpadding=\"0\" align=\"left\" width=\"100%\">");
 		jspwriter.println("<tr valign=\"bottom\">");
 		jspwriter.println("<td>&nbsp;</td>");
 		String s5 = null;
@@ -511,34 +511,41 @@ public class JSPUtils
 			if(flag5)
 				jspwriter.print(" style=\"font-weight: bold;border: 1px outset;border-bottom: 0px;padding: 3px\"");
 			jspwriter.print(">");
-			if(!flag5)
-			{
-				jspwriter.print("<button ");
-				if(!flag)
-					jspwriter.print("disabled ");				
-				jspwriter.print("class=\"TabLabel btn-primary hand h5\" style=\"border: 1px outset;border-bottom: 0px;margin: 0px;");
+			if(!flag5) {				
+				jspwriter.print(HttpActionContext.isFromBootstrap(pagecontext) ? "<span " : "<button ");
+				String cssClass = "TabLabel btn-primary hand h6";
+				if(!flag) {
+					jspwriter.print("disabled ");
+					cssClass = "TabLabel h6";
+				}
+
+				jspwriter.print("class=\"" + cssClass + "\" style=\"border: 1px outset;border-bottom: 0px;margin: 0px;");
 				if(flag1)
 					jspwriter.print("border-left: 0px;");
 				if(flag3)
 					jspwriter.print("border-right: 0px;");
-				jspwriter.print("\" onclick=\"doTab('");
-				jspwriter.print(s);
-				jspwriter.print("','");
-				jspwriter.print(as1[0]);
-				jspwriter.print("')\">");
-			} else
-			{
-				jspwriter.print("<span class=\"TabLabel h5\">");
+				jspwriter.print("\"");
+				if(flag) {
+					jspwriter.print(" onclick=\"doTab('");
+					jspwriter.print(s);
+					jspwriter.print("','");
+					jspwriter.print(as1[0]);
+					jspwriter.print("')\"");
+				}
+				jspwriter.print(">");				
+			} else {
+				jspwriter.print("<span class=\"TabLabel h6\">");
 			}
 			if(flag5)
 				s5 = as1[2];
 			jspwriter.print("&nbsp;");
 			jspwriter.print(as1[1]);
 			jspwriter.print("&nbsp;");
-			if(!flag5)
-				jspwriter.print("</button>");
-			else
+			if(!flag5) {
+				jspwriter.print(HttpActionContext.isFromBootstrap(pagecontext) ? "</span>" : "</button>");
+			} else {
 				jspwriter.print("</span>");
+			}
 			jspwriter.println("</td>");
 			flag1 = flag5;
 		}
