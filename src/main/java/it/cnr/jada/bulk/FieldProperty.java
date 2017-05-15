@@ -2502,6 +2502,9 @@ public class FieldProperty implements Serializable{
 			jspwriter.print(href);
 			jspwriter.print('"');
 		}
+		if (isBootstrap) {
+			jspwriter.print(" onchange=\"inputFileName(this);\" ");
+		}		
 		if(obj1 != null)
 		{
 			jspwriter.print(" value=\"");
@@ -2536,7 +2539,9 @@ public class FieldProperty implements Serializable{
 		jspwriter.print(" onclick=\"cancelBubble(event)\"");
 		jspwriter.print(">");
 		if (isBootstrap) {
-			jspwriter.println("<span class=\"custom-file-control\"></span></label>");
+			jspwriter.println("<span ");
+			jspwriter.print(" id=\"span-" + s3 + "\"");
+			jspwriter.print(" class=\"custom-file-control\" title=\"Scegli file...\"></span></label>");
 		}
 		if(command != null && !flag && i != 4)
 		{

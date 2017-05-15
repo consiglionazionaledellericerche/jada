@@ -534,7 +534,7 @@ public class JSPUtils
 				}
 				jspwriter.print(">");				
 			} else {
-				jspwriter.print("<span class=\"TabLabel h6\">");
+				jspwriter.print("<span class=\"TabLabel h6 text-primary\">");
 			}
 			if(flag5)
 				s5 = as1[2];
