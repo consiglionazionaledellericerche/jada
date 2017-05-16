@@ -243,10 +243,10 @@ public class Button implements Serializable, Cloneable {
 		write(jspwriter, s, s1, s2, null, isBootstrap);
 	}
 
-	public static void write(JspWriter jspwriter, String s, String img, String label, int i, String href, String s4, String s5, boolean isBootstrap)
+	public static void write(JspWriter jspwriter, String name, String img, String label, int layoutImg, String href, String buttonStyle, String s5, boolean isBootstrap)
 		throws IOException
 	{
-		write(jspwriter, s, img, label, i, href, s4, s5, ((String) (null)), isBootstrap);
+		write(jspwriter, name, img, label, layoutImg, href, buttonStyle, s5, ((String) (null)), isBootstrap);
 	}
 	
 	public static void writeWhithAccessKey(JspWriter jspwriter, String s, String s1, String s2, int i, String s3, String s4, String s5, String accessKey, boolean isBootstrap)
@@ -254,11 +254,11 @@ public class Button implements Serializable, Cloneable {
 	{
 		writeWhithAccessKey(jspwriter, s, s1, s2, i, s3, s4, s5, ((String) (null)), accessKey, isBootstrap);
 	}
-	public static void write(JspWriter jspwriter, String s, String s1, String s2, int i, String s3, String s4, String s5, 
+	public static void write(JspWriter jspwriter, String name, String image, String s2, int layoutImg, String href, String buttonStyle, String title, 
 			String s6, boolean isBootstrap)
 		throws IOException
 	{
-		write(jspwriter, s, s1, s1 != null, s2, i, s3, s4, s5, s6, isBootstrap);
+		write(jspwriter, name, image, image != null, s2, layoutImg, href, buttonStyle, title, s6, isBootstrap);
 	}
 
 	public static void writeWhithAccessKey(JspWriter jspwriter, String s, String s1, String s2, int i, String s3, String s4, String s5, 
@@ -351,7 +351,7 @@ public class Button implements Serializable, Cloneable {
 	}
 
 	/* Metodo inserito da Marco Spasiano per gestire l'accessKey*/
-	public static void write(JspWriter jspwriter, String s, String s1, boolean flag, String label, int layoutImg, String href, String buttonStyle, 
+	public static void write(JspWriter jspwriter, String name, String image, boolean flag, String label, int layoutImg, String href, String buttonStyle, 
 			String title, String s6, String accessKey, boolean isBootstrap) throws IOException {
 		
 		jspwriter.print("<button");
@@ -370,9 +370,9 @@ public class Button implements Serializable, Cloneable {
 			jspwriter.print(accessKey);
 			jspwriter.print('"');
 		}
-		if(s != null) {
+		if(name != null) {
 			jspwriter.print(" name=\"");
-			jspwriter.print(s);
+			jspwriter.print(name);
 			jspwriter.print('"');
 		}
 		if(href != null && href.startsWith("javascript:"))
@@ -391,10 +391,10 @@ public class Button implements Serializable, Cloneable {
 		} else {
 			if (isBootstrap) {
 				jspwriter.print(" class=\"btn btn-secondary ");
-				if (s1 == null) {
+				if (image == null) {
 					jspwriter.print(" btn-sm text-primary");
 				} else {
-					if (s1.startsWith("img")) {
+					if (image.startsWith("img")) {
 						// Workaround per i bottoni dove non è definita una icona
 						jspwriter.print(" btn-outline-primary ");
 						if (label != null) {
@@ -403,7 +403,7 @@ public class Button implements Serializable, Cloneable {
 						} else {
 							jspwriter.print(" btn-sm ");							
 						}
-						s1 = "fa fa-fw fa-star";
+						image = "fa fa-fw fa-star";
 					}
 				}
 				jspwriter.print("\"");
@@ -439,10 +439,10 @@ public class Button implements Serializable, Cloneable {
 			jspwriter.print("\"");			
 		}	
 		jspwriter.print(">");
-		if(s1 != null) {
+		if(image != null) {
 			if (!isBootstrap) {
 				jspwriter.print("<img align=\"middle\" class=\"Button\" src=\"");
-				jspwriter.print(s1);
+				jspwriter.print(image);
 				jspwriter.print("\">");
 				if(label != null) {
 					switch(layoutImg) {
@@ -468,7 +468,7 @@ public class Button implements Serializable, Cloneable {
 				}				
 			} else {
 				jspwriter.println("<i class=\"");
-				jspwriter.print(s1);
+				jspwriter.print(image);
 				jspwriter.print("\" aria-hidden=\"true\"></i>");				
 			}
 		} else {
@@ -485,11 +485,11 @@ public class Button implements Serializable, Cloneable {
 		jspwriter.print("</button>");
 
 	}
-	public static void write(JspWriter jspwriter, String s, String s1, boolean flag, String s2, int i, String s3, String s4, 
+	public static void write(JspWriter jspwriter, String name, String image, boolean flag, String s2, int layoutImg, String s3, String buttonStyle, 
 			String s5, String s6, boolean isBootstrap)
 		throws IOException
 	{
-		write(jspwriter, s, s1, flag, s2, i, s3, s4, s5, s6, null, isBootstrap);
+		write(jspwriter, name, image, flag, s2, layoutImg, s3, buttonStyle, s5, s6, null, isBootstrap);
 	}
 
 	public void write(JspWriter jspwriter, boolean flag, boolean isBootstrap)

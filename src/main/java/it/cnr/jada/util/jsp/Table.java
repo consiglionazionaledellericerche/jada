@@ -270,17 +270,20 @@ public class Table
 		sort.setHref( onsort + "('" + name + "','" + columnfieldproperty.getProperty() + "')");
 		sort.setImg("img/sortable16.gif");
 		sort.setStyle("vertical-align:middle;");
-		sort.setIconClass("fa fa-sort");
-		sort.setButtonClass("btn-secondary btn-sm btn-link float-right");
+		sort.setIconClass("fa fa-exchange fa-rotate-90");
+		sort.setButtonClass("btn-sm btn-link");
 
 		Button sortasc = sort.clone();
 		sortasc.setImg("img/sorted_asc16.gif");
-		sortasc.setIconClass("fa fa-sort-asc");
+		sortasc.setIconClass("fa fa-sort-alpha-asc");
 		
 		Button sortdesc = sort.clone();
 		sortdesc.setImg("img/sorted_desc6.gif");
-		sortdesc.setIconClass("fa fa-sort-desc");
-		
+		sortdesc.setIconClass("fa fa-sort-alpha-desc");
+		if (isBootstrap) {
+			jspwriter.write("<div class=\"btn-group float-right\" role=\"group\">");
+		}
+			
 		if(onsort != null && orderable != null && orderable.isOrderableBy(columnfieldproperty.getProperty()))
 		{
 			int k = orderable.getOrderBy(columnfieldproperty.getProperty());
@@ -299,11 +302,21 @@ public class Table
 			}
 		}
 		if (nascondiColonne){
-			if (!isBootstrap){
+			if (!isBootstrap)
 				jspwriter.print("&nbsp;");
-				Button.write(jspwriter, null, "img/meno8.gif", null, 1, getOnHiddenColumn() + "('" + name + "','" + columnfieldproperty.getName() + "')", "vertical-align:middle;","Nascondi colonna ("+columnfieldproperty.getLabel()+")", isBootstrap);
-			}
+			Button.write(jspwriter, 
+					null, 
+					isBootstrap ? "fa fa-angle-left" : "img/meno8.gif", 
+					null, 
+					1, 
+					getOnHiddenColumn() + "('" + name + "','" + columnfieldproperty.getName() + "')", 
+					isBootstrap ? "btn-sm btn-link" : "vertical-align:middle;",
+					"Nascondi colonna ("+columnfieldproperty.getLabel()+")", 
+					isBootstrap);
 		}
+		if (isBootstrap) {
+			jspwriter.write("</div>");
+		}		
 	}
 	
 	public void writeTableWithColumnHeader(Object bp, JspWriter jspwriter, FieldValidationMap fieldvalidationmap, int i, 

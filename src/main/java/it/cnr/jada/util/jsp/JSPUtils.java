@@ -512,8 +512,8 @@ public class JSPUtils
 				jspwriter.print(" style=\"font-weight: bold;border: 1px outset;border-bottom: 0px;padding: 3px\"");
 			jspwriter.print(">");
 			if(!flag5) {				
-				jspwriter.print(HttpActionContext.isFromBootstrap(pagecontext) ? "<span " : "<button ");
-				String cssClass = "TabLabel btn-primary hand h6";
+				jspwriter.print("<button ");
+				String cssClass = "TabLabel btn-primary btn-block hand h6 text-white";
 				if(!flag) {
 					jspwriter.print("disabled ");
 					cssClass = "TabLabel h6";
@@ -542,7 +542,7 @@ public class JSPUtils
 			jspwriter.print(as1[1]);
 			jspwriter.print("&nbsp;");
 			if(!flag5) {
-				jspwriter.print(HttpActionContext.isFromBootstrap(pagecontext) ? "</span>" : "</button>");
+				jspwriter.print("</button>");
 			} else {
 				jspwriter.print("</span>");
 			}
