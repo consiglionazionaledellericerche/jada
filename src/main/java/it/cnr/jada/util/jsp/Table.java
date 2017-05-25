@@ -278,7 +278,7 @@ public class Table
 		sortasc.setIconClass("fa fa-sort-alpha-asc");
 		
 		Button sortdesc = sort.clone();
-		sortdesc.setImg("img/sorted_desc6.gif");
+		sortdesc.setImg("img/sorted_desc16.gif");
 		sortdesc.setIconClass("fa fa-sort-alpha-desc");
 		if (isBootstrap) {
 			jspwriter.write("<div class=\"btn-group float-right\" role=\"group\">");
