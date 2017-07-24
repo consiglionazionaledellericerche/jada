@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>it.cnr</groupId>
 	<artifactId>jada</artifactId>
-	<version>5.0.3-SNAPSHOT</version>
+	<version>5.0.4-SNAPSHOT</version>
 	<packaging>ejb</packaging>
 	<name>jada</name>
 	<parent>
