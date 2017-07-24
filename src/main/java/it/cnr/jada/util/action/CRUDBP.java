@@ -2,6 +2,7 @@ package it.cnr.jada.util.action;
 
 import it.cnr.jada.action.ActionContext;
 import it.cnr.jada.action.BusinessProcessException;
+import it.cnr.jada.action.HttpActionContext;
 import it.cnr.jada.bulk.BulkInfo;
 import it.cnr.jada.bulk.OggettoBulk;
 import it.cnr.jada.bulk.ROWrapper;
@@ -18,10 +19,14 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.text.DateFormat;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Dictionary;
 import java.util.Enumeration;
+import java.util.Optional;
 
 import javax.servlet.ServletException;
+import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 
 // Referenced classes of package it.cnr.jada.util.action:
@@ -137,20 +142,49 @@ public abstract class CRUDBP extends BulkBP
         }
     }
 
+
     public void closeForm(PageContext pagecontext)
         throws IOException, ServletException
     {
-        pagecontext.getOut().println("<tr><td>");
-        pagecontext.getOut().print("<div style=\"border: 1px inset\">");
-        pagecontext.getOut().print("<span class=\"FormLabel\">Ultima variazione: </span><span class=\"FormInput\">");
-        if(getModel() != null && getModel().getUtuv() != null)
-        {
-            pagecontext.getOut().print(DateFormat.getDateTimeInstance().format(getModel().getDuva()));
-            pagecontext.getOut().print(" (");
-            pagecontext.getOut().print(getModel().getUtuv());
-            pagecontext.getOut().print(')');
-        }
-        pagecontext.getOut().println("</span></div></tr></td>");
+        final JspWriter out = pagecontext.getOut();
+        out.println("<tr><td>");
+        Optional.ofNullable(getModel())
+                .filter(oggettoBulk -> Optional.ofNullable(oggettoBulk.getUtcr()).isPresent())
+                .ifPresent(oggettoBulk -> {
+                    try {
+                        if (HttpActionContext.isFromBootstrap(pagecontext)) {
+                            out.print("<div class=\"text-primary\">");
+                            out.print("Creato il ");
+                            out.print(DateTimeFormatter.ofPattern("dd MMMM yyyy 'alle' HH:mm")
+                                    .format(oggettoBulk.getDacr().toInstant()
+                                            .atZone(ZoneId.systemDefault())
+                                    )
+                            );
+                            out.print(" da ");
+                            out.print(oggettoBulk.getUtcr());
+                            out.print(" modificato il ");
+                            out.print(DateTimeFormatter.ofPattern("dd MMMM yyyy 'alle' HH:mm")
+                                    .format(oggettoBulk.getDuva().toInstant()
+                                            .atZone(ZoneId.systemDefault())
+                                    )
+                            );
+                            out.print(" da ");
+                            out.print(oggettoBulk.getUtuv());
+                            out.println("</div>");
+                        } else {
+                            out.print("<div style=\"border: 1px inset\">");
+                            out.print("<span class=\"FormLabel\">Ultima variazione: </span><span class=\"FormInput\">");
+                            out.print(DateFormat.getDateTimeInstance().format(getModel().getDuva()));
+                            out.print(" (");
+                            out.print(getModel().getUtuv());
+                            out.print(')');
+                            out.println("</span></div>");
+                        }
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+        out.println("</td></tr>");
         super.closeForm(pagecontext);
     }
 

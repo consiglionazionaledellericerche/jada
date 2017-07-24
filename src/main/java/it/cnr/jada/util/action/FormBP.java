@@ -13,10 +13,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.io.StringWriter;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -300,12 +297,8 @@ public class FormBP extends BusinessProcess implements Serializable{
         openForm(pagecontext, action, target);
         if (!this.getParentRoot().isBootstrap()){
         	pagecontext.getOut().println("<table id=\"mainWindow\" class=\"Form\" width=\"100%\" height=\"100%\" cellspacing=\"0\" cellpadding=\"2\">");
-        	writeTitleBar(pagecontext);
-        } else {
-        	pagecontext.getOut().print("<sigla-page-title class=\"hidden-xs-up\">");
-        	pagecontext.getOut().print(getFormTitle().replace("<script>document.write(document.title)</script>", ""));
-        	pagecontext.getOut().print("</sigla-page-title>");
         }
+        writeTitleBar(pagecontext);
         writeToolbar(pagecontext);
         if (!this.getParentRoot().isBootstrap()){        
 	        pagecontext.getOut().println("<!-- FORM BODY -->");
@@ -423,10 +416,6 @@ public class FormBP extends BusinessProcess implements Serializable{
 
     public void writeTitleBar(PageContext pagecontext) throws IOException, ServletException{
         JspWriter jspwriter = pagecontext.getOut();
-        jspwriter.println("<!-- TITLEBAR -->");
-        jspwriter.println("<tr><td>");
-        jspwriter.println("<table class=\"Form\" width=\"100%\" cellspacing=\"0\" cellpadding=\"2\">");
-        jspwriter.println("<tr><td class=\"FormTitle\">");
         HttpServletRequest httpservletrequest = (HttpServletRequest)pagecontext.getRequest();
         StringBuffer stringbuffer = new StringBuffer();
         stringbuffer.append(pagecontext.getRequest().getScheme());
@@ -438,27 +427,55 @@ public class FormBP extends BusinessProcess implements Serializable{
         stringbuffer.append("help");
         stringbuffer.append(httpservletrequest.getServletPath());
         getHelpButton().setHref("javascript:doHelp('" + stringbuffer.toString() + "')");
-        getHelpButton().writeWithoutRollover(jspwriter, true, HttpActionContext.isFromBootstrap(pagecontext));
-        getMaximizeButton().writeWithoutRollover(jspwriter, true, HttpActionContext.isFromBootstrap(pagecontext));
-        getCloseButton().writeWithoutRollover(jspwriter, true, HttpActionContext.isFromBootstrap(pagecontext));
-        jspwriter.print("&nbsp;");
-        jspwriter.print(getFormTitle());
-        jspwriter.println("</td>");
-        if (getParent() != null){        	
-        	String isPreferitiButtonHiddenParent = (String)getParent().getMapping().getConfig().getInitParameter("preferitiButtonHidden");
-        	String isPreferitiButtonHidden = (String)getMapping().getConfig().getInitParameter("preferitiButtonHidden");
-        	if (isPreferitiButtonHiddenParent != null && isPreferitiButtonHiddenParent.equalsIgnoreCase("false")){
-        		if (isPreferitiButtonHidden == null || (isPreferitiButtonHidden != null && isPreferitiButtonHidden.equalsIgnoreCase("false"))){
-        	        jspwriter.println("<td class=\"FormTitle\" align=\"right\">");
-        	        getPreferitiButton().writeWithoutRollover(jspwriter, true, HttpActionContext.isFromBootstrap(pagecontext));
-        	        jspwriter.println("</td>");
-        		}
-        	}
-        }        
-        jspwriter.println("</tr>");
-        jspwriter.println("</table>");
-        jspwriter.println("</td></tr>");
-        jspwriter.println("<!-- FINE TITLEBAR -->");
+        jspwriter.println("<!-- TITLEBAR -->");
+        if (HttpActionContext.isFromBootstrap(pagecontext)) {
+            List<Button> buttons = new ArrayList<Button>();
+            buttons.add(getHelpButton());
+            if (getParent() != null){
+                String isPreferitiButtonHiddenParent = (String)getParent().getMapping().getConfig().getInitParameter("preferitiButtonHidden");
+                String isPreferitiButtonHidden = (String)getMapping().getConfig().getInitParameter("preferitiButtonHidden");
+                if (isPreferitiButtonHiddenParent != null && isPreferitiButtonHiddenParent.equalsIgnoreCase("false")){
+                    if (isPreferitiButtonHidden == null || (isPreferitiButtonHidden != null && isPreferitiButtonHidden.equalsIgnoreCase("false"))){
+                        buttons.add(getPreferitiButton());
+                    }
+                }
+            }
+            buttons.add(getCloseButton());
+            jspwriter.println("<div class=\"title-bar bg-primary text-white\">");
+            jspwriter.print("<sigla-page-title class=\"h6\">");
+            jspwriter.print(getFormTitle().replace("<script>document.write(document.title)</script>", ""));
+            jspwriter.print("</sigla-page-title>");
+            jspwriter.println("<div id=\"titleToolbar\" class=\"btn-toolbar pull-right\" role=\"toolbar\" aria-label=\"Toolbar with button groups\">");
+                JSPUtils.toolbarBootstrap(jspwriter, buttons, this);
+            jspwriter.println("</div>");
+            jspwriter.println("</div>");
+        } else {
+            jspwriter.println("<tr><td>");
+            jspwriter.println("<table class=\"Form\" width=\"100%\" cellspacing=\"0\" cellpadding=\"2\">");
+            jspwriter.println("<tr><td class=\"FormTitle\">");
+            getHelpButton().writeWithoutRollover(jspwriter, true, HttpActionContext.isFromBootstrap(pagecontext));
+            getMaximizeButton().writeWithoutRollover(jspwriter, true, HttpActionContext.isFromBootstrap(pagecontext));
+            getCloseButton().writeWithoutRollover(jspwriter, true, HttpActionContext.isFromBootstrap(pagecontext));
+            jspwriter.print("&nbsp;");
+            jspwriter.print(getFormTitle());
+            jspwriter.println("</td>");
+            if (getParent() != null){
+                String isPreferitiButtonHiddenParent = (String)getParent().getMapping().getConfig().getInitParameter("preferitiButtonHidden");
+                String isPreferitiButtonHidden = (String)getMapping().getConfig().getInitParameter("preferitiButtonHidden");
+                if (isPreferitiButtonHiddenParent != null && isPreferitiButtonHiddenParent.equalsIgnoreCase("false")){
+                    if (isPreferitiButtonHidden == null || (isPreferitiButtonHidden != null && isPreferitiButtonHidden.equalsIgnoreCase("false"))){
+                        jspwriter.println("<td class=\"FormTitle\" align=\"right\">");
+                        getPreferitiButton().writeWithoutRollover(jspwriter, true, HttpActionContext.isFromBootstrap(pagecontext));
+                        jspwriter.println("</td>");
+                    }
+                }
+            }
+            jspwriter.println("</tr>");
+            jspwriter.println("</table>");
+            jspwriter.println("</td></tr>");
+            jspwriter.println("<!-- FINE TITLEBAR -->");
+        }
+
     }
 
     public void writeToolbar(JspWriter jspwriter) throws IOException, ServletException{
@@ -471,7 +488,8 @@ public class FormBP extends BusinessProcess implements Serializable{
     	if (this.getParentRoot().isBootstrap()) {
             jspwriter.println("<!-- TOOLBAR BOOTSTRAP -->");
             jspwriter.println("<div id=\"crudToolbar\" class=\"btn-toolbar\" role=\"toolbar\" aria-label=\"Toolbar with button groups\">");
-            JSPUtils.toolbarBootstrap(jspwriter, Stream.concat(Arrays.stream(abutton), Stream.of(getCloseButton())).collect(Collectors.toList()), this);
+            JSPUtils.toolbarBootstrap(jspwriter,
+                    Arrays.stream(abutton).collect(Collectors.toList()), this);
             jspwriter.println("</div>");
             jspwriter.println("<!-- FINE TOOLBAR BOOTSTRAP -->");    		
     	} else {
@@ -482,7 +500,7 @@ public class FormBP extends BusinessProcess implements Serializable{
     }
     
     public void writeToolbar(PageContext pagecontext) throws IOException, ServletException{
-        writeToolbar(pagecontext.getOut());    		
+        writeToolbar(pagecontext.getOut());
     }
 
 	public Button getPreferitiButton() {
