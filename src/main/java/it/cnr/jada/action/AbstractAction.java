@@ -11,152 +11,122 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.rmi.RemoteException;
 import java.text.ParseException;
+import java.util.Optional;
 import java.util.StringTokenizer;
 
-// Referenced classes of package it.cnr.jada.action:
-//            Action, ActionContext, ActionPerformingError, BusinessProcess, 
-//            NoSuchBusinessProcessException, BusinessProcessException, Forward, Config
-
 public abstract class AbstractAction
-    implements Serializable, Action
-{
+        implements Serializable, Action {
 
-    public AbstractAction()
-    {
+    public AbstractAction() {
     }
 
     public Forward doDefault(ActionContext actioncontext)
-        throws RemoteException
-    {
+            throws RemoteException {
         return actioncontext.findDefaultForward();
     }
 
-    protected Forward handleException(ActionContext actioncontext, Throwable throwable)
-    {
-        try
-        {
+    protected Forward handleException(ActionContext actioncontext, Throwable throwable) {
+        try {
             throw throwable;
-        }
-        catch(NoSuchBusinessProcessException _ex)
-        {
+        } catch (NoSuchBusinessProcessException _ex) {
             return actioncontext.findForward("pageExpired");
-        }
-        catch(UserTransactionTimeoutException usertransactiontimeoutexception)
-        {
-            try
-            {
-                if(actioncontext.getUserInfo() == null)
+        } catch (UserTransactionTimeoutException usertransactiontimeoutexception) {
+            try {
+                if (actioncontext.getUserInfo() == null)
                     throw new ActionPerformingError("Sessione scaduta");
-                if(usertransactiontimeoutexception.getUserTransaction().getOwner() instanceof BusinessProcess)
-                    ((BusinessProcess)usertransactiontimeoutexception.getUserTransaction().getOwner()).handleUserTransactionTimeout(actioncontext);
-                if(actioncontext.getBusinessProcess() instanceof FormBP)
-                    ((FormBP)actioncontext.getBusinessProcess()).setErrorMessage("Sessione scaduta. Le modifiche non salvate saranno perse.");
+                if (Optional.ofNullable(usertransactiontimeoutexception.getUserTransaction())
+                        .map(userTransaction -> {
+                            try {
+                                return userTransaction.getOwner();
+                            } catch (RemoteException e) {
+                                throw new RuntimeException(e);
+                            }
+                        })
+                        .filter(BusinessProcess.class::isInstance)
+                        .isPresent()) {
+                    ((BusinessProcess) usertransactiontimeoutexception.getUserTransaction().getOwner()).handleUserTransactionTimeout(actioncontext);
+                }
+                if (actioncontext.getBusinessProcess() instanceof FormBP) {
+                    ((FormBP) actioncontext.getBusinessProcess()).setErrorMessage("Operazione scaduta. Le modifiche non salvate saranno perse.");
+                    actioncontext.closeBusinessProcess(actioncontext.getBusinessProcess());
+                }
                 return actioncontext.findDefaultForward();
-            }
-            catch(Throwable throwable2)
-            {
+            } catch (Throwable throwable2) {
                 return handleException(actioncontext, throwable2);
             }
-        }
-        catch(RemoteException remoteexception)
-        {
-            if(remoteexception.detail == null)
+        } catch (RemoteException remoteexception) {
+            if (remoteexception.detail == null)
                 throw new ActionPerformingError(remoteexception);
             else
                 return handleException(actioncontext, remoteexception.detail);
-        }
-        catch(RemoteError remoteerror)
-        {
-            if(remoteerror.getDetail() == null)
+        } catch (RemoteError remoteerror) {
+            if (remoteerror.getDetail() == null)
                 throw new ActionPerformingError(remoteerror);
             else
                 return handleException(actioncontext, remoteerror.getDetail());
-        }
-        catch(BusinessProcessException businessprocessexception)
-        {
-            if(businessprocessexception.getDetail() == null)
+        } catch (BusinessProcessException businessprocessexception) {
+            if (businessprocessexception.getDetail() == null)
                 throw new ActionPerformingError(businessprocessexception);
             else
                 return handleException(actioncontext, businessprocessexception.getDetail());
-        }
-        catch(DetailedRuntimeException detailedruntimeexception)
-        {
-            if(detailedruntimeexception.getDetail() == null)
+        } catch (DetailedRuntimeException detailedruntimeexception) {
+            if (detailedruntimeexception.getDetail() == null)
                 throw new ActionPerformingError(detailedruntimeexception);
             else
                 return handleException(actioncontext, detailedruntimeexception.getDetail());
-        }
-        catch(InvocationTargetException invocationtargetexception)
-        {
+        } catch (InvocationTargetException invocationtargetexception) {
             return handleException(actioncontext, invocationtargetexception.getTargetException());
-        }
-        catch(Throwable throwable1)
-        {
+        } catch (Throwable throwable1) {
             throw new ActionPerformingError(throwable1);
         }
     }
 
-    public void init(Config config)
-    {
+    public void init(Config config) {
     }
 
-    public boolean isThreadsafe(ActionContext actioncontext)
-    {
+    public boolean isThreadsafe(ActionContext actioncontext) {
         return false;
     }
 
-    public Forward perform(ActionContext actioncontext)
-    {
+    public Forward perform(ActionContext actioncontext) {
         return perform(actioncontext, actioncontext.getCurrentCommand());
     }
 
-    protected Forward perform(ActionContext actioncontext, String s)
-    {
-        try
-        {
+    protected Forward perform(ActionContext actioncontext, String s) {
+        try {
             int i = s.indexOf('(');
             int j = s.lastIndexOf(')');
             String as[] = null;
-            if(i > 0 && j > 0)
-            {
+            if (i > 0 && j > 0) {
                 StringTokenizer stringtokenizer = new StringTokenizer(s.substring(i + 1, j), ",");
                 as = new String[stringtokenizer.countTokens()];
-                for(int k = 0; k < as.length; k++)
+                for (int k = 0; k < as.length; k++)
                     as[k] = stringtokenizer.nextToken();
 
                 s = s.substring(0, i);
             }
             Method method = Introspector.getMethod(getClass(), s, as != null ? as.length + 1 : 1);
-            if(method == null)
+            if (method == null)
                 throw new ActionPerformingError("La action non implementa il comando " + s);
             Class aclass[] = method.getParameterTypes();
             java.lang.Object aobj[] = new java.lang.Object[aclass.length];
             aobj[0] = actioncontext;
-            if(as != null)
-            {
-                for(int l = 0; l < as.length; l++)
+            if (as != null) {
+                for (int l = 0; l < as.length; l++)
                     aobj[l + 1] = Introspector.standardParse(as[l], aclass[l + 1]);
 
             }
-            return (Forward)method.invoke(this, aobj);
-        }
-        catch(InvocationTargetException invocationtargetexception)
-        {
-            if(invocationtargetexception.getTargetException() instanceof ActionPerformingError)
-                throw (ActionPerformingError)invocationtargetexception.getTargetException();
+            return (Forward) method.invoke(this, aobj);
+        } catch (InvocationTargetException invocationtargetexception) {
+            if (invocationtargetexception.getTargetException() instanceof ActionPerformingError)
+                throw (ActionPerformingError) invocationtargetexception.getTargetException();
             else
                 throw new ActionPerformingError(invocationtargetexception.getTargetException());
-        }
-        catch(ParseException parseexception)
-        {
+        } catch (ParseException parseexception) {
             throw new ActionPerformingError(parseexception);
-        }
-        catch(IllegalAccessException illegalaccessexception)
-        {
+        } catch (IllegalAccessException illegalaccessexception) {
             throw new ActionPerformingError(illegalaccessexception);
-        }
-        catch(RuntimeException runtimeexception)
-        {
+        } catch (RuntimeException runtimeexception) {
             throw new ActionPerformingError(runtimeexception);
         }
     }
