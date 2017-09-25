@@ -48,7 +48,6 @@ public abstract class AbstractAction
                 }
                 if (actioncontext.getBusinessProcess() instanceof FormBP) {
                     ((FormBP) actioncontext.getBusinessProcess()).setErrorMessage("Operazione scaduta. Le modifiche non salvate saranno perse.");
-                    actioncontext.closeBusinessProcess(actioncontext.getBusinessProcess());
                 }
                 return actioncontext.findDefaultForward();
             } catch (Throwable throwable2) {
