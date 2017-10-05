@@ -158,6 +158,7 @@ public class RicercaLiberaAction extends FormAction
                 actioncontext.closeBusinessProcess();
                 HookForward hookforward1 = (HookForward)actioncontext.findForward("searchResult");
                 hookforward1.addParameter("remoteIterator", remoteiterator);
+                hookforward1.addParameter("condizioneRadice", ricercaliberabp.getCondizioneRadice());
                 return hookforward1;
             }
         }
