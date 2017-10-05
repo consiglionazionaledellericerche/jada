@@ -20,6 +20,7 @@ import it.cnr.jada.util.NullableFormat;
 import it.cnr.jada.util.SafeDateFormat;
 import it.cnr.jada.util.UppercaseStringFormat;
 import it.cnr.jada.util.XmlWriter;
+import it.cnr.jada.util.action.FormController;
 import it.cnr.jada.util.jsp.Button;
 import it.cnr.jada.util.jsp.JSPUtils;
 import it.cnr.jada.util.jsp.Table;
@@ -744,19 +745,19 @@ public class FieldProperty implements Serializable{
 		return layout;
 	}
 
-	protected String getMandatoryStyle(int i)
+	protected String getMandatoryStyle(int status)
 		throws IOException
 	{
-		if(!nullable && i != 0 && i != 5 && i != 4)
+		if(!nullable && status != FormController.SEARCH && (status != FormController.VIEW || isEnabledOnView()) && status != FormController.FREESEARCH)
 			return "background: #F5F5DC";
 		else
 			return null;
 	}
 
-	protected String getMandatoryStyleBootstrap(int i)
+	protected String getMandatoryStyleBootstrap(int status)
 			throws IOException
 		{
-			if(!nullable && i != 0 && i != 5 && i != 4)
+			if(!nullable && status != FormController.SEARCH && (status != FormController.VIEW || isEnabledOnView()) && status != FormController.FREESEARCH)
 				return " required";
 			else
 				return "";

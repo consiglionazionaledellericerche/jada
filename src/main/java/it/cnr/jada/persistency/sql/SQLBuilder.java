@@ -291,8 +291,8 @@ public class SQLBuilder extends SQLQuery {
                 String s2 = s1.substring(0, j);
                 s1 = s1.substring(j + 1);
                 try {
-                    Class class1 = super.columnMap.getPersistentInfo().getIntrospector().getPropertyType(super.columnMap.getPersistentInfo().getPersistentClass(), s2);
-                    SQLPersistentInfo sqlpersistentinfo2 = (SQLPersistentInfo) super.columnMap.getPersistentInfo().getIntrospector().getPersistentInfo(class1);
+                    Class class1 = BeanIntrospector.getSQLInstance().getPropertyType(super.columnMap.getPersistentInfo().getPersistentClass(), s2);
+                    SQLPersistentInfo sqlpersistentinfo2 = (SQLPersistentInfo) BeanIntrospector.getSQLInstance().getPersistentInfo(class1);
                     ColumnMap columnmap = sqlpersistentinfo2.getDefaultColumnMap();
                     addJoin(s2, s2, columnmap);
                     ColumnMapping columnmapping1 = columnmap.getMappingForProperty(s1);
@@ -393,9 +393,9 @@ public class SQLBuilder extends SQLQuery {
     public void generateJoin(Class<?> first, Class<?> second, String s, String alias) {
         try {
             SQLPersistentInfo sqlPersistentinfoFirst = (SQLPersistentInfo)
-                super.columnMap.getPersistentInfo().getIntrospector().getPersistentInfo(first);
+                    BeanIntrospector.getSQLInstance().getPersistentInfo(first);
             SQLPersistentInfo sqlPersistentinfoSecond = (SQLPersistentInfo)
-                    super.columnMap.getPersistentInfo().getIntrospector().getPersistentInfo(second);
+                    BeanIntrospector.getSQLInstance().getPersistentInfo(second);
             addJoin(s, alias, sqlPersistentinfoSecond.getDefaultColumnMap(), sqlPersistentinfoFirst.getDefaultColumnMap());
 
         } catch (IntrospectionException introspectionexception1) {
@@ -405,8 +405,8 @@ public class SQLBuilder extends SQLQuery {
 
     public void generateJoin(String s, String alias) {
         try {
-            Class class1 = super.columnMap.getPersistentInfo().getIntrospector().getPropertyType(super.columnMap.getPersistentInfo().getPersistentClass(), s);
-            SQLPersistentInfo sqlpersistentinfo2 = (SQLPersistentInfo) super.columnMap.getPersistentInfo().getIntrospector().getPersistentInfo(class1);
+            Class class1 = BeanIntrospector.getSQLInstance().getPropertyType(super.columnMap.getPersistentInfo().getPersistentClass(), s);
+            SQLPersistentInfo sqlpersistentinfo2 = (SQLPersistentInfo) BeanIntrospector.getSQLInstance().getPersistentInfo(class1);
             ColumnMap columnmap = sqlpersistentinfo2.getDefaultColumnMap();
             addJoin(s, alias, columnmap);
         } catch (IntrospectionException introspectionexception1) {
