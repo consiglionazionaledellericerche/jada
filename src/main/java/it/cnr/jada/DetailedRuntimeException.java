@@ -110,7 +110,9 @@ public class DetailedRuntimeException extends RuntimeException
             PrintWriter printwriter1 = new PrintWriter(stringwriter1);
             detail.printStackTrace(printwriter1);
             printwriter1.close();
-            objectoutputstream.writeUTF(stringwriter1.getBuffer().toString());
+            objectoutputstream.write(
+                    stringwriter1.getBuffer().toString().getBytes()
+            );
         }
     }
 }
