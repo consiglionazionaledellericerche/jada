@@ -1,8 +1,11 @@
 package it.cnr.jada.ejb;
 
 import it.cnr.jada.UserContext;
+import it.cnr.jada.bulk.BusyResourceException;
 import it.cnr.jada.bulk.OggettoBulk;
+import it.cnr.jada.bulk.OutdatedResourceException;
 import it.cnr.jada.comp.*;
+import it.cnr.jada.persistency.PersistencyException;
 import it.cnr.jada.persistency.Persistent;
 import it.cnr.jada.persistency.sql.CompoundFindClause;
 import it.cnr.jada.util.RemoteIterator;
@@ -292,6 +295,27 @@ public class CRUDComponentSessionBean extends RicercaComponentSessionBean implem
             throw uncaughtRuntimeException(usercontext, componentObj, runtimeexception);
         }catch(Error error){
             throw uncaughtError(usercontext, componentObj, error);
+        }
+    }
+
+    public boolean isLockedBulk(UserContext usercontext, OggettoBulk oggettobulk) throws ComponentException, EJBException{
+        pre_component_invocation(usercontext, componentObj);
+        try{
+            ((CRUDComponent)componentObj).lockBulk(usercontext, oggettobulk);
+            component_invocation_succes(usercontext, componentObj);
+            return false;
+        } catch(NoRollbackException norollbackexception){
+            component_invocation_succes(usercontext, componentObj);
+            throw norollbackexception;
+        } catch(ComponentException componentexception){
+            component_invocation_failure(usercontext, componentObj);
+            throw componentexception;
+        } catch(RuntimeException runtimeexception){
+            throw uncaughtRuntimeException(usercontext, componentObj, runtimeexception);
+        } catch(Error error){
+            throw uncaughtError(usercontext, componentObj, error);
+        } catch (PersistencyException|OutdatedResourceException|BusyResourceException e) {
+           return true;
         }
     }
 }

@@ -2,8 +2,11 @@ package it.cnr.jada.ejb;
 import java.rmi.*;
 
 import it.cnr.jada.UserContext;
+import it.cnr.jada.bulk.BusyResourceException;
 import it.cnr.jada.bulk.OggettoBulk;
+import it.cnr.jada.bulk.OutdatedResourceException;
 import it.cnr.jada.comp.ComponentException;
+import it.cnr.jada.persistency.PersistencyException;
 import it.cnr.jada.persistency.Persistent;
 import it.cnr.jada.util.ejb.*;
 
@@ -233,7 +236,26 @@ public class TransactionalCRUDComponentSession extends TransactionalSessionImpl 
 			}
 		}
 	}
-	
+
+	@Override
+	public boolean isLockedBulk(UserContext userContext, OggettoBulk oggettoBulk) throws ComponentException, RemoteException {
+		try {
+			return (Boolean)invoke("isLockedBulk",new Object[] {
+					userContext,
+					oggettoBulk });
+		} catch(java.rmi.RemoteException e) {
+			throw e;
+		} catch(java.lang.reflect.InvocationTargetException e) {
+			try {
+				throw e.getTargetException();
+			} catch(it.cnr.jada.comp.ComponentException ex) {
+				throw ex;
+			} catch(Throwable ex) {
+				throw new java.rmi.RemoteException("Uncaugth exception",ex);
+			}
+		}
+	}
+
 	public Persistent findByPrimaryKey(UserContext userContext, OggettoBulk oggettoBulk) throws ComponentException, RemoteException {
 		try {
 			return (Persistent)invoke("findByPrimaryKey",new Object[] {

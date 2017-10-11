@@ -518,7 +518,7 @@ public class GenericComponent implements Component, Serializable, Cloneable{
         }
     }
 
-    protected void lockBulk(UserContext usercontext, OggettoBulk oggettobulk)
+    public void lockBulk(UserContext usercontext, OggettoBulk oggettobulk)
         throws PersistencyException, ComponentException, OutdatedResourceException, BusyResourceException
     {
         getHome(usercontext, oggettobulk).lock(oggettobulk);
