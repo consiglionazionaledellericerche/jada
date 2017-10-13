@@ -10,10 +10,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Dictionary;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -450,21 +447,22 @@ public class JSPUtils
             Optional.ofNullable(httpservletrequest)
                     .ifPresent(httpServletRequest ->  Optional.ofNullable(httpServletRequest.getSession(false))
                             .ifPresent(httpSession -> Optional.ofNullable(httpSession.getAttribute(HttpActionContext.CONTEXT_FOCUSED_ELEMENT))
-                                    .filter(String.class::isInstance)
-                                    .map(String.class::cast)
+                                    .filter(Map.class::isInstance)
+                                    .map(Map.class::cast)
                                     .ifPresent(focusedElement -> {
-                                        try {
-                                            jspwriter.println("<script language=\"JavaScript\">");
-                                            jspwriter.println("function scroll() {");
-                                            jspwriter.print("\twindow.scrollTo(");
-                                            jspwriter.println(focusedElement);
-                                            jspwriter.println(");");
-                                            jspwriter.println("}");
-                                            jspwriter.println("addOnloadHandler(scroll,100)");
-                                            jspwriter.println("</script>");
-                                            HttpActionContext.saveFocusedElement(httpservletrequest, true);
-                                        } catch (IOException e) {
-                                            throw new DetailedRuntimeException(e);
+                                        if (focusedElement.containsKey(s)) {
+                                            try {
+                                                jspwriter.println("<script language=\"JavaScript\">");
+                                                jspwriter.println("function scroll() {");
+                                                jspwriter.print("\twindow.scrollTo(");
+                                                jspwriter.println(focusedElement.get(s));
+                                                jspwriter.println(");");
+                                                jspwriter.println("}");
+                                                jspwriter.println("addOnloadHandler(scroll,100)");
+                                                jspwriter.println("</script>");
+                                            } catch (IOException e) {
+                                                throw new DetailedRuntimeException(e);
+                                            }
                                         }
                                     })
                             )

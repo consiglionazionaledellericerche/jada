@@ -99,4 +99,5 @@ public interface ActionContext
 
     public abstract void traceException(Throwable throwable);
 
+    public abstract void saveFocusedElement();
 }

@@ -29,11 +29,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.rmi.RemoteException;
 import java.text.ParseException;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.Optional;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -734,12 +730,10 @@ public class HttpActionContext
 			if(!flag && !businessprocess.setBusy())
 				forward = findForward("businessProcessBusy");
 			else
-				try
-				{
+				try{
+                    saveFocusedElement();
 					forward = action.perform(this);
-				}
-				finally
-				{
+				}finally{
 					if(!flag)
 						businessprocess.clearBusy();
 				}
@@ -889,19 +883,22 @@ public class HttpActionContext
 		request.setAttribute("it.cnr.jada.action.HttpActionContext.traceException", throwable);
 	}
 
-
-    public static void saveFocusedElement(HttpServletRequest httpservletrequest, boolean delete) {
-        Optional.ofNullable(httpservletrequest)
+    public void saveFocusedElement() {
+        Optional.ofNullable(request)
                 .ifPresent(httpServletRequest ->  Optional.ofNullable(httpServletRequest.getSession(false))
                         .ifPresent(httpSession -> {
-                            if (delete) {
-                                httpSession.removeAttribute(CONTEXT_FOCUSED_ELEMENT);
-                            } else {
-                                String scrollx = httpServletRequest.getParameter("scrollx");
-                                String scrolly = httpServletRequest.getParameter("scrolly");
-                                if(!(scrollx == null || scrolly == null || scrollx.length() == 0 || scrolly.length() == 0))
-                                    httpSession.setAttribute(CONTEXT_FOCUSED_ELEMENT, scrollx.concat(",").concat(scrolly));
-                            }
+                            String scrollx = httpServletRequest.getParameter("scrollx");
+                            String scrolly = httpServletRequest.getParameter("scrolly");
+                            Map<String, String> focusedElement = Optional.ofNullable(httpSession.getAttribute(CONTEXT_FOCUSED_ELEMENT))
+                                    .filter(Map.class::isInstance)
+                                    .map(Map.class::cast)
+                                    .orElseGet(() -> new HashMap());
+                            Optional.ofNullable(httpServletRequest.getParameter("requestor"))
+                                    .filter(requestor -> requestor.length() > 0)
+                                    .ifPresent(requestor -> {
+                                        focusedElement.put(requestor, scrollx.concat(",").concat(scrolly));
+                                        httpSession.setAttribute(CONTEXT_FOCUSED_ELEMENT,focusedElement);
+                                    });
                         })
                 );
     }
