@@ -354,6 +354,7 @@ public class BulkAction extends FormAction
             BulkBP bulkbp = (BulkBP)actioncontext.getBusinessProcess();
             bulkbp.fillModel(actioncontext);
             FormField formfield = getFormField(actioncontext, s);
+            HttpActionContext.saveFocusedElement(((HttpActionContext)actioncontext).getRequest(),  false);
             try
             {
                 return (Forward)Introspector.invoke(this, "doFreeSearch", formfield.getField().getName(), actioncontext);
@@ -477,6 +478,7 @@ public class BulkAction extends FormAction
             BulkBP bulkbp = (BulkBP)actioncontext.getBusinessProcess();
             bulkbp.fillModel(actioncontext);
             FormField formfield = getFormField(actioncontext, s);
+            HttpActionContext.saveFocusedElement(((HttpActionContext)actioncontext).getRequest(),  false);
             try
             {
                 return (Forward)Introspector.invoke(this, "doSearch", formfield.getField().getName(), actioncontext);

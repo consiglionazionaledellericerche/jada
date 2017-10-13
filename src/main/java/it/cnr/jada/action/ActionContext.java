@@ -98,4 +98,5 @@ public interface ActionContext
     public abstract void setUserInfo(UserInfo userinfo);
 
     public abstract void traceException(Throwable throwable);
+
 }

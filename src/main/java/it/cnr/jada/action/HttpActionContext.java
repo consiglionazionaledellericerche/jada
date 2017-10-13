@@ -51,7 +51,8 @@ public class HttpActionContext
 	implements Serializable, ActionContext
 {
 
-	private File actionDirFile;
+    public static final String CONTEXT_FOCUSED_ELEMENT = "it.cnr.jada.action.HttpActionContext.focusedElement";
+    private File actionDirFile;
 	private HttpServlet servlet;
 	private HttpServletRequest request;
 	private HttpServletResponse response;
@@ -887,8 +888,25 @@ public class HttpActionContext
 	{
 		request.setAttribute("it.cnr.jada.action.HttpActionContext.traceException", throwable);
 	}
-	
-	public static boolean isFromBootstrap(PageContext pagecontext) {
+
+
+    public static void saveFocusedElement(HttpServletRequest httpservletrequest, boolean delete) {
+        Optional.ofNullable(httpservletrequest)
+                .ifPresent(httpServletRequest ->  Optional.ofNullable(httpServletRequest.getSession(false))
+                        .ifPresent(httpSession -> {
+                            if (delete) {
+                                httpSession.removeAttribute(CONTEXT_FOCUSED_ELEMENT);
+                            } else {
+                                String scrollx = httpServletRequest.getParameter("scrollx");
+                                String scrolly = httpServletRequest.getParameter("scrolly");
+                                if(!(scrollx == null || scrolly == null || scrollx.length() == 0 || scrolly.length() == 0))
+                                    httpSession.setAttribute(CONTEXT_FOCUSED_ELEMENT, scrollx.concat(",").concat(scrolly));
+                            }
+                        })
+                );
+    }
+
+    public static boolean isFromBootstrap(PageContext pagecontext) {
 		Optional<UserContext> optContext = Optional.ofNullable(pagecontext.getSession())
 				.map(session -> (UserContext)session.getAttribute("UserContext"));
 		if (optContext.isPresent()) 

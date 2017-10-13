@@ -1,5 +1,6 @@
 package it.cnr.jada.util.jsp;
 
+import it.cnr.jada.DetailedRuntimeException;
 import it.cnr.jada.action.HttpActionContext;
 import it.cnr.jada.bulk.ColumnFieldProperty;
 import it.cnr.jada.util.Config;
@@ -423,8 +424,7 @@ public class JSPUtils
 		HttpServletRequest httpservletrequest = (HttpServletRequest)pagecontext.getRequest();
 		String s = httpservletrequest.getRequestURI();
 		JspWriter jspwriter = pagecontext.getOut();
-		if(s.equals(httpservletrequest.getParameter("requestor")))
-		{
+		if(s.equals(httpservletrequest.getParameter("requestor"))) {
 			String s1 = httpservletrequest.getParameter("scrollx");
 			String s2 = httpservletrequest.getParameter("scrolly");
 			String s3 = httpservletrequest.getParameter("focusedElement");
@@ -446,6 +446,29 @@ public class JSPUtils
 			jspwriter.println("}");
 			jspwriter.println("addOnloadHandler(scroll,100)");
 			jspwriter.println("</script>");
+		} else {
+            Optional.ofNullable(httpservletrequest)
+                    .ifPresent(httpServletRequest ->  Optional.ofNullable(httpServletRequest.getSession(false))
+                            .ifPresent(httpSession -> Optional.ofNullable(httpSession.getAttribute(HttpActionContext.CONTEXT_FOCUSED_ELEMENT))
+                                    .filter(String.class::isInstance)
+                                    .map(String.class::cast)
+                                    .ifPresent(focusedElement -> {
+                                        try {
+                                            jspwriter.println("<script language=\"JavaScript\">");
+                                            jspwriter.println("function scroll() {");
+                                            jspwriter.print("\twindow.scrollTo(");
+                                            jspwriter.println(focusedElement);
+                                            jspwriter.println(");");
+                                            jspwriter.println("}");
+                                            jspwriter.println("addOnloadHandler(scroll,100)");
+                                            jspwriter.println("</script>");
+                                            HttpActionContext.saveFocusedElement(httpservletrequest, true);
+                                        } catch (IOException e) {
+                                            throw new DetailedRuntimeException(e);
+                                        }
+                                    })
+                            )
+                    );
 		}
 		jspwriter.println("<input type=hidden name=\"scrollx\">");
 		jspwriter.println("<input type=hidden name=\"scrolly\">");

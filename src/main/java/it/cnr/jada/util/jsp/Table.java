@@ -485,7 +485,7 @@ public class Table
                     jspwriter.print(i);
                     jspwriter.print("\" ");
                     if (onselect != null){
-                    	jspwriter.print(" onclick=\"");                   	
+                    	jspwriter.print(" onclick=\"");
                     	jspwriter.print(onselect);
                         jspwriter.print("('");
                         jspwriter.print(name);
@@ -493,7 +493,7 @@ public class Table
                         jspwriter.print(i);
                         jspwriter.print(");\"");
                     }else{
-                    	jspwriter.print("onclick=\"cancelBubble(event)\" ");                    	
+                    	jspwriter.print("onclick=\"cancelBubble(event)\" ");
                     }
                     if(selection.isSelected(i))
                         jspwriter.print(" checked");
@@ -546,15 +546,10 @@ public class Table
             jspwriter.println("</tr>");
             if(!singleSelection && j == i)
             {
-            	if (isBootstrap) {
-                    jspwriter.print("<script>scrollIntoView('");
-                    jspwriter.print(Prefix.prependPrefix(s, "selectdTR"));
-                    jspwriter.print("');</script>");            		            		
-            	} else {
-                    jspwriter.print("<script>addOnloadHandler(function() { scrollIntoView('");
-                    jspwriter.print(Prefix.prependPrefix(s, "selectdTR"));
-                    jspwriter.print("'); },101)</script>");            		
-            	}
+                jspwriter.print("<script>addOnloadHandler(function() { scrollIntoView('");
+                jspwriter.print(Prefix.prependPrefix(s, "selectdTR"));
+                jspwriter.print("'); },101)</script>");
+
             }
             jspwriter.print("<!-- FINE RIGA ");
             jspwriter.print(i);
