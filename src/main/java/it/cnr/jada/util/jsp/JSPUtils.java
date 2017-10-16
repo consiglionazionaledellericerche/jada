@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.*;
+import java.util.stream.Stream;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -449,13 +450,17 @@ public class JSPUtils
                             .ifPresent(httpSession -> Optional.ofNullable(httpSession.getAttribute(HttpActionContext.CONTEXT_FOCUSED_ELEMENT))
                                     .filter(Map.class::isInstance)
                                     .map(Map.class::cast)
-                                    .ifPresent(focusedElement -> {
+									.ifPresent(focusedElement -> {
                                         if (focusedElement.containsKey(s)) {
                                             try {
                                                 jspwriter.println("<script language=\"JavaScript\">");
                                                 jspwriter.println("function scroll() {");
                                                 jspwriter.print("\twindow.scrollTo(");
-                                                jspwriter.println(focusedElement.get(s));
+                                                if (s.contains("form_lista.jsp")) {
+                                                    jspwriter.println("0,0");
+                                                } else {
+                                                    jspwriter.println(focusedElement.get(s));
+                                                }
                                                 jspwriter.println(");");
                                                 jspwriter.println("}");
                                                 jspwriter.println("addOnloadHandler(scroll,100)");

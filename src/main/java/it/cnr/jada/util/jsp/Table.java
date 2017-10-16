@@ -342,7 +342,7 @@ public class Table
 			}else{
 				if(labelHeader.containsKey(columnfieldproperty.getHeaderLabel())){
 					jspwriter.print("<td");
-					columnfieldproperty.writeHeaderStyle(jspwriter, null, "TableHeader");
+					columnfieldproperty.writeHeaderStyle(jspwriter, null, "TableHeader text-primary font-weight-bold");
 					jspwriter.print(" align=center colspan="+(Integer)(labelHeader.get(columnfieldproperty.getHeaderLabel()))+">");
 					columnfieldproperty.writeHeaderLabel(bp, jspwriter, null,columnfieldproperty.getHeaderLabel());
 					jspwriter.println("</td>");					
