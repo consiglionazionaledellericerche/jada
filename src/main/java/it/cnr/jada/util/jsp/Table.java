@@ -333,7 +333,7 @@ public class Table
 			}
 			if(columnfieldproperty.isNotTableHeader()){
 				jspwriter.print("<td");
-				columnfieldproperty.writeHeaderStyle(jspwriter, null, "TableHeader");
+				columnfieldproperty.writeHeaderStyle(jspwriter, null, "TableHeader align-middle");
 				if(columnfieldproperty.isNoWrap())
 					jspwriter.print(" nowrap");
 					
@@ -354,7 +354,7 @@ public class Table
 											
 		}
 		jspwriter.println("</tr>");
-		jspwriter.println("<tr valign=\"top\">");
+		jspwriter.println("<tr class=\"align-top\" valign=\"top\">");
 		colonne : for(Enumeration enumeration = columns.elements(); enumeration.hasMoreElements(); jspwriter.println("</td>"))
 		{
 			ColumnFieldProperty columnfieldproperty = (ColumnFieldProperty)enumeration.nextElement();
@@ -408,19 +408,19 @@ public class Table
         int j = selection != null ? selection.getFocus() : -1;
         jspwriter.println("<!-- INIZIO TABLE HEADER -->");
         jspwriter.println("<thead class=\"table-info\">");
-        jspwriter.println("<tr valign=\"top\">");
+        jspwriter.println("<tr class=\"align-top\" valign=\"top\">");
         if(selectable && multiSelection)
         {
 			if(!presenteHeader)
-              jspwriter.print("<td class=\"TableHeader\" align=\"center\" valign=\"center\">");
+              jspwriter.print("<td class=\"TableHeader align-middle\" align=\"center\" valign=\"center\">");
             else
-			  jspwriter.print("<td rowspan=2 class=\"TableHeader\" align=\"center\" valign=\"center\">");
+			  jspwriter.print("<td rowspan=2 class=\"TableHeader align-middle\" align=\"center\" valign=\"center\">");
 
 	        checkAllButton.write(jspwriter, true, isBootstrap);				
             jspwriter.print("</td>");
         }
         if(selectable && singleSelection)
-            jspwriter.print("<td class=\"TableHeader\" align=\"center\" valign=\"center\">&nbsp;</td>");
+            jspwriter.print("<td class=\"TableHeader align-middle\" align=\"center\" valign=\"center\">&nbsp;</td>");
 		if(!presenteHeader)			    
 		  writeTableWithoutColumnHeader(bp,jspwriter, fieldvalidationmap, i, nascondiColonne,hiddenColumns,pathBP, isBootstrap);
 		else
