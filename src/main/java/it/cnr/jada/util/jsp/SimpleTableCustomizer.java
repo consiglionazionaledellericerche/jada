@@ -1,30 +1,35 @@
 package it.cnr.jada.util.jsp;
 
+import javax.servlet.jsp.JspWriter;
+import java.io.IOException;
 import java.io.Serializable;
 
-// Referenced classes of package it.cnr.jada.util.jsp:
-//            TableCustomizer
 
 public class SimpleTableCustomizer
-    implements Serializable, TableCustomizer
-{
+        implements Serializable, TableCustomizer {
 
-    public SimpleTableCustomizer()
-    {
+    public SimpleTableCustomizer() {
     }
 
-    public String getRowStyle(Object obj)
-    {
+    public String getRowStyle(Object obj) {
         return null;
     }
 
-    public boolean isRowEnabled(Object obj)
-    {
+    public boolean isRowEnabled(Object obj) {
         return false;
     }
 
-    public boolean isRowReadonly(Object obj)
-    {
+    public boolean isRowReadonly(Object obj) {
         return false;
+    }
+
+    @Override
+    public String getTableClass() {
+        return null;
+    }
+
+    @Override
+    public void writeTfoot(JspWriter jspwriter) throws IOException {
+
     }
 }

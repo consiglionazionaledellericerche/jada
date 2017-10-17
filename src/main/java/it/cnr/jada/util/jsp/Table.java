@@ -1,5 +1,6 @@
 package it.cnr.jada.util.jsp;
 
+import it.cnr.jada.DetailedRuntimeException;
 import it.cnr.jada.bulk.ColumnFieldProperty;
 import it.cnr.jada.bulk.FieldValidationMap;
 import it.cnr.jada.bulk.OggettoBulk;
@@ -14,6 +15,7 @@ import java.io.Serializable;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Optional;
 
 import javax.servlet.jsp.JspWriter;
 
@@ -562,6 +564,14 @@ public class Table
             jspwriter.println("\"></td></tr>");        	
         }
         jspwriter.println("</tbody>");
+        Optional.ofNullable(customizer)
+                .ifPresent(tableCustomizer -> {
+                    try {
+                        tableCustomizer.writeTfoot(jspwriter);
+                    } catch (IOException e) {
+                        throw new DetailedRuntimeException(e);
+                    }
+                });
         if(!singleSelection)
         {
             jspwriter.print("<input type=\"hidden\" name=\"");
@@ -638,7 +648,18 @@ public class Table
 	        jspwriter.println(">");
     		
 		    jspwriter.println("<!-- INIZIO TABLE -->");
-	        jspwriter.println("<table class=\"sigla-table table table-bordered table-hover table-striped table-sm\">");
+	        jspwriter.println("<table class=\"sigla-table table table-bordered table-hover table-striped table-sm ");
+            Optional.ofNullable(customizer)
+                    .map(TableCustomizer::getTableClass)
+                    .filter(tableClass ->  tableClass != null)
+                    .ifPresent(tableClass -> {
+                        try {
+                            jspwriter.print(tableClass);
+                        } catch (IOException e) {
+                            throw new DetailedRuntimeException(e);
+                        }
+                    });
+            jspwriter.print("\">");
 	        write(bp, jspwriter, fieldvalidationmap, i,nascondiColonne,hiddenColumns,pathBP, isBootstrap);
 	        jspwriter.println("</table>");
 	        jspwriter.println("<!-- FINE TABLE -->"); 

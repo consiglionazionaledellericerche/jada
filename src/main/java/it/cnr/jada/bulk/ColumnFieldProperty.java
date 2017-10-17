@@ -1,5 +1,6 @@
 package it.cnr.jada.bulk;
 
+import it.cnr.jada.DetailedRuntimeException;
 import it.cnr.jada.bulk.annotation.FieldPropertyAnnotation;
 import it.cnr.jada.util.Introspector;
 import it.cnr.jada.util.jsp.JSPUtils;
@@ -8,6 +9,7 @@ import java.beans.IntrospectionException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Optional;
 
 import javax.servlet.jsp.JspWriter;
 
@@ -56,6 +58,14 @@ public class ColumnFieldProperty extends FieldProperty implements Serializable{
     	String cssClass=null; 
     	try {
 			 cssClass=(String)Introspector.getPropertyValue(obj, Introspector.buildMetodName("cssClass", getName()));
+             Optional.ofNullable(Introspector.getPropertyValue(obj, this.getProperty()))
+                     .ifPresent(o -> {
+                         try {
+                             jspwriter.println(" title=\"" + o +"\" ");
+                         } catch (IOException e) {
+                             throw new DetailedRuntimeException(e);
+                         }
+                     });
 		} catch (IntrospectionException e) {		
 		} catch (InvocationTargetException e) {
 		}
