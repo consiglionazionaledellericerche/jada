@@ -404,7 +404,7 @@ public class FieldProperty implements Serializable{
 			{
 				//Cambiato il compareTo aggiungendo la scale per problema sul cambio
 				//21/10/2004 Marco
-				if(obj != null && obj1 != null && ((BigDecimal)obj1).compareTo(((BigDecimal)obj).setScale(3,BigDecimal.ROUND_HALF_EVEN)) == 0)
+				if(obj != null && obj1 != null && ((BigDecimal)obj1).compareTo(((BigDecimal)obj).setScale(6,BigDecimal.ROUND_HALF_EVEN)) == 0)
 					return false;
 			} else
 			if(obj1 != null && obj1.equals(obj))
