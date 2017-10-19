@@ -1,7 +1,8 @@
 package it.cnr.jada.persistency;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.Iterator;
+import java.util.Optional;
 
 // Referenced classes of package it.cnr.jada.persistency:
 //            PersistentCache, FetchAllPolicy, PersistencyException, FetchException, 
@@ -10,21 +11,21 @@ import java.util.*;
 //            KeyedPersistent, Keyed, Prefix, Persistent
 
 public abstract class Broker
-    implements Serializable
-{
+        implements Serializable {
 
-    public Broker(Introspector introspector1)
-    {
+    private PersistentCache cache;
+    private Introspector introspector;
+    private FetchPolicy fetchPolicy;
+
+    public Broker(Introspector introspector1) {
         this(introspector1, new PersistentCache());
     }
 
-    public Broker(Introspector introspector1, PersistentCache persistentcache)
-    {
+    public Broker(Introspector introspector1, PersistentCache persistentcache) {
         this(introspector1, persistentcache, ((FetchPolicy) (FetchAllPolicy.FETCHALL)));
     }
 
-    public Broker(Introspector introspector1, PersistentCache persistentcache, FetchPolicy fetchpolicy)
-    {
+    public Broker(Introspector introspector1, PersistentCache persistentcache, FetchPolicy fetchpolicy) {
         cache = new PersistentCache();
         fetchPolicy = FetchAllPolicy.FETCHALL;
         introspector = introspector1;
@@ -33,253 +34,195 @@ public abstract class Broker
     }
 
     public void close()
-        throws PersistencyException
-    {
+            throws PersistencyException {
     }
 
     public void fetch(Persistent persistent, String s)
-        throws FetchException
-    {
-        try
-        {
-            for(Iterator iterator = introspector.getPersistentInfo(persistent.getClass()).getNotInOidPersistentProperties().values().iterator(); iterator.hasNext();)
-                try
-                {
-                    fetchProperty(persistent, ((PersistentProperty)iterator.next()).getName(), s);
+            throws FetchException {
+        try {
+            for (Iterator iterator = introspector.getPersistentInfo(persistent.getClass()).getNotInOidPersistentProperties().values().iterator(); iterator.hasNext(); )
+                try {
+                    fetchProperty(persistent, ((PersistentProperty) iterator.next()).getName(), s);
+                } catch (PersistentPropertyNotAvailableException _ex) {
                 }
-                catch(PersistentPropertyNotAvailableException _ex) { }
 
-            if(persistent instanceof FetchListener)
-                ((FetchListener)persistent).fetchedFrom(this);
+            if (persistent instanceof FetchListener)
+                ((FetchListener) persistent).fetchedFrom(this);
             cache.removeFromFetchQueue(introspector, persistent, fetchPolicy.addPrefix(s));
-        }
-        catch(IntrospectionException introspectionexception)
-        {
+        } catch (IntrospectionException introspectionexception) {
             throw new IntrospectionError(introspectionexception);
         }
     }
 
     public Persistent fetch(Class class1)
-        throws FetchException
-    {
+            throws FetchException {
         return fetch(class1, null);
     }
 
     public Persistent fetch(Class class1, String s)
-        throws FetchException
-    {
+            throws FetchException {
         return fetch(class1, s, false);
     }
 
     public Persistent fetch(Class class1, String s, boolean flag)
-        throws FetchException
-    {
+            throws FetchException {
         return fetch(class1, s, flag, true);
     }
 
-    public Persistent fetch(Class class1, String s, boolean flag, boolean flag1)
-        throws FetchException
-    {
-        try
-        {
+    public Persistent fetch(Class class1, String s, boolean flag, boolean addToFetchQueue)
+            throws FetchException {
+        try {
             Object obj = null;
-            if(it.cnr.jada.persistency.KeyedPersistent.class.isAssignableFrom(class1))
-            {
+            if (it.cnr.jada.persistency.KeyedPersistent.class.isAssignableFrom(class1)) {
                 Object obj1 = fetchOid(class1, s);
-                if(obj1 == null)
+                if (obj1 == null)
                     return null;
                 KeyedPersistent keyedpersistent = getCache().get(obj1);
-                if(keyedpersistent == null)
-                {
-                    getCache().put(obj1, keyedpersistent = (KeyedPersistent)newInstance(class1));
+                if (keyedpersistent == null && addToFetchQueue) {
+                    getCache().put(obj1, keyedpersistent = (KeyedPersistent) newInstance(class1));
                     fetchOid(keyedpersistent, s);
                 }
-                if(flag && flag1)
+                if (flag && addToFetchQueue)
                     getCache().addToFetchQueue(introspector, keyedpersistent, fetchPolicy.addPrefix(s));
-                if(!flag)
+                if (!flag)
                     fetch(((Persistent) (keyedpersistent)), s);
                 obj = keyedpersistent;
-            } else
-            {
+            } else {
                 obj = newInstance(class1);
                 fetch(((Persistent) (obj)), s);
             }
             return ((Persistent) (obj));
-        }
-        catch(IntrospectionException introspectionexception)
-        {
+        } catch (IntrospectionException introspectionexception) {
             throw new IntrospectionError(introspectionexception);
         }
     }
 
     public void fetchOid(KeyedPersistent keyedpersistent, String s)
-        throws FetchException
-    {
-        try
-        {
-            for(Iterator iterator = introspector.getPersistentInfo(keyedpersistent.getClass()).getOidPersistentProperties().values().iterator(); iterator.hasNext(); fetchProperty(keyedpersistent, ((PersistentProperty)iterator.next()).getName(), s));
-            if(s == null && (keyedpersistent instanceof Keyed))
-            {
+            throws FetchException {
+        try {
+            for (Iterator iterator = introspector.getPersistentInfo(keyedpersistent.getClass()).getOidPersistentProperties().values().iterator(); iterator.hasNext(); fetchProperty(keyedpersistent, ((PersistentProperty) iterator.next()).getName(), s))
+                ;
+            if (s == null && (keyedpersistent instanceof Keyed)) {
                 Class class1 = introspector.getPersistentInfo(keyedpersistent.getClass()).getKeyClass();
-                if(class1 != null)
-                {
-                    KeyedPersistent keyedpersistent1 = (KeyedPersistent)newInstance(class1);
+                if (class1 != null) {
+                    KeyedPersistent keyedpersistent1 = (KeyedPersistent) newInstance(class1);
                     fetchOid(keyedpersistent1, s);
-                    ((Keyed)keyedpersistent).setKey(keyedpersistent1);
+                    ((Keyed) keyedpersistent).setKey(keyedpersistent1);
                 }
             }
-        }
-        catch(PersistentPropertyNotAvailableException persistentpropertynotavailableexception)
-        {
+        } catch (PersistentPropertyNotAvailableException persistentpropertynotavailableexception) {
             throw new FetchException("Impossibile recuperare la chiave primaria per " + keyedpersistent.getClass(), persistentpropertynotavailableexception);
-        }
-        catch(IntrospectionException introspectionexception)
-        {
+        } catch (IntrospectionException introspectionexception) {
             throw new IntrospectionError(introspectionexception);
         }
     }
 
     public Object fetchOid(Class class1, String s)
-        throws FetchException
-    {
-        try
-        {
+            throws FetchException {
+        try {
             StringBuffer stringbuffer = new StringBuffer(class1.getName());
             stringbuffer.append('@');
             Object obj = fetchUntypedOid(class1, s);
-            if(obj == null)
-            {
+            if (obj == null) {
                 return null;
-            } else
-            {
+            } else {
                 stringbuffer.append(obj);
                 return stringbuffer.toString();
             }
-        }
-        catch(PersistentPropertyNotAvailableException persistentpropertynotavailableexception)
-        {
+        } catch (PersistentPropertyNotAvailableException persistentpropertynotavailableexception) {
             throw new FetchException("Impossibile recuperare la chiave primaria per " + class1, persistentpropertynotavailableexception);
         }
     }
 
-    private boolean fetchPolicyInclude(String s)
-    {
+    private boolean fetchPolicyInclude(String s) {
         return fetchPolicy == null || fetchPolicy.include(s);
     }
 
     private Object fetchProperty(Persistent persistent, String s, String s1)
-        throws FetchException
-    {
-        try
-        {
+            throws FetchException {
+        try {
             Class class1 = introspector.getPropertyType(persistent.getClass(), s);
             String s2 = Prefix.prependPrefix(s1, s);
             Object obj = null;
-            if(it.cnr.jada.persistency.KeyedPersistent.class.isAssignableFrom(class1))
+            if (it.cnr.jada.persistency.KeyedPersistent.class.isAssignableFrom(class1))
                 obj = fetch(class1, s2, true, fetchPolicyInclude(s2));
-            else
-            if(it.cnr.jada.persistency.Persistent.class.isAssignableFrom(class1))
+            else if (it.cnr.jada.persistency.Persistent.class.isAssignableFrom(class1))
                 obj = fetch(class1, s2, false);
             else
                 obj = fetchPropertyValue(s2, class1);
             introspector.setPropertyValue(persistent, s, obj);
             return obj;
-        }
-        catch(IntrospectionException introspectionexception)
-        {
+        } catch (IntrospectionException introspectionexception) {
             throw new IntrospectionError(introspectionexception);
         }
     }
 
     public abstract Object fetchPropertyValue(String s, Class class1)
-        throws FetchException;
+            throws FetchException;
 
     private Object fetchUntypedOid(Class class1, String s)
-        throws FetchException
-    {
-        try
-        {
+            throws FetchException {
+        try {
             StringBuffer stringbuffer = new StringBuffer();
-            for(Iterator iterator = introspector.getPersistentInfo(class1).getOidPersistentProperties().values().iterator(); iterator.hasNext();)
-            {
-                PersistentProperty persistentproperty = (PersistentProperty)iterator.next();
+            for (Iterator iterator = introspector.getPersistentInfo(class1).getOidPersistentProperties().values().iterator(); iterator.hasNext(); ) {
+                PersistentProperty persistentproperty = (PersistentProperty) iterator.next();
                 String s1 = Prefix.prependPrefix(s, persistentproperty.getName());
                 Class class2 = introspector.getPropertyType(class1, persistentproperty.getName());
                 Object obj = null;
-                if(it.cnr.jada.persistency.KeyedPersistent.class.isAssignableFrom(class2))
+                if (it.cnr.jada.persistency.KeyedPersistent.class.isAssignableFrom(class2))
                     obj = fetchUntypedOid(class2, s1);
                 else
                     obj = fetchPropertyValue(s1, class2);
-                if(obj == null)
+                if (obj == null)
                     return null;
                 stringbuffer.append(obj);
-                if(iterator.hasNext())
+                if (iterator.hasNext())
                     stringbuffer.append('.');
             }
 
             return stringbuffer.toString();
-        }
-        catch(IntrospectionException introspectionexception)
-        {
+        } catch (IntrospectionException introspectionexception) {
             throw new IntrospectionError(introspectionexception);
         }
     }
 
-    public PersistentCache getCache()
-    {
+    public PersistentCache getCache() {
         return cache;
     }
 
-    public FetchPolicy getFetchPolicy()
-    {
+    public void setCache(PersistentCache persistentcache) {
+        cache = persistentcache;
+    }
+
+    public FetchPolicy getFetchPolicy() {
         return fetchPolicy;
     }
 
-    public Introspector getIntrospector()
-    {
+    public void setFetchPolicy(FetchPolicy fetchpolicy) {
+        fetchPolicy = fetchpolicy;
+    }
+
+    public Introspector getIntrospector() {
         return introspector;
     }
 
+    public void setIntrospector(Introspector introspector1) {
+        introspector = introspector1;
+    }
+
     public Persistent newInstance(Class class1)
-        throws IntrospectionException
-    {
-        try
-        {
-            return (Persistent)class1.newInstance();
-        }
-        catch(InstantiationException _ex)
-        {
+            throws IntrospectionException {
+        try {
+            return (Persistent) class1.newInstance();
+        } catch (InstantiationException _ex) {
             throw new IntrospectionException("Can't instantiate " + class1.getName());
-        }
-        catch(IllegalAccessException _ex)
-        {
+        } catch (IllegalAccessException _ex) {
             throw new IntrospectionException("Illegal access exception while instantiate " + class1.getName());
-        }
-        catch(ClassCastException _ex)
-        {
+        } catch (ClassCastException _ex) {
             throw new IntrospectionException(class1.getName() + " is not a Persistent");
         }
     }
 
     public abstract boolean next()
-        throws FetchException;
-
-    public void setCache(PersistentCache persistentcache)
-    {
-        cache = persistentcache;
-    }
-
-    public void setFetchPolicy(FetchPolicy fetchpolicy)
-    {
-        fetchPolicy = fetchpolicy;
-    }
-
-    public void setIntrospector(Introspector introspector1)
-    {
-        introspector = introspector1;
-    }
-
-    private PersistentCache cache;
-    private Introspector introspector;
-    private FetchPolicy fetchPolicy;
+            throws FetchException;
 }
