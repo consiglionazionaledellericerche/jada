@@ -257,24 +257,29 @@ public class FormBP extends BusinessProcess implements Serializable{
         if (HttpActionContext.isFromBootstrap(pagecontext)) {
             String s = getAndClearMessage();
             String s1 = null;
+            String icon = null;
             if(s != null) {
                 switch(getMessageStatus()){
 	                case WARNING_MESSAGE:
-	                    s1 = "alert-warning";
+	                    s1 = "alert-info";
+	                    icon = "fa-info-circle";
 	                    break;
 	
 	                case ERROR_MESSAGE:
 	                    s1 = "alert-danger";
+                        icon = "fa-exclamation-circle";
 	                    break;
 	
 	                case QUESTION_MESSAGE:
 	                    s1 = "alert-info";
+                        icon = "fa-exclamation-circle";
 	                    break;
                 }
                 pagecontext.getOut().println("<div class=\"alert-message-bp h4 alert " + s1 + " alert-dismissible fade show\" role=\"alert\">");
                 pagecontext.getOut().println("<button type=\"button\" onclick=\"hideAlert(this);\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">");
                 pagecontext.getOut().println("<span aria-hidden=\"true\">&times;</span>");
                 pagecontext.getOut().println("</button>");
+                pagecontext.getOut().print("<i class=\"fa " + icon + "\" aria-hidden=\"true\"></i> ");
                 pagecontext.getOut().println(s);
                 pagecontext.getOut().println("</div>");
             }            
