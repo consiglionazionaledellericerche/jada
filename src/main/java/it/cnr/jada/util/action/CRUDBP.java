@@ -153,7 +153,7 @@ public abstract class CRUDBP extends BulkBP
                 .ifPresent(oggettoBulk -> {
                     try {
                         if (HttpActionContext.isFromBootstrap(pagecontext)) {
-                            out.print("<div class=\"text-primary\">");
+                            out.print("<div class=\"footer-created-info alert alert-info\">");
                             out.print("Creato il ");
                             out.print(DateTimeFormatter.ofPattern("dd MMMM yyyy 'alle' HH:mm")
                                     .format(oggettoBulk.getDacr().toInstant()
