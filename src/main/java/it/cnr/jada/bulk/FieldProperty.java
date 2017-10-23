@@ -1879,11 +1879,11 @@ public class FieldProperty implements Serializable{
 			writeException(jspwriter, throwable);
 		}
 	}
-	public void writeInput(JspWriter jspwriter, Object obj, boolean readonly, String cssClass, String s1, String s2, int status, 
+	public void writeInput(JspWriter jspwriter, Object obj, boolean readonly, String cssClass, String s1, String s2, int status,
 			FieldValidationMap fieldvalidationmap, boolean isBootstrap)
 		throws IOException
 	{
-		writeInput((Object)null, jspwriter, obj, readonly, cssClass, s1, s2, status, 
+		writeInput((Object)null, jspwriter, obj, readonly, cssClass, s1, s2, status,
 					fieldvalidationmap, isBootstrap);
 	}
 	public void writeInput(Object bp, JspWriter jspwriter, Object obj, boolean readonly, String cssClass, String s1, String s2, int status, 
@@ -2414,6 +2414,17 @@ public class FieldProperty implements Serializable{
 			jspwriter.print(" value=\"");
 			jspwriter.print(encodeHtmlText(obj1));
 			jspwriter.print("\"");
+			Object finalObj = obj1;
+			Optional.ofNullable(cssClass)
+					.filter(s -> s.contains("input-title"))
+					.ifPresent(s -> {
+						try {
+							jspwriter.print(" title=\"");
+							jspwriter.print(encodeHtmlText(finalObj));
+							jspwriter.print("\"");
+						} catch (IOException e) {
+						}
+					});
 		}
 		//int j = maxLength;
 		int j = getMaxLength(obj);

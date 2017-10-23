@@ -579,7 +579,11 @@ public class BulkInfo implements Serializable{
     public void writeFormForSearchTool(Object bp, JspWriter out, Object bean, String formName, String labelClass, String inputClass, String prefix, int status, boolean readonly, int layout, boolean showLabels, FieldValidationMap fieldvalidationmap, boolean isBootstrap) throws IOException{
         for(Enumeration enumeration = getFormFieldProperties(formName); enumeration.hasMoreElements();){
             FieldProperty fieldproperty = (FieldProperty)enumeration.nextElement();
-            fieldproperty.writeInput(out, bean, readonly, inputClass, null, prefix, status, fieldvalidationmap, isBootstrap);
+            fieldproperty.writeInput(out, bean, readonly,
+                    Optional.ofNullable(inputClass)
+                        .map(s -> s.concat(" input-title"))
+                        .orElse("form-control input-title"),
+                    null, prefix, status, fieldvalidationmap, isBootstrap);
         }
     }
 
