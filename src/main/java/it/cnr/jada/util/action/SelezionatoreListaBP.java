@@ -52,6 +52,7 @@ public class SelezionatoreListaBP extends AbstractSelezionatoreBP
     private SelectionListener selectionListener;
     private boolean mostraHideColumns = false;
     private boolean hiddenColumnButtonHidden = true;
+    private CondizioneComplessaBulk condizioneCorrente;
 
     public SelezionatoreListaBP() {
         this("");
@@ -116,15 +117,47 @@ public class SelezionatoreListaBP extends AbstractSelezionatoreBP
     }
 
     public Button[] createToolbar() {
-        Button abutton[] = new Button[5];
-        int i = 0;
-        abutton[i++] = new Button(Config.getHandler().getProperties(getClass()), "Toolbar.print");
-        abutton[i++] = new Button(Config.getHandler().getProperties(getClass()), "Toolbar.excel");
-        abutton[i++] = new Button(Config.getHandler().getProperties(getClass()), "Toolbar.multiSelection");
-        abutton[i++] = new Button(Config.getHandler().getProperties(getClass()), "Toolbar.selectAll");
-        abutton[i++] = new Button(Config.getHandler().getProperties(getClass()), "Toolbar.hiddenColumn");
+        return Optional.ofNullable(createToolbarList())
+                .map(buttons -> buttons.toArray(new Button[buttons.size()]))
+                .orElse(new Button[0]);
+    }
+
+    public List<Button> createToolbarList() {
+        final Optional<SearchProvider> searchProvider = Optional.ofNullable(getParent())
+                .filter(CRUDBP.class::isInstance)
+                .map(CRUDBP.class::cast)
+                .map(crudbp1 -> crudbp1.getSearchProvider());
+        List<Button> buttons = new ArrayList<Button>();
+        buttons.add(new Button(Config.getHandler().getProperties(getClass()), "Toolbar.print"));
+        buttons.add(new Button(Config.getHandler().getProperties(getClass()), "Toolbar.excel"));
+        if (searchProvider.isPresent()) {
+            Button button = new Button(Config.getHandler().getProperties(getClass()), "Toolbar.freeSearchFilter");
+            button.setSeparator(true);
+            buttons.add(button);
+            buttons.add(new Button(Config.getHandler().getProperties(getClass()), "Toolbar.freeSearchRemoveFilter"));
+        }
+        buttons.add(new Button(Config.getHandler().getProperties(getClass()), "Toolbar.multiSelection"));
+        buttons.add(new Button(Config.getHandler().getProperties(getClass()), "Toolbar.selectAll"));
+        buttons.add(new Button(Config.getHandler().getProperties(getClass()), "Toolbar.hiddenColumn"));
         setMostraHideColumns(true);
-        return abutton;
+        return buttons;
+    }
+
+
+    public boolean isFilterButtonHidden() {
+        return false;
+    }
+
+    public boolean isRemoveFilterButtonHidden() {
+        return condizioneCorrente == null;
+    }
+
+    public CondizioneComplessaBulk getCondizioneCorrente() {
+        return condizioneCorrente;
+    }
+
+    public void setCondizioneCorrente(CondizioneComplessaBulk condizioneCorrente) {
+        this.condizioneCorrente = condizioneCorrente;
     }
 
     @Override
