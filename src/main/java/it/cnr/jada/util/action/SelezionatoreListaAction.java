@@ -376,13 +376,32 @@ public class SelezionatoreListaAction extends SelezionatoreAction
             Optional<CRUDBP> crudbp = Optional.ofNullable(bp.getParent())
                     .filter(CRUDBP.class::isInstance)
                     .map(CRUDBP.class::cast);
+
             if (crudbp.isPresent()) {
+                SearchProvider searchProvider = Optional.ofNullable(bp.getFormField())
+                        .map(formField -> crudbp.get().getSearchProvider(crudbp.get().getModel(), formField.getField().getProperty()))
+                        .map(SearchProvider.class::cast)
+                        .orElseGet(() -> crudbp.get().getSearchProvider());
+                OggettoBulk oggettoBulk = Optional.ofNullable(bp.getFormField())
+                        .map(formField -> bp.getBulkInfo())
+                        .map(bulkInfo -> bulkInfo.getBulkClass())
+                        .map(aClass -> {
+                            try {
+                                return aClass.newInstance();
+                            } catch (InstantiationException | IllegalAccessException e) {
+                                throw new DetailedRuntimeException(e);
+                            }
+                        })
+                        .filter(OggettoBulk.class::isInstance)
+                        .map(OggettoBulk.class::cast)
+                        .orElse(crudbp.get().createEmptyModelForFreeSearch(context));
+
                 RicercaLiberaBP ricercaLiberaBP = (RicercaLiberaBP)context.createBusinessProcess("RicercaLibera");
-                ricercaLiberaBP.setSearchProvider(crudbp.get().getSearchProvider());
-                ricercaLiberaBP.setFreeSearchSet(crudbp.get().getFreeSearchSet());
+                ricercaLiberaBP.setSearchProvider(searchProvider);
+                ricercaLiberaBP.setFreeSearchSet("default");
                 ricercaLiberaBP.setShowSearchResult(false);
                 ricercaLiberaBP.setCanPerformSearchWithoutClauses(true);
-                ricercaLiberaBP.setPrototype(crudbp.get().createEmptyModelForFreeSearch(context));
+                ricercaLiberaBP.setPrototype(oggettoBulk);
                 Optional.ofNullable(bp.getCondizioneCorrente())
                         .filter(condizioneComplessaBulk -> !condizioneComplessaBulk.children.isEmpty())
                         .ifPresent(condizioneRicercaBulk -> {
@@ -397,6 +416,7 @@ public class SelezionatoreListaAction extends SelezionatoreAction
                             ricercaLiberaBP.setRadice(condizioneRicercaBulk);
                         });
                 context.addHookForward("searchResult",this,"doRigheSelezionate");
+                context.addHookForward("close", this, "doCloseRicercaLibera");
                 return context.addBusinessProcess(ricercaLiberaBP);
             } else {
                 return context.findDefaultForward();
@@ -404,6 +424,10 @@ public class SelezionatoreListaAction extends SelezionatoreAction
         } catch(Throwable e) {
             return handleException(context,e);
         }
+    }
+
+    public Forward doCloseRicercaLibera(ActionContext context) {
+        return context.findDefaultForward();
     }
 
     public Forward doRigheSelezionate(ActionContext context) {

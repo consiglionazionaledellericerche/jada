@@ -52,6 +52,8 @@ public class SelezionatoreListaBP extends AbstractSelezionatoreBP
     private SelectionListener selectionListener;
     private boolean mostraHideColumns = false;
     private boolean hiddenColumnButtonHidden = true;
+
+    private FormField formField;
     private CondizioneComplessaBulk condizioneCorrente;
 
     public SelezionatoreListaBP() {
@@ -706,4 +708,11 @@ public class SelezionatoreListaBP extends AbstractSelezionatoreBP
         this.mostraHideColumns = mostraHideColumns;
     }
 
+    public FormField getFormField() {
+        return formField;
+    }
+
+    public void setFormField(FormField formField) {
+        this.formField = formField;
+    }
 }

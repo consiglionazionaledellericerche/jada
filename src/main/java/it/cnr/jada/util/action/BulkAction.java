@@ -812,6 +812,7 @@ public class BulkAction extends FormAction
                 SelezionatoreListaBP selezionatorelistabp = (SelezionatoreListaBP)actioncontext.createBusinessProcess("Selezionatore");
                 selezionatorelistabp.setIterator(actioncontext, remoteiterator);
                 selezionatorelistabp.setBulkInfo(bulkinfo);
+                selezionatorelistabp.setFormField(formfield);
                 selezionatorelistabp.setColumns(bulkinfo.getColumnFieldPropertyDictionary(s));
                 actioncontext.addHookForward("seleziona", this, "doBringBackSearchResult");
                 HookForward hookforward = (HookForward)actioncontext.findForward("seleziona");

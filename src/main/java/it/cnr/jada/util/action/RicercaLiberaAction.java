@@ -92,6 +92,9 @@ public class RicercaLiberaAction extends FormAction
         try
         {
             actioncontext.closeBusinessProcess();
+            HookForward hookforward = (HookForward)actioncontext.findForward("close");
+            if(hookforward != null)
+                return hookforward;
             return actioncontext.findForward("seleziona");
         }
         catch(Throwable throwable)
