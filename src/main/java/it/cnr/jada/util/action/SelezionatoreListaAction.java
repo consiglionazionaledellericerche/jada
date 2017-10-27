@@ -359,7 +359,28 @@ public class SelezionatoreListaAction extends SelezionatoreAction
                 .map(CRUDBP.class::cast);
         if (crudbp.isPresent()) {
             try {
-                bp.setIterator(context, crudbp.get().getSearchProvider().search(context, null, crudbp.get().createEmptyModelForSearch(context)));
+                OggettoBulk oggettoBulk = Optional.ofNullable(bp.getFormField())
+                        .map(formField -> bp.getBulkInfo())
+                        .map(bulkInfo -> bulkInfo.getBulkClass())
+                        .map(aClass -> {
+                            try {
+                                return aClass.newInstance();
+                            } catch (InstantiationException | IllegalAccessException e) {
+                                throw new DetailedRuntimeException(e);
+                            }
+                        })
+                        .filter(OggettoBulk.class::isInstance)
+                        .map(OggettoBulk.class::cast)
+                        .orElse(crudbp.get().createEmptyModelForFreeSearch(context));
+
+                SearchProvider searchProvider = Optional.ofNullable(bp.getFormField())
+                        .map(formField -> crudbp.get().getSearchProvider(
+                                formField.getModel(),
+                                formField.getField().getProperty()))
+                        .map(SearchProvider.class::cast)
+                        .orElseGet(() -> crudbp.get().getSearchProvider());
+                bp.setIterator(context,
+                        searchProvider.search(context, null, oggettoBulk));
             } catch (RemoteException|BusinessProcessException e) {
                 return handleException(context, e);
             }
@@ -379,7 +400,9 @@ public class SelezionatoreListaAction extends SelezionatoreAction
 
             if (crudbp.isPresent()) {
                 SearchProvider searchProvider = Optional.ofNullable(bp.getFormField())
-                        .map(formField -> crudbp.get().getSearchProvider(crudbp.get().getModel(), formField.getField().getProperty()))
+                        .map(formField -> crudbp.get().getSearchProvider(
+                                formField.getModel(),
+                                formField.getField().getProperty()))
                         .map(SearchProvider.class::cast)
                         .orElseGet(() -> crudbp.get().getSearchProvider());
                 OggettoBulk oggettoBulk = Optional.ofNullable(bp.getFormField())
