@@ -1,6 +1,9 @@
 package it.cnr.jada.persistency;
 
+import it.cnr.jada.DetailedRuntimeException;
+
 import java.io.Serializable;
+import java.lang.reflect.Modifier;
 import java.util.Iterator;
 import java.util.Optional;
 
@@ -78,7 +81,7 @@ public abstract class Broker
                 if (obj1 == null)
                     return null;
                 KeyedPersistent keyedpersistent = getCache().get(obj1);
-                if (keyedpersistent == null && addToFetchQueue) {
+                if (keyedpersistent == null) {
                     getCache().put(obj1, keyedpersistent = (KeyedPersistent) newInstance(class1));
                     fetchOid(keyedpersistent, s);
                 }
@@ -210,17 +213,21 @@ public abstract class Broker
         introspector = introspector1;
     }
 
-    public Persistent newInstance(Class class1)
-            throws IntrospectionException {
-        try {
-            return (Persistent) class1.newInstance();
-        } catch (InstantiationException _ex) {
-            throw new IntrospectionException("Can't instantiate " + class1.getName());
-        } catch (IllegalAccessException _ex) {
-            throw new IntrospectionException("Illegal access exception while instantiate " + class1.getName());
-        } catch (ClassCastException _ex) {
-            throw new IntrospectionException(class1.getName() + " is not a Persistent");
-        }
+    public Persistent newInstance(Class class1) throws IntrospectionException {
+        return Optional.ofNullable(class1)
+                .filter(aClass -> !Modifier.isAbstract(aClass.getModifiers()))
+                .map(aClass -> {
+                    try {
+                        return aClass.newInstance();
+                    } catch (InstantiationException e) {
+                        throw new DetailedRuntimeException("Can't instantiate " + class1.getName());
+                    } catch (IllegalAccessException e) {
+                        throw new DetailedRuntimeException("Illegal access exception while instantiate " + class1.getName());
+                    }
+                })
+                .filter(Persistent.class::isInstance)
+                .map(Persistent.class::cast)
+                .orElse(null);
     }
 
     public abstract boolean next()

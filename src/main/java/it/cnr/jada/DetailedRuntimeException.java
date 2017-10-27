@@ -1,5 +1,7 @@
 package it.cnr.jada;
 
+import org.apache.commons.io.IOUtils;
+
 import java.io.*;
 import java.lang.reflect.Field;
 import java.util.Optional;
@@ -84,11 +86,11 @@ public class DetailedRuntimeException extends RuntimeException
 
     private void readObject(ObjectInputStream objectinputstream)
             throws IOException, ClassNotFoundException {
-        stackTrace = objectinputstream.readUTF();
+        stackTrace = IOUtils.toString(objectinputstream);
         detail = (Throwable) objectinputstream.readObject();
         if (detail != null && !(detail instanceof DetailedThrowable))
             try {
-                ThrowableDetailMessage.set(detail, objectinputstream.readUTF());
+                ThrowableDetailMessage.set(detail, IOUtils.toString(objectinputstream));
             } catch (IOException ioexception) {
                 throw ioexception;
             } catch (Throwable _ex) {
