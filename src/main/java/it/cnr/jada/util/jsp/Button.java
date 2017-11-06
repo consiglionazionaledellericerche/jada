@@ -390,7 +390,7 @@ public class Button implements Serializable, Cloneable {
 			}
 		} else {
 			if (isBootstrap) {
-				jspwriter.print(" class=\"btn btn-secondary ");
+				jspwriter.print(" class=\"btn btn-secondary btn-outline-secondary ");
 				if (image == null) {
 					jspwriter.print(" btn-sm text-primary");
 				} else {
