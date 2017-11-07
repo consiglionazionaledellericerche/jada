@@ -2457,6 +2457,10 @@ public class FieldProperty implements Serializable{
 			   } else {
 			   		Optional.ofNullable(getBulkInfo().getFieldProperty(name).getFormatName())
 							.map(s -> formats.get(s))
+                            .filter(s -> Optional.ofNullable(s).isPresent())
+                            .filter(NullableFormat.class::isInstance)
+                            .map(NullableFormat.class::cast)
+                            .map(nullableFormat -> nullableFormat.getFormat())
 							.filter(SafeDateFormat.class::isInstance)
 							.map(SafeDateFormat.class::cast)
 							.map(safeDateFormat -> safeDateFormat.getFormat())
