@@ -446,11 +446,11 @@ public class FormBP extends BusinessProcess implements Serializable{
                 }
             }
             buttons.add(getCloseButton());
-            jspwriter.println("<div class=\"title-bar bg-primary text-white\">");
-            jspwriter.print("<sigla-page-title class=\"h6\">");
+            jspwriter.println("<div class=\"title-bar bg-primary text-white d-flex\">");
+            jspwriter.print("<sigla-page-title class=\"h6 mr-auto pt-2 pl-2\">");
             jspwriter.print(getFormTitle().replace("<script>document.write(document.title)</script>", ""));
             jspwriter.print("</sigla-page-title>");
-            jspwriter.println("<div id=\"titleToolbar\" class=\"btn-toolbar pull-right\" role=\"toolbar\" aria-label=\"Toolbar with button groups\">");
+            jspwriter.println("<div id=\"titleToolbar\" class=\"p-1\">");
                 JSPUtils.toolbarBootstrap(jspwriter, buttons, this);
             jspwriter.println("</div>");
             jspwriter.println("</div>");
