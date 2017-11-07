@@ -1,5 +1,6 @@
 package it.cnr.jada.bulk;
 
+import it.cnr.jada.DetailedRuntimeException;
 import it.cnr.jada.action.ActionContext;
 import it.cnr.jada.action.HttpActionContext;
 import it.cnr.jada.bulk.annotation.FieldPropertyAnnotation;
@@ -2447,12 +2448,25 @@ public class FieldProperty implements Serializable{
 		/* -- add by Stentella - 16/7/04 */        
 			   String sqlt = "";
 			   if (!isBootstrap) {
-				   if ((sqlt = getBulkInfo().getFieldProperty(name).getFormatName())!=null){
+				   if ((sqlt = getBulkInfo().getFieldProperty(name).getFormatName()) != null) {
 					   if (sqlt.equalsIgnoreCase("timestamp"))
-							   jspwriter.print(" onKeyUp=\"DateTimeFormat(this,this.value,event,false,'3')\" onBlur=\"DateTimeFormat(this,this.value,event,true,'3'); modalInputChanged(this)\"");
+						   jspwriter.print(" onKeyUp=\"DateTimeFormat(this,this.value,event,false,'3')\" onBlur=\"DateTimeFormat(this,this.value,event,true,'3'); modalInputChanged(this)\"");
 					   else if (sqlt.equalsIgnoreCase("date_short"))
-							   jspwriter.print(" onKeyUp=\"DateFormat(this,this.value,event,false,'3')\" onBlur=\"DateFormat(this,this.value,event,true,'3'); modalInputChanged(this)\"");
+						   jspwriter.print(" onKeyUp=\"DateFormat(this,this.value,event,false,'3')\" onBlur=\"DateFormat(this,this.value,event,true,'3'); modalInputChanged(this)\"");
 				   }				   
+			   } else {
+			   		Optional.ofNullable(getBulkInfo().getFieldProperty(name).getFormatName())
+							.map(s -> formats.get(s))
+							.filter(SafeDateFormat.class::isInstance)
+							.map(SafeDateFormat.class::cast)
+							.map(safeDateFormat -> safeDateFormat.getFormat())
+                            .ifPresent(format -> {
+                                try {
+                                    jspwriter.print(" placeholder=\"" + format + "\" ");
+                                } catch (IOException e) {
+                                    throw new DetailedRuntimeException(e);
+                                }
+                            });
 			   }
 
 		if(j > 0)

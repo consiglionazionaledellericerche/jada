@@ -5,12 +5,10 @@ import it.cnr.jada.bulk.ValidationParseException;
 import java.text.*;
 import java.util.*;
 
-public class SafeDateFormat extends Format
-{
-	
-	
-	
+public class SafeDateFormat extends Format {
+
 	private DateFormat dateFormat;
+	private String format;
 	private static final Date MAX_DATE;
 	private static final Date MAXIMUM_DATE;
 	private static final Date MINIMUM_DATE;
@@ -54,26 +52,32 @@ public class SafeDateFormat extends Format
 	
     public SafeDateFormat()
     {
+
         this(((DateFormat) (new SimpleDateFormat())));
     }
 
     public SafeDateFormat(String s)
     {
         this(((DateFormat) (new SimpleDateFormat(s))));
+        this.format = s;
     }
 
     public SafeDateFormat(String s, DateFormatSymbols dateformatsymbols)
     {
         this(((DateFormat) (new SimpleDateFormat(s, dateformatsymbols))));
+        this.format = s;
     }
 
     public SafeDateFormat(String s, Locale locale)
     {
+
         this(((DateFormat) (new SimpleDateFormat(s, locale))));
+        this.format = s;
     }
 
     public SafeDateFormat(DateFormat dateformat)
     {
+
         dateFormat = dateformat;
     }
 
@@ -136,6 +140,10 @@ public class SafeDateFormat extends Format
         throws ParseException
     {
         return validateDate(dateFormat.parse(s));
+    }
+
+    public String getFormat() {
+        return format;
     }
 
     public Date parse(String s, ParsePosition parseposition)
