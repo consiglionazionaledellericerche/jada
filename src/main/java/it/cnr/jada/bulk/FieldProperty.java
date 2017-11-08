@@ -2145,8 +2145,11 @@ public class FieldProperty implements Serializable{
 			getNewButton().write(jspwriter, !flag, "javascript:submitForm('doBlankSearch(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
 			getSearchButton().write(jspwriter, !flag, "javascript:submitForm('doSearch(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
 			getFreeSearchButton().write(jspwriter, !flag, "javascript:submitForm('doFreeSearch(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
-			if (getCRUDBusinessProcessName() != null)
-				getCrudButton().write(jspwriter, !flag, "javascript:submitForm('doCRUD(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
+			if (getCRUDBusinessProcessName() != null) {
+				Button crudButton = getCrudButton();
+				crudButton.setButtonClass(crudButton.getButtonClass().concat(" input-group-addon "));
+				crudButton.write(jspwriter, !flag, "javascript:submitForm('doCRUD(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
+			}
 			jspwriter.println("</div>");				
 		} else {
 			jspwriter.println("<span>");
