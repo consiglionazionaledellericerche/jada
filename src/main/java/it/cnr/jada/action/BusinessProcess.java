@@ -302,7 +302,11 @@ public class BusinessProcess implements Forward, Serializable{
      * Ricerca il "default" forward.
      */
 	public Forward findDefaultForward(){
-		return findForward("default");
+	    return Optional.of(getParentRoot().isBootstrap())
+                .filter(bootstrap -> bootstrap)
+                .map(aBoolean -> findForward("bootstrap"))
+                .filter(forward -> Optional.ofNullable(forward).isPresent())
+                .orElseGet(() -> findForward("default"));
 	}
     /**
      * Ricerca un forward nell'ambito del ricevente. La ricerca valuta dapprima gli hook, 
