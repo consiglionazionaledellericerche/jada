@@ -501,6 +501,14 @@ public class Button implements Serializable, Cloneable {
 				title, flag, isBootstrap);
 	}
 
+	public void write(JspWriter jspwriter, boolean flag, String s, boolean isBootstrap, String addButtonClass)
+			throws IOException
+	{
+		write(jspwriter, Optional.of(isBootstrap).filter(x -> x.equals(Boolean.TRUE)).map(x-> iconClass).orElse(img),
+				Optional.of(isBootstrap).filter(x -> x.equals(Boolean.TRUE)).map(x-> iconClass).orElse(disabledImg), label, labelPosition, s,
+				Optional.of(isBootstrap).filter(x -> x.equals(Boolean.TRUE)).map(x-> buttonClass.concat(addButtonClass)).orElse(style), title, flag, isBootstrap);
+	}
+
 	public void write(JspWriter jspwriter, boolean flag, String s, boolean isBootstrap)
 		throws IOException
 	{
