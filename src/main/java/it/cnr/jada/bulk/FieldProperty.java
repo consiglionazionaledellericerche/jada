@@ -2456,22 +2456,24 @@ public class FieldProperty implements Serializable{
 						   jspwriter.print(" onKeyUp=\"DateFormat(this,this.value,event,false,'3')\" onBlur=\"DateFormat(this,this.value,event,true,'3'); modalInputChanged(this)\"");
 				   }				   
 			   } else {
-			   		Optional.ofNullable(getBulkInfo().getFieldProperty(name).getFormatName())
+			   	if (!(flag || obj == null)) {
+					Optional.ofNullable(getBulkInfo().getFieldProperty(name).getFormatName())
 							.map(s -> formats.get(s))
-                            .filter(s -> Optional.ofNullable(s).isPresent())
-                            .filter(NullableFormat.class::isInstance)
-                            .map(NullableFormat.class::cast)
-                            .map(nullableFormat -> nullableFormat.getFormat())
+							.filter(s -> Optional.ofNullable(s).isPresent())
+							.filter(NullableFormat.class::isInstance)
+							.map(NullableFormat.class::cast)
+							.map(nullableFormat -> nullableFormat.getFormat())
 							.filter(SafeDateFormat.class::isInstance)
 							.map(SafeDateFormat.class::cast)
 							.map(safeDateFormat -> safeDateFormat.getFormat())
-                            .ifPresent(format -> {
-                                try {
-                                    jspwriter.print(" placeholder=\"" + format + "\" ");
-                                } catch (IOException e) {
-                                    throw new DetailedRuntimeException(e);
-                                }
-                            });
+							.ifPresent(format -> {
+								try {
+									jspwriter.print(" placeholder=\"" + format + "\" ");
+								} catch (IOException e) {
+									throw new DetailedRuntimeException(e);
+								}
+							});
+				}
 			   }
 
 		if(j > 0)
