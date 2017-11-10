@@ -2136,7 +2136,7 @@ public class FieldProperty implements Serializable{
 		throws IOException, IntrospectionException, InvocationTargetException
 	{
 		if (isBootstrap) {
-			jspwriter.println("<div class=\"input-group\">");
+			jspwriter.println("<div class=\"input-group input-group-searchtool\">");
 			if(formName != null) {
 				BulkInfo.getBulkInfo(getPropertyType(getBulkInfo().getBulkClass())).writeFormForSearchTool(jspwriter, obj1, formName, null, null, 
 						mergePrefix(s2, name), 0, flag || (obj1 instanceof OggettoBulk) && ((OggettoBulk)obj1).getCrudStatus() == 5, 
@@ -2378,7 +2378,7 @@ public class FieldProperty implements Serializable{
 		if(fieldvalidationexception != null)
 			obj1 = fieldvalidationexception.getText();
 		if(command != null && !flag && i != 4){
-			jspwriter.println("<div class=\"input-group\">");
+			jspwriter.println("<div class=\"input-group input-group-command\">");
 		}		
 		jspwriter.print("<input type=text name=\"");
 		String s3 = mergePrefix(s2, name);
