@@ -2136,7 +2136,10 @@ public class FieldProperty implements Serializable{
 		throws IOException, IntrospectionException, InvocationTargetException
 	{
 		if (isBootstrap) {
-			jspwriter.println("<div class=\"input-group input-group-searchtool\">");
+			jspwriter.println(
+					Optional.ofNullable(formName)
+							.map(name -> "<div class=\"input-group input-group-searchtool w-100\">")
+					.orElseGet(() -> "<div class=\"input-group input-group-searchtool\">"));
 			if(formName != null) {
 				BulkInfo.getBulkInfo(getPropertyType(getBulkInfo().getBulkClass())).writeFormForSearchTool(jspwriter, obj1, formName, null, null, 
 						mergePrefix(s2, name), 0, flag || (obj1 instanceof OggettoBulk) && ((OggettoBulk)obj1).getCrudStatus() == 5, 
