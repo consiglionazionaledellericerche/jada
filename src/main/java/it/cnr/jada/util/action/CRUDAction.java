@@ -56,7 +56,7 @@ public class CRUDAction extends BulkAction
                 {
                     OggettoBulk oggettobulk1 = (OggettoBulk)remoteiterator.nextElement();
                     EJBCommonServices.closeRemoteIterator(actioncontext, remoteiterator);
-                    crudbp.setMessage("La ricerca ha fornito un solo risultato.");
+                    crudbp.setMessage(BulkBP.INFO_MESSAGE, "La ricerca ha fornito un solo risultato.");
                     return doRiportaSelezione(actioncontext, oggettobulk1);
                 } else
                 {
@@ -94,7 +94,7 @@ public class CRUDAction extends BulkAction
             {
                 OggettoBulk oggettobulk1 = (OggettoBulk)remoteiterator.nextElement();
                 EJBCommonServices.closeRemoteIterator(actioncontext, remoteiterator);
-                crudbp.setMessage("La ricerca ha fornito un solo risultato.");
+                crudbp.setMessage(BulkBP.INFO_MESSAGE, "La ricerca ha fornito un solo risultato.");
                 return doRiportaSelezione(actioncontext, oggettobulk1);
             } else
             {

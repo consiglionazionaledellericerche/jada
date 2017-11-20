@@ -564,13 +564,13 @@ public abstract class CRUDBP extends BulkBP
         {
             create(actioncontext);
             if(getMessage() == null)
-                setMessage("Creazione eseguita in modo corretto.");
+                setMessage(INFO_MESSAGE, "Creazione eseguita in modo corretto.");
         } else
         if(isEditing())
         {
             update(actioncontext);
             if(getMessage() == null)
-                setMessage("Salvataggio eseguito in modo corretto.");
+                setMessage(INFO_MESSAGE, "Salvataggio eseguito in modo corretto.");
         }
         commitUserTransaction();
         try

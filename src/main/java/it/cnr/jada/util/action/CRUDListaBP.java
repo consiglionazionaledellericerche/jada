@@ -331,7 +331,7 @@ public class CRUDListaBP extends SelezionatoreListaBP
                 }
 
             }
-            setMessage("Salvataggio eseguito in modo corretto.");
+            setMessage(INFO_MESSAGE, "Salvataggio eseguito in modo corretto.");
         }
         catch(RemoteException remoteexception)
         {

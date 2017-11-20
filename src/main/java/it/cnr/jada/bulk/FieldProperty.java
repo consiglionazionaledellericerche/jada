@@ -2136,10 +2136,10 @@ public class FieldProperty implements Serializable{
 		throws IOException, IntrospectionException, InvocationTargetException
 	{
 		if (isBootstrap) {
-			jspwriter.println(
-					Optional.ofNullable(formName)
-							.map(name -> "<div class=\"input-group input-group-searchtool w-100\">")
-					.orElseGet(() -> "<div class=\"input-group input-group-searchtool\">"));
+			jspwriter.println("<div class=\"input-group input-group-searchtool ");
+			jspwriter.print(Optional.ofNullable(formName).filter(s3 -> !Optional.ofNullable(inputCssClass).isPresent()).map(name -> "w-100 ").orElse(""));
+			jspwriter.print(Optional.ofNullable(inputCssClass).map(css -> css).orElse(""));
+			jspwriter.print("\">");
 			if(formName != null) {
 				BulkInfo.getBulkInfo(getPropertyType(getBulkInfo().getBulkClass())).writeFormForSearchTool(jspwriter, obj1, formName, null, null, 
 						mergePrefix(s2, name), 0, flag || (obj1 instanceof OggettoBulk) && ((OggettoBulk)obj1).getCrudStatus() == 5, 
@@ -2433,8 +2433,11 @@ public class FieldProperty implements Serializable{
 		}
 		//int j = maxLength;
 		int j = getMaxLength(obj);
+
 		String css = Optional.ofNullable(cssClass)
-				.orElseGet(() -> isBootstrap ? Optional.ofNullable(getInputCssClass()).orElse("form-control") : "");
+				.orElseGet(() -> isBootstrap ?  " form-control "  : "").concat(" ").concat(
+						Optional.ofNullable(getInputCssClass()).orElse("")
+				);
 		css += getMandatoryStyleBootstrap(i);
 		writeInputStyle(jspwriter, css, s4, obj, obj1);
 		if(obj != null && j == 0 && getPropertyType((OggettoBulk)obj) == java.lang.String.class || j == 0 && getPropertyType() == java.lang.String.class)

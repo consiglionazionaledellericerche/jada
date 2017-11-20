@@ -32,6 +32,7 @@ public class FormBP extends BusinessProcess implements Serializable{
     public static final int ERROR_MESSAGE = 1;
     public static final int WARNING_MESSAGE = 2;
     public static final int QUESTION_MESSAGE = 3;
+    public static final int INFO_MESSAGE = 4;
     private String defaultAction;
     private Button toolbar[];
     private static Button closeButton;
@@ -260,9 +261,14 @@ public class FormBP extends BusinessProcess implements Serializable{
             String icon = null;
             if(s != null) {
                 switch(getMessageStatus()){
+                    case INFO_MESSAGE:
+                        s1 = "alert-info";
+                        icon = "fa-info-circle";
+                        break;
+
 	                case WARNING_MESSAGE:
-	                    s1 = "alert-info";
-	                    icon = "fa-info-circle";
+	                    s1 = "alert-warning";
+	                    icon = "fa-exclamation-triangle";
 	                    break;
 	
 	                case ERROR_MESSAGE:
@@ -274,6 +280,10 @@ public class FormBP extends BusinessProcess implements Serializable{
 	                    s1 = "alert-info";
                         icon = "fa-exclamation-circle";
 	                    break;
+                    default:
+                        s1 = "alert-warning";
+                        icon = "fa-exclamation-triangle";
+                        break;
                 }
                 pagecontext.getOut().println("<div class=\"alert-message-bp h4 alert " + s1 + " alert-dismissible fade show\" role=\"alert\">");
                 pagecontext.getOut().println("<button type=\"button\" onclick=\"hideAlert(this);\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">");
