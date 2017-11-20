@@ -2589,7 +2589,7 @@ public class FieldProperty implements Serializable{
 		}
 	}    
 
-	protected void writeTextArea(JspWriter jspwriter, Object obj, boolean flag, Object obj1, String s, String s1, String s2, 
+	protected void writeTextArea(JspWriter jspwriter, Object obj, boolean flag, Object obj1, String cssClass, String s1, String s2,
 			int i, FieldValidationMap fieldvalidationmap, boolean isBootstrap)
 		throws IOException, IntrospectionException, InvocationTargetException
 	{
@@ -2610,7 +2610,13 @@ public class FieldProperty implements Serializable{
 			jspwriter.print(" readonly");
 			s3 = mergeStyles(s3, "background-color:transparent;color:GrayText;");
 		}
-		writeInputStyle(jspwriter, s, s3, obj, obj1);
+		String css = Optional.ofNullable(cssClass)
+				.orElseGet(() -> isBootstrap ?  " form-control "  : "").concat(" ").concat(
+						Optional.ofNullable(getInputCssClass()).orElse("")
+				);
+		css += getMandatoryStyleBootstrap(i);
+		writeInputStyle(jspwriter, css, s3, obj, obj1);
+
 		if(fieldvalidationexception == null)
 			obj1 = getStringValueFrom(obj, obj1);
 		if(s1 != null)
