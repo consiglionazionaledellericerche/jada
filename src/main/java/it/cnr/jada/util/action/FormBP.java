@@ -248,7 +248,7 @@ public class FormBP extends BusinessProcess implements Serializable{
         }
         if (HttpActionContext.isFromBootstrap(pagecontext)) {
             pagecontext.getOut().println(" method=post>");        	        	
-        } else {s
+        } else {
             pagecontext.getOut().println(" method=post onSubmit=\"return disableDblClick()\">");        	
         }
         pagecontext.getOut().println("<input type=hidden name=\"comando\">");
