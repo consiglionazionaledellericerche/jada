@@ -248,7 +248,7 @@ public class FormBP extends BusinessProcess implements Serializable{
         }
         if (HttpActionContext.isFromBootstrap(pagecontext)) {
             pagecontext.getOut().println(" method=post>");        	        	
-        } else {
+        } else {s
             pagecontext.getOut().println(" method=post onSubmit=\"return disableDblClick()\">");        	
         }
         pagecontext.getOut().println("<input type=hidden name=\"comando\">");
@@ -262,26 +262,26 @@ public class FormBP extends BusinessProcess implements Serializable{
             if(s != null) {
                 switch(getMessageStatus()){
                     case INFO_MESSAGE:
-                        s1 = "alert-info";
+                        s1 = "alert-info border border-info pb-0";
                         icon = "fa-info-circle";
                         break;
 
 	                case WARNING_MESSAGE:
-	                    s1 = "alert-warning";
+	                    s1 = "alert-warning border border-warning pb-0";
 	                    icon = "fa-exclamation-triangle";
 	                    break;
 	
 	                case ERROR_MESSAGE:
-	                    s1 = "alert-danger";
+	                    s1 = "alert-danger border border-danger pb-0";
                         icon = "fa-exclamation-circle";
 	                    break;
 	
 	                case QUESTION_MESSAGE:
-	                    s1 = "alert-info";
+	                    s1 = "alert-info border border-info pb-0";
                         icon = "fa-exclamation-circle";
 	                    break;
                     default:
-                        s1 = "alert-warning";
+                        s1 = "alert-warning border border-warning pb-0";
                         icon = "fa-exclamation-triangle";
                         break;
                 }
