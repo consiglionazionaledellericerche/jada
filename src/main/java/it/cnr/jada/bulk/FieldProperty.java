@@ -2131,25 +2131,25 @@ public class FieldProperty implements Serializable{
 		writeText(jspwriter, obj, true, obj1, s, s1, s2, i, fieldvalidationmap, isBootstrap);
 	}
 
-	protected void writeSearchTool(JspWriter jspwriter, Object obj, boolean flag, Object obj1, String s, String s1, String s2, 
+	protected void writeSearchTool(JspWriter jspwriter, Object obj, boolean readonly, Object obj1, String s, String s1, String s2, 
 			int i, FieldValidationMap fieldvalidationmap, boolean isBootstrap)
 		throws IOException, IntrospectionException, InvocationTargetException
 	{
 		if (isBootstrap) {
 			jspwriter.println("<div class=\"input-group input-group-searchtool ");
-			jspwriter.print(Optional.ofNullable(formName).filter(s3 -> !Optional.ofNullable(inputCssClass).isPresent()).map(name -> "w-100 ").orElse(""));
+			jspwriter.print(Optional.ofNullable(formName).filter(s3 -> !Optional.ofNullable(inputCssClass).isPresent()).map(name -> "w-100 ").orElse(inputCssClass));
 			jspwriter.print(Optional.ofNullable(inputCssClass).map(css -> css).orElse(""));
 			jspwriter.print("\">");
 			if(formName != null) {
 				BulkInfo.getBulkInfo(getPropertyType(getBulkInfo().getBulkClass())).writeFormForSearchTool(jspwriter, obj1, formName, null, null, 
-						mergePrefix(s2, name), 0, flag || (obj1 instanceof OggettoBulk) && ((OggettoBulk)obj1).getCrudStatus() == 5, 
+						mergePrefix(s2, name), 0, readonly || (obj1 instanceof OggettoBulk) && ((OggettoBulk)obj1).getCrudStatus() == 5, 
 						1, false, fieldvalidationmap, isBootstrap);
 			}
-			getNewButton().write(jspwriter, !flag, "javascript:submitForm('doBlankSearch(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
-			getSearchButton().write(jspwriter, !flag, "javascript:submitForm('doSearch(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
-			getFreeSearchButton().write(jspwriter, !flag, "javascript:submitForm('doFreeSearch(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
+			getNewButton().write(jspwriter, !readonly, "javascript:submitForm('doBlankSearch(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
+			getSearchButton().write(jspwriter, !readonly, "javascript:submitForm('doSearch(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
+			getFreeSearchButton().write(jspwriter, !readonly, "javascript:submitForm('doFreeSearch(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
 			if (getCRUDBusinessProcessName() != null) {
-				getCrudButton().write(jspwriter, !flag, "javascript:submitForm('doCRUD(" + mergePrefix(s2, getName()) + ")')", isBootstrap, " input-group-addon");
+				getCrudButton().write(jspwriter, !readonly, "javascript:submitForm('doCRUD(" + mergePrefix(s2, getName()) + ")')", isBootstrap, " input-group-addon");
 			}
 			jspwriter.println("</div>");				
 		} else {
@@ -2158,15 +2158,15 @@ public class FieldProperty implements Serializable{
 			{
 				jspwriter.println("<table cellspacing=\"0\" cellspacing=\"0\" border=\"0\"><tr><td>");
 				jspwriter.println("<table cellspacing=\"0\" cellspacing=\"0\" border=\"0\">");
-				BulkInfo.getBulkInfo(getPropertyType(getBulkInfo().getBulkClass())).writeForm(jspwriter, obj1, formName, null, null, mergePrefix(s2, name), 0, flag || (obj1 instanceof OggettoBulk) && ((OggettoBulk)obj1).getCrudStatus() == 5, 1, false, fieldvalidationmap, isBootstrap);
+				BulkInfo.getBulkInfo(getPropertyType(getBulkInfo().getBulkClass())).writeForm(jspwriter, obj1, formName, null, null, mergePrefix(s2, name), 0, readonly || (obj1 instanceof OggettoBulk) && ((OggettoBulk)obj1).getCrudStatus() == 5, 1, false, fieldvalidationmap, isBootstrap);
 				jspwriter.println("</table>");
 				jspwriter.println("</td><td>");
 			}
-			getNewButton().write(jspwriter, !flag, "javascript:submitForm('doBlankSearch(" + mergePrefix(s2, getName()) + ")')",isBootstrap);
-			getSearchButton().write(jspwriter, !flag, "javascript:submitForm('doSearch(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
-			getFreeSearchButton().write(jspwriter, !flag, "javascript:submitForm('doFreeSearch(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
+			getNewButton().write(jspwriter, !readonly, "javascript:submitForm('doBlankSearch(" + mergePrefix(s2, getName()) + ")')",isBootstrap);
+			getSearchButton().write(jspwriter, !readonly, "javascript:submitForm('doSearch(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
+			getFreeSearchButton().write(jspwriter, !readonly, "javascript:submitForm('doFreeSearch(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
 			if (getCRUDBusinessProcessName() != null)
-				getCrudButton().write(jspwriter, !flag, "javascript:submitForm('doCRUD(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
+				getCrudButton().write(jspwriter, !readonly, "javascript:submitForm('doCRUD(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
 			if(formName != null)
 			{
 				jspwriter.println("</td></tr>");
