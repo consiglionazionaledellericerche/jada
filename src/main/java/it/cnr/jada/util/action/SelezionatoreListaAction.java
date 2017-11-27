@@ -421,7 +421,13 @@ public class SelezionatoreListaAction extends SelezionatoreAction
 
                 RicercaLiberaBP ricercaLiberaBP = (RicercaLiberaBP)context.createBusinessProcess("RicercaLibera");
                 ricercaLiberaBP.setSearchProvider(searchProvider);
-                ricercaLiberaBP.setFreeSearchSet("default");
+                ricercaLiberaBP.setFreeSearchSet(
+                        Optional.ofNullable(bp.getFormField())
+                                .filter(formField -> Optional.ofNullable(formField.getField()).isPresent())
+                                .map(formField -> formField.getField())
+                                .map(fieldProperty -> fieldProperty.getFreeSearchSet())
+                                .orElse("default")
+                );
                 ricercaLiberaBP.setShowSearchResult(false);
                 ricercaLiberaBP.setCanPerformSearchWithoutClauses(true);
                 ricercaLiberaBP.setPrototype(oggettoBulk);
