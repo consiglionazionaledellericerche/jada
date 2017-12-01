@@ -46,4 +46,7 @@ public interface CRUDController
 
     public abstract Selection setSelection(ActionContext actioncontext)
         throws BusinessProcessException, ValidationException;
+
+    public abstract void toggle(ActionContext actioncontext)
+            throws ValidationException, BusinessProcessException;
 }

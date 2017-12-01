@@ -83,6 +83,25 @@ public class BulkAction extends FormAction
         }
     }
 
+    public Forward doToggle(ActionContext actioncontext, String s) {
+        try
+        {
+            fillModel(actioncontext);
+            try
+            {
+                return (Forward)Introspector.invoke(this, "doToggle", s, actioncontext);
+            }
+            catch(NoSuchMethodException _ex)
+            {
+                getController(actioncontext, s).toggle(actioncontext);
+            }
+            return actioncontext.findDefaultForward();
+        }
+        catch(Exception exception)
+        {
+            return handleException(actioncontext, exception);
+        }
+    }
     public Forward doBlankSearch(ActionContext actioncontext, String s)
     {
         try
