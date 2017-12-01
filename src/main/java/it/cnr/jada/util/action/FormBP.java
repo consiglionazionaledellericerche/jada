@@ -230,12 +230,16 @@ public class FormBP extends BusinessProcess implements Serializable{
     public void openForm(PageContext pagecontext, String action, String target, String encType) throws IOException, ServletException{
         pagecontext.getOut().print("<form name=\"");
         pagecontext.getOut().print(getResource("mainFormName"));
+        final String actionForm = Optional.ofNullable(action)
+                .orElseGet(() -> getStandardAction()).concat(".do");
         pagecontext.getOut().print("\" action=\"");
-        if(action == null)
-            pagecontext.getOut().print(getStandardAction());
-        else
-            pagecontext.getOut().print(action);
-        pagecontext.getOut().print(".do\"");
+        pagecontext.getOut().print(actionForm);
+        pagecontext.getOut().print("\"");
+
+        pagecontext.getOut().print("\" action-ng=\"");
+        pagecontext.getOut().print(actionForm);
+        pagecontext.getOut().print("\"");
+
         if(target != null){
             pagecontext.getOut().print(" target=\"");
             pagecontext.getOut().print(target);
