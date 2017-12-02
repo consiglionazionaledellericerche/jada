@@ -28,8 +28,8 @@ public class CollapsableDetailCRUDController extends SimpleDetailCRUDController{
         jspwriter.println("<div class=\"card border-primary\">");
         jspwriter.println("<div class=\"card-header\">");
         jspwriter.println("<h5 class=\"mb-0\">");
-        jspwriter.println("<a href=\"#\" onclick=\"submitForm('doToggle(" + getInputPrefix() + ")')\">");
-        jspwriter.print("<i aria-hidden=\"true\" class=\"fa " + getIconClassCollapsed() + " text-primary\"></i> ");
+        jspwriter.println("<a class=\"text-primary\" onclick=\"submitForm('doToggle(" + getInputPrefix() + ")')\">");
+        jspwriter.print("<i aria-hidden=\"true\" class=\"fa " + getIconClassCollapsed() + "\"></i> ");
         jspwriter.print(getControllerName());
         jspwriter.print("</a>");
         jspwriter.println("</h5>");
