@@ -289,12 +289,14 @@ public class FormBP extends BusinessProcess implements Serializable{
                         icon = "fa-exclamation-triangle";
                         break;
                 }
-                pagecontext.getOut().println("<div class=\"alert-message-bp h4 alert " + s1 + " alert-dismissible fade show\" role=\"alert\">");
+                pagecontext.getOut().println("<div class=\"alert-message-bp h4 alert " + s1 + " alert-dismissible fade show d-flex justify-content-between\" role=\"alert\">");
+                pagecontext.getOut().print("<i class=\"fa " + icon + "\" aria-hidden=\"true\"></i>");
+                pagecontext.getOut().println("<span class=\"ml-1 pb-2\">");
+                pagecontext.getOut().print(s);
+                pagecontext.getOut().print("</span>");
                 pagecontext.getOut().println("<button type=\"button\" onclick=\"hideAlert(this);\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">");
                 pagecontext.getOut().println("<span aria-hidden=\"true\">&times;</span>");
                 pagecontext.getOut().println("</button>");
-                pagecontext.getOut().print("<i class=\"fa " + icon + "\" aria-hidden=\"true\"></i> ");
-                pagecontext.getOut().println(s);
                 pagecontext.getOut().println("</div>");
             }            
         } else {
