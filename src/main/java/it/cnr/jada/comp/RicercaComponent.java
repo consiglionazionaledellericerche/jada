@@ -11,6 +11,9 @@ import it.cnr.jada.util.RemoteIterator;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Una componente con responsabilit  di ricerca. L'interfaccia pubblica possiede due metodi cerca che implementano 
@@ -118,5 +121,15 @@ public class RicercaComponent extends GenericComponent implements Serializable, 
 			throw handleException(e);
 		}
     }
-    
+
+    public <T extends OggettoBulk, U extends OggettoBulk> List<U> find(UserContext usercontext, Class<T> contesto, String methodName, Object... parameters) throws ComponentException {
+        try {
+            return Optional.ofNullable(Introspector.invoke(getHome(usercontext, contesto), methodName, parameters))
+                    .filter(List.class::isInstance)
+                    .map(List.class::cast)
+                    .orElse(Collections.emptyList());
+        } catch (NoSuchMethodException|IllegalAccessException|InvocationTargetException e) {
+            throw handleException(e);
+        }
+    }
 }

@@ -3,6 +3,7 @@ package it.cnr.jada.ejb;
 import it.cnr.jada.UserContext;
 import it.cnr.jada.bulk.OggettoBulk;
 import it.cnr.jada.comp.*;
+import it.cnr.jada.persistency.PersistencyException;
 import it.cnr.jada.persistency.Persistent;
 import it.cnr.jada.persistency.sql.CompoundFindClause;
 import it.cnr.jada.util.RemoteIterator;
@@ -12,6 +13,7 @@ import javax.ejb.CreateException;
 import javax.ejb.EJBException;
 import javax.ejb.Remove;
 import javax.ejb.Stateless;
+import java.util.List;
 
 public class RicercaComponentSessionBean extends GenericComponentSessionBean implements RicercaComponentSession{
     protected Component componentObj;
@@ -89,6 +91,23 @@ public class RicercaComponentSessionBean extends GenericComponentSessionBean imp
             throw uncaughtError(userContext, componentObj, error);
         }
     }
-    
-    
+
+    public  <T extends OggettoBulk, U extends OggettoBulk> List<U> find(UserContext userContext, Class<T> contesto, String methodName, Object... parameters) throws ComponentException, EJBException{
+        pre_component_invocation(userContext, componentObj);
+        try{
+            List<U> result = ((RicercaComponent)componentObj).find(userContext, contesto, methodName, parameters);
+            component_invocation_succes(userContext, componentObj);
+            return result;
+        }catch(NoRollbackException norollbackexception){
+            component_invocation_succes(userContext, componentObj);
+            throw norollbackexception;
+        }catch(ComponentException componentexception){
+            component_invocation_failure(userContext, componentObj);
+            throw componentexception;
+        }catch(RuntimeException runtimeexception){
+            throw uncaughtRuntimeException(userContext, componentObj, runtimeexception);
+        }catch(Error error){
+            throw uncaughtError(userContext, componentObj, error);
+        }
+    }
 }
