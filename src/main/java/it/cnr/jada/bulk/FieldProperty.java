@@ -2608,7 +2608,9 @@ public class FieldProperty implements Serializable{
 		if(flag || obj == null)
 		{
 			jspwriter.print(" readonly");
-			s3 = mergeStyles(s3, "background-color:transparent;color:GrayText;");
+			if (!isBootstrap) {
+				s3 = mergeStyles(s3, "background-color:transparent;color:GrayText;");
+			}
 		}
 		String css = Optional.ofNullable(cssClass)
 				.orElseGet(() -> isBootstrap ?  " form-control "  : "").concat(" ").concat(
