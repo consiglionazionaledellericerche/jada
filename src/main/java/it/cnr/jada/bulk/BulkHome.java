@@ -21,6 +21,7 @@ import it.cnr.jada.persistency.sql.SQLBuilder;
 import it.cnr.jada.persistency.sql.SQLExceptionHandler;
 import it.cnr.jada.persistency.sql.SQLPersistentInfo;
 import it.cnr.jada.util.IntrospectionError;
+import it.cnr.jada.util.PropertyNames;
 import it.cnr.jada.util.ejb.EJBCommonServices;
 
 import java.io.Serializable;
@@ -383,7 +384,7 @@ public class BulkHome extends PersistentHome implements Serializable {
 			Statement statement = getConnection().createStatement();
 			try {
 				ResultSet resultset = statement
-						.executeQuery("SELECT TRUNC(SYSDATE) FROM DUAL");
+						.executeQuery(PropertyNames.getProperty("query.date"));
 				try {
 					if (!resultset.next())
 						throw new PersistencyException(
@@ -415,7 +416,7 @@ public class BulkHome extends PersistentHome implements Serializable {
 			Statement statement = getConnection().createStatement();
 			try {
 				ResultSet resultset = statement
-						.executeQuery("SELECT SYSDATE FROM DUAL");
+						.executeQuery(PropertyNames.getProperty("query.date"));
 				try {
 					if (!resultset.next())
 						throw new PersistencyException(

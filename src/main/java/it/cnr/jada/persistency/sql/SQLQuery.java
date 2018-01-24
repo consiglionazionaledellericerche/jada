@@ -1,6 +1,7 @@
 package it.cnr.jada.persistency.sql;
 
 import it.cnr.jada.util.Config;
+import it.cnr.jada.util.PropertyNames;
 
 import java.io.Serializable;
 import java.sql.Connection;
@@ -143,7 +144,7 @@ public class SQLQuery implements Query, Serializable{
     public LoggableStatement prepareCountStatement(Connection connection) throws SQLException{
         StringBuffer stringbuffer = new StringBuffer("SELECT COUNT(*) FROM (");
         stringbuffer.append(getStatement(true));
-        stringbuffer.append(" )");
+        stringbuffer.append(PropertyNames.getProperty("query.count.end"));
     	LoggableStatement loggablestatement = new LoggableStatement(connection,stringbuffer.toString(),true,this.getClass());
         bindParameters(loggablestatement);
         return loggablestatement;
@@ -153,7 +154,7 @@ public class SQLQuery implements Query, Serializable{
      * dalla query definita dal ricevente
      */
     public LoggableStatement prepareExistsStatement(Connection connection) throws SQLException{
-        StringBuffer stringbuffer = new StringBuffer("SELECT 1 FROM DUAL WHERE EXISTS (");
+        StringBuffer stringbuffer = new StringBuffer(PropertyNames.getProperty("query.exists"));
         String s = getStatement();
         int i = s.toUpperCase().lastIndexOf("ORDER BY");
         if(i >= 0)
@@ -259,7 +260,7 @@ public class SQLQuery implements Query, Serializable{
     public LoggableStatement loggableCountStatement(Connection connection) throws SQLException{
         StringBuffer stringbuffer = new StringBuffer("SELECT COUNT(*) FROM (");
         stringbuffer.append(getStatement(true));
-        stringbuffer.append(" )");
+        stringbuffer.append(PropertyNames.getProperty("query.count.end"));
         LoggableStatement preparedstatement = new LoggableStatement(connection,stringbuffer.toString(),true,this.getClass());
         bindParameters(preparedstatement);
         return preparedstatement;
@@ -269,7 +270,7 @@ public class SQLQuery implements Query, Serializable{
      * dalla query definita dal ricevente
      */
     public LoggableStatement loggableExistsStatement(Connection connection) throws SQLException{
-        StringBuffer stringbuffer = new StringBuffer("SELECT 1 FROM DUAL WHERE EXISTS (");
+        StringBuffer stringbuffer = new StringBuffer(PropertyNames.getProperty("query.exists"));
         String s = getStatement();
         int i = s.toUpperCase().lastIndexOf("ORDER BY");
         if(i >= 0)

@@ -1,5 +1,6 @@
 package it.cnr.jada.ejb;
 
+import it.cnr.jada.util.PropertyNames;
 import it.cnr.jada.util.ejb.EJBCommonServices;
 
 import java.rmi.RemoteException;
@@ -15,7 +16,7 @@ public class ServerDateBean implements ServerDate{
         	Connection conn = EJBCommonServices.getConnection();
             Statement statement = conn.createStatement();
             try{
-                ResultSet resultset = statement.executeQuery("SELECT TRUNC(SYSDATE) FROM DUAL");
+                ResultSet resultset = statement.executeQuery(PropertyNames.getProperty("query.date"));
                 try{
                     if(!resultset.next())
                         throw new EJBException("Errore interno: SELECT SYSDATE FROM DUAL ha restituito 0 records");
@@ -41,7 +42,7 @@ public class ServerDateBean implements ServerDate{
         	Connection conn = EJBCommonServices.getConnection();
             Statement statement = conn.createStatement();
             try{
-                ResultSet resultset = statement.executeQuery("SELECT SYSDATE FROM DUAL");
+                ResultSet resultset = statement.executeQuery(PropertyNames.getProperty("query.date"));
                 try{
                     if(!resultset.next())
                         throw new EJBException("Errore interno: SELECT SYSDATE FROM DUAL ha restituito 0 records");

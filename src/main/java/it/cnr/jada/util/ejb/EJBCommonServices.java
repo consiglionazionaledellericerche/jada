@@ -10,11 +10,7 @@ import it.cnr.jada.ejb.ServerDate;
 import it.cnr.jada.ejb.TransactionalBulkLoaderIterator;
 import it.cnr.jada.ejb.UserTransactionWrapper;
 import it.cnr.jada.persistency.sql.LoggableStatement;
-import it.cnr.jada.util.Config;
-import it.cnr.jada.util.EventTracer;
-import it.cnr.jada.util.Log;
-import it.cnr.jada.util.RemoteIterator;
-import it.cnr.jada.util.SessionEventTracer;
+import it.cnr.jada.util.*;
 
 import java.io.Serializable;
 import java.rmi.MarshalException;
@@ -22,6 +18,7 @@ import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -299,30 +296,26 @@ public class EJBCommonServices implements Serializable{
 		java.sql.Timestamp dateRefresh = null;		
 		try{
 			Connection connection = getConnection();
-			LoggableStatement callablestatement = new LoggableStatement(connection,
-					"{? = call " +it.cnr.jada.util.ejb.EJBCommonServices.getDefaultSchema() 
-					+ "IBMUTL001.getDBRefreshDate }",false,EJBCommonServices.class);
+			LoggableStatement callablestatement = new LoggableStatement(connection, PropertyNames.getProperty("package.getdbrefreshdate"),false,EJBCommonServices.class);
 			try{
-				callablestatement.registerOutParameter( 1, java.sql.Types.DATE);
-				callablestatement.executeQuery();
+				callablestatement.registerOutParameter( 1, Types.TIMESTAMP);
+				callablestatement.execute();
 				dateRefresh = callablestatement.getTimestamp(1);
- 			}
-			catch(SQLException sqlexception1){
-				
-			}finally{
+ 			} catch(SQLException sqlexception1){
+				logger.error("Cannot get getDateRefreshDB ", sqlexception1);
+			} finally{
 				callablestatement.close();
 				connection.close();
 				return dateRefresh;
 			}
 		}catch(SQLException sqlexception){
 			throw new EJBException(sqlexception);
-		}		
+		}
 	}
 	public static final void lockTransaction() throws EJBException{
 		try{
 			Connection connection = getConnection();
-			LoggableStatement callablestatement = new LoggableStatement(connection,"{  call " +
-			it.cnr.jada.util.ejb.EJBCommonServices.getDefaultSchema() + "IBMUTL001.LOCK_TRANSACTION }",false,EJBCommonServices.class);
+			LoggableStatement callablestatement = new LoggableStatement(connection,PropertyNames.getProperty("package.lock.transaction"),false,EJBCommonServices.class);
 			try{
 				callablestatement.execute();
 			}catch(SQLException sqlexception1){
@@ -340,7 +333,7 @@ public class EJBCommonServices implements Serializable{
 	public static final RemoteIterator openRemoteIterator(ActionContext actioncontext, RemoteIterator remoteiterator) throws RemoteException{
 		try{
 			if(remoteiterator instanceof BulkLoaderIterator) {
-				HttpEJBCleaner.register(actioncontext, remoteiterator);				
+				HttpEJBCleaner.register(actioncontext, remoteiterator);
 				((BulkLoaderIterator)remoteiterator).open(actioncontext.getUserContext());
 			}
 			if(remoteiterator instanceof TransactionalBulkLoaderIterator) {
@@ -348,10 +341,10 @@ public class EJBCommonServices implements Serializable{
 					if (remoteiterator instanceof UserTransactionalBulkLoaderIterator)
 						return remoteiterator;
 					HttpEJBCleaner.register(actioncontext, remoteiterator);
-					remoteiterator = new UserTransactionalBulkLoaderIterator(actioncontext.getUserInfo().getUserTransaction(), remoteiterator); 					
+					remoteiterator = new UserTransactionalBulkLoaderIterator(actioncontext.getUserInfo().getUserTransaction(), remoteiterator);
 					return remoteiterator;
 				} else {
-					((TransactionalBulkLoaderIterator)remoteiterator).open(actioncontext.getUserContext());					
+					((TransactionalBulkLoaderIterator)remoteiterator).open(actioncontext.getUserContext());
 				}
 			}
 		}catch(ComponentException componentexception){
@@ -369,9 +362,7 @@ public class EJBCommonServices implements Serializable{
 				if (usercontext.getSessionId() != null)
 					sessionId = usercontext.getSessionId();
 			}
-			LoggableStatement callablestatement = new LoggableStatement(connection,"{ call " +
-			it.cnr.jada.util.ejb.EJBCommonServices.getDefaultSchema()
-			+ "IBMUTL001.TRACE_USER_CONNECTION(?,?,?) }",false,EJBCommonServices.class);
+			LoggableStatement callablestatement = new LoggableStatement(connection,PropertyNames.getProperty("package.trace.user.connection"),false,EJBCommonServices.class);
 			callablestatement.setString(1, user);
 			callablestatement.setTimestamp(2, new Timestamp(System.currentTimeMillis()));
 			callablestatement.setString(3, sessionId);
@@ -381,7 +372,7 @@ public class EJBCommonServices implements Serializable{
 				callablestatement.close();
 			}
 		}catch(SQLException _ex) {
-			
+
 		}
 		return connection;
 	}
@@ -389,9 +380,7 @@ public class EJBCommonServices implements Serializable{
 	public static final void unlockTransaction() throws EJBException{
 		try{
 			Connection connection = getConnection();
-			LoggableStatement callablestatement =new LoggableStatement(connection,"{ call " +
-			it.cnr.jada.util.ejb.EJBCommonServices.getDefaultSchema() 
-			+ "IBMUTL001.UNLOCK_TRANSACTION }",false,EJBCommonServices.class);
+			LoggableStatement callablestatement =new LoggableStatement(connection,PropertyNames.getProperty("package.unlock.transaction"),false,EJBCommonServices.class);
 			try{
 				callablestatement.execute();
 			}finally{
