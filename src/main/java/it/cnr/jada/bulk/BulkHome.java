@@ -416,7 +416,7 @@ public class BulkHome extends PersistentHome implements Serializable {
 			Statement statement = getConnection().createStatement();
 			try {
 				ResultSet resultset = statement
-						.executeQuery(PropertyNames.getProperty("query.date"));
+						.executeQuery(PropertyNames.getProperty("query.timestamp"));
 				try {
 					if (!resultset.next())
 						throw new PersistencyException(

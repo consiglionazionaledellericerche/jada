@@ -42,7 +42,7 @@ public class ServerDateBean implements ServerDate{
         	Connection conn = EJBCommonServices.getConnection();
             Statement statement = conn.createStatement();
             try{
-                ResultSet resultset = statement.executeQuery(PropertyNames.getProperty("query.date"));
+                ResultSet resultset = statement.executeQuery(PropertyNames.getProperty("query.timestamp"));
                 try{
                     if(!resultset.next())
                         throw new EJBException("Errore interno: SELECT SYSDATE FROM DUAL ha restituito 0 records");
