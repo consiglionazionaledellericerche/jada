@@ -179,9 +179,7 @@ public class BulkHome extends PersistentHome implements Serializable {
 		try {
 			Statement statement = getConnection().createStatement();
 			try {
-				ResultSet resultset = statement.executeQuery("SELECT "
-						+ EJBCommonServices.getDefaultSchema() + s
-						+ ".NEXTVAL FROM DUAL");
+				ResultSet resultset = statement.executeQuery(PropertyNames.getProperty("sequence.nextval", s));
 				try {
 					resultset.next();
 					BigInteger biginteger = resultset.getBigDecimal(1)
