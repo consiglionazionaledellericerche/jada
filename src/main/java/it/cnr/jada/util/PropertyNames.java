@@ -12,7 +12,7 @@ public class PropertyNames {
 
     static {
         try {
-            properties = loadFromFile(Optional.ofNullable(System.getenpom.xmlv("SIGLA_POSTGRES_ENABLE"))
+            properties = loadFromFile(Optional.ofNullable(System.getenv("SIGLA_POSTGRES_ENABLE"))
                     .map(s -> Boolean.valueOf(s))
                     .filter(aBoolean -> aBoolean.equals(Boolean.TRUE))
                     .map(aBoolean -> "postgres.properties")
