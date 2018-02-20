@@ -268,7 +268,7 @@ public class BframeBlobComponent extends RicercaComponent
 			  }	
 			  wb.write(excelOutput);// assegno lo stream al FileOutputStream
 		  }else{
-			  excelBlobBulk.setDs_file("Il file � stato estratto in formato testo, poich� le righe superano il limite consentito.("+NUMERO_MAX_RIGHE+").");
+			  excelBlobBulk.setDs_file("Il file è stato estratto in formato testo, poiché le righe superano il limite consentito.("+NUMERO_MAX_RIGHE+").");
 			  excelOutput.write("<table>".getBytes());
 			  excelOutput.write("<tr>".getBytes());
 			  for(Enumeration enumeration1 = columns.elements(); enumeration1.hasMoreElements();)//comincio col creare l'intestazione delle colonne
@@ -367,9 +367,9 @@ public class BframeBlobComponent extends RicercaComponent
 	 try {
 			for (int i = 0;i < array.length;i++) {
 				if (array[i] == null)
-					throw new it.cnr.jada.comp.ApplicationException("Uno o pi� file sono stati cancellati.");
+					throw new it.cnr.jada.comp.ApplicationException("Uno o più file sono stati cancellati.");
 				if (Excel_blobBulk.STATO_IN_ESECUZIONE.equals(array[i].getStato()))
-					throw new it.cnr.jada.comp.ApplicationException("Uno o pi� file sono attualmente in esecuzione e non possono essere cancellati.");						
+					throw new it.cnr.jada.comp.ApplicationException("Uno o più file sono attualmente in esecuzione e non possono essere cancellati.");
 				BulkHome home = (BulkHome)getHome(context,array[i]);
 				home.delete(array[i], context);
 			}

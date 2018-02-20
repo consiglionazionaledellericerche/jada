@@ -395,7 +395,7 @@ public class Button implements Serializable, Cloneable {
 					jspwriter.print(" btn-sm text-primary");
 				} else {
 					if (image.startsWith("img")) {
-						// Workaround per i bottoni dove non è definita una icona
+						// Workaround per i bottoni dove non Ã¨ definita una icona
 						jspwriter.print(" btn-outline-primary ");
 						if (label != null) {
 							jspwriter.print(" btn-title ");

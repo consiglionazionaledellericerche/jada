@@ -28,7 +28,7 @@ public final class ActionUtil {
             xmlobjectfiller.mapElement("init-param", it.cnr.jada.action.InitParameter.class, "addInitParameter");
             for(int i = 0; i < afile.length; i++)
                 if(afile[i].isFile() && afile[i].getName().endsWith(".xml") && afile[i].canRead()){                
-                    String encoding = System.getProperty("SIGLA_ENCODING","ISO-8859-1");  
+                    String encoding = System.getProperty("SIGLA_ENCODING","UTF-8");
 			        xmlobjectfiller.parse(new InputSource(new InputStreamReader(new FileInputStream(afile[i]),encoding)));
                 }
         }catch(SAXException saxexception){

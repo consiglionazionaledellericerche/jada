@@ -7,7 +7,7 @@ public class LocaleNegotiator
     public LocaleNegotiator(String bundleName, String languages, String charsets)
     {
         Locale defaultLocale = new Locale("en", "US");
-        String defaultCharset = "ISO-8859-1";
+        String defaultCharset = "UTF-8";
         ResourceBundle defaultBundle = null;
         try
         {

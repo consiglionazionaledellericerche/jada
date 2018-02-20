@@ -74,7 +74,7 @@ public class ExcelSpoolerBP extends SelezionatoreListaBP {
 		}
 	}
 	// R.P. 04/09/2009 eliminato per la schedulazione  
-	/* Riscritto perch� in questo caso non voglio che quando l'utente
+	/* Riscritto perchè in questo caso non voglio che quando l'utente
 	 * seleziona una riga nel selezionatore venga anche impostato
 	 * il modello del BulkBP
 	 

@@ -147,7 +147,7 @@ public class MultipartParser
 		{
 			result = in.readLine(buf, 0, buf.length);
 			if(result != -1)
-				sbuf.append(new String(buf, 0, result, "ISO-8859-1"));
+				sbuf.append(new String(buf, 0, result, "UTF-8"));
 		} while(result == buf.length);
 		if(sbuf.length() == 0)
 			return null;

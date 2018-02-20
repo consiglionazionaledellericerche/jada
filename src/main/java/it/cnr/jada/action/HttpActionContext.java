@@ -777,7 +777,7 @@ public class HttpActionContext
 			 for(int i = 0; i < afile.length; i++)
 				 if(afile[i].isFile() && afile[i].getName().endsWith(".xml") && afile[i].canRead()){                
 					 //xmlobjectfiller.parse(new InputSource(new FileInputStream(afile[i])));                  
-					 String encoding = System.getProperty("SIGLA_ENCODING","ISO-8859-1");  
+					 String encoding = System.getProperty("SIGLA_ENCODING","UTF-8");
 					 xmlobjectfiller.parse(new InputSource(new InputStreamReader(new FileInputStream(afile[i]),encoding)));
 				 }
 		 }

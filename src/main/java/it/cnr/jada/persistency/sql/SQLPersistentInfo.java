@@ -47,7 +47,7 @@ public class SQLPersistentInfo extends SimplePersistentInfo
         try
         {
             if(inputStream != null){
-				String encoding = System.getProperty("SIGLA_ENCODING","ISO-8859-1");
+				String encoding = System.getProperty("SIGLA_ENCODING","UTF-8");
 				readInfo(new InputStreamReader(inputStream,encoding));
             }                
         }

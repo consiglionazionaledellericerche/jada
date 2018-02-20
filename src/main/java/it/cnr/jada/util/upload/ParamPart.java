@@ -23,7 +23,7 @@ public class ParamPart extends Part
     public String getStringValue()
         throws UnsupportedEncodingException
     {
-        return getStringValue("ISO-8859-1");
+        return getStringValue("UTF-8");
     }
 
     public String getStringValue(String encoding)

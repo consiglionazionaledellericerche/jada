@@ -83,7 +83,7 @@ public class BulkInfo implements Serializable{
 
     protected BulkInfo(Class class1, InputStream inputstream){
         this(class1);
-		String encoding = System.getProperty("SIGLA_ENCODING","ISO-8859-1");
+		String encoding = System.getProperty("SIGLA_ENCODING","UTF-8");
         try{			
             readInfo(new InputStreamReader(inputstream,encoding));
         }catch (UnsupportedEncodingException e){

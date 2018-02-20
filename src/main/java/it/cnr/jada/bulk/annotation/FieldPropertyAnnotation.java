@@ -100,7 +100,7 @@ public @interface FieldPropertyAnnotation{
 	public String readonlyPropertyOnView() default "";
 	/**
 	 * Nome della property da usare per impostare la ricerca su una property diversa da quella indicata in property,
-	 * pu� essere utilizzata ad esempio pei i "SERACHTOOL" in determinati casi.
+	 * può essere utilizzata ad esempio pei i "SERACHTOOL" in determinati casi.
 	 */
 	public String findProperty() default "";
 	/**

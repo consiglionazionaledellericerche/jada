@@ -93,7 +93,7 @@ public class CRUDDetailComponent extends CRUDComponent implements ICRUDDetailMgr
      * Nome: Non passa validazione di business 
      * Pre: Viene richiesta la eliminazione dell'oggetto 'bulk' nell'ambito della relazione 
      * 		dal nome 'attributo' che lo lega con l'oggetto 'contesto'. 'bulk' non passa i criteri di 
-     * 		validit� di business per l'operazione di cancellazione 
+     * 		validità di business per l'operazione di cancellazione
      * Post: Viene generata una ComponentException con detail la ValidationException che descrive 
      * 		l'errore di validazione. 
      * Nome: Oggetto non trovato 
@@ -258,7 +258,7 @@ public class CRUDDetailComponent extends CRUDComponent implements ICRUDDetailMgr
      * Pre-post-conditions: 
      * Nome: Non passa validazione applicativa 
      * Pre: Viene richiesta la modifica dell'oggetto 'bulk' nell'ambito della relazione dal nome 'attributo' 
-     * 		che lo lega con l'oggetto 'contesto'. 'bulk' non passa i criteri di validit� applicativi per 
+     * 		che lo lega con l'oggetto 'contesto'. 'bulk' non passa i criteri di validità applicativi per
      * 		l'operazione di modifica 
      * Post: Viene generata CRUDValidationException che descrive l'errore di validazione. 
      * Nome: Non passa validazione per violazione di vincoli della base di dati 

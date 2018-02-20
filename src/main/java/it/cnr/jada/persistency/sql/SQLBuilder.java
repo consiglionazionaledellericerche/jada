@@ -191,9 +191,9 @@ public class SQLBuilder extends SQLQuery {
     }
 
     /**
-     * 1� parametro valore da confrontare dalla decode
-     * 2� parametro orderhashtable altre condizioni da confrontare nella decode e comportamento
-     * 3� parametro valore di default della decode
+     * 1° parametro valore da confrontare dalla decode
+     * 2° parametro orderhashtable altre condizioni da confrontare nella decode e comportamento
+     * 3° parametro valore di default della decode
      */
     public String addDecode(Object o, OrderedHashtable table, Object obj) {
         String s = new String();
@@ -206,12 +206,12 @@ public class SQLBuilder extends SQLQuery {
     }
 
     /**
-     * 1� parametro valore da confrontare nella decode
-     * 2� parametro 1a condizione da verificare nella decode
-     * 3� parametro comportamento caso 1a condizione
-     * 4� parametro 2a condizione da verificare nella decode gestito anche null
-     * 5� parametro comportamento 2a condizione  gestito anche null
-     * 6� parametro valore di default della decode
+     * 1° parametro valore da confrontare nella decode
+     * 2° parametro 1a condizione da verificare nella decode
+     * 3° parametro comportamento caso 1a condizione
+     * 4° parametro 2a condizione da verificare nella decode gestito anche null
+     * 5° parametro comportamento 2a condizione  gestito anche null
+     * 6° parametro valore di default della decode
      */
     public String addDecode(Object o, String s1, String s2, String s3, String s4, Object obj) {
         OrderedHashtable cond = new OrderedHashtable();
@@ -552,7 +552,7 @@ public class SQLBuilder extends SQLQuery {
     }
 
     /**
-     * * Aggiunge una clausola SQL, nel caso in cui l'oggetto passato � null
+     * * Aggiunge una clausola SQL, nel caso in cui l'oggetto passato è null
      * * fa fallire tutta la select
      */
     public void addNotNullableSQLClause(String s, String s1, int i, Object obj) {
@@ -724,7 +724,7 @@ public class SQLBuilder extends SQLQuery {
 
     /**
      * Costruisce una Join o un'autoJoin con il parametro, il quale
-     * indica se la join da effettuare � di uguaglianza o di disuguaglianza
+     * indica se la join da effettuare è di uguaglianza o di disuguaglianza
      */
     public void addSQLJoin(String s, int parametro, String s1) {
         addLogicalOperator("AND");

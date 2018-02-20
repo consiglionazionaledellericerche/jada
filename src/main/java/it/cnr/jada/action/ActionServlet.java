@@ -19,29 +19,29 @@ import javax.servlet.http.HttpServletResponse;
  * Servlet per la gestione di action. 
  * ActionServlet smista le richieste in seguito ad una SUBMIT di una form HTML ad una istanza 
  * di Action in base alla configurazione contenuta in un file XML. 
- * Ad ogni richiesta la servlet controlla se il file di configurazione � stato aggiornato e in tal caso lo rilegge.
+ * Ad ogni richiesta la servlet controlla se il file di configurazione è stato aggiornato e in tal caso lo rilegge.
  * La vita di una action segue il seguente schema: La richiesta HTML viene convertita in base alla mappatura 
- * nella classe che la implementa. Se la action necessita di una HttpSession gi� attiva e se questa condizione 
- * non � verificata viene cercato nell'ambito della action un forward dal nome sessionExpired e viene eseguito. 
+ * nella classe che la implementa. Se la action necessita di una HttpSession già attiva e se questa condizione
+ * non è verificata viene cercato nell'ambito della action un forward dal nome sessionExpired e viene eseguito.
  * All'interno dei parametri della richiesta viene cercato quello relativo al nome del business process in cui 
  * deve essere contestualizzata la action e viene passato all'ActionContext. 
  * La action viene istanziata e ogni property a cui corrisponde un parametro della richiesta viene settata 
  * col valore corrispondente. La action viene eseguita. 
- * Se il forward restituito dalla action � nullo viene cercato un forward dal nome default e viene eseguito. 
+ * Se il forward restituito dalla action è nullo viene cercato un forward dal nome default e viene eseguito.
  * altrimenti viene eseguito il forward restituito dalla action. 
  * Se in una qualsiasi fase si verifica una eccezione non gestita la servlet cerca il forward dal nome 
  * uncaughtException e lo esegue. 
  * Il file di configurazione definisce tre elementi: 
  * 		Action: definisce una action e la classe che la implementa. 
- * 				� possibile impostare uno o pi� parametri di inizializzazione della action che vengono 
+ * 				è possibile impostare uno o più parametri di inizializzazione della action che vengono
  * 				passati all'istanza che implementa la action prima della sua effettiva esecuzione tramite init(). 
- * 				� possibile richiedere che una action debba avere per forza una una session gi� viva. 
+ * 				è possibile richiedere che una action debba avere per forza una una session già viva.
  * 		BusinessProcess: definisce un business process e la classe che lo implementa. 
- * 						Un business process viene mantenuto nella session della servlet ed � possibile 
+ * 						Un business process viene mantenuto nella session della servlet ed è possibile
  * 						associare ogni form html con un particolare business process. 
- * 						� possibile impostare uno o pi� parametri di inizializzazione del bp che vengono 
+ * 						è possibile impostare uno o più parametri di inizializzazione del bp che vengono
  * 						passati all'istanza che lo implementa tramite init() 
- * 		Forward: definisce il nome di un forward statico e l'url a cui � associato. 
+ * 		Forward: definisce il nome di un forward statico e l'url a cui è associato.
  * 				I forward possono essere definiti a tre livelli: 
  * 				business process: hanno la precedenza su tutti gli altri. 
  * 				action servlet: se non viene trovato agli altri livelli. 
@@ -55,10 +55,10 @@ import javax.servlet.http.HttpServletResponse;
  * Per un corretto funzionamento la servlet deve essere dichiarata nel file di configurazione 
  * della web application e associata ad una servlet-path del tipo "*.[estensione]". 
  * In tal modo ogni url terminante nell'estesione specificata viene interpretato dalla servlet. 
- * L'estesione di defaul � ".do".
+ * L'estesione di defaul è ".do".
  * Per default la servlet legge la configurazione dal file denominato actions.xml che si trova 
  * nella directory root della web application a cui appartiene la servlet.
- * � possibile tuttavia utilizzare un altro file di configurazione passadone il nome alla servlet come 
+ * è possibile tuttavia utilizzare un altro file di configurazione passadone il nome alla servlet come
  * parametro di inizializzazione dal nome actions
  * See Also:Serialized Form
  */

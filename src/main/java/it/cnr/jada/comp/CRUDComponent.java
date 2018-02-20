@@ -33,7 +33,7 @@ import java.io.Serializable;
      * Esegue una operazione di creazione di un OggettoBulk. 
      * Pre-post-conditions: 
      * 	Nome: Non passa validazione applicativa 
-     * 	Pre: l'OggettoBulk non passa i criteri di validit� applicativi 
+     * 	Pre: l'OggettoBulk non passa i criteri di validità applicativi
      * 	Post: Viene generata CRUDValidationException che descrive l'errore di validazione. 
      * 	Nome: Non passa validazione per violazione di vincoli della base di dati 
      * 	Pre: l'OggettoBulk contiene qualche attributo nullo in corrispondenza di campi NOT_NULLABLE o 
@@ -41,11 +41,11 @@ import java.io.Serializable;
      * 	Post: Viene generata una it.jada.stone.comp.CRUDNotNullConstraintException o una 
      * 		CRUDTooLargeConstraintException con la descrizione dell'errore 
      * 	Nome: Errore di chiave duplicata 
-     * 	Pre: Esiste gi� un OggettoBulk persistente che possiede la stessa chiave primaria di quello specificato. 
+     * 	Pre: Esiste già un OggettoBulk persistente che possiede la stessa chiave primaria di quello specificato.
      * 	Post: Viene generata una CRUDDuplicateKeyException con la descrizione dell'errore e con una nuova 
      * 		istanza che rappresenta l'oggetto esistente in base dati che possiede la chiave duplicata. 
-     * 	Nome: Vincolo di integrit� referenziale Pre: l'OggettoBulk specificato non pu� essere creato perch� 
-     * 		viene violato qualche vincolo di integrit� referenziale 
+     * 	Nome: Vincolo di integrità referenziale Pre: l'OggettoBulk specificato non può essere creato perchè
+     * 		viene violato qualche vincolo di integrità referenziale
      * 	Post: Viene generata una CRUDReferentialIntegrityException con la descrizione dell'errore 
      * Nome: Tutti i controlli superati 
      * Pre: Tutti i controlli precedenti superati 
@@ -68,7 +68,7 @@ import java.io.Serializable;
      * Esegue una operazione di creazione di un OggettoBulk. 
      * Pre-post-conditions: 
      * 	Nome: Non passa validazione applicativa 
-     * 	Pre: l'OggettoBulk non passa i criteri di validit� applicativi 
+     * 	Pre: l'OggettoBulk non passa i criteri di validità applicativi
      * 	Post: Viene generata CRUDValidationException che descrive l'errore di validazione. 
      * 	Nome: Non passa validazione per violazione di vincoli della base di dati 
      * 	Pre: l'OggettoBulk contiene qualche attributo nullo in corrispondenza di campi NOT_NULLABLE o 
@@ -76,11 +76,11 @@ import java.io.Serializable;
      * 	Post: Viene generata una it.jada.stone.comp.CRUDNotNullConstraintException o una 
      * 		CRUDTooLargeConstraintException con la descrizione dell'errore 
      * 	Nome: Errore di chiave duplicata 
-     * 	Pre: Esiste gi� un OggettoBulk persistente che possiede la stessa chiave primaria di quello specificato. 
+     * 	Pre: Esiste già un OggettoBulk persistente che possiede la stessa chiave primaria di quello specificato.
      * 	Post: Viene generata una CRUDDuplicateKeyException con la descrizione dell'errore e con una nuova 
      * 		istanza che rappresenta l'oggetto esistente in base dati che possiede la chiave duplicata. 
-     * 	Nome: Vincolo di integrit� referenziale Pre: l'OggettoBulk specificato non pu� essere creato perch� 
-     * 		viene violato qualche vincolo di integrit� referenziale 
+     * 	Nome: Vincolo di integrità referenziale Pre: l'OggettoBulk specificato non può essere creato perchè
+     * 		viene violato qualche vincolo di integrità referenziale
      * 	Post: Viene generata una CRUDReferentialIntegrityException con la descrizione dell'errore 
      * Nome: Tutti i controlli superati 
      * Pre: Tutti i controlli precedenti superati 
@@ -98,22 +98,22 @@ import java.io.Serializable;
      * Esegue una operazione di eliminazione di un OggettoBulk. 
      * Pre-post-conditions: 
      * Nome: Non passa validazione di business 
-     * Pre: l'OggettoBulk non passa i criteri di validit� di business per l'operazione di cancellazione 
+     * Pre: l'OggettoBulk non passa i criteri di validità di business per l'operazione di cancellazione
      * Post: Viene generata una ComponentException con detail la ValidationException che descrive l'errore di validazione. 
      * Nome: Oggetto non trovato 
      * Pre: l'OggettoBulk specificato non esiste. 
      * Post: Viene generata una CRUDException con la descrizione dell'errore 
      * Nome: Oggetto scaduto 
-     * Pre: l'OggettoBulk specificato � stato modificato da altri utenti dopo la lettura 
+     * Pre: l'OggettoBulk specificato è stato modificato da altri utenti dopo la lettura
      * Post: Viene generata una CRUDException con la descrizione dell'errore 
      * Nome: Oggetto occupato 
-     * Pre: l'OggettoBulk specificato � bloccato da qualche altro utente. 
+     * Pre: l'OggettoBulk specificato è bloccato da qualche altro utente.
      * Post: Viene generata una CRUDException con la descrizione dell'errore 
      * Nome: Oggetto non cancellabile 
-     * Pre: l'OggettoBulk non � cancellabile per motivi applicativi 
+     * Pre: l'OggettoBulk non è cancellabile per motivi applicativi
      * Post: Viene generata una CRUDNotDeletableException con la descrizione dell'errore 
-     * Nome: Vincolo di integrit� referenziale 
-     * Pre: l'OggettoBulk specificato non pu� essere cancellato perch� viene violato+ qualche vincolo di integrit� referenziale 
+     * Nome: Vincolo di integrità referenziale
+     * Pre: l'OggettoBulk specificato non può essere cancellato perchè viene violato+ qualche vincolo di integrità referenziale
      * Post: Viene generata una CRUDReferentialIntegrityException con la descrizione dell'errore 
      * Nome: Tutti i controlli superati 
      * Pre: Tutti i controlli precedenti superati 
@@ -135,22 +135,22 @@ import java.io.Serializable;
      * Esegue una operazione di eliminazione di un OggettoBulk. 
      * Pre-post-conditions: 
      * Nome: Non passa validazione di business 
-     * Pre: l'OggettoBulk non passa i criteri di validit� di business per l'operazione di cancellazione 
+     * Pre: l'OggettoBulk non passa i criteri di validità di business per l'operazione di cancellazione
      * Post: Viene generata una ComponentException con detail la ValidationException che descrive l'errore di validazione. 
      * Nome: Oggetto non trovato 
      * Pre: l'OggettoBulk specificato non esiste. 
      * Post: Viene generata una CRUDException con la descrizione dell'errore 
      * Nome: Oggetto scaduto 
-     * Pre: l'OggettoBulk specificato � stato modificato da altri utenti dopo la lettura 
+     * Pre: l'OggettoBulk specificato è stato modificato da altri utenti dopo la lettura
      * Post: Viene generata una CRUDException con la descrizione dell'errore 
      * Nome: Oggetto occupato 
-     * Pre: l'OggettoBulk specificato � bloccato da qualche altro utente. 
+     * Pre: l'OggettoBulk specificato è bloccato da qualche altro utente.
      * Post: Viene generata una CRUDException con la descrizione dell'errore 
      * Nome: Oggetto non cancellabile 
-     * Pre: l'OggettoBulk non � cancellabile per motivi applicativi 
+     * Pre: l'OggettoBulk non è cancellabile per motivi applicativi
      * Post: Viene generata una CRUDNotDeletableException con la descrizione dell'errore 
-     * Nome: Vincolo di integrit� referenziale 
-     * Pre: l'OggettoBulk specificato non pu� essere cancellato perch� viene violato+ qualche vincolo di integrit� referenziale 
+     * Nome: Vincolo di integrità referenziale
+     * Pre: l'OggettoBulk specificato non può essere cancellato perchè viene violato+ qualche vincolo di integrità referenziale
      * Post: Viene generata una CRUDReferentialIntegrityException con la descrizione dell'errore 
      * Nome: Tutti i controlli superati 
      * Pre: Tutti i controlli precedenti superati 
@@ -248,7 +248,7 @@ import java.io.Serializable;
      * Pre: L'OggettoBulk specificato esiste. 
      * Post: Viene riletto l'OggettoBulk, inizializzato con tutti gli oggetti collegati e preparato 
      * 		per l'operazione di presentazione e modifica nell'interfaccia visuale. 
-     * 		L'operazione di lettura viene effettuata con una FetchPolicy il cui nome � ottenuto concatenando 
+     * 		L'operazione di lettura viene effettuata con una FetchPolicy il cui nome è ottenuto concatenando
      * 		il nome della component con la stringa ".edit"
      */
     public OggettoBulk inizializzaBulkPerModifica(UserContext usercontext, OggettoBulk oggettobulk) throws ComponentException{
@@ -276,7 +276,7 @@ import java.io.Serializable;
      * Pre: L'OggettoBulk specificato esiste. 
      * Post: Viene riletto l'OggettoBulk, inizializzato con tutti gli oggetti collegati e preparato 
      * 		per l'operazione di presentazione e modifica nell'interfaccia visuale. 
-     * 		L'operazione di lettura viene effettuata con una FetchPolicy il cui nome � ottenuto concatenando 
+     * 		L'operazione di lettura viene effettuata con una FetchPolicy il cui nome è ottenuto concatenando
      * 		il nome della component con la stringa ".edit"
      */
     public OggettoBulk inizializzaBulkPerRicerca(UserContext usercontext, OggettoBulk oggettobulk) throws ComponentException{
@@ -306,7 +306,7 @@ import java.io.Serializable;
      * Esegue una operazione di modifica di un OggettoBulk. 
      * Pre-post-conditions: 
      * Nome: Non passa validazione applicativa 
-     * Pre: l'OggettoBulk non passa i criteri di validit� applicativi per l'operazione di modifica 
+     * Pre: l'OggettoBulk non passa i criteri di validità applicativi per l'operazione di modifica
      * Post: Viene generata CRUDValidationException che descrive l'errore di validazione. 
      * Nome: Non passa validazione per violazione di vincoli della base di dati 
      * Pre: l'OggettoBulk contiene qualche attributo nullo in corrispondenza di campi NOT_NULLABLE 
@@ -317,10 +317,10 @@ import java.io.Serializable;
      * Pre: l'OggettoBulk specificato non esiste. 
      * Post: Viene generata una CRUDException con la descrizione dell'errore 
      * Nome: Oggetto scaduto 
-     * Pre: l'OggettoBulk specificato � stato modificato da altri utenti dopo la lettura 
+     * Pre: l'OggettoBulk specificato è stato modificato da altri utenti dopo la lettura
      * Post: Viene generata una CRUDException con la descrizione dell'errore 
      * Nome: Oggetto occupato 
-     * Pre: l'OggettoBulk specificato � bloccato da qualche altro utente. 
+     * Pre: l'OggettoBulk specificato è bloccato da qualche altro utente.
      * Post: Viene generata una CRUDException con la descrizione dell'errore 
      * Nome: Tutti i controlli superati 
      * Pre: Tutti i controlli precedenti superati 
@@ -343,7 +343,7 @@ import java.io.Serializable;
      * Esegue una operazione di modifica di un OggettoBulk. 
      * Pre-post-conditions: 
      * Nome: Non passa validazione applicativa 
-     * Pre: l'OggettoBulk non passa i criteri di validit� applicativi per l'operazione di modifica 
+     * Pre: l'OggettoBulk non passa i criteri di validità applicativi per l'operazione di modifica
      * Post: Viene generata CRUDValidationException che descrive l'errore di validazione. 
      * Nome: Non passa validazione per violazione di vincoli della base di dati 
      * Pre: l'OggettoBulk contiene qualche attributo nullo in corrispondenza di campi NOT_NULLABLE 
@@ -354,10 +354,10 @@ import java.io.Serializable;
      * Pre: l'OggettoBulk specificato non esiste. 
      * Post: Viene generata una CRUDException con la descrizione dell'errore 
      * Nome: Oggetto scaduto 
-     * Pre: l'OggettoBulk specificato � stato modificato da altri utenti dopo la lettura 
+     * Pre: l'OggettoBulk specificato è stato modificato da altri utenti dopo la lettura
      * Post: Viene generata una CRUDException con la descrizione dell'errore 
      * Nome: Oggetto occupato 
-     * Pre: l'OggettoBulk specificato � bloccato da qualche altro utente. 
+     * Pre: l'OggettoBulk specificato è bloccato da qualche altro utente.
      * Post: Viene generata una CRUDException con la descrizione dell'errore 
      * Nome: Tutti i controlli superati 
      * Pre: Tutti i controlli precedenti superati 

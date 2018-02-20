@@ -67,7 +67,7 @@ public class SendMail {
 		   internetHeaders = new javax.mail.internet.InternetHeaders();
 		   internetHeaders.addHeader("Content-Description","test.html");
 		   internetHeaders.addHeader("Content-Type","text/plain");
-		   multipart.addBodyPart(new javax.mail.internet.MimeBodyPart(internetHeaders,text.getBytes("ISO-8859-1")));
+		   multipart.addBodyPart(new javax.mail.internet.MimeBodyPart(internetHeaders,text.getBytes("UTF-8")));
 		   msg.setContent(multipart);
            msg.setSentDate(EJBCommonServices.getServerTimestamp());           
            Transport.send(msg);			
@@ -97,7 +97,7 @@ public class SendMail {
 			   internetHeaders = new javax.mail.internet.InternetHeaders();
 			   internetHeaders.addHeader("Content-Description","test.html");
 			   internetHeaders.addHeader("Content-Type","text/html");
-			   multipart.addBodyPart(new javax.mail.internet.MimeBodyPart(internetHeaders,text.getBytes("ISO-8859-1")));
+			   multipart.addBodyPart(new javax.mail.internet.MimeBodyPart(internetHeaders,text.getBytes("UTF-8")));
 			   msg.setContent(multipart);
 			   msg.setSentDate(EJBCommonServices.getServerTimestamp());
 			   Transport.send(msg);
