@@ -325,6 +325,17 @@ public class ColumnMap
         return stringbuffer.toString();
     }
 
+    public String getUpdateForLobSQL(String s) {
+        StringBuffer stringbuffer = new StringBuffer("UPDATE ");
+        stringbuffer.append(EJBCommonServices.getDefaultSchema());
+        stringbuffer.append(getTableName());
+        stringbuffer.append(" SET ");
+        stringbuffer.append(s);
+        stringbuffer.append(" = ? ");
+        buildClausesForPrimaryKey(stringbuffer);
+        return stringbuffer.toString();
+    }
+
     public String getTableName() {
         return tableName;
     }

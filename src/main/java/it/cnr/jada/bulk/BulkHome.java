@@ -386,7 +386,7 @@ public class BulkHome extends PersistentHome implements Serializable {
 				try {
 					if (!resultset.next())
 						throw new PersistencyException(
-								"Tentativo di recuperare timestamp ORACLE fallito: nessun record restituito");
+								"Tentativo di recuperare timestamp fallito: nessun record restituito");
 					Timestamp timestamp = resultset.getTimestamp(1);
 					return timestamp;
 				} finally {
@@ -418,7 +418,7 @@ public class BulkHome extends PersistentHome implements Serializable {
 				try {
 					if (!resultset.next())
 						throw new PersistencyException(
-								"Tentativo di recuperare timestamp ORACLE fallito: nessun record restituito");
+								"Tentativo di recuperare timestamp fallito: nessun record restituito");
 					Timestamp timestamp = resultset.getTimestamp(1);
 					return timestamp;
 				} finally {

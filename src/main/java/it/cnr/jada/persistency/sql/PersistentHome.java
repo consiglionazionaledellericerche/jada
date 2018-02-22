@@ -176,6 +176,36 @@ public class PersistentHome extends SQLPersister
         }
     }
 
+    public void setSQLClob(KeyedPersistent keyedpersistent, String columnName, String value)
+            throws PersistencyException
+    {
+        try
+        {
+            ColumnMap columnmap = getHomeCache().getHome(keyedpersistent).getColumnMap();
+            String updateForLobSQL = columnmap.getUpdateForLobSQL(columnName);
+            LoggableStatement statement = new LoggableStatement(getConnection(),updateForLobSQL,true,this.getClass());
+            try
+            {
+                statement.clearParameters();
+                statement.setObject(1, value);
+                setParametersUsing(statement, keyedpersistent, columnmap.getPrimaryColumnNames(), 2);
+                int i = statement.executeUpdate();
+                if(i == 0)
+                    throw new ObjectNotFoundException("UPDATE statment affected 0 rows.");
+                if(i > 1)
+                    throw new DeleteException("UPDATE statement affected more than 1 rows.");
+            }
+            finally
+            {
+                try{statement.close();}catch( java.sql.SQLException e ){};
+            }
+        }
+        catch(SQLException sqlexception)
+        {
+            throw SQLExceptionHandler.getInstance().handleSQLException(sqlexception);
+        }
+    }
+
     public Clob getSQLClob(KeyedPersistent keyedpersistent, String s)
         throws PersistencyException
     {
