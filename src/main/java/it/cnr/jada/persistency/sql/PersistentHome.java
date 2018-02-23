@@ -176,7 +176,7 @@ public class PersistentHome extends SQLPersister
         }
     }
 
-    public void setSQLClob(KeyedPersistent keyedpersistent, String columnName, String value)
+    public void setSQLLob(KeyedPersistent keyedpersistent, String columnName, Object value)
             throws PersistencyException
     {
         try

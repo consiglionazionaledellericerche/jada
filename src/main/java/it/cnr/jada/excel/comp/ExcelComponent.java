@@ -53,7 +53,7 @@ public class ExcelComponent extends GenericComponent {
             insertBulk(usercontext, excel_spooler);
             BulkHome home = (BulkHome) homeCache.getHome(excel_spooler);
 
-            homeCache.getHome(excel_spooler).setSQLClob(excel_spooler,"QUERY", query);
+            homeCache.getHome(excel_spooler).setSQLLob(excel_spooler,"QUERY", query);
 
             for (Enumeration enumeration = columns.elements(); enumeration.hasMoreElements(); ) {
                 ColumnFieldProperty columnfieldproperty = (ColumnFieldProperty) enumeration.nextElement();
