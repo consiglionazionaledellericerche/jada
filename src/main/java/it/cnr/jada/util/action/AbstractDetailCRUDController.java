@@ -459,15 +459,16 @@ public abstract class AbstractDetailCRUDController extends NestedFormController
             throws ValidationException {
     }
 
-    protected final void writeCRUDToolbar(PageContext pagecontext, boolean flag, boolean flag1, boolean flag2)
+    protected final void writeCRUDToolbar(PageContext pagecontext, boolean canAddToCRUD, boolean canFilter, boolean canRemoveFromCRUD, boolean closedToolbar)
             throws IOException, ServletException {
         getCRUDToolbar();
-        if (flag) {
+        pagecontext.getOut().println("<div class=\"btn-group\" role=\"group\">");
+        if (canAddToCRUD) {
             Button button = crudToolbar[0];
             button.setHref("javascript:submitForm('doAddToCRUD(" + getInputPrefix() + ")')");
             button.writeToolbarButton(pagecontext.getOut(), isGrowable(), HttpActionContext.isFromBootstrap(pagecontext));
         }
-        if (flag1) {
+        if (canFilter) {
             Button button1;
             if (isFiltered()) {
                 button1 = crudToolbar[4];
@@ -478,16 +479,18 @@ public abstract class AbstractDetailCRUDController extends NestedFormController
             }
             button1.writeToolbarButton(pagecontext.getOut(), true, HttpActionContext.isFromBootstrap(pagecontext));
         }
-        if (flag2) {
+        if (canRemoveFromCRUD) {
             Button button2 = crudToolbar[2];
             button2.setHref("javascript:submitForm('doRemoveFromCRUD(" + getInputPrefix() + ")')");
             button2.writeToolbarButton(pagecontext.getOut(), isShrinkable(), HttpActionContext.isFromBootstrap(pagecontext));
         }
-        if (flag2 && paged) {
+        if (canRemoveFromCRUD && paged) {
             Button button3 = crudToolbar[3];
             button3.setHref("javascript:submitForm('doRemoveAllFromCRUD(" + getInputPrefix() + ")')");
             button3.writeToolbarButton(pagecontext.getOut(), isShrinkable(), HttpActionContext.isFromBootstrap(pagecontext));
         }
+        if (closedToolbar)
+            pagecontext.getOut().println("</div>");
     }
 
     public void writeHTMLNavigator(PageContext pagecontext, int i)
@@ -518,7 +521,8 @@ public abstract class AbstractDetailCRUDController extends NestedFormController
         button.writeToolbarButton(jspwriter, flag, HttpActionContext.isFromBootstrap(pagecontext));
     }
 
-    protected void writeHTMLPagedTable(PageContext pagecontext, String s, boolean flag, boolean flag1, boolean flag2, String s1, String s2,
+    protected void writeHTMLPagedTable(PageContext pagecontext, String s, boolean canAddToCRUD,
+                                       boolean canFilter, boolean canRemoveFromCRUD, String width, String height,
                                        boolean flag3, TableCustomizer tablecustomizer, List list, int i)
             throws IOException, ServletException {
         JspWriter jspwriter = pagecontext.getOut();
@@ -528,20 +532,20 @@ public abstract class AbstractDetailCRUDController extends NestedFormController
         table.setReadonly(flag3 || !enabled);
         table.setCustomizer(tablecustomizer);
         table.setRows(Collections.enumeration(list != null ? ((java.util.Collection) (list)) : ((java.util.Collection) (Collections.EMPTY_LIST))));
-        boolean flag4 = "100%".equals(s2) && "100%".equals(s1);
+        boolean flag4 = "100%".equals(height) && "100%".equals(width);
         if (flag4) {
             jspwriter.println("<table class=\"Panel\" style=\"width:100%;height=100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">");
-            jspwriter.println("<tr style=\"height:" + s2 + "\"><td style=\"width:" + s1 + "\">");
+            jspwriter.println("<tr style=\"height:" + height + "\"><td style=\"width:" + width + "\">");
             table.writeScrolledTable(this, pagecontext.getOut(), "100%", "100%", getFieldValidationMap(), currentPage * pageSize, isBootstrap(pagecontext));
             jspwriter.println("</td></tr>");
         } else {
-            table.writeScrolledTable(this, pagecontext.getOut(), s1, s2, getFieldValidationMap(), currentPage * pageSize, isBootstrap(pagecontext));
+            table.writeScrolledTable(this, pagecontext.getOut(), width, height, getFieldValidationMap(), currentPage * pageSize, isBootstrap(pagecontext));
         }
         if (flag4)
-            jspwriter.println("<tr><td style=\"width:" + s1 + "\">");
-        jspwriter.println("<table class=\"Toolbar\" cellspacing=\"0\" cellpadding=\"0\" style=\"width:" + s1 + "\"><tr>");
+            jspwriter.println("<tr><td style=\"width:" + width + "\">");
+        jspwriter.println("<table class=\"Toolbar\" cellspacing=\"0\" cellpadding=\"0\" style=\"width:" + width + "\"><tr>");
         if (enabled)
-            writeHTMLToolbar(pagecontext, flag, flag1, flag2);
+            writeHTMLToolbar(pagecontext, canAddToCRUD, canFilter, canRemoveFromCRUD, true);
         writeHTMLNavigator(pagecontext, i);
         jspwriter.println("<td style=\"width:100%\">&nbsp;</td></tr></table>");
         if (flag4)
@@ -550,64 +554,66 @@ public abstract class AbstractDetailCRUDController extends NestedFormController
             jspwriter.println("</table>");
     }
 
-    public void writeHTMLTable(PageContext pagecontext, String s, boolean flag, boolean flag1, boolean flag2, String s1, String s2)
+    public void writeHTMLTable(PageContext pagecontext, String columnSet, boolean canAddToCRUD, boolean canFilter, boolean canRemoveFromCRUD, String width, String height)
             throws IOException, ServletException {
-        writeHTMLTable(pagecontext, s, flag, flag1, flag2, s1, s2, true);
+        writeHTMLTable(pagecontext, columnSet, canAddToCRUD, canFilter, canRemoveFromCRUD, width, height, true);
     }
 
-    public void writeHTMLTable(PageContext pagecontext, String s, boolean flag, boolean flag1, boolean flag2, String s1, String s2,
-                               boolean flag3)
+    public void writeHTMLTable(PageContext pagecontext, String columnSet, boolean canAddToCRUD, boolean canFilter, boolean canRemoveFromCRUD, String width, String height,
+                               boolean isReadOnly)
             throws IOException, ServletException {
         if (this instanceof TableCustomizer)
-            writeHTMLTable(pagecontext, s, flag, flag1, flag2, s1, s2, flag3, (TableCustomizer) this);
+            writeHTMLTable(pagecontext, columnSet, canAddToCRUD, canFilter, canRemoveFromCRUD, width, height, isReadOnly, (TableCustomizer) this);
         else
-            writeHTMLTable(pagecontext, s, flag, flag1, flag2, s1, s2, flag3, null);
+            writeHTMLTable(pagecontext, columnSet, canAddToCRUD, canFilter, canRemoveFromCRUD, width, height, isReadOnly, null);
     }
 
-    public abstract void writeHTMLTable(PageContext pagecontext, String s, boolean flag, boolean flag1, boolean flag2, String s1, String s2,
-                                        boolean flag3, TableCustomizer tablecustomizer)
+    public abstract void writeHTMLTable(PageContext pagecontext, String columnSet, boolean canAddToCRUD, boolean canFilter, boolean canRemoveFromCRUD, String width, String height,
+                                        boolean isReadOnly, TableCustomizer tablecustomizer)
             throws IOException, ServletException;
 
-    protected void writeHTMLTable(PageContext pagecontext, String s, boolean flag, boolean flag1, boolean flag2, String s1, String s2,
-                                  boolean flag3, TableCustomizer tablecustomizer, List list)
+    protected void writeHTMLTable(PageContext pagecontext, String columnSet, boolean canAddToCRUD, boolean canFilter, boolean canRemoveFromCRUD, String width, String height,
+                                  boolean isReadOnly, TableCustomizer tablecustomizer, List list)
             throws IOException, ServletException {
         JspWriter jspwriter = pagecontext.getOut();
         table.setSelection(selection);
-        table.setColumns(getBulkInfo().getColumnFieldPropertyDictionary(s));
+        table.setColumns(getBulkInfo().getColumnFieldPropertyDictionary(columnSet));
         table.setSelectable(enabled);
-        table.setReadonly(isInputReadonly() || flag3 || !enabled);
+        table.setReadonly(isInputReadonly() || isReadOnly || !enabled);
         table.setCustomizer(tablecustomizer);
         table.setRows(Collections.enumeration(list != null ? ((java.util.Collection) (list)) : ((java.util.Collection) (Collections.EMPTY_LIST))));
-        boolean flag4 = "100%".equals(s2) && "100%".equals(s1);
+        boolean flag4 = "100%".equals(height) && "100%".equals(width);
         if (flag4) {
             jspwriter.println("<table class=\"Panel\" style=\"width:100%;height=100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">");
-            jspwriter.println("<tr style=\"height:" + s2 + "\"><td style=\"width:" + s1 + "\">");
+            jspwriter.println("<tr style=\"height:" + height + "\"><td style=\"width:" + width + "\">");
             table.writeScrolledTable(this, pagecontext.getOut(), "100%", "100%", getFieldValidationMap(), 0, isBootstrap(pagecontext));
             jspwriter.println("</td></tr>");
         } else {
-            table.writeScrolledTable(this, pagecontext.getOut(), s1, s2, getFieldValidationMap(), 0, isBootstrap(pagecontext));
+            table.writeScrolledTable(this, pagecontext.getOut(), width, height, getFieldValidationMap(), 0, isBootstrap(pagecontext));
         }
-        if (isEnabled()) {
+        if (HttpActionContext.isFromBootstrap(pagecontext)) {
+            if (isEnabled()) {
+                writeHTMLToolbar(pagecontext, canAddToCRUD, canFilter, canRemoveFromCRUD, true);
+            }
+        } else {
+            if (isEnabled()) {
+                if (flag4)
+                    jspwriter.println("<tr><td style=\"width:" + width + "\">");
+                jspwriter.println("<table class=\"Toolbar\" cellspacing=\"0\" cellpadding=\"0\" style=\"width:" + width + "\"><tr>");
+                writeHTMLToolbar(pagecontext, canAddToCRUD, canFilter, canRemoveFromCRUD, true );
+                jspwriter.println("<td style=\"width:100%\">&nbsp;</td></tr></table>");
+                if (flag4)
+                    jspwriter.println("</td></tr>");
+            }
             if (flag4)
-                jspwriter.println("<tr><td style=\"width:" + s1 + "\">");
-            jspwriter.println("<table class=\"Toolbar\" cellspacing=\"0\" cellpadding=\"0\" style=\"width:" + s1 + "\"><tr>");
-            writeHTMLToolbar(pagecontext, flag, flag1, flag2);
-            jspwriter.println("<td style=\"width:100%\">&nbsp;</td></tr></table>");
-            if (flag4)
-                jspwriter.println("</td></tr>");
+                jspwriter.println("</table>");
         }
-        if (flag4)
-            jspwriter.println("</table>");
+
     }
 
-    public void writeHTMLToolbar(PageContext pagecontext, boolean flag, boolean flag1, boolean flag2)
+    public void writeHTMLToolbar(PageContext pagecontext, boolean canAddToCRUD, boolean canFilter, boolean canRemoveFromCRUD, boolean closedToolbar)
             throws IOException, ServletException {
-        writeCRUDToolbar(pagecontext, flag, flag1, flag2);
-    }
-
-    public void writeHTMLToolbar(PageContext pagecontext, boolean flag, boolean flag1, boolean flag2, List list)
-            throws IOException, ServletException {
-        writeHTMLToolbar(pagecontext, flag, flag1, flag2);
+        writeCRUDToolbar(pagecontext, canAddToCRUD, canFilter, canRemoveFromCRUD, closedToolbar);
     }
 
     private boolean isBootstrap(PageContext pagecontext) {

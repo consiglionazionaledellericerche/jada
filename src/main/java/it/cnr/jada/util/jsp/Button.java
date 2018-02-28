@@ -528,14 +528,17 @@ public class Button implements Serializable, Cloneable {
 	public void writeToolbarButton(JspWriter jspwriter, boolean flag, boolean isBootstrap)
 		throws IOException
 	{
-		jspwriter.print("<td");
-		if(separator)
-			jspwriter.print(" class=\"VSeparator\"");
-		jspwriter.print(">");
-		write(jspwriter, Optional.of(isBootstrap).filter(x -> x.equals(Boolean.TRUE)).map(x-> iconClass).orElse(img), 
+		if (!isBootstrap) {
+			jspwriter.print("<td");
+			if(separator)
+				jspwriter.print(" class=\"VSeparator\"");
+			jspwriter.print(">");
+		}
+		write(jspwriter, Optional.of(isBootstrap).filter(x -> x.equals(Boolean.TRUE)).map(x-> iconClass).orElse(img),
 				Optional.of(isBootstrap).filter(x -> x.equals(Boolean.TRUE)).map(x-> iconClass).orElse(disabledImg), label, labelPosition, href, 
 				Optional.of(isBootstrap).filter(x -> x.equals(Boolean.TRUE)).map(x-> buttonClass).orElse(style), title, flag, isBootstrap);
-		jspwriter.print("</td>");
+		if (!isBootstrap)
+			jspwriter.print("</td>");
 	}
 
 	public void writeWithoutRollover(JspWriter jspwriter, boolean flag, boolean isBootstrap)

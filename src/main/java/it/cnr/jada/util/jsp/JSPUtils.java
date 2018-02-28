@@ -721,53 +721,66 @@ public class JSPUtils
 		throws IOException, ServletException
 	{
 		JspWriter jspwriter = pagecontext.getOut();
-		jspwriter.print("<td");
-		if(flag)
-			jspwriter.print(" class=\"VSeparator\"");
-		jspwriter.print(">");
+		if (!isBootstrap) {
+			jspwriter.print("<td");
+			if(flag)
+				jspwriter.print(" class=\"VSeparator\"");
+			jspwriter.print(">");
+		}
 		Button.write(pagecontext.getOut(), null, s, true, s1, 1, s2, null, null, null, isBootstrap);
-		jspwriter.print("</td>");
+		if (!isBootstrap) {
+			jspwriter.print("</td>");
+		}
 	}
 
 	public static void toolbarButton(PageContext pagecontext, String s, String s1, boolean flag, boolean isBootstrap)
 		throws IOException, ServletException
 	{
 		JspWriter jspwriter = pagecontext.getOut();
-		jspwriter.print("<td");
-		if(flag)
-			jspwriter.print(" class=\"VSeparator\"");
-		jspwriter.print(">");
-		/* Modifica effettuata il 01/10/2004 da Marco Spasiano
-		 * per ovviare alla mancata esposizione
-		 * dei numeri di pagina
-		 */
-		//Button.write(jspwriter, null, s, true, null, 1, s1, null, null, null);
+        if (!isBootstrap) {
+            jspwriter.print("<td");
+            if(flag)
+                jspwriter.print(" class=\"VSeparator\"");
+            jspwriter.print(">");
+            /* Modifica effettuata il 01/10/2004 da Marco Spasiano
+             * per ovviare alla mancata esposizione
+             * dei numeri di pagina
+             */
+            //Button.write(jspwriter, null, s, true, null, 1, s1, null, null, null);
+        }
 		Button.write(jspwriter, null, null, true, s, 1, s1, null, null, null, isBootstrap);
-		jspwriter.print("</td>");
+        if (!isBootstrap)
+            jspwriter.print("</td>");
 	}
 
 	public static void toolbarButton(PageContext pagecontext, String s, String s1, boolean flag, String s2, boolean isBootstrap)
 		throws IOException, ServletException
 	{
 		JspWriter jspwriter = pagecontext.getOut();
-		jspwriter.print("<td");
-		if(flag)
-			jspwriter.print(" class=\"VSeparator\"");
-		jspwriter.print(">");
+        if (!isBootstrap) {
+            jspwriter.print("<td");
+            if(flag)
+                jspwriter.print(" class=\"VSeparator\"");
+            jspwriter.print(">");
+        }
 		Button.write(jspwriter, null, s, true, null, 1, s1, null, s2, null, isBootstrap);
-		jspwriter.print("</td>");
+        if (!isBootstrap)
+		    jspwriter.print("</td>");
 	}
 
 	public static void toolbarButton(PageContext pagecontext, String s, String s1, boolean flag, String s2, String buttonStyle, boolean isBootstrap)
 			throws IOException, ServletException
 		{
 			JspWriter jspwriter = pagecontext.getOut();
-			jspwriter.print("<td");
-			if(flag)
-				jspwriter.print(" class=\"VSeparator\"");
-			jspwriter.print(">");
+            if (!isBootstrap) {
+                jspwriter.print("<td");
+                if(flag)
+                    jspwriter.print(" class=\"VSeparator\"");
+                jspwriter.print(">");
+            }
 			Button.write(jspwriter, null, s, true, null, 1, s1, buttonStyle, s2, null, null, isBootstrap);
-			jspwriter.print("</td>");
+            if (!isBootstrap)
+                jspwriter.print("</td>");
 		}
 
 	public static void treeBootstrap(JspWriter jspwriter, int i, String selezionaCondizione, String clausolaimg, int rigaSelezionata, Enumeration enumeration) throws IOException{
