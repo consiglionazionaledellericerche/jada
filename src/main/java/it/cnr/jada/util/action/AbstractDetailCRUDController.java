@@ -459,10 +459,31 @@ public abstract class AbstractDetailCRUDController extends NestedFormController
             throws ValidationException {
     }
 
+    public void writeBootstrap(PageContext pagecontext, String s) {
+        Optional.ofNullable(pagecontext)
+                .map(pageContext -> HttpActionContext.isFromBootstrap(pageContext))
+                .filter(aBoolean -> aBoolean.equals(Boolean.TRUE))
+                .ifPresent(aBoolean -> {
+                    try {
+                        pagecontext.getOut().println(s);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+    }
+
+    public void openButtonGROUPToolbar(PageContext pagecontext) {
+        writeBootstrap(pagecontext, "<div class=\"btn-group\" role=\"group\">");
+    }
+
+    public void closeButtonGROUPToolbar(PageContext pagecontext) throws IOException {
+        writeBootstrap(pagecontext, "</div>");
+    }
+
     protected final void writeCRUDToolbar(PageContext pagecontext, boolean canAddToCRUD, boolean canFilter, boolean canRemoveFromCRUD, boolean closedToolbar)
             throws IOException, ServletException {
         getCRUDToolbar();
-        pagecontext.getOut().println("<div class=\"btn-group\" role=\"group\">");
+        openButtonGROUPToolbar(pagecontext);
         if (canAddToCRUD) {
             Button button = crudToolbar[0];
             button.setHref("javascript:submitForm('doAddToCRUD(" + getInputPrefix() + ")')");
@@ -490,7 +511,7 @@ public abstract class AbstractDetailCRUDController extends NestedFormController
             button3.writeToolbarButton(pagecontext.getOut(), isShrinkable(), HttpActionContext.isFromBootstrap(pagecontext));
         }
         if (closedToolbar)
-            pagecontext.getOut().println("</div>");
+            closeButtonGROUPToolbar(pagecontext);
     }
 
     public void writeHTMLNavigator(PageContext pagecontext, int i)
