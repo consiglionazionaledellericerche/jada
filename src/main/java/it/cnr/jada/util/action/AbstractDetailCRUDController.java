@@ -479,11 +479,16 @@ public abstract class AbstractDetailCRUDController extends NestedFormController
     public void closeButtonGROUPToolbar(PageContext pagecontext) throws IOException {
         writeBootstrap(pagecontext, "</div>");
     }
-
     protected final void writeCRUDToolbar(PageContext pagecontext, boolean canAddToCRUD, boolean canFilter, boolean canRemoveFromCRUD, boolean closedToolbar)
             throws IOException, ServletException {
+        writeCRUDToolbar(pagecontext, canAddToCRUD, canFilter, canRemoveFromCRUD, closedToolbar, true);
+    }
+
+    protected final void writeCRUDToolbar(PageContext pagecontext, boolean canAddToCRUD, boolean canFilter, boolean canRemoveFromCRUD, boolean closedToolbar, boolean openToolbar)
+            throws IOException, ServletException {
         getCRUDToolbar();
-        openButtonGROUPToolbar(pagecontext);
+        if (openToolbar)
+            openButtonGROUPToolbar(pagecontext);
         if (canAddToCRUD) {
             Button button = crudToolbar[0];
             button.setHref("javascript:submitForm('doAddToCRUD(" + getInputPrefix() + ")')");
@@ -632,9 +637,14 @@ public abstract class AbstractDetailCRUDController extends NestedFormController
 
     }
 
+    public void writeHTMLToolbar(PageContext pagecontext, boolean canAddToCRUD, boolean canFilter, boolean canRemoveFromCRUD, boolean closedToolbar, boolean openToolbar)
+            throws IOException, ServletException {
+        writeCRUDToolbar(pagecontext, canAddToCRUD, canFilter, canRemoveFromCRUD, closedToolbar, openToolbar);
+    }
+
     public void writeHTMLToolbar(PageContext pagecontext, boolean canAddToCRUD, boolean canFilter, boolean canRemoveFromCRUD, boolean closedToolbar)
             throws IOException, ServletException {
-        writeCRUDToolbar(pagecontext, canAddToCRUD, canFilter, canRemoveFromCRUD, closedToolbar);
+        writeHTMLToolbar(pagecontext, canAddToCRUD, canFilter, canRemoveFromCRUD, closedToolbar, true);
     }
 
     private boolean isBootstrap(PageContext pagecontext) {
