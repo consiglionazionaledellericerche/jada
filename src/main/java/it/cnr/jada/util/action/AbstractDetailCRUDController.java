@@ -465,7 +465,7 @@ public abstract class AbstractDetailCRUDController extends NestedFormController
                 .filter(aBoolean -> aBoolean.equals(Boolean.TRUE))
                 .ifPresent(aBoolean -> {
                     try {
-                        pagecontext.getOut().println(s);
+                        pagecontext.getOut().print(s);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
