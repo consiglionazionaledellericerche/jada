@@ -639,7 +639,7 @@ public abstract class AbstractDetailCRUDController extends NestedFormController
 
     public void writeHTMLToolbar(PageContext pagecontext, boolean canAddToCRUD, boolean canFilter, boolean canRemoveFromCRUD, boolean closedToolbar, boolean openToolbar)
             throws IOException, ServletException {
-        writeCRUDToolbar(pagecontext, canAddToCRUD, canFilter, canRemoveFromCRUD, closedToolbar, openToolbar);
+        writeHTMLToolbar(pagecontext, canAddToCRUD, canFilter, canRemoveFromCRUD, closedToolbar, openToolbar);
     }
 
     public void writeHTMLToolbar(PageContext pagecontext, boolean canAddToCRUD, boolean canFilter, boolean canRemoveFromCRUD, boolean closedToolbar)
