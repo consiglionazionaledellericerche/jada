@@ -619,14 +619,14 @@ public abstract class AbstractDetailCRUDController extends NestedFormController
         }
         if (HttpActionContext.isFromBootstrap(pagecontext)) {
             if (isEnabled()) {
-                writeHTMLToolbar(pagecontext, canAddToCRUD, canFilter, canRemoveFromCRUD, true, true);
+                writeHTMLToolbar(pagecontext, canAddToCRUD, canFilter, canRemoveFromCRUD, true);
             }
         } else {
             if (isEnabled()) {
                 if (flag4)
                     jspwriter.println("<tr><td style=\"width:" + width + "\">");
                 jspwriter.println("<table class=\"Toolbar\" cellspacing=\"0\" cellpadding=\"0\" style=\"width:" + width + "\"><tr>");
-                writeHTMLToolbar(pagecontext, canAddToCRUD, canFilter, canRemoveFromCRUD, true, true);
+                writeHTMLToolbar(pagecontext, canAddToCRUD, canFilter, canRemoveFromCRUD, true);
                 jspwriter.println("<td style=\"width:100%\">&nbsp;</td></tr></table>");
                 if (flag4)
                     jspwriter.println("</td></tr>");
@@ -639,8 +639,9 @@ public abstract class AbstractDetailCRUDController extends NestedFormController
 
     public void writeHTMLToolbar(PageContext pagecontext, boolean canAddToCRUD, boolean canFilter, boolean canRemoveFromCRUD, boolean closedToolbar, boolean openToolbar)
             throws IOException, ServletException {
-        writeHTMLToolbar(pagecontext, canAddToCRUD, canFilter, canRemoveFromCRUD, closedToolbar);
+        writeCRUDToolbar(pagecontext, canAddToCRUD, canFilter, canRemoveFromCRUD, closedToolbar, openToolbar);
     }
+
 
     public void writeHTMLToolbar(PageContext pagecontext, boolean canAddToCRUD, boolean canFilter, boolean canRemoveFromCRUD, boolean closedToolbar)
             throws IOException, ServletException {
