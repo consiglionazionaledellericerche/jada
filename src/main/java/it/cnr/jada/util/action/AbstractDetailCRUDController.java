@@ -533,12 +533,11 @@ public abstract class AbstractDetailCRUDController extends NestedFormController
         button.writeToolbarButton(jspwriter, flag, HttpActionContext.isFromBootstrap(pagecontext));
         int j = currentPageFrame * pageFrameSize;
         for (int k = 0; k < pageFrameSize && j < i; j++) {
-            jspwriter.print("<td>");
+            if (!HttpActionContext.isFromBootstrap(pagecontext)) jspwriter.print("<td>");
             it.cnr.jada.util.jsp.JSPUtils.toolbarButton(pagecontext, null, String.valueOf(j + 1), j == currentPage ? null : "javascript:doNavigate('" + getInputPrefix() + "'," + j + ")", false, HttpActionContext.isFromBootstrap(pagecontext));
-            jspwriter.print("</td>");
+            if (!HttpActionContext.isFromBootstrap(pagecontext)) jspwriter.print("</td>");
             k++;
         }
-
         button = navigatorToolbar[2];
         button.setHref("javascript:doNavigate('" + getInputPrefix() + "'," + (currentPage + 1) + ")");
         button.writeToolbarButton(jspwriter, flag1, HttpActionContext.isFromBootstrap(pagecontext));
@@ -569,15 +568,21 @@ public abstract class AbstractDetailCRUDController extends NestedFormController
         }
         if (flag4)
             jspwriter.println("<tr><td style=\"width:" + width + "\">");
-        jspwriter.println("<table class=\"Toolbar\" cellspacing=\"0\" cellpadding=\"0\" style=\"width:" + width + "\"><tr>");
+        if (!HttpActionContext.isFromBootstrap(pagecontext))
+            jspwriter.println("<table class=\"Toolbar\" cellspacing=\"0\" cellpadding=\"0\" style=\"width:" + width + "\"><tr>");
         if (enabled)
-            writeHTMLToolbar(pagecontext, canAddToCRUD, canFilter, canRemoveFromCRUD, true);
+            writeHTMLToolbar(pagecontext, canAddToCRUD, canFilter, canRemoveFromCRUD, false);
+        else
+            openButtonGROUPToolbar(pagecontext);
         writeHTMLNavigator(pagecontext, i);
-        jspwriter.println("<td style=\"width:100%\">&nbsp;</td></tr></table>");
-        if (flag4)
-            jspwriter.println("</td></tr>");
-        if (flag4)
-            jspwriter.println("</table>");
+        closeButtonGROUPToolbar(pagecontext);
+        if (!HttpActionContext.isFromBootstrap(pagecontext)) {
+            jspwriter.println("<td style=\"width:100%\">&nbsp;</td></tr></table>");
+            if (flag4)
+                jspwriter.println("</td></tr>");
+            if (flag4)
+                jspwriter.println("</table>");
+        }
     }
 
     public void writeHTMLTable(PageContext pagecontext, String columnSet, boolean canAddToCRUD, boolean canFilter, boolean canRemoveFromCRUD, String width, String height)

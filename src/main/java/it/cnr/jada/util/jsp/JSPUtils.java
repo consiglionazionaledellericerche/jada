@@ -727,7 +727,7 @@ public class JSPUtils
 				jspwriter.print(" class=\"VSeparator\"");
 			jspwriter.print(">");
 		}
-		Button.write(pagecontext.getOut(), null, s, true, s1, 1, s2, null, null, null, isBootstrap);
+		Button.write(pagecontext.getOut(), null, s, true, s1, 1, s2, "btns-sm btn-outline-primary", null, null, isBootstrap);
 		if (!isBootstrap) {
 			jspwriter.print("</td>");
 		}
