@@ -426,7 +426,7 @@ public class SelezionatoreListaAction extends SelezionatoreAction
                                 .filter(formField -> Optional.ofNullable(formField.getField()).isPresent())
                                 .map(formField -> formField.getField())
                                 .map(fieldProperty -> fieldProperty.getFreeSearchSet())
-                                .orElse("default")
+                                .orElse(crudbp.get().getFreeSearchSet())
                 );
                 ricercaLiberaBP.setShowSearchResult(false);
                 ricercaLiberaBP.setCanPerformSearchWithoutClauses(true);

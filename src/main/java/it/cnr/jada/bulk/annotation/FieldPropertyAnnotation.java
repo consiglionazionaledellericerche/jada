@@ -241,4 +241,23 @@ public @interface FieldPropertyAnnotation{
 	 * Tipo del parametro da passare a JasperReport per la produzione della stampa, il nome deve essere una classe Java.
 	 */
 	public String paramTypeJR() default "";
+
+	/**
+	 *
+	 * @return La classe css da applicare all'input
+	 */
+	public String inputCssClass() default "";
+
+	/**
+	 *
+	 * @return La classe css da applicare all'icona sul button
+	 */
+	public String iconClass() default "";
+
+	/**
+	 *
+	 * @return La classe css da applicare al button
+	 */
+	public String buttonClass() default "";
+
 }

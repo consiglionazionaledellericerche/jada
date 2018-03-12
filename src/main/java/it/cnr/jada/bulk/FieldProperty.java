@@ -2711,9 +2711,9 @@ public class FieldProperty implements Serializable{
     }
 	
 	protected String nvl(String target){
-		if (target.length() == 0)
-			return null;
-		return target;
+		return Optional.ofNullable(target)
+				.filter(s -> target.length() > 0)
+				.orElse(null);
 	}
 	
 	public void createWithAnnotation( FieldPropertyAnnotation fieldPropertyAnnotation) {
@@ -2769,5 +2769,8 @@ public class FieldProperty implements Serializable{
 		setLabel(nvl(fieldPropertyAnnotation.label()));
 		setStyle(nvl(fieldPropertyAnnotation.style()));
 		setLabelStyle(nvl(fieldPropertyAnnotation.labelStyle()));
+		setInputCssClass(nvl(fieldPropertyAnnotation.inputCssClass()));
+		setIconClass(nvl(fieldPropertyAnnotation.iconClass()));
+		setButtonClass(nvl(fieldPropertyAnnotation.buttonClass()));
 	}
 }
