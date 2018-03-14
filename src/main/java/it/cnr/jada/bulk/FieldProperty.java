@@ -2722,8 +2722,10 @@ public class FieldProperty implements Serializable{
 	
 	public void createWithAnnotation( FieldPropertyAnnotation fieldPropertyAnnotation, String property) {
 		setName(fieldPropertyAnnotation.name());
-		if (property != null)
-			setProperty(property);
+		setProperty(
+				Optional.ofNullable(property)
+					.orElseGet(() -> Optional.ofNullable(fieldPropertyAnnotation.property()).filter(s -> !s.isEmpty()).orElse(null))
+		);
 		setColumnSet(nvl(fieldPropertyAnnotation.columnSet()));
 		setFreeSearchSet(nvl(fieldPropertyAnnotation.freeSearchSet()));
 		setDescProperty(nvl(fieldPropertyAnnotation.descProperty()));

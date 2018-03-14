@@ -24,7 +24,11 @@ public @interface FieldPropertyAnnotation{
 	
 	/** Tipo di FieldProperty*/
 	public TypeProperty type() default TypeProperty.FieldProperty;
-	
+
+	/**
+	 * Nome del Property di riferimento
+	 */
+	public String property() default "";
 	/**
 	 * Nome del ColumnSet di riferimento, 
 	 * viene usato per i FieldProperty di tipo "SEARCHTOOL",
