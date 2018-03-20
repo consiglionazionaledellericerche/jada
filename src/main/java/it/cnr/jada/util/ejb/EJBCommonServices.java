@@ -108,7 +108,7 @@ public class EJBCommonServices implements Serializable{
 
 	@SuppressWarnings("unused")
 	public static final Object createRemoteEJB(String jndiName){
-		List<String> modules = Arrays.asList("jada", "sigla-ejb", "sigla-sdi", "sigla-ws", "sigla-ws-ns");
+		List<String> modules = Arrays.asList("SIGLA", "jada", "sigla-ejb", "sigla-sdi", "sigla-ws", "sigla-ws-ns");
 		Object obj = null;
 		try {
 			if (earAppName==null)
