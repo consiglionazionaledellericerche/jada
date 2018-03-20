@@ -108,12 +108,12 @@ public class EJBCommonServices implements Serializable{
 
 	@SuppressWarnings("unused")
 	public static final Object createRemoteEJB(String jndiName){
-		List<String> modules = Arrays.asList("SIGLA", "jada", "sigla-ejb", "sigla-sdi", "sigla-ws", "sigla-ws-ns");
+		List<String> modules = Arrays.asList("jada", "sigla-ejb", "sigla-sdi", "sigla-ws", "sigla-ws-ns");
 		Object obj = null;
 		try {
 			if (earAppName==null)
 				loadEarAppName();
-			return getInitialContext().lookup(earAppName+"/"+jndiName+"/remote");
+			return getInitialContext().lookup("java:global/" + earAppName + "/" + jndiName);
 		} catch (NamingException e) {
 			for (String module : modules) {
 				try {
