@@ -47,6 +47,7 @@ import java.sql.Statement;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.Optional;
 
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
@@ -478,7 +479,7 @@ public class GenericComponent implements Component, Serializable, Cloneable{
         try{
             if(query == null)
                 return new EmptyRemoteIterator();
-            if(!usercontext.isTransactional()){
+            if(Optional.ofNullable(usercontext).map(u -> !u.isTransactional()).orElse(true)){
             	BulkLoaderIterator bulkLoaderIterator = (BulkLoaderIterator) EJBCommonServices.createEJB("JADAEJB_BulkLoaderIterator");
             	bulkLoaderIterator.ejbCreate(usercontext, query, class1, s);
             	return bulkLoaderIterator;

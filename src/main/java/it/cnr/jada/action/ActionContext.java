@@ -73,6 +73,9 @@ public interface ActionContext
 
     public abstract String getTracingSessionDescription();
 
+
+    public abstract UserContext getUserContext(boolean createSession);
+
     public abstract UserContext getUserContext();
 
     public abstract UserInfo getUserInfo();

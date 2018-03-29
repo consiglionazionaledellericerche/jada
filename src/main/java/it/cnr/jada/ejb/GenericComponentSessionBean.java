@@ -7,6 +7,7 @@ import it.cnr.jada.comp.ComponentException;
 import it.cnr.jada.util.ejb.EJBCommonServices;
 
 import java.sql.*;
+import java.util.Optional;
 
 import javax.annotation.Resource;
 import javax.ejb.*;
@@ -71,7 +72,7 @@ public abstract class GenericComponentSessionBean implements GenericComponentSes
     }
     protected final Error uncaughtError(UserContext usercontext, Component component, Error error) throws EJBException, Error{
         component_invocation_failure(usercontext, component);
-        if(usercontext.isTransactional())
+        if(Optional.ofNullable(usercontext).map(u -> u.isTransactional()).orElse(false))
             throw new DetailedRuntimeException(error);
         else
             return error;
@@ -79,7 +80,7 @@ public abstract class GenericComponentSessionBean implements GenericComponentSes
 
     protected final RuntimeException uncaughtRuntimeException(UserContext usercontext, Component component, RuntimeException runtimeexception) throws EJBException, RuntimeException{
         component_invocation_failure(usercontext, component);
-        if(usercontext.isTransactional())
+        if(Optional.ofNullable(usercontext).map(u -> u.isTransactional()).orElse(false))
             return new DetailedRuntimeException(runtimeexception);
         else
             throw runtimeexception;
