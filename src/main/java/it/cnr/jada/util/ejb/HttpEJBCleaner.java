@@ -4,19 +4,16 @@ import it.cnr.jada.action.ActionContext;
 import it.cnr.jada.action.HttpActionContext;
 import it.cnr.jada.ejb.BulkLoaderIterator;
 import it.cnr.jada.ejb.TransactionalBulkLoaderIterator;
-import it.cnr.jada.util.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpSession;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class HttpEJBCleaner implements Serializable {
     private transient static final Logger logger = LoggerFactory.getLogger(HttpEJBCleaner.class);
-    private final List objects = new ArrayList();
+    private final Set objects = new HashSet<Object>();
 
     private HttpEJBCleaner() {
     }
