@@ -4,6 +4,8 @@ import it.cnr.jada.UserTransaction;
 import it.cnr.jada.util.Config;
 import it.cnr.jada.util.SendMail;
 import it.cnr.jada.util.ejb.EJBCommonServices;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -49,8 +51,9 @@ import javax.servlet.jsp.PageContext;
  * nel file di configurazione.
  */
 public class BusinessProcess implements Forward, Serializable{
+    private transient static final Logger logger = LoggerFactory.getLogger(BusinessProcess.class);
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 	private Map<String, BusinessProcess> children;
 	public static final String ROOTBPNAME = "rootbp";
 	private BusinessProcess parent;
@@ -366,8 +369,14 @@ public class BusinessProcess implements Forward, Serializable{
      * Recupera il business process root dalla HttpSession associata ad una HttpRequest.
      */
 	public static BusinessProcess getBusinessProcessRoot(HttpServletRequest httpservletrequest){
-		return Optional.ofNullable(HttpActionContext.getSession(httpservletrequest)).
-				map(session -> (BusinessProcess)session.getAttribute(ROOTBPNAME)).orElse(null);
+		return Optional.ofNullable(HttpActionContext.getSession(httpservletrequest))
+                .map(session -> session.getAttribute(ROOTBPNAME))
+                .filter(BusinessProcess.class::isInstance)
+                .map(BusinessProcess.class::cast)
+                .orElseGet(() -> Optional.ofNullable(httpservletrequest.getAttribute(ROOTBPNAME))
+                        .filter(BusinessProcess.class::isInstance)
+                        .map(BusinessProcess.class::cast)
+                        .orElse(null));
 	}
 
 	/**
@@ -572,11 +581,17 @@ public class BusinessProcess implements Forward, Serializable{
      */
 	public static void setBusinessProcessRoot(HttpServletRequest httpservletrequest, BusinessProcess businessprocess){
 		businessprocess.setRoot();
-		Optional.ofNullable(HttpActionContext.getSession(httpservletrequest)).map(session -> {
-			session.setAttribute(ROOTBPNAME, businessprocess);
-			return session;
-		});
-	}
+        final String s = Optional.ofNullable(HttpActionContext.getSession(httpservletrequest))
+                .map(session -> {
+                    session.setAttribute(ROOTBPNAME, businessprocess);
+                    return "SESSION";
+                })
+                .orElseGet(() -> {
+                    httpservletrequest.setAttribute(ROOTBPNAME, businessprocess);
+                    return "REQUEST";
+                });
+        logger.debug("Add ROOT BP on {}", s);
+    }
 
 	public synchronized boolean setBusy(){
 		if(isBusy())

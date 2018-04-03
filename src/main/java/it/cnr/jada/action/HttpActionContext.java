@@ -48,6 +48,8 @@ public class HttpActionContext
 {
 
     public static final String CONTEXT_FOCUSED_ELEMENT = "it.cnr.jada.action.HttpActionContext.focusedElement";
+    public static final String USER_CONTEXT = "UserContext";
+    public static final String CURRENT_USER = "CurrentUser";
     private File actionDirFile;
 	private HttpServlet servlet;
 	private HttpServletRequest request;
@@ -633,22 +635,41 @@ public class HttpActionContext
 	
 	public UserContext getUserContext()
 	{
-		return getUserContext(getSession());
+	    return Optional.ofNullable(getSession(false))
+                .map(session -> getUserContext(session))
+                .orElseGet(() ->
+                    Optional.ofNullable(getRequest().getAttribute(USER_CONTEXT))
+                        .filter(UserContext.class::isInstance)
+                        .map(UserContext.class::cast)
+                        .orElseGet(() -> getUserContext(getSession()))
+                );
 	}
 
 	public static UserContext getUserContext(HttpSession httpsession)
 	{
-		return Optional.ofNullable(httpsession).map(session -> (UserContext)session.getAttribute("UserContext")).orElse(null);
+		return Optional.ofNullable(httpsession).map(session -> (UserContext)session.getAttribute(USER_CONTEXT)).orElse(null);
 	}
 
 	public UserInfo getUserInfo()
 	{
-		return (UserInfo)getSessionValue("CurrentUser");
+        return Optional.ofNullable(getSession(false))
+                .map(session -> getUserInfo(session))
+                .orElseGet(() ->
+                        Optional.ofNullable(getRequest().getAttribute(CURRENT_USER))
+                                .filter(UserInfo.class::isInstance)
+                                .map(UserInfo.class::cast)
+                                .orElseGet(() -> getUserInfo(getSession()))
+                );
 	}
+
+    public static UserInfo getUserInfo(HttpSession httpSession)
+    {
+        return (UserInfo)httpSession.getAttribute(CURRENT_USER);
+    }
 
 	public static UserInfo getUserInfo(HttpServletRequest httpservletrequest)
 	{
-		return (UserInfo)getSession(httpservletrequest).getAttribute("CurrentUser");
+		return (UserInfo)getSession(httpservletrequest).getAttribute(CURRENT_USER);
 	}
 
 	public void initialize()
@@ -865,20 +886,35 @@ public class HttpActionContext
 	public void setTracingSessionDescription(String s)
 	{
 		getSession().setAttribute("it.cnr.jada.action.HttpActionContext.tracingSessionDescription", s);
-		//servlet.updateTracingSessionDescription(this);
 	}
 
 	public void setUserContext(UserContext usercontext)
 	{
-		getSession().setAttribute("UserContext", usercontext);
+		setUserContext(usercontext, true);
+	}
+
+	public void setUserContext(UserContext usercontext, boolean onHttpSession)
+	{
+		if (onHttpSession)
+			getSession().setAttribute(USER_CONTEXT, usercontext);
+		else
+			getRequest().setAttribute(USER_CONTEXT, usercontext);
 	}
 
 	public void setUserInfo(UserInfo userinfo)
 	{
-		getSession().setAttribute("CurrentUser", userinfo);
+		setUserInfo(userinfo, true);
 	}
 
-	public void traceException(Throwable throwable)
+    public void setUserInfo(UserInfo userinfo, boolean onHttpSession)
+    {
+        if (onHttpSession)
+            getSession().setAttribute(CURRENT_USER, userinfo);
+        else
+            getRequest().setAttribute(CURRENT_USER, userinfo);
+    }
+
+    public void traceException(Throwable throwable)
 	{
 		request.setAttribute("it.cnr.jada.action.HttpActionContext.traceException", throwable);
 	}
@@ -905,7 +941,7 @@ public class HttpActionContext
 
     public static boolean isFromBootstrap(PageContext pagecontext) {
 		Optional<UserContext> optContext = Optional.ofNullable(pagecontext.getSession())
-				.map(session -> (UserContext)session.getAttribute("UserContext"));
+				.map(session -> (UserContext)session.getAttribute(USER_CONTEXT));
 		if (optContext.isPresent()) 
 			return (boolean) optContext.get().getAttributes().getOrDefault("bootstrap", false);		
 		return false;
