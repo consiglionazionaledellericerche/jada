@@ -19,6 +19,7 @@ import it.cnr.jada.util.ejb.TransactionClosedException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
 
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
@@ -35,6 +36,7 @@ public abstract class BaseBulkLoaderIteratorBean{
 	protected String fetchPolicyName;
 	protected boolean removed;
 	protected boolean doCount;
+	private String uid;
 	
 	public BaseBulkLoaderIteratorBean(){
 		pageSize = 1;
@@ -103,12 +105,16 @@ public abstract class BaseBulkLoaderIteratorBean{
 			throw new CreateException();
 		}
 		removed = false;
+		this.uid = UUID.randomUUID().toString();
+		EJBTracer.getInstance().addToTacers(uid, this, usercontext);
 		EJBTracer.getInstance().incrementActiveBulkLoaderIteratorCounter();
 	}
 
 	public void ejbRemove() throws EJBException{
-		if(!removed)
+		if(!removed){
+			EJBTracer.getInstance().removeToTracers(this.uid);
 			EJBTracer.getInstance().decrementActiveBulkLoaderIteratorCounter();
+		}
 		removed = true;
 	}
 
