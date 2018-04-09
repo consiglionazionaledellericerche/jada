@@ -2,6 +2,8 @@ package it.cnr.jada.persistency.sql;
 
 import it.cnr.jada.util.Config;
 import it.cnr.jada.util.PropertyNames;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.sql.Connection;
@@ -15,7 +17,9 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 public class SQLQuery implements Query, Serializable{
-	private static String formDate = "yyyyMMdd";
+    private transient static final Logger logger = LoggerFactory.getLogger(SQLQuery.class);
+
+    private static String formDate = "yyyyMMdd";
 	private static String formTime = "yyyyMMdd HHmmss";
 	private static String formTimeOracle = "yyyyMMdd HH24miss";
 	
@@ -236,7 +240,8 @@ public class SQLQuery implements Query, Serializable{
 						    }
 							else
 								stringbuffer.append(obj);
-						} catch (ParseException e) {
+						} catch (ParseException|IllegalArgumentException e) {
+						    logger.error("Cannot format SQLQuery:{}",stringbuffer, e);
 						}                    	
                     }
                 }else{
