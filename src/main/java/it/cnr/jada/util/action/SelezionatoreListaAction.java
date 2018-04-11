@@ -357,7 +357,7 @@ public class SelezionatoreListaAction extends SelezionatoreAction
         Optional<CRUDBP> crudbp = Optional.ofNullable(bp.getParent())
                 .filter(CRUDBP.class::isInstance)
                 .map(CRUDBP.class::cast);
-        if (crudbp.isPresent()) {
+        if (crudbp.isPresent() || Optional.ofNullable(bp).filter(SearchProvider.class::isInstance).isPresent()) {
             try {
                 OggettoBulk oggettoBulk = Optional.ofNullable(bp.getFormField())
                         .map(formField -> bp.getBulkInfo())
@@ -371,16 +371,34 @@ public class SelezionatoreListaAction extends SelezionatoreAction
                         })
                         .filter(OggettoBulk.class::isInstance)
                         .map(OggettoBulk.class::cast)
-                        .orElse(crudbp.get().createEmptyModelForFreeSearch(context));
+                        .orElseGet(() -> {
+                            if (crudbp.isPresent()) {
+                                try {
+                                    return crudbp.get().createEmptyModelForFreeSearch(context);
+                                } catch (BusinessProcessException e) {
+                                    throw new DetailedRuntimeException(e);
+                                }
+                            } else {
+                                return bp.getModel();
+                            }
+                        });
 
                 SearchProvider searchProvider = Optional.ofNullable(bp.getFormField())
                         .map(formField -> crudbp.get().getSearchProvider(
                                 formField.getModel(),
                                 formField.getField().getProperty()))
                         .map(SearchProvider.class::cast)
-                        .orElseGet(() -> crudbp.get().getSearchProvider());
+                        .orElseGet(() -> {
+                            if (crudbp.isPresent())
+                                return crudbp.get().getSearchProvider();
+                            else
+                                return Optional.ofNullable(bp)
+                                        .filter(SearchProvider.class::isInstance)
+                                        .map(SearchProvider.class::cast)
+                                        .orElse(null);
+                        });
                 bp.setIterator(context,
-                        searchProvider.search(context, null, oggettoBulk));
+                        searchProvider.search(context, new CompoundFindClause(), oggettoBulk));
             } catch (RemoteException|BusinessProcessException e) {
                 return handleException(context, e);
             }
@@ -398,13 +416,22 @@ public class SelezionatoreListaAction extends SelezionatoreAction
                     .filter(CRUDBP.class::isInstance)
                     .map(CRUDBP.class::cast);
 
-            if (crudbp.isPresent()) {
+            if (crudbp.isPresent() || Optional.ofNullable(bp).filter(SearchProvider.class::isInstance).isPresent()) {
                 SearchProvider searchProvider = Optional.ofNullable(bp.getFormField())
                         .map(formField -> crudbp.get().getSearchProvider(
                                 formField.getModel(),
                                 formField.getField().getProperty()))
                         .map(SearchProvider.class::cast)
-                        .orElseGet(() -> crudbp.get().getSearchProvider());
+                        .orElseGet(() -> {
+                            if (crudbp.isPresent())
+                                return crudbp.get().getSearchProvider();
+                            else
+                                return Optional.ofNullable(bp)
+                                        .filter(SearchProvider.class::isInstance)
+                                        .map(SearchProvider.class::cast)
+                                        .orElse(null);
+                        });
+
                 OggettoBulk oggettoBulk = Optional.ofNullable(bp.getFormField())
                         .map(formField -> bp.getBulkInfo())
                         .map(bulkInfo -> bulkInfo.getBulkClass())
@@ -417,7 +444,17 @@ public class SelezionatoreListaAction extends SelezionatoreAction
                         })
                         .filter(OggettoBulk.class::isInstance)
                         .map(OggettoBulk.class::cast)
-                        .orElse(crudbp.get().createEmptyModelForFreeSearch(context));
+                        .orElseGet(() -> {
+                            if (crudbp.isPresent()) {
+                                try {
+                                    return crudbp.get().createEmptyModelForFreeSearch(context);
+                                } catch (BusinessProcessException e) {
+                                    throw new DetailedRuntimeException(e);
+                                }
+                            } else {
+                                return bp.getModel();
+                            }
+                        });
 
                 RicercaLiberaBP ricercaLiberaBP = (RicercaLiberaBP)context.createBusinessProcess("RicercaLibera");
                 ricercaLiberaBP.setSearchProvider(searchProvider);
@@ -426,7 +463,12 @@ public class SelezionatoreListaAction extends SelezionatoreAction
                                 .filter(formField -> Optional.ofNullable(formField.getField()).isPresent())
                                 .map(formField -> formField.getField())
                                 .map(fieldProperty -> fieldProperty.getFreeSearchSet())
-                                .orElse(crudbp.get().getFreeSearchSet())
+                                .orElseGet(() -> {
+                                    if (crudbp.isPresent())
+                                        return crudbp.get().getFreeSearchSet();
+                                    else
+                                        return "default";
+                                })
                 );
                 ricercaLiberaBP.setShowSearchResult(false);
                 ricercaLiberaBP.setCanPerformSearchWithoutClauses(true);
