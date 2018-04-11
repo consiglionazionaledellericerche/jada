@@ -295,4 +295,24 @@ public class TransactionalCRUDComponentSession extends TransactionalSessionImpl 
 			}
 		}
 	}
+
+	public it.cnr.jada.util.RemoteIterator cerca(it.cnr.jada.UserContext param0,it.cnr.jada.persistency.sql.CompoundFindClause param1,it.cnr.jada.bulk.OggettoBulk param2, String param3) throws RemoteException,it.cnr.jada.comp.ComponentException {
+		try {
+			return (it.cnr.jada.util.RemoteIterator)invoke("cerca",new Object[] {
+					param0,
+					param1,
+					param2,
+					param3});
+		} catch(java.rmi.RemoteException e) {
+			throw e;
+		} catch(java.lang.reflect.InvocationTargetException e) {
+			try {
+				throw e.getTargetException();
+			} catch(it.cnr.jada.comp.ComponentException ex) {
+				throw ex;
+			} catch(Throwable ex) {
+				throw new java.rmi.RemoteException("Uncaugth exception",ex);
+			}
+		}
+	}
 }

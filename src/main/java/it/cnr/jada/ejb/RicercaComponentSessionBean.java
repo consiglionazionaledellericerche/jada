@@ -110,4 +110,23 @@ public class RicercaComponentSessionBean extends GenericComponentSessionBean imp
             throw uncaughtError(userContext, componentObj, error);
         }
     }
+
+    public RemoteIterator cerca(UserContext usercontext, CompoundFindClause compoundfindclause, OggettoBulk oggettobulk, String homeMethodName) throws ComponentException, EJBException{
+        pre_component_invocation(usercontext, componentObj);
+        try{
+            RemoteIterator remoteiterator = ((RicercaComponent)componentObj).cerca(usercontext, compoundfindclause, oggettobulk, homeMethodName);
+            component_invocation_succes(usercontext, componentObj);
+            return remoteiterator;
+        }catch(NoRollbackException norollbackexception){
+            component_invocation_succes(usercontext, componentObj);
+            throw norollbackexception;
+        }catch(ComponentException componentexception){
+            component_invocation_failure(usercontext, componentObj);
+            throw componentexception;
+        }catch(RuntimeException runtimeexception){
+            throw uncaughtRuntimeException(usercontext, componentObj, runtimeexception);
+        }catch(Error error){
+            throw uncaughtError(usercontext, componentObj, error);
+        }
+    }
 }

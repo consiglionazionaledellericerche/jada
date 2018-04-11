@@ -25,4 +25,8 @@ public interface RicercaComponentSession extends GenericComponentSession {
 
     public abstract <T extends OggettoBulk, U extends OggettoBulk> List<U> find(UserContext userContext, Class<T> contesto, String methodName, Object... parameters)
             throws ComponentException, RemoteException;
+
+    public abstract RemoteIterator cerca(UserContext usercontext, CompoundFindClause compoundfindclause, OggettoBulk oggettobulk, String homeMethodName)
+            throws ComponentException, RemoteException;
+
 }
