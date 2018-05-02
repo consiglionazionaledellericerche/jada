@@ -1,30 +1,54 @@
 package it.cnr.jada.util;
 
+import it.cnr.jada.util.ejb.EJBCommonServices;
+
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.text.MessageFormat;
-import java.util.Optional;
-import java.util.Properties;
+import java.util.*;
 
 public class PropertyNames {
     private static final Log logger = Log.getInstance(PropertyNames.class);
     private static Properties properties;
 
+    public static final String ORACLE_PROPERTIES = "oracle.properties";
+    public static final String POSTGRES_PROPERTIES = "postgres.properties";
+    public static final String POSTGRE_SQL = "PostgreSQL";
+    public static final String ORACLE = "Oracle";
+
     static {
+        Connection connection = null;
         try {
-            properties = loadFromFile(Optional.ofNullable(System.getenv("SIGLA_POSTGRES_ENABLE"))
-                    .map(s -> Boolean.valueOf(s))
-                    .filter(aBoolean -> aBoolean.equals(Boolean.TRUE))
-                    .map(aBoolean -> "postgres.properties")
-                    .orElseGet(() ->
-                            Optional.ofNullable(System.getenv("SIGLA_ORACLE_ENABLE"))
-                                    .map(s -> Boolean.valueOf(s))
-                                    .filter(aBoolean -> aBoolean.equals(Boolean.TRUE))
-                                    .map(aBoolean -> "oracle.properties")
-                                    .orElse("oracle.properties")
-                    ));
-        } catch (IOException e) {
+            connection = EJBCommonServices.getConnection();
+            final String databaseProductName = Optional.ofNullable(connection.getMetaData().getDatabaseProductName())
+                    .orElse(ORACLE);
+            switch (databaseProductName) {
+                case POSTGRE_SQL: {
+                    properties = loadFromFile(POSTGRES_PROPERTIES);
+                    break;
+                }
+                case ORACLE: {
+                    properties = loadFromFile(ORACLE_PROPERTIES);
+                    break;
+                }
+                default: {
+                    properties = loadFromFile(ORACLE_PROPERTIES);
+                    break;
+                }
+            }
+        } catch (IOException|SQLException e) {
             logger.error("Cannot load property file", e);
+        } finally {
+            Optional.ofNullable(connection)
+                    .ifPresent(conn -> {
+                        try {
+                            conn.close();
+                        } catch (SQLException e) {
+                            logger.error("Cannot close connection", e);
+                        }
+                    });
         }
     }
 
