@@ -16,6 +16,7 @@ public class PropertyNames {
     public static final String ORACLE_PROPERTIES = "oracle.properties";
     public static final String POSTGRES_PROPERTIES = "postgres.properties";
     public static final String POSTGRE_SQL = "PostgreSQL";
+    public static final String H2 = "H2";
     public static final String ORACLE = "Oracle";
 
     static {
@@ -26,6 +27,10 @@ public class PropertyNames {
                     .orElse(ORACLE);
             switch (databaseProductName) {
                 case POSTGRE_SQL: {
+                    properties = loadFromFile(POSTGRES_PROPERTIES);
+                    break;
+                }
+                case H2: {
                     properties = loadFromFile(POSTGRES_PROPERTIES);
                     break;
                 }
