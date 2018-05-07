@@ -1,5 +1,7 @@
 package it.cnr.jada.persistency;
 
+import it.cnr.jada.util.Log;
+
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -10,96 +12,82 @@ import java.util.Map;
 //            Introspector, IntrospectionException, PersistentInfo, KeyedPersistent
 
 public abstract class AbstractIntrospector
-    implements Serializable, Introspector
-{
+        implements Serializable, Introspector {
+
+    private final Map persistentInfos = new HashMap();
+    private final Constructor persistentInfoConstructor;
+    private static final Log logger = Log.getInstance(AbstractIntrospector.class);
 
     protected AbstractIntrospector(Class class1)
-        throws IntrospectionException
-    {
-        try
-        {
-            persistentInfoConstructor = class1.getConstructor(new Class[] {
-                java.lang.Class.class, it.cnr.jada.persistency.Introspector.class
+            throws IntrospectionException {
+        try {
+            persistentInfoConstructor = class1.getConstructor(new Class[]{
+                    java.lang.Class.class, it.cnr.jada.persistency.Introspector.class
             });
-        }
-        catch(NoSuchMethodException _ex)
-        {
+        } catch (NoSuchMethodException _ex) {
+            logger.error(_ex);
             throw new IntrospectionException("Impossibile creare un'istanza di " + class1 + ",manca un costruttore adeguato");
         }
     }
 
     protected void cachePersistentInfo(Class class1, PersistentInfo persistentinfo)
-        throws IntrospectionException
-    {
+            throws IntrospectionException {
         persistentInfos.put(class1, persistentinfo);
     }
 
     protected PersistentInfo getCachedPersistentInfo(Class class1)
-        throws IntrospectionException
-    {
-        return (PersistentInfo)persistentInfos.get(class1);
+            throws IntrospectionException {
+        return (PersistentInfo) persistentInfos.get(class1);
     }
 
     public PersistentInfo getPersistentInfo(Class class1)
-        throws IntrospectionException
-    {
-    	
+            throws IntrospectionException {
+
         PersistentInfo persistentinfo = getCachedPersistentInfo(class1);
-        if(persistentinfo == null && it.cnr.jada.persistency.Persistent.class.isAssignableFrom(class1))
-            synchronized(this)
-            {
+        if (persistentinfo == null && it.cnr.jada.persistency.Persistent.class.isAssignableFrom(class1))
+            synchronized (this) {
                 persistentinfo = getCachedPersistentInfo(class1);
-                if(persistentinfo == null)
-                    try
-                    {
-                        persistentinfo = (PersistentInfo)persistentInfoConstructor.newInstance(new Object[] {
-                            class1, this
+                if (persistentinfo == null)
+                    try {
+                        persistentinfo = (PersistentInfo) persistentInfoConstructor.newInstance(new Object[]{
+                                class1, this
                         });
                         cachePersistentInfo(class1, persistentinfo);
                         persistentinfo.initialize();
-                    }
-                    catch(InstantiationException instantiationexception)
-                    {
+                    } catch (InstantiationException instantiationexception) {
+                        logger.error(instantiationexception);
                         throw new IntrospectionException("Impossibile creare un'istanza di " + persistentInfoConstructor.getDeclaringClass(), instantiationexception);
-                    }
-                    catch(IllegalAccessException illegalaccessexception)
-                    {
+                    } catch (IllegalAccessException illegalaccessexception) {
+                        logger.error(illegalaccessexception);
                         throw new IntrospectionException("IllegalAccessException: impossibile creare un'istanza di " + persistentInfoConstructor.getDeclaringClass(), illegalaccessexception);
-                    }
-                    catch(InvocationTargetException invocationtargetexception)
-                    {
+                    } catch (InvocationTargetException invocationtargetexception) {
+                        logger.error(invocationtargetexception);
                         throw new IntrospectionException("Impossibile creare un'istanza di " + persistentInfoConstructor.getDeclaringClass(), invocationtargetexception.getTargetException());
-                    }
-                    catch(ClassCastException _ex)
-                    {
+                    } catch (ClassCastException _ex) {
+                        logger.error(_ex);
                         throw new IntrospectionException(persistentInfoConstructor.getDeclaringClass() + "non implementa PersistentInfo");
                     }
             }
         return persistentinfo;
     }
 
-    public synchronized void resetPersistentInfos()
-    {
+    public synchronized void resetPersistentInfos() {
         persistentInfos.clear();
     }
 
-    public synchronized void resetPersistentInfos(Class class1)
-    {
+    public synchronized void resetPersistentInfos(Class class1) {
         persistentInfos.remove(class1);
     }
 
     public abstract String getOid(KeyedPersistent keyedpersistent)
-        throws IntrospectionException;
+            throws IntrospectionException;
 
     public abstract Class getPropertyType(Class class1, String s)
-        throws IntrospectionException;
+            throws IntrospectionException;
 
     public abstract Object getPropertyValue(Object obj, String s)
-        throws IntrospectionException;
+            throws IntrospectionException;
 
     public abstract void setPropertyValue(Object obj, String s, Object obj1)
-        throws IntrospectionException;
-
-    private final Map persistentInfos = new HashMap();
-    private final Constructor persistentInfoConstructor;
+            throws IntrospectionException;
 }
