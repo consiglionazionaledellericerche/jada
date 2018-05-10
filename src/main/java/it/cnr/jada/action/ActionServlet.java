@@ -133,7 +133,7 @@ public class ActionServlet extends HttpServlet implements Serializable{
      * Inizializza la servlet leggendo la mappatura.
      */
     public void init() throws ServletException{
-    	log.info("EAR del 11/12/2004 19:00");
+    	log.info("Init action from folder {}", getServletContext().getRealPath("/"));
     	System.setProperty("tmp.dir.SIGLAWeb", getServletContext().getRealPath("/"));
         actionExtension = getServletConfig().getInitParameter("extension");
         if(actionExtension == null)

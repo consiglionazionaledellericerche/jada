@@ -113,7 +113,7 @@ public class EJBCommonServices implements Serializable{
 		try {
 			if (earAppName==null)
 				loadEarAppName();
-			return getInitialContext().lookup("java:global/" + earAppName + "/" + jndiName);
+			return getInitialContext().lookup("java:module/" + jndiName);
 		} catch (NamingException e) {
 			for (String module : modules) {
 				try {

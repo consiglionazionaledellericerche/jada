@@ -236,7 +236,7 @@ public class FormBP extends BusinessProcess implements Serializable{
         pagecontext.getOut().print(actionForm);
         pagecontext.getOut().print("\"");
 
-        pagecontext.getOut().print("\" action-ng=\"");
+        pagecontext.getOut().print(" action-ng=\"");
         pagecontext.getOut().print(actionForm);
         pagecontext.getOut().print("\"");
 
