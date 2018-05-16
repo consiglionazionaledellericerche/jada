@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<SQLPersistentInfo
-	persistentClassName="it.cnr.jada.conf.bulk.ConfigurazioneJadaBulk"
-	homeClassName="it.cnr.jada.conf.bulk.ConfigurazioneJadaHome">
-	<defaultColumnMap
-		tableName="CONFIGURAZIONE_JADA">
-	</defaultColumnMap>
-</SQLPersistentInfo>

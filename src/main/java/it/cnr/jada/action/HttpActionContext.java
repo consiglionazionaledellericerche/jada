@@ -78,34 +78,28 @@ public class HttpActionContext
 		throws BusinessProcessException
 	{
 		try {
-			it.cnr.jada.conf.bulk.ConfigurazioneJadaBulk config =((it.cnr.jada.conf.ejb.ConfigurazioneJadaComponentSession)it.cnr.jada.util.ejb.EJBCommonServices.createEJB("JADAEJB_ConfigurazioneJadaComponentSession")).getConfigurazione(getUserContext(), it.cnr.jada.conf.bulk.ConfigurazioneJadaBulk.PK_NUM_LIV_CONSULTAZIONI);
-			Integer liv=Integer.MAX_VALUE;
+			Integer liv = 1;
 			int result=0;
-			if(config!=null && config.getIm01()!=null)
-				liv= config.getIm01();
-			
-				if(getBusinessProcess() instanceof ConsultazioniBP){
-					BusinessProcess bp2=getBusinessProcess();
-					BusinessProcess bp = getBusinessProcess();
-					while(bp.getParent() != null && bp.getParent() instanceof ConsultazioniBP && result<liv){
-						result++;
-						bp = bp.getParent();
-					}
-					// chiudo il bp n livelli sopra senza cancellare i figli
-					if(result==liv){
-						closeBusinessProcess(bp,false);
-					// aggiungo gli ultimi n-1 livelli, richiamando un nuovo addChild con parametro
-						for(int i=liv;i>1;i--){
-							getBusinessProcess().addChild(bp2.getParent(i),false);
-							setBusinessProcess(bp2.getParent(i)); 
-						}
-						getBusinessProcess().addChild(bp2,false);
-						setBusinessProcess(bp2);
-					}
+			if(getBusinessProcess() instanceof ConsultazioniBP){
+				BusinessProcess bp2=getBusinessProcess();
+				BusinessProcess bp = getBusinessProcess();
+				while(bp.getParent() != null && bp.getParent() instanceof ConsultazioniBP && result<liv){
+					result++;
+					bp = bp.getParent();
 				}
-		} catch (ComponentException e) {
-			throw new BusinessProcessException(e);
-		} catch (RemoteException e) {
+				// chiudo il bp n livelli sopra senza cancellare i figli
+				if(result==liv){
+					closeBusinessProcess(bp,false);
+				// aggiungo gli ultimi n-1 livelli, richiamando un nuovo addChild con parametro
+					for(int i=liv;i>1;i--){
+						getBusinessProcess().addChild(bp2.getParent(i),false);
+						setBusinessProcess(bp2.getParent(i));
+					}
+					getBusinessProcess().addChild(bp2,false);
+					setBusinessProcess(bp2);
+				}
+			}
+		} catch (Exception e) {
 			throw new BusinessProcessException(e);
 		}
 		getBusinessProcess().addChild(businessprocess, this);
