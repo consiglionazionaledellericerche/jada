@@ -2203,7 +2203,7 @@ public class FieldProperty implements Serializable{
 	{
 		if (Introspector.getPropertyValue(obj, getDescProperty()) != null){
 			if (isBootstrap) {
-				jspwriter.print("<i class=\"fa fa-info-circle hand text-primary\" aria-hidden=\"true\" ");
+				jspwriter.print("<i class=\"fa fa-info-circle hand text-info\" aria-hidden=\"true\" ");
 				jspwriter.print("title=\""+ JSPUtils.encodeHtmlString((String)Introspector.getPropertyValue(obj, getDescProperty()))+"\"");
 				jspwriter.print("></i>");
 
