@@ -2179,9 +2179,10 @@ public class FieldProperty implements Serializable{
 			int i, FieldValidationMap fieldvalidationmap, boolean isBootstrap)
 		throws IOException, IntrospectionException, InvocationTargetException
 	{
-		jspwriter.println("<span>");
+		jspwriter.println("<span class=\"input-group\">");
 		writeText(jspwriter, obj, flag, obj1, s, s1, s2, i, fieldvalidationmap, isBootstrap);
-		jspwriter.println("&nbsp;");
+		if (!isBootstrap)
+			jspwriter.println("&nbsp;");
 		writeImgDesc(jspwriter, obj, flag, obj1, s, s1, s2, i, fieldvalidationmap, isBootstrap);
 		jspwriter.println("</span>");
 	}
@@ -2203,11 +2204,14 @@ public class FieldProperty implements Serializable{
 	{
 		if (Introspector.getPropertyValue(obj, getDescProperty()) != null){
 			if (isBootstrap) {
-				jspwriter.print("<i class=\"fa fa-info-circle hand text-info\" aria-hidden=\"true\" ");
+			    if (Optional.ofNullable(s).isPresent())
+                    jspwriter.print("<a class=\"input-group-addon btn mr-1\">");
+				jspwriter.print("<i class=\"fa fa-fw fa-info-circle hand text-info\" aria-hidden=\"true\" ");
 				jspwriter.print("title=\""+ JSPUtils.encodeHtmlString((String)Introspector.getPropertyValue(obj, getDescProperty()))+"\"");
 				jspwriter.print("></i>");
-
-			} else {
+                if (Optional.ofNullable(s).isPresent())
+                    jspwriter.print("</a>");
+            } else {
 				jspwriter.print("<img src=\"img/zoom16.gif\" ");
 				jspwriter.print("title=\""+ JSPUtils.encodeHtmlString((String)Introspector.getPropertyValue(obj, getDescProperty()))+"\">");
 			}
