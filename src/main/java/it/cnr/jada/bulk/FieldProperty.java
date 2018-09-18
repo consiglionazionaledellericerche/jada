@@ -2022,12 +2022,14 @@ public class FieldProperty implements Serializable{
 			for(Enumeration enumeration = getOptionsFrom(obj); enumeration.hasMoreElements();)
 			{
 				if (isBootstrap) {
-					jspwriter.println("<label class=\"form-check-label\">");
+					jspwriter.println("<label class=\"form-check-label form-check-inline\">");
 				}
 				Object obj2 = enumeration.nextElement();
 				jspwriter.print("<input type=\"radio\" name=\"");
 				jspwriter.print(mergePrefix(s2, name));
 				jspwriter.print('"');
+
+
 				if(flag || obj == null)
 					jspwriter.print(" disabled");
 				if(s1 != null)
