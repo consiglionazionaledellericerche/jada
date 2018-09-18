@@ -2065,7 +2065,7 @@ public class FieldProperty implements Serializable{
 				for(Enumeration enumeration1 = dictionary.keys(); enumeration1.hasMoreElements();)
 				{
 					if (isBootstrap) {
-						jspwriter.println("<label class=\"form-check-label\">");
+						jspwriter.println("<label class=\"form-check-label form-check-inline\">");
 					}
 					Object obj3 = enumeration1.nextElement();
 					jspwriter.print("<input type=\"radio\" name=\"");
