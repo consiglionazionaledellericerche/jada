@@ -367,10 +367,10 @@ public class FieldProperty implements Serializable{
 			return false;
 	}
 
-	public boolean fillBulkFromRequest(OggettoBulk oggettobulk, ServletRequest servletrequest, String s, int i, FieldValidationMap fieldvalidationmap)
+	public boolean fillBulkFromRequest(OggettoBulk oggettobulk, ServletRequest servletrequest, String s, int bpStatus, FieldValidationMap fieldvalidationmap)
 		throws FillException
 	{
-		if(isReadonly(oggettobulk, i))
+		if(isReadonly(oggettobulk, bpStatus))
 			return false;
 		try
 		{
@@ -390,11 +390,11 @@ public class FieldProperty implements Serializable{
 				{
 					OggettoBulk oggettobulk2 = (OggettoBulk)getValueFrom(oggettobulk);
 					if(oggettobulk2 != null)
-						return oggettobulk2.fillFromHttpRequest(servletrequest, mergePrefix(s, name), i, fieldvalidationmap);
+						return oggettobulk2.fillFromHttpRequest(servletrequest, mergePrefix(s, name), bpStatus, fieldvalidationmap);
 				}
 				return false;
 			}
-			Object obj = getValueFromRequest(oggettobulk, servletrequest, s);
+			Object obj = getValueFromRequest(oggettobulk, servletrequest, s, bpStatus);
 			fieldvalidationmap.clear(s, name);
 			if(obj == UNDEFINED_VALUE)
 				return false;
@@ -1020,24 +1020,31 @@ public class FieldProperty implements Serializable{
 		return Introspector.getPropertyValue(obj, getProperty());
 	}
 
-	public Object getValueFromActionContext(OggettoBulk oggettobulk, ActionContext actioncontext, String s)
+	public Object getValueFromActionContext(OggettoBulk oggettobulk, ActionContext actioncontext, String s, int bpStatus)
 		throws FillException
 	{
 		if(actioncontext instanceof HttpActionContext)
-			return getValueFromRequest(oggettobulk, ((HttpActionContext)actioncontext).getRequest(), s);
+			return getValueFromRequest(oggettobulk, ((HttpActionContext)actioncontext).getRequest(), s, bpStatus);
 		else
 			return null;
 	}
 
-	public Object getValueFromRequest(OggettoBulk oggettobulk, ServletRequest servletrequest, String s)
+	public Object getValueFromRequest(OggettoBulk oggettobulk, ServletRequest servletrequest, String s, int bpStatus)
 		throws FillException
 	{
 		String s1 = mergePrefix(s, name);
 		boolean flag = isMulti();
 		if(!it.cnr.jada.util.Config.hasRequestParameter(servletrequest, s1))
 		{
-			if(inputType == 9 && it.cnr.jada.util.Config.hasRequestParameter(servletrequest, "input." + s1))
-				return getValueFromText(oggettobulk, "false", s, false);
+			if(inputType == CHECKBOX && it.cnr.jada.util.Config.hasRequestParameter(servletrequest, "input." + s1)) {
+				if (bpStatus == FormController.SEARCH &&
+						Optional.ofNullable(servletrequest.getParameter("input." + s1))
+						.filter(s2 -> s2.equals("null")).isPresent()) {
+						return null;
+				} else {
+					return getValueFromText(oggettobulk, "false", s, false);
+				}
+			}
 			if(flag && "true".equals(servletrequest.getParameter("input." + s1)))
 				try
 				{

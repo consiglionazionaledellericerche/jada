@@ -282,7 +282,7 @@ public class RicercaLiberaAction extends FormAction
         condizionericercabulk.fillFromActionContext(actioncontext, null, 2, ricercaliberabp.getFieldValidationMap());
         if(condizionericercabulk instanceof CondizioneSempliceBulk)
         {
-            Object obj = ((CondizioneSempliceBulk)condizionericercabulk).getFindFieldProperty().getValueFromActionContext(ricercaliberabp.getPrototype(), actioncontext, null);
+            Object obj = ((CondizioneSempliceBulk)condizionericercabulk).getFindFieldProperty().getValueFromActionContext(ricercaliberabp.getPrototype(), actioncontext, null, ricercaliberabp.getStatus());
             if(obj != FieldProperty.UNDEFINED_VALUE)
                 ((CondizioneSempliceBulk)condizionericercabulk).setValue(obj);
         }

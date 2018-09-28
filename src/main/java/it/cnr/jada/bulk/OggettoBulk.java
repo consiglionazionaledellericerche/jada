@@ -133,19 +133,19 @@ public abstract class OggettoBulk implements Cloneable, FetchListener, Persisten
         crudStatus = 5;
     }
 
-    public boolean fillFromActionContext(ActionContext actioncontext, String s, int i, FieldValidationMap fieldvalidationmap)
+    public boolean fillFromActionContext(ActionContext actioncontext, String s, int bpStatus, FieldValidationMap fieldvalidationmap)
         throws FillException
     {
         if(actioncontext instanceof HttpActionContext)
-            return fillFromHttpRequest(((HttpActionContext)actioncontext).getRequest(), s, i, fieldvalidationmap);
+            return fillFromHttpRequest(((HttpActionContext)actioncontext).getRequest(), s, bpStatus, fieldvalidationmap);
         else
             return false;
     }
 
-    public boolean fillFromHttpRequest(HttpServletRequest httpservletrequest, String s, int i, FieldValidationMap fieldvalidationmap)
+    public boolean fillFromHttpRequest(HttpServletRequest httpservletrequest, String s, int bpStatus, FieldValidationMap fieldvalidationmap)
         throws FillException
     {
-        return fillFromHttpRequest(((ServletRequest) (httpservletrequest)), null, s, i, fieldvalidationmap);
+        return fillFromHttpRequest(((ServletRequest) (httpservletrequest)), null, s, bpStatus, fieldvalidationmap);
     }
 
     public boolean fillFromHttpRequest(ServletRequest servletrequest, String s, int i, FieldValidationMap fieldvalidationmap)
@@ -154,7 +154,7 @@ public abstract class OggettoBulk implements Cloneable, FetchListener, Persisten
         return fillFromHttpRequest(servletrequest, null, s, i, fieldvalidationmap);
     }
 
-    public boolean fillFromHttpRequest(ServletRequest servletrequest, String s, String s1, int i, FieldValidationMap fieldvalidationmap)
+    public boolean fillFromHttpRequest(ServletRequest servletrequest, String s, String s1, int bpStatus, FieldValidationMap fieldvalidationmap)
         throws FillException
     {
         boolean flag = false;
@@ -163,7 +163,7 @@ public abstract class OggettoBulk implements Cloneable, FetchListener, Persisten
         for(Enumeration enumeration = getBulkInfo().getFormFieldProperties(s); enumeration.hasMoreElements();)
             try
             {
-                if(fillPropertyFromHttpRequest(servletrequest, (FieldProperty)enumeration.nextElement(), s1, i, fieldvalidationmap))
+                if(fillPropertyFromHttpRequest(servletrequest, (FieldProperty)enumeration.nextElement(), s1, bpStatus, fieldvalidationmap))
                     flag = true;
             }
             catch(FillException fillexception1)
@@ -184,10 +184,10 @@ public abstract class OggettoBulk implements Cloneable, FetchListener, Persisten
         }
     }
 
-    public boolean fillPropertyFromHttpRequest(ServletRequest servletrequest, FieldProperty fieldproperty, String s, int i, FieldValidationMap fieldvalidationmap)
+    public boolean fillPropertyFromHttpRequest(ServletRequest servletrequest, FieldProperty fieldproperty, String s, int bpStatus, FieldValidationMap fieldvalidationmap)
         throws FillException
     {
-        if(fieldproperty.fillBulkFromRequest(this, servletrequest, s, i, fieldvalidationmap))
+        if(fieldproperty.fillBulkFromRequest(this, servletrequest, s, bpStatus, fieldvalidationmap))
         {
             setToBeUpdated();
             return true;
