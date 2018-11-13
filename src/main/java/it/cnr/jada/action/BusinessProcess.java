@@ -1,5 +1,6 @@
 package it.cnr.jada.action;
 
+import it.cnr.jada.DetailedRuntimeException;
 import it.cnr.jada.UserTransaction;
 import it.cnr.jada.util.Config;
 import it.cnr.jada.util.SendMail;
@@ -488,7 +489,7 @@ public class BusinessProcess implements Forward, Serializable{
 	protected void init(it.cnr.jada.action.Config config, ActionContext actioncontext) throws BusinessProcessException{
 	}
 
-	final void initializeUserTransaction(ActionContext actioncontext) throws BusinessProcessException{
+	public final void initializeUserTransaction(ActionContext actioncontext) throws BusinessProcessException{
 		try{
 			switch(transactionPolicy){
 			default:
@@ -560,7 +561,7 @@ public class BusinessProcess implements Forward, Serializable{
 	}
     /**
      * Effettua una rollback della UserTransaction associata al ricevente. 
-     * Se il ricevente non   in modalit  transazionale esce senza effettuare nulla.
+     * Se il ricevente non è in modalità  transazionale esce senza effettuare nulla.
      */
 	public void rollbackUserTransaction() throws BusinessProcessException{
 		if(getUserTransaction() != null)
@@ -569,6 +570,22 @@ public class BusinessProcess implements Forward, Serializable{
 			}catch(Throwable throwable){
 				throw new BusinessProcessException(throwable);
 			}
+	}
+	/**
+	 * Effettua una rollback e rimuove la UserTransaction associata al ricevente.
+	 * Se il ricevente non è in modalità  transazionale esce senza effettuare nulla.
+	 */
+	public void rollbackAndCloseUserTransaction() throws BusinessProcessException{
+		Optional.ofNullable(getUserTransaction())
+				.ifPresent(userTransaction1 -> {
+					try{
+						userTransaction1.rollback();
+						userTransaction1.remove();
+						this.userTransaction = null;
+					}catch(Throwable throwable){
+						throw new DetailedRuntimeException(throwable);
+					}
+				});
 	}
     /**
      * Imposta il business process corrente all'intern di una HttpRequest.
