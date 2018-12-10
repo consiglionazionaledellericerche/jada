@@ -646,6 +646,7 @@ public class BusinessProcess implements Forward, Serializable{
 	 */
     public void insertError(ActionContext context, String user, Integer esercizio, String cd_unita_organizzativa, String stack_trace){
 		String text = "Errore interno del Server Esercizio:"+esercizio+" Utente:"+user+" UO:"+cd_unita_organizzativa;
+		logger.error(text.concat("/n").concat(getPath()).concat("/n").concat(stack_trace));
 		SendMail.sendErrorMail(text,getPath()+"<BR>"+stack_trace);		
     }
     /**
