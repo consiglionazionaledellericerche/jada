@@ -500,9 +500,13 @@ public class JSPUtils
 		jspwriter.print("<!-- INIZIO TABBED ");
 		jspwriter.print(s);
 		jspwriter.println(" -->");
-		jspwriter.print("<table cellspacing=\"0\" cellpadding=\"0\" align=\"");
-		jspwriter.print(s2);
-		jspwriter.print('"');
+		if (HttpActionContext.isFromBootstrap(pagecontext)) {
+			jspwriter.print("<table class=\"w-100\"");
+		} else {
+			jspwriter.print("<table cellspacing=\"0\" cellpadding=\"0\" align=\"");
+			jspwriter.print(s2);
+			jspwriter.print('"');
+		}
 		if(s3 != null || s4 != null)
 		{
 			jspwriter.print(" style=\"");
