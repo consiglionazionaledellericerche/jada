@@ -583,7 +583,7 @@ public class JSPUtils
 		jspwriter.println("<td width=\"100%\">&nbsp;</td>");
 		jspwriter.println("</tr><tr>");
 		if (HttpActionContext.isFromBootstrap(pagecontext)) {
-			jspwriter.println("<td style=\"border-top: 1px outset;border-left: 1px outset\"></td>");
+			jspwriter.println("<td class=\"border\"></td>");
 		} else {
 			jspwriter.println("<td style=\"border-top: 1px outset;border-left: 1px outset\"><img src=\"img/spacer.gif\"></td>");			
 		}
@@ -605,18 +605,23 @@ public class JSPUtils
 			boolean flag2 = flag4;
 		}
 		if (HttpActionContext.isFromBootstrap(pagecontext)) {
-			jspwriter.println("<td style=\"border-top: 1px outset;border-right: 1px outset\"></td>");
+			jspwriter.println("<td class=\"border\"></td>");
 		} else {
 			jspwriter.println("<td style=\"border-top: 1px outset;border-right: 1px outset\"><img src=\"img/spacer.gif\"></td>");			
 		}
 		jspwriter.println("</tr>");
 		jspwriter.println("</table>");
 		jspwriter.println("</td></tr>");
-		jspwriter.println("<tr height=\"100%\" valign=\"top\"><td style=\"border: 1px outset;border-top:0px;padding: 2px\">");
+		jspwriter.println("<tr height=\"100%\" valign=\"top\">");
+		if (HttpActionContext.isFromBootstrap(pagecontext)) {
+			jspwriter.print("<td>");
+		} else {
+			jspwriter.print("<td style=\"border: 1px outset;border-top:0px;padding: 2px\">");
+		}
 		jspwriter.print("<!-- INIZIO TAB PAGE ");
 		jspwriter.print(s);
 		jspwriter.println(" -->");
-		if(s5 != null)
+		if(s5 != null && !HttpActionContext.isFromBootstrap(pagecontext))
 		{
 			jspwriter.flush();
 			pagecontext.include(s5);
@@ -629,6 +634,13 @@ public class JSPUtils
 		jspwriter.print("<!-- FINE TABBED ");
 		jspwriter.print(s);
 		jspwriter.println(" -->");
+		if(s5 != null && HttpActionContext.isFromBootstrap(pagecontext)) {
+            jspwriter.println("<div class=\"card p-2\">");
+			jspwriter.flush();
+			pagecontext.include(s5);
+            jspwriter.println("</div>");
+		}
+
 	}
 
 	public static void toolbar(JspWriter jspwriter, Button abutton[], boolean aflag[], boolean isBootstrap)

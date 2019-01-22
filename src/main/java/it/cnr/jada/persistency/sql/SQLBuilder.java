@@ -740,9 +740,15 @@ public class SQLBuilder extends SQLQuery {
         addLogicalOperator(s);
         clauses.append(" NOT EXISTS ( ");
         clauses.append(sqlbuilder.getStatement());
-        for (Iterator iterator = ((SQLQuery) (sqlbuilder)).parameters.iterator(); iterator.hasNext(); super.parameters.add(iterator.next()))
-            ;
+        for (Iterator iterator = ((SQLQuery) (sqlbuilder)).parameters.iterator(); iterator.hasNext(); super.parameters.add(iterator.next()));
         clauses.append(" )");
+        resetStatement();
+    }
+
+    public void addMINUSClause(SQLBuilder sqlbuilder) {
+        clauses.append(" MINUS ");
+        clauses.append(sqlbuilder.getStatement());
+        for (Iterator iterator = ((SQLQuery) (sqlbuilder)).parameters.iterator(); iterator.hasNext(); super.parameters.add(iterator.next()));
         resetStatement();
     }
 
