@@ -635,7 +635,7 @@ public class JSPUtils
 		jspwriter.print(s);
 		jspwriter.println(" -->");
 		if(s5 != null && HttpActionContext.isFromBootstrap(pagecontext)) {
-            jspwriter.println("<div class=\"card p-2\">");
+            jspwriter.println("<div class=\"card p-2 border-top-0\">");
 			jspwriter.flush();
 			pagecontext.include(s5);
             jspwriter.println("</div>");
