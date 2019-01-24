@@ -537,8 +537,12 @@ public class JSPUtils
 			String as1[] = as[i++];
 			boolean flag5 = flag3;
 			flag3 = i < as.length && as[i][0].equals(s1);
-			jspwriter.print("<td nowrap class=\"TabLabel\"");
-			if(flag5)
+			if (flag5) {
+				jspwriter.print("<td nowrap class=\"TabLabel border border-bottom-0 border-secondary\"");
+			} else {
+				jspwriter.print("<td nowrap class=\"TabLabel\"");
+			}
+			if(flag5 && !HttpActionContext.isFromBootstrap(pagecontext))
 				jspwriter.print(" style=\"font-weight: bold;border: 1px outset;border-bottom: 0px;padding: 3px\"");
 			jspwriter.print(">");
 			if(!flag5) {				
@@ -564,7 +568,7 @@ public class JSPUtils
 				}
 				jspwriter.print(">");				
 			} else {
-				jspwriter.print("<span class=\"TabLabel h6 text-primary\">");
+				jspwriter.print("<span class=\"TabLabel h5 text-primary font-italic\">");
 			}
 			if(flag5)
 				s5 = as1[2];
@@ -595,7 +599,7 @@ public class JSPUtils
 			boolean flag4 = flag3;
 			flag3 = j < as.length && as[j][0].equals(s1);
 			jspwriter.print("<td nowrap ");
-			if(!flag4)
+			if(!flag4 && !HttpActionContext.isFromBootstrap(pagecontext))
 				jspwriter.print(" style=\"border-top: 1px outset\"");
 			if (HttpActionContext.isFromBootstrap(pagecontext)) {
 				jspwriter.println("></td>");
