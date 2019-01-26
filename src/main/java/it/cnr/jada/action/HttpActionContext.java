@@ -50,7 +50,8 @@ public class HttpActionContext
     public static final String CONTEXT_FOCUSED_ELEMENT = "it.cnr.jada.action.HttpActionContext.focusedElement";
     public static final String USER_CONTEXT = "UserContext";
     public static final String CURRENT_USER = "CurrentUser";
-    private File actionDirFile;
+	public static final String SIGLA_ACTIONCOUNTER_DISABLE = "SIGLA_ACTIONCOUNTER_DISABLE";
+	private File actionDirFile;
 	private HttpServlet servlet;
 	private HttpServletRequest request;
 	private HttpServletResponse response;
@@ -144,6 +145,10 @@ public class HttpActionContext
 
 	public boolean checkActionCounter()
 	{
+		if (Optional.ofNullable(System.getenv(SIGLA_ACTIONCOUNTER_DISABLE))
+				.map(s -> Boolean.valueOf(s))
+				.orElse(Boolean.FALSE))
+			return Boolean.TRUE;
 		String s = request.getParameter("actionCounter");
 		if(s == null)
 			return true;
