@@ -419,7 +419,7 @@ public class JSPUtils
 	public static void scrollSupport(PageContext pagecontext)
 		throws IOException
 	{
-		HttpServletRequest httpservletrequest = (\HttpServletRequest)pagecontext.getRequest();
+		HttpServletRequest httpservletrequest = (HttpServletRequest)pagecontext.getRequest();
 		String s = httpservletrequest.getRequestURI();
 		JspWriter jspwriter = pagecontext.getOut();
 		if(s.equals(httpservletrequest.getParameter("requestor"))) {
