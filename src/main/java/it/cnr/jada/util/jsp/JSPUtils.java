@@ -419,7 +419,7 @@ public class JSPUtils
 	public static void scrollSupport(PageContext pagecontext)
 		throws IOException
 	{
-		HttpServletRequest httpservletrequest = (HttpServletRequest)pagecontext.getRequest();
+		HttpServletRequest httpservletrequest = (\HttpServletRequest)pagecontext.getRequest();
 		String s = httpservletrequest.getRequestURI();
 		JspWriter jspwriter = pagecontext.getOut();
 		if(s.equals(httpservletrequest.getParameter("requestor"))) {
@@ -538,7 +538,7 @@ public class JSPUtils
 			boolean flag5 = flag3;
 			flag3 = i < as.length && as[i][0].equals(s1);
 			if (flag5) {
-				jspwriter.print("<td nowrap class=\"TabLabel border border-bottom-0 border-secondary\"");
+				jspwriter.print("<td nowrap class=\"TabLabel border border-bottom-0 border-primary\"");
 			} else {
 				jspwriter.print("<td nowrap class=\"TabLabel\"");
 			}
@@ -568,13 +568,15 @@ public class JSPUtils
 				}
 				jspwriter.print(">");				
 			} else {
-				jspwriter.print("<span class=\"TabLabel h5 text-primary font-italic\">");
+				jspwriter.print("<span class=\"TabLabel h4 text-primary ml-2 mr-2\">");
 			}
 			if(flag5)
 				s5 = as1[2];
-			jspwriter.print("&nbsp;");
+			if (!HttpActionContext.isFromBootstrap(pagecontext))
+				jspwriter.print("&nbsp;");
 			jspwriter.print(as1[1]);
-			jspwriter.print("&nbsp;");
+			if (!HttpActionContext.isFromBootstrap(pagecontext))
+				jspwriter.print("&nbsp;");
 			if(!flag5) {
 				jspwriter.print("</button>");
 			} else {
