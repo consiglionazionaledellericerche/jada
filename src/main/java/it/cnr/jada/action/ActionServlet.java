@@ -1,13 +1,16 @@
 package it.cnr.jada.action;
 
-import it.cnr.jada.util.Log;
+import it.cnr.jada.UserContext;
 import it.cnr.jada.util.servlet.MultipartWrapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.servlet.ServletException;
@@ -68,7 +71,7 @@ public class ActionServlet extends HttpServlet implements Serializable{
     private String actionExtension;
     private File actionDirFile;    
     private File uploadsTempDir;   
-	private static final Log log = Log.getInstance(ActionServlet.class);
+	private static final Logger log = LoggerFactory.getLogger(ActionServlet.class);
 	
     public ActionServlet(){
     }
@@ -88,7 +91,7 @@ public class ActionServlet extends HttpServlet implements Serializable{
     		try{
     			httpservletrequest = new MultipartWrapper(httpservletrequest,getServletContext().getRealPath("/tmp/"));
     		}catch(Exception e){
-    			log.error(e, "Errore Multipart :");
+    			log.error("Errore Multipart :", e);
     		}
     	} 
     	HttpActionContext httpactioncontext = new HttpActionContext(this, httpservletrequest, httpservletresponse);
@@ -150,7 +153,9 @@ public class ActionServlet extends HttpServlet implements Serializable{
     
 
     void traceRequest(HttpActionContext httpactioncontext){
-    	if (httpactioncontext.getUserContext(false) == null)
+        final Optional<UserContext> userContext =
+                Optional.ofNullable(httpactioncontext.getUserContext(false));
+        if (!userContext.isPresent())
     		return;
     	HttpServletRequest httpservletrequest = httpactioncontext.getRequest();
         StringBuffer infoUser = new StringBuffer();
@@ -168,6 +173,9 @@ public class ActionServlet extends HttpServlet implements Serializable{
             log.debug(detailInfoUser.toString());
         }
     	log.debug("======FINE SUBMIT======");
-    	log.info(infoUser.toString()+" URL:"+httpservletrequest.getRequestURI()+ " comando:"+comando);
+        log.info("{} URL:{} comand:{} ng: {}", infoUser, httpservletrequest.getRequestURI(), comando,
+                userContext
+                    .map(context -> context.getAttributes().getOrDefault("bootstrap", Boolean.FALSE))
+                    .orElse(Boolean.FALSE));
     }
 }

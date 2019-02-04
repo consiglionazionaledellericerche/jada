@@ -3,10 +3,11 @@ package it.cnr.jada.ejb;
 import it.cnr.jada.DetailedRuntimeException;
 import it.cnr.jada.UserContext;
 import it.cnr.jada.util.Introspector;
-import it.cnr.jada.util.Log;
 import it.cnr.jada.util.ejb.EJBCommonServices;
 import it.cnr.jada.util.ejb.EJBTracer;
 import it.cnr.jada.util.ejb.UserTransactionTimeoutException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.rmi.RemoteException;
@@ -39,7 +40,7 @@ public class UserTransactionWrapperBean implements UserTransactionWrapper{
     @Resource private SessionContext mySessionCtx;
     @Resource private TransactionSynchronizationRegistry registry;
     
-	private static final Log logger = Log.getInstance(UserTransactionWrapperBean.class);
+	private static final Logger logger = LoggerFactory.getLogger(UserTransactionWrapperBean.class);
     static final long serialVersionUID = 0x2c7e5503d9bf9553L;
     private Map<String, Object> ejbObjectsToBeRemoved;
 

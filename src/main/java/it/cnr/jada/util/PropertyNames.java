@@ -1,6 +1,8 @@
 package it.cnr.jada.util;
 
 import it.cnr.jada.util.ejb.EJBCommonServices;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,7 +12,7 @@ import java.text.MessageFormat;
 import java.util.*;
 
 public class PropertyNames {
-    private static final Log logger = Log.getInstance(PropertyNames.class);
+    private static final Logger logger = LoggerFactory.getLogger(PropertyNames.class);
     private static Properties properties;
 
     public static final String ORACLE_PROPERTIES = "oracle.properties";

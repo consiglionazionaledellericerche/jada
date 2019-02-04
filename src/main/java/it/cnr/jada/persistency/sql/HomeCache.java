@@ -3,7 +3,8 @@ package it.cnr.jada.persistency.sql;
 import it.cnr.jada.UserContext;
 import it.cnr.jada.persistency.*;
 import it.cnr.jada.persistency.beans.BeanIntrospector;
-import it.cnr.jada.util.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.sql.Connection;
@@ -20,7 +21,7 @@ public class HomeCache
     private final PersistentCache persistentCache = new PersistentCache();
     private Connection connection;
     private Map homes;
-    private static final Log logger = Log.getInstance(HomeCache.class);
+    private static final Logger logger = LoggerFactory.getLogger(HomeCache.class);
 
     public HomeCache(Connection connection1) {
         homes = new HashMap();
@@ -119,7 +120,7 @@ public class HomeCache
                 if (s1 != null)
                     persistenthome.setFetchPolicy(s1);
             } catch (Exception exception) {
-                logger.error(exception);
+                logger.error("Can't instantiate home", exception);
                 throw new IntrospectionError("Can't instantiate home", exception);
             }
         return persistenthome;

@@ -13,14 +13,15 @@ import it.cnr.jada.UserTransaction;
 import it.cnr.jada.comp.ComponentException;
 import it.cnr.jada.ejb.TransactionalBulkLoaderIterator;
 import it.cnr.jada.persistency.sql.Query;
-import it.cnr.jada.util.Log;
 import it.cnr.jada.util.RemoteIterator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class UserTransactionalBulkLoaderIterator implements TransactionalBulkLoaderIterator {
 	private static final long serialVersionUID = 1L;
 	private UserTransaction userTransaction;
 	private RemoteIterator remoteiterator;
-	private static final Log logger = Log.getInstance(EJBCommonServices.class);
+	private static final Logger logger = LoggerFactory.getLogger(EJBCommonServices.class);
 	
 	public UserTransactionalBulkLoaderIterator(it.cnr.jada.UserTransaction userTransaction, RemoteIterator remoteiterator) {
 		this.userTransaction = userTransaction;

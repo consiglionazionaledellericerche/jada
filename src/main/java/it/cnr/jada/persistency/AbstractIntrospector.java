@@ -1,6 +1,7 @@
 package it.cnr.jada.persistency;
 
-import it.cnr.jada.util.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
@@ -14,9 +15,10 @@ import java.util.Map;
 public abstract class AbstractIntrospector
         implements Serializable, Introspector {
 
+    public static final String INTROSPECTOR = "INTROSPECTOR";
     private final Map persistentInfos = new HashMap();
     private final Constructor persistentInfoConstructor;
-    private static final Log logger = Log.getInstance(AbstractIntrospector.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractIntrospector.class);
 
     protected AbstractIntrospector(Class class1)
             throws IntrospectionException {
@@ -25,7 +27,7 @@ public abstract class AbstractIntrospector
                     java.lang.Class.class, it.cnr.jada.persistency.Introspector.class
             });
         } catch (NoSuchMethodException _ex) {
-            logger.error(_ex);
+            logger.error(INTROSPECTOR, _ex);
             throw new IntrospectionException("Impossibile creare un'istanza di " + class1 + ",manca un costruttore adeguato");
         }
     }
@@ -55,16 +57,16 @@ public abstract class AbstractIntrospector
                         cachePersistentInfo(class1, persistentinfo);
                         persistentinfo.initialize();
                     } catch (InstantiationException instantiationexception) {
-                        logger.error(instantiationexception);
+                        logger.error(INTROSPECTOR, instantiationexception);
                         throw new IntrospectionException("Impossibile creare un'istanza di " + persistentInfoConstructor.getDeclaringClass(), instantiationexception);
                     } catch (IllegalAccessException illegalaccessexception) {
-                        logger.error(illegalaccessexception);
+                        logger.error(INTROSPECTOR, illegalaccessexception);
                         throw new IntrospectionException("IllegalAccessException: impossibile creare un'istanza di " + persistentInfoConstructor.getDeclaringClass(), illegalaccessexception);
                     } catch (InvocationTargetException invocationtargetexception) {
-                        logger.error(invocationtargetexception);
+                        logger.error(INTROSPECTOR, invocationtargetexception);
                         throw new IntrospectionException("Impossibile creare un'istanza di " + persistentInfoConstructor.getDeclaringClass(), invocationtargetexception.getTargetException());
                     } catch (ClassCastException _ex) {
-                        logger.error(_ex);
+                        logger.error(INTROSPECTOR, _ex);
                         throw new IntrospectionException(persistentInfoConstructor.getDeclaringClass() + "non implementa PersistentInfo");
                     }
             }

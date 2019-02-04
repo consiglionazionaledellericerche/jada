@@ -11,6 +11,8 @@ import it.cnr.jada.ejb.TransactionalBulkLoaderIterator;
 import it.cnr.jada.ejb.UserTransactionWrapper;
 import it.cnr.jada.persistency.sql.LoggableStatement;
 import it.cnr.jada.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.rmi.MarshalException;
@@ -48,7 +50,7 @@ public class EJBCommonServices implements Serializable{
 	private static String dataSourceName;
 	private static String earAppName;
 	private static final Format clientInfoDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm.ss");
-	private static final Log logger = Log.getInstance(EJBCommonServices.class);
+	private static final Logger logger = LoggerFactory.getLogger(EJBCommonServices.class);
 
 	private EJBCommonServices(){
 		
@@ -73,9 +75,9 @@ public class EJBCommonServices implements Serializable{
 			}
 		}catch(IllegalStateException illegalStateException){
 		}catch(javax.ejb.NoSuchEJBException noSuchEJBException){
-			logger.info(noSuchEJBException);
+			logger.info("NoSuchEJBException");
 		}catch(javax.ejb.ConcurrentAccessException concurrentAccessException){
-			logger.info(concurrentAccessException);			
+			logger.info("ConcurrentAccessException");
 		}catch(Exception removeexception){
 			throw new RemoteException("Remove exception", removeexception);
 		}

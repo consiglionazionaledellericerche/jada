@@ -1,7 +1,8 @@
 package it.cnr.jada.persistency.sql;
 
-import it.cnr.jada.util.Log;
 import it.cnr.jada.util.SendMail;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -27,7 +28,7 @@ import java.util.StringTokenizer;
 
 public final class LoggableStatement {
 	public static boolean IS_ENABLED = false;
-	private Log log;
+	private Logger log;
 	private BigDecimal TimeWarning=new BigDecimal(30000);
 
 	/**
@@ -69,7 +70,7 @@ public final class LoggableStatement {
 			callableStatement =  connection.prepareStatement(sql);
 		else
 			callableStatement = connection.prepareCall(sql);
-		log = Log.getInstance(class1);
+		log = LoggerFactory.getLogger(class1);
 		sqlTemplate = sql;
 		parameterValues = new ArrayList();
 	}
@@ -79,7 +80,7 @@ public final class LoggableStatement {
 		callableStatement =  connection.prepareStatement(sql,i,j);
 	else
 		callableStatement = connection.prepareCall(sql,i,j);
-	log = Log.getInstance(class1);
+	log = LoggerFactory.getLogger(class1);
 	sqlTemplate = sql;
 	parameterValues = new ArrayList();
 }

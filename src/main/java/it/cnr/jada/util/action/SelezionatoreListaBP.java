@@ -15,6 +15,8 @@ import it.cnr.jada.util.ejb.EJBCommonServices;
 import it.cnr.jada.util.jsp.Button;
 import it.cnr.jada.util.jsp.JSPUtils;
 import it.cnr.jada.util.jsp.Table;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ejb.NoSuchEJBException;
 import javax.servlet.ServletException;
@@ -33,7 +35,7 @@ import java.util.*;
 public class SelezionatoreListaBP extends AbstractSelezionatoreBP
         implements Serializable {
 
-    private static final Log logger = Log.getInstance(SelezionatoreListaBP.class);
+    private static final Logger logger = LoggerFactory.getLogger(SelezionatoreListaBP.class);
     protected Table table;
     private RemoteIterator iterator;
     private Dictionary columns;
@@ -423,7 +425,7 @@ public class SelezionatoreListaBP extends AbstractSelezionatoreBP
         } catch (RemoteException remoteexception) {
             throw new DetailedRuntimeException(remoteexception);
         } catch (javax.ejb.ConcurrentAccessException concurrentAccessException) {
-            logger.info(concurrentAccessException);
+            logger.info("ConcurrentAccessException");
             return false;
         } catch (javax.ejb.NoSuchEJBException _ex) {
             return false;

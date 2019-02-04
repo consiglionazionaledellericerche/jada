@@ -5,8 +5,9 @@ import it.cnr.jada.UserContext;
 import it.cnr.jada.comp.ComponentException;
 import it.cnr.jada.persistency.PersistencyException;
 import it.cnr.jada.persistency.sql.Query;
-import it.cnr.jada.util.Log;
 import it.cnr.jada.util.ejb.EJBCommonServices;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -30,7 +31,7 @@ import javax.transaction.TransactionSynchronizationRegistry;
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class TransactionalBulkLoaderIteratorBean extends BaseBulkLoaderIteratorBean implements TransactionalBulkLoaderIterator, SessionSynchronization{
 	static final long serialVersionUID = 0x2c7e5503d9bf9553L;
-	private static final Log logger = Log.getInstance(TransactionalBulkLoaderIteratorBean.class);
+	private static final Logger logger = LoggerFactory.getLogger(TransactionalBulkLoaderIteratorBean.class);
     @Resource private SessionContext mySessionCtx;	
     @Resource private TransactionSynchronizationRegistry registry;
     

@@ -14,6 +14,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.8</java.version>
 		<nexus.url>http://maven.si.cnr.it</nexus.url>
+		<slf4j.version>1.7.21</slf4j.version>
 	</properties>
 	<build>
       <plugins>
@@ -162,18 +163,12 @@
                <version>1.4</version>
                <scope>provided</scope>
        </dependency>
-	    <dependency>
-	      <groupId>org.slf4j</groupId>
-	      <artifactId>slf4j-log4j12</artifactId>
-	      <version>1.4.3</version>
-	      <exclusions>
-	      	<exclusion>
-	      		<artifactId>log4j</artifactId>
-	      		<groupId>log4j</groupId>
-	      	</exclusion>
-	      </exclusions>
-	      <scope>provided</scope>
-	    </dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+			<scope>provided</scope>
+		</dependency>
  		<dependency>
  			<groupId>com.sun.mail</groupId>
  			<artifactId>javax.mail</artifactId>
