@@ -569,7 +569,7 @@ public class SelezionatoreListaBP extends AbstractSelezionatoreBP
         Button abutton[] = getNavigatorToolbar();
         boolean isBootstrap = this.getParentRoot().isBootstrap();
         if (isBootstrap) {
-            jspwriter.println("<nav aria-label=\"Page navigation example\"><ul class=\"pagination justify-content-center\">");
+            jspwriter.println("<nav aria-label=\"Page navigation\"><ul class=\"pagination justify-content-center\">");
 
             jspwriter.println("<li class=\"page-item ");
             if (!isPreviousFrameButtonEnabled())
@@ -582,6 +582,7 @@ public class SelezionatoreListaBP extends AbstractSelezionatoreBP
             jspwriter.print("onclick=\"javascript:submitForm('doPreviousFrame')\">");
             jspwriter.println("<i class=\"fa fa-fast-backward\" aria-hidden=\"true\"></i>");
             jspwriter.println("</a>");
+            jspwriter.println("</li>");
 
             jspwriter.println("<li class=\"page-item ");
             if (!isPreviousButtonEnabled())
@@ -594,6 +595,8 @@ public class SelezionatoreListaBP extends AbstractSelezionatoreBP
             jspwriter.print("onclick=\"javascript:submitForm('doPreviousPage')\">");
             jspwriter.println("<i class=\"fa fa-backward\" aria-hidden=\"true\"></i>");
             jspwriter.println("</a>");
+            jspwriter.println("</li>");
+
             getLastPage();
             for (int i = getFirstPage(); i < getLastPage(); i++) {
                 jspwriter.println("<li class=\"page-item ");
@@ -623,6 +626,7 @@ public class SelezionatoreListaBP extends AbstractSelezionatoreBP
             jspwriter.print("onclick=\"javascript:submitForm('doNextPage')\">");
             jspwriter.println("<i class=\"fa fa-forward\" aria-hidden=\"true\"></i>");
             jspwriter.println("</a>");
+            jspwriter.println("</li>");
 
             jspwriter.println("<li class=\"page-item ");
             if (!isNextFrameButtonEnabled())
@@ -635,9 +639,12 @@ public class SelezionatoreListaBP extends AbstractSelezionatoreBP
             jspwriter.print("onclick=\"javascript:submitForm('doNextFrame')\">");
             jspwriter.println("<i class=\"fa fa-fast-forward\" aria-hidden=\"true\"></i>");
             jspwriter.println("</a>");
+            jspwriter.println("</li>");
 
             for (int j = 4; j < abutton.length; j++) {
+                jspwriter.println("<li class=\"page-item\">");
                 abutton[j].write(jspwriter, this, isBootstrap);
+                jspwriter.println("</li>");
             }
             jspwriter.println("</ul></nav>");
         } else {
