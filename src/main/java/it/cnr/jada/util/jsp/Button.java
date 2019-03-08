@@ -384,13 +384,15 @@ public class Button implements Serializable, Cloneable {
 				jspwriter.print(buttonStyle);
 				jspwriter.print('"');				
 			} else {
-				jspwriter.print(" class=\"btn ");				
+				jspwriter.print(" class=\" ");
+				if (!buttonStyle.contains("page-link"))
+					jspwriter.print("btn ");
 				jspwriter.print(buttonStyle);
-				jspwriter.print('"');				
+				jspwriter.print('"');
 			}
 		} else {
 			if (isBootstrap) {
-				jspwriter.print(" class=\"btn btn-secondary btn-outline-secondary ");
+				jspwriter.print(" class=\"btn btn-outline-secondary ");
 				if (image == null) {
 					jspwriter.print(" btn-sm text-primary");
 				} else {
