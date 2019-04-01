@@ -501,7 +501,7 @@ public class JSPUtils
 		jspwriter.print(s);
 		jspwriter.println(" -->");
 		if (HttpActionContext.isFromBootstrap(pagecontext)) {
-			jspwriter.print("<table class=\"w-100\"");
+			jspwriter.print("<table class=\"w-100 table-tab\"");
 		} else {
 			jspwriter.print("<table cellspacing=\"0\" cellpadding=\"0\" align=\"");
 			jspwriter.print(s2);
