@@ -28,10 +28,6 @@ import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.*;
 
-// Referenced classes of package it.cnr.jada.util.action:
-//			  AbstractSelezionatoreBP, Selection, SelectionListener, FormBP, 
-//			  BulkBP
-
 public class SelezionatoreListaBP extends AbstractSelezionatoreBP
         implements Serializable {
 
@@ -57,6 +53,7 @@ public class SelezionatoreListaBP extends AbstractSelezionatoreBP
 
     private FormField formField;
     private CondizioneComplessaBulk condizioneCorrente;
+    private boolean isHookForwardSeleziona;
 
     public SelezionatoreListaBP() {
         this("");
@@ -85,7 +82,6 @@ public class SelezionatoreListaBP extends AbstractSelezionatoreBP
             throws BusinessProcessException {
         super.closed();
         try {
-            //TODO closeRemoteIterator
             EJBCommonServices.closeRemoteIterator((ActionContext) null, iterator);
         } catch (RemoteException remoteexception) {
             throw handleException(remoteexception);
@@ -140,8 +136,11 @@ public class SelezionatoreListaBP extends AbstractSelezionatoreBP
             buttons.add(button);
             buttons.add(new Button(Config.getHandler().getProperties(getClass()), "Toolbar.freeSearchRemoveFilter"));
         }
-        buttons.add(new Button(Config.getHandler().getProperties(getClass()), "Toolbar.multiSelection"));
+        if (isHookForwardSeleziona) {
+            buttons.add(new Button(Config.getHandler().getProperties(getClass()), "Toolbar.multiSelection"));
+        }
         buttons.add(new Button(Config.getHandler().getProperties(getClass()), "Toolbar.selectAll"));
+        buttons.add(new Button(Config.getHandler().getProperties(getClass()), "Toolbar.deselectAll"));
         buttons.add(new Button(Config.getHandler().getProperties(getClass()), "Toolbar.hiddenColumn"));
         setMostraHideColumns(true);
         return buttons;
@@ -371,6 +370,7 @@ public class SelezionatoreListaBP extends AbstractSelezionatoreBP
             pageFrameSize = Integer.parseInt(Config.getHandler().getProperty(getClass(), "pageFrameSize"));
         } catch (NumberFormatException _ex) {
         }
+        setHookForwardSeleziona(Optional.ofNullable(actioncontext.findForward("seleziona")).isPresent());
     }
 
     public OggettoBulk[] initializeBulks(ActionContext actioncontext, OggettoBulk aoggettobulk[])
@@ -514,6 +514,11 @@ public class SelezionatoreListaBP extends AbstractSelezionatoreBP
         if (selectionListener != null)
             selectionListener.selectAll(actioncontext);
         super.selection.setSelection(0, elementsCount);
+    }
+
+    public void deSelectAll(ActionContext actioncontext)
+            throws BusinessProcessException {
+        clearSelection(actioncontext);
     }
 
     public void setIterator(ActionContext actioncontext, RemoteIterator remoteiterator)
@@ -723,5 +728,13 @@ public class SelezionatoreListaBP extends AbstractSelezionatoreBP
 
     public void setFormField(FormField formField) {
         this.formField = formField;
+    }
+
+    public boolean isHookForwardSeleziona() {
+        return isHookForwardSeleziona;
+    }
+
+    public void setHookForwardSeleziona(boolean hookForwardSeleziona) {
+        isHookForwardSeleziona = hookForwardSeleziona;
     }
 }

@@ -25,11 +25,6 @@ import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Optional;
 
-// Referenced classes of package it.cnr.jada.util.action:
-//			  SelezionatoreAction, SelezionatoreListaBP, AbstractSelezionatoreBP, Selection, 
-//			  FormBP, OptionBP, BulkListPrintBP, FormAction, 
-//			  BulkAction
-
 public class SelezionatoreListaAction extends SelezionatoreAction
         implements Serializable {
     BframeExcelComponentSession bframeExcelComponentSession = (BframeExcelComponentSession) EJBCommonServices.createEJB("BFRAMEEXCEL_EJB_BframeExcelComponentSession");
@@ -40,14 +35,20 @@ public class SelezionatoreListaAction extends SelezionatoreAction
     public Forward basicDoBringBack(ActionContext actioncontext)
             throws BusinessProcessException {
         SelezionatoreListaBP selezionatorelistabp = (SelezionatoreListaBP) actioncontext.getBusinessProcess();
-        HookForward hookforward = (HookForward) actioncontext.findForward("seleziona");
-        if (selezionatorelistabp.getSelectionListener() == null) {
-            hookforward.addParameter("selectedElements", selezionatorelistabp.getSelectedElements(actioncontext));
-            hookforward.addParameter("selection", selezionatorelistabp.getSelection());
-            hookforward.addParameter("focusedElement", selezionatorelistabp.getFocusedElement(actioncontext));
+        final Optional<HookForward> seleziona =
+                Optional.ofNullable(actioncontext.findForward("seleziona"))
+                    .filter(HookForward.class::isInstance)
+                    .map(HookForward.class::cast);
+        if (seleziona.isPresent()) {
+            if (selezionatorelistabp.getSelectionListener() == null) {
+                seleziona.get().addParameter("selectedElements", selezionatorelistabp.getSelectedElements(actioncontext));
+                seleziona.get().addParameter("selection", selezionatorelistabp.getSelection());
+                seleziona.get().addParameter("focusedElement", selezionatorelistabp.getFocusedElement(actioncontext));
+            }
+            actioncontext.closeBusinessProcess();
+            return seleziona.get();
         }
-        actioncontext.closeBusinessProcess();
-        return hookforward;
+        return actioncontext.findDefaultForward();
     }
 
     public Forward doBringBack(ActionContext actioncontext)
@@ -268,6 +269,16 @@ public class SelezionatoreListaAction extends SelezionatoreAction
             return basicDoBringBack(actioncontext);
         } catch (Throwable throwable) {
             return handleException(actioncontext, throwable);
+        }
+    }
+
+    public it.cnr.jada.action.Forward doDeselectAll(it.cnr.jada.action.ActionContext context) {
+        try {
+            SelezionatoreListaBP selezionatorelistabp = (SelezionatoreListaBP) context.getBusinessProcess();
+            selezionatorelistabp.deSelectAll(context);
+            return context.findDefaultForward();
+        } catch(Throwable e) {
+            return handleException(context,e);
         }
     }
 
