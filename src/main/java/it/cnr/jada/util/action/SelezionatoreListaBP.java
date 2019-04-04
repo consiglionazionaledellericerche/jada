@@ -53,7 +53,6 @@ public class SelezionatoreListaBP extends AbstractSelezionatoreBP
 
     private FormField formField;
     private CondizioneComplessaBulk condizioneCorrente;
-    private boolean isHookForwardSeleziona;
 
     public SelezionatoreListaBP() {
         this("");
@@ -136,9 +135,7 @@ public class SelezionatoreListaBP extends AbstractSelezionatoreBP
             buttons.add(button);
             buttons.add(new Button(Config.getHandler().getProperties(getClass()), "Toolbar.freeSearchRemoveFilter"));
         }
-        if (isHookForwardSeleziona) {
-            buttons.add(new Button(Config.getHandler().getProperties(getClass()), "Toolbar.multiSelection"));
-        }
+        buttons.add(new Button(Config.getHandler().getProperties(getClass()), "Toolbar.multiSelection"));
         buttons.add(new Button(Config.getHandler().getProperties(getClass()), "Toolbar.selectAll"));
         buttons.add(new Button(Config.getHandler().getProperties(getClass()), "Toolbar.deselectAll"));
         buttons.add(new Button(Config.getHandler().getProperties(getClass()), "Toolbar.hiddenColumn"));
@@ -370,7 +367,6 @@ public class SelezionatoreListaBP extends AbstractSelezionatoreBP
             pageFrameSize = Integer.parseInt(Config.getHandler().getProperty(getClass(), "pageFrameSize"));
         } catch (NumberFormatException _ex) {
         }
-        setHookForwardSeleziona(Optional.ofNullable(actioncontext.findForward("seleziona")).isPresent());
     }
 
     public OggettoBulk[] initializeBulks(ActionContext actioncontext, OggettoBulk aoggettobulk[])
@@ -730,11 +726,4 @@ public class SelezionatoreListaBP extends AbstractSelezionatoreBP
         this.formField = formField;
     }
 
-    public boolean isHookForwardSeleziona() {
-        return isHookForwardSeleziona;
-    }
-
-    public void setHookForwardSeleziona(boolean hookForwardSeleziona) {
-        isHookForwardSeleziona = hookForwardSeleziona;
-    }
 }
