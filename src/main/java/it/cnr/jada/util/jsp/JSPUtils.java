@@ -298,12 +298,12 @@ public class JSPUtils
 		JspWriter jspwriter = pagecontext.getOut();
 		int j = 0;
 		jspwriter.println("<tr>");
-		for(Enumeration enumeration1 = dictionary.elements(); enumeration1.hasMoreElements(); jspwriter.print(closeHeader + "</td>"))
+		for(Enumeration enumeration1 = dictionary.elements(); enumeration1.hasMoreElements(); jspwriter.print(closeHeader + "</h4></td>"))
 		{
 			ColumnFieldProperty columnfieldproperty = (ColumnFieldProperty)enumeration1.nextElement();
 			jspwriter.print("<td");
 			columnfieldproperty.writeHeaderStyle(jspwriter, null, "TableHeader");
-			jspwriter.print(">"+closeHeader);
+			jspwriter.print("><h4>"+closeHeader);
 			columnfieldproperty.writeLabel(jspwriter, null, HttpActionContext.isFromBootstrap(pagecontext));
 		}
 
@@ -312,12 +312,12 @@ public class JSPUtils
 		{
 			Object obj = enumeration2.nextElement();
 			jspwriter.println("<tr>");
-			for(Enumeration enumeration3 = dictionary.elements(); enumeration3.hasMoreElements(); jspwriter.println("</h4></td>"))
+			for(Enumeration enumeration3 = dictionary.elements(); enumeration3.hasMoreElements(); jspwriter.println("</td>"))
 			{
 				ColumnFieldProperty columnfieldproperty1 = (ColumnFieldProperty)enumeration3.nextElement();
 				jspwriter.print("<td");
 				columnfieldproperty1.writeColumnStyle(jspwriter, null, "TableColumn");
-				jspwriter.print("><h4>");
+				jspwriter.print(">");
 				columnfieldproperty1.writeReadonlyText(jspwriter, obj, "ListItem", null);
 			}
 
