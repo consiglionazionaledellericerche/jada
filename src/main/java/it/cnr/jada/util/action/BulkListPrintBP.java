@@ -55,7 +55,7 @@ public class BulkListPrintBP extends AbstractPrintBP
 				pagecontext.getOut().println(title);
 				pagecontext.getOut().println("</H1>");
 			}
-			pagecontext.getOut().println("<table>");
+			pagecontext.getOut().println("<table class=\"w-100\">");
 			JSPUtils.printableTable(pagecontext, null, new RemoteIteratorEnumeration(iterator), columns, Integer.parseInt(Config.getHandler().getProperty(getClass(), "maxRows")));
 			pagecontext.getOut().println("</table>");
 		}
