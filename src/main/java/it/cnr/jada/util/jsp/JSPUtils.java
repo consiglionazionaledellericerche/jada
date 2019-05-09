@@ -312,12 +312,12 @@ public class JSPUtils
 		{
 			Object obj = enumeration2.nextElement();
 			jspwriter.println("<tr>");
-			for(Enumeration enumeration3 = dictionary.elements(); enumeration3.hasMoreElements(); jspwriter.println("</td>"))
+			for(Enumeration enumeration3 = dictionary.elements(); enumeration3.hasMoreElements(); jspwriter.println("</h4></td>"))
 			{
 				ColumnFieldProperty columnfieldproperty1 = (ColumnFieldProperty)enumeration3.nextElement();
 				jspwriter.print("<td");
 				columnfieldproperty1.writeColumnStyle(jspwriter, null, "TableColumn");
-				jspwriter.print(">");
+				jspwriter.print("><h4>");
 				columnfieldproperty1.writeReadonlyText(jspwriter, obj, "ListItem", null);
 			}
 
