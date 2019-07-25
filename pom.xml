@@ -20,6 +20,7 @@
     <version>7.0.1-SNAPSHOT</version>
     <packaging>ejb</packaging>
     <name>jada</name>
+    <description>JADA - JEE Framework</description>
     <parent>
         <artifactId>archetype</artifactId>
         <groupId>it.cnr.si</groupId>
