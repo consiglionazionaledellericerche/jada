@@ -171,8 +171,12 @@ public class FormAction extends AbstractAction implements Serializable {
         return openConfirm(actioncontext, "L'operazione richiesta comporta la perdita delle modifiche non salvate. Vuoi continuare?", 2, action);
     }
 
-    public Forward openMessage(ActionContext actioncontext, String action) throws BusinessProcessException {
-        return actioncontext.addBusinessProcess(createOptionBP(actioncontext, action, FormBP.WARNING_MESSAGE, 0, null));
+    public Forward openMessage(ActionContext actioncontext, String message) throws BusinessProcessException {
+        return openMessage(actioncontext, message, null);
+    }
+
+    public Forward openMessage(ActionContext actioncontext, String message, String action) throws BusinessProcessException {
+        return actioncontext.addBusinessProcess(createOptionBP(actioncontext, message, FormBP.WARNING_MESSAGE, 0, action));
     }
 
     public OptionBP openSavePrompt(ActionContext actioncontext, String action) throws BusinessProcessException {
