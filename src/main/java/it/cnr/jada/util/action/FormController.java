@@ -1,90 +1,109 @@
+/*
+ * Copyright (C) 2019  Consiglio Nazionale delle Ricerche
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as
+ *     published by the Free Software Foundation, either version 3 of the
+ *     License, or (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.cnr.jada.util.action;
 
 import it.cnr.jada.UserTransaction;
 import it.cnr.jada.action.ActionContext;
 import it.cnr.jada.action.BusinessProcessException;
-import it.cnr.jada.bulk.*;
+import it.cnr.jada.bulk.BulkInfo;
+import it.cnr.jada.bulk.FieldValidationMap;
+import it.cnr.jada.bulk.FillException;
+import it.cnr.jada.bulk.ValidationException;
 
+import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
 import java.util.Enumeration;
-import javax.servlet.jsp.JspWriter;
 
 // Referenced classes of package it.cnr.jada.util.action:
 //            ModelController, FormField
 
 public interface FormController
-    extends ModelController
-{
+        extends ModelController {
 
-    public abstract void addChildController(FormController formcontroller);
+    int UNDEFINED = -1;
+    int SEARCH = 0;
+    int INSERT = 1;
+    int EDIT = 2;
+    int FREESEARCH = 4;
+    int VIEW = 5;
 
-    public abstract boolean fillModel(ActionContext actioncontext)
-        throws FillException;
+    void addChildController(FormController formcontroller);
 
-    public abstract BulkInfo getBulkInfo();
+    boolean fillModel(ActionContext actioncontext)
+            throws FillException;
 
-    public abstract FormController getChildController(String s);
+    BulkInfo getBulkInfo();
 
-    public abstract Enumeration getChildrenController();
+    FormController getChildController(String s);
 
-    public abstract String getControllerName();
+    Enumeration getChildrenController();
 
-    public abstract FieldValidationMap getFieldValidationMap();
+    String getControllerName();
 
-    public abstract FormField getFormField(String s);
+    FieldValidationMap getFieldValidationMap();
 
-    public abstract String getInputPrefix();
+    FormField getFormField(String s);
 
-    public abstract FormController getParentController();
+    String getInputPrefix();
 
-    public abstract UserTransaction getUserTransaction();
+    FormController getParentController();
 
-    public abstract void resync(ActionContext actioncontext)
-        throws BusinessProcessException;
+    UserTransaction getUserTransaction();
 
-    public abstract void validate(ActionContext actioncontext)
-        throws ValidationException;
+    void resync(ActionContext actioncontext)
+            throws BusinessProcessException;
 
-    public abstract void writeForm(JspWriter jspwriter)
-        throws IOException;
+    void validate(ActionContext actioncontext)
+            throws ValidationException;
 
-    public abstract void writeForm(JspWriter jspwriter, String s)
-        throws IOException;
+    void writeForm(JspWriter jspwriter)
+            throws IOException;
 
-    public abstract void writeFormField(JspWriter jspwriter, String s)
-        throws IOException;
+    void writeForm(JspWriter jspwriter, String s)
+            throws IOException;
 
-    public abstract void writeFormField(JspWriter jspwriter, String s, String s1)
-        throws IOException;
+    void writeFormField(JspWriter jspwriter, String s)
+            throws IOException;
 
-    public abstract void writeFormField(JspWriter jspwriter, String s, String s1, int i, int j)
-        throws IOException;
+    void writeFormField(JspWriter jspwriter, String s, String s1)
+            throws IOException;
 
-    public abstract void writeFormInput(JspWriter jspwriter, String s)
-        throws IOException;
+    void writeFormField(JspWriter jspwriter, String s, String s1, int i, int j)
+            throws IOException;
 
-    public abstract void writeFormInput(JspWriter jspwriter, String s, String s1)
-        throws IOException;
+    void writeFormInput(JspWriter jspwriter, String s)
+            throws IOException;
 
-    public abstract void writeFormInput(JspWriter jspwriter, String s, String s1, boolean flag, String s2, String s3)
-        throws IOException;
+    void writeFormInput(JspWriter jspwriter, String s, String s1)
+            throws IOException;
 
-    public abstract void writeFormInputByStatus(JspWriter jspwriter, String s)
-        throws IOException;
+    void writeFormInput(JspWriter jspwriter, String s, String s1, boolean flag, String s2, String s3)
+            throws IOException;
 
-    public abstract void writeFormLabel(JspWriter jspwriter, String s)
-        throws IOException;
+    void writeFormInputByStatus(JspWriter jspwriter, String s)
+            throws IOException;
 
-    public abstract void writeFormLabel(JspWriter jspwriter, String s, String s1)
-        throws IOException;
+    void writeFormLabel(JspWriter jspwriter, String s)
+            throws IOException;
 
-    public abstract void writeFormLabel(JspWriter jspwriter, String s, String s1, String s2)
-        throws IOException;
+    void writeFormLabel(JspWriter jspwriter, String s, String s1)
+            throws IOException;
 
-    public static final int UNDEFINED = -1;
-    public static final int SEARCH = 0;
-    public static final int INSERT = 1;
-    public static final int EDIT = 2;
-    public static final int FREESEARCH = 4;
-    public static final int VIEW = 5;
+    void writeFormLabel(JspWriter jspwriter, String s, String s1, String s2)
+            throws IOException;
 }

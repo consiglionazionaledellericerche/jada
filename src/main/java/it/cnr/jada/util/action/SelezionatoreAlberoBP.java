@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2019  Consiglio Nazionale delle Ricerche
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as
+ *     published by the Free Software Foundation, either version 3 of the
+ *     License, or (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.cnr.jada.util.action;
 
 import it.cnr.jada.action.ActionContext;
@@ -11,24 +28,24 @@ import java.util.Vector;
 //            AbstractSelezionatoreBP, RigaAlbero
 
 public class SelezionatoreAlberoBP extends AbstractSelezionatoreBP
-    implements Serializable
-{
+        implements Serializable {
 
-    public SelezionatoreAlberoBP()
-    {
+    private NodoAlbero radice;
+    private int numeroLivelli;
+    private Vector righe;
+    private boolean mostraRadice;
+
+    public SelezionatoreAlberoBP() {
     }
 
-    public SelezionatoreAlberoBP(String s)
-    {
+    public SelezionatoreAlberoBP(String s) {
         super(s);
     }
 
-    protected void aggiornaRighe()
-    {
+    protected void aggiornaRighe() {
         numeroLivelli = 0;
         righe = new Vector();
-        if(mostraRadice)
-        {
+        if (mostraRadice) {
             RigaAlbero rigaalbero = new RigaAlbero();
             righe.addElement(rigaalbero);
             rigaalbero.setLivello(0);
@@ -40,16 +57,14 @@ public class SelezionatoreAlberoBP extends AbstractSelezionatoreBP
         numeroLivelli++;
     }
 
-    private void costruisciRighe(Enumeration enumeration, int i)
-    {
-        if(enumeration == null)
+    private void costruisciRighe(Enumeration enumeration, int i) {
+        if (enumeration == null)
             return;
-        if(numeroLivelli < i)
+        if (numeroLivelli < i)
             numeroLivelli = i;
         Enumeration enumeration1;
-        for(; enumeration.hasMoreElements(); costruisciRighe(enumeration1, i + 1))
-        {
-            NodoAlbero nodoalbero = (NodoAlbero)enumeration.nextElement();
+        for (; enumeration.hasMoreElements(); costruisciRighe(enumeration1, i + 1)) {
+            NodoAlbero nodoalbero = (NodoAlbero) enumeration.nextElement();
             RigaAlbero rigaalbero = new RigaAlbero();
             righe.addElement(rigaalbero);
             rigaalbero.setLivello(i);
@@ -60,32 +75,31 @@ public class SelezionatoreAlberoBP extends AbstractSelezionatoreBP
 
     }
 
-    public Object getElementAt(ActionContext actioncontext, int i)
-    {
-        return ((RigaAlbero)righe.elementAt(i)).getNodo().getObject();
+    public Object getElementAt(ActionContext actioncontext, int i) {
+        return ((RigaAlbero) righe.elementAt(i)).getNodo().getObject();
     }
 
-    public int getNumeroLivelli()
-    {
+    public int getNumeroLivelli() {
         return numeroLivelli;
     }
 
-    public NodoAlbero getRadice()
-    {
+    public NodoAlbero getRadice() {
         return radice;
     }
 
-    public Enumeration getRighe()
-    {
+    public void setRadice(NodoAlbero nodoalbero) {
+        radice = nodoalbero;
+        aggiornaRighe();
+    }
+
+    public Enumeration getRighe() {
         return righe.elements();
     }
 
-    public int indexOf(Object obj)
-    {
+    public int indexOf(Object obj) {
         int i = 0;
-        for(Enumeration enumeration = righe.elements(); enumeration.hasMoreElements();)
-        {
-            if(((RigaAlbero)enumeration.nextElement()).getNodo().getObject() == obj)
+        for (Enumeration enumeration = righe.elements(); enumeration.hasMoreElements(); ) {
+            if (((RigaAlbero) enumeration.nextElement()).getNodo().getObject() == obj)
                 return i;
             i++;
         }
@@ -93,29 +107,15 @@ public class SelezionatoreAlberoBP extends AbstractSelezionatoreBP
         return -1;
     }
 
-    public boolean isMostraRadice()
-    {
+    public boolean isMostraRadice() {
         return mostraRadice;
     }
 
-    public void setMostraRadice(boolean flag)
-    {
+    public void setMostraRadice(boolean flag) {
         mostraRadice = flag;
     }
 
-    public void setRadice(NodoAlbero nodoalbero)
-    {
-        radice = nodoalbero;
-        aggiornaRighe();
-    }
-
-    public int size()
-    {
+    public int size() {
         return righe.size();
     }
-
-    private NodoAlbero radice;
-    private int numeroLivelli;
-    private Vector righe;
-    private boolean mostraRadice;
 }

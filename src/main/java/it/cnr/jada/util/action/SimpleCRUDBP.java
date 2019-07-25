@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2019  Consiglio Nazionale delle Ricerche
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as
+ *     published by the Free Software Foundation, either version 3 of the
+ *     License, or (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.cnr.jada.util.action;
 
 import it.cnr.jada.action.ActionContext;
@@ -15,303 +32,303 @@ import java.util.Dictionary;
 
 public class SimpleCRUDBP extends CRUDBP implements Serializable {
 
-	private String componentSessioneName;
-	private Class bulkClass;
-	private BulkInfo bulkInfo;
-	private String searchResultColumnSet;
-	private String freeSearchSet;
-	private Class searchBulkClass;
-	private BulkInfo searchBulkInfo;
-	
-	private CompoundFindClause compoundfindclause;
-	private OggettoBulk oggettobulk;
+    private String componentSessioneName;
+    private Class bulkClass;
+    private BulkInfo bulkInfo;
+    private String searchResultColumnSet;
+    private String freeSearchSet;
+    private Class searchBulkClass;
+    private BulkInfo searchBulkInfo;
 
-	public SimpleCRUDBP() {
-	}
+    private CompoundFindClause compoundfindclause;
+    private OggettoBulk oggettobulk;
 
-	public SimpleCRUDBP(String s) {
-		super(s);
-	}
+    public SimpleCRUDBP() {
+    }
 
-	public void create(ActionContext actioncontext)
-			throws BusinessProcessException {
-		try {
-			getModel().setToBeCreated();
-			setModel(
-					actioncontext,
-					createComponentSession().creaConBulk(
-							actioncontext.getUserContext(), getModel()));
-		} catch (Exception exception) {
-			throw handleException(exception);
-		}
-	}
+    public SimpleCRUDBP(String s) {
+        super(s);
+    }
 
-	public CRUDComponentSession createComponentSession()
-			throws BusinessProcessException {
-		return (CRUDComponentSession) createComponentSession(componentSessioneName);
-	}
+    public void create(ActionContext actioncontext)
+            throws BusinessProcessException {
+        try {
+            getModel().setToBeCreated();
+            setModel(
+                    actioncontext,
+                    createComponentSession().creaConBulk(
+                            actioncontext.getUserContext(), getModel()));
+        } catch (Exception exception) {
+            throw handleException(exception);
+        }
+    }
 
-	public OggettoBulk createEmptyModel(ActionContext actioncontext)
-			throws BusinessProcessException {
-		return initializeModelForInsert(actioncontext,
-				createNewBulk(actioncontext));
-	}
+    public CRUDComponentSession createComponentSession()
+            throws BusinessProcessException {
+        return (CRUDComponentSession) createComponentSession(componentSessioneName);
+    }
 
-	public OggettoBulk createEmptyModelForFreeSearch(ActionContext actioncontext)
-			throws BusinessProcessException {
-		return initializeModelForFreeSearch(actioncontext,
-				createNewSearchBulk(actioncontext));
-	}
+    public OggettoBulk createEmptyModel(ActionContext actioncontext)
+            throws BusinessProcessException {
+        return initializeModelForInsert(actioncontext,
+                createNewBulk(actioncontext));
+    }
 
-	public OggettoBulk createEmptyModelForSearch(ActionContext actioncontext)
-			throws BusinessProcessException {
-		return initializeModelForSearch(actioncontext,
-				createNewSearchBulk(actioncontext));
-	}
+    public OggettoBulk createEmptyModelForFreeSearch(ActionContext actioncontext)
+            throws BusinessProcessException {
+        return initializeModelForFreeSearch(actioncontext,
+                createNewSearchBulk(actioncontext));
+    }
 
-	public OggettoBulk createNewBulk(ActionContext actioncontext)
-			throws BusinessProcessException {
-		try {
-			OggettoBulk oggettobulk = (OggettoBulk) bulkClass.newInstance();
-			oggettobulk.setUser(actioncontext.getUserInfo().getUserid());
-			return oggettobulk;
-		} catch (Exception exception) {
-			throw handleException(exception);
-		}
-	}
+    public OggettoBulk createEmptyModelForSearch(ActionContext actioncontext)
+            throws BusinessProcessException {
+        return initializeModelForSearch(actioncontext,
+                createNewSearchBulk(actioncontext));
+    }
 
-	public OggettoBulk createNewSearchBulk(ActionContext actioncontext)
-			throws BusinessProcessException {
-		try {
-			OggettoBulk oggettobulk = (OggettoBulk) searchBulkClass
-					.newInstance();
-			oggettobulk.setUser(actioncontext.getUserInfo().getUserid());
-			return oggettobulk;
-		} catch (Exception exception) {
-			throw handleException(exception);
-		}
-	}
+    public OggettoBulk createNewBulk(ActionContext actioncontext)
+            throws BusinessProcessException {
+        try {
+            OggettoBulk oggettobulk = (OggettoBulk) bulkClass.newInstance();
+            oggettobulk.setUser(actioncontext.getUserInfo().getUserid());
+            return oggettobulk;
+        } catch (Exception exception) {
+            throw handleException(exception);
+        }
+    }
 
-	public void delete(ActionContext actioncontext)
-			throws BusinessProcessException {
-		int i = getModel().getCrudStatus();
-		try {
-			getModel().setToBeDeleted();
-			createComponentSession().eliminaConBulk(
-					actioncontext.getUserContext(), getModel());
-			commitUserTransaction();
-		} catch (Exception exception) {
-			getModel().setCrudStatus(i);
-			throw handleException(exception);
-		}
-	}
+    public OggettoBulk createNewSearchBulk(ActionContext actioncontext)
+            throws BusinessProcessException {
+        try {
+            OggettoBulk oggettobulk = (OggettoBulk) searchBulkClass
+                    .newInstance();
+            oggettobulk.setUser(actioncontext.getUserInfo().getUserid());
+            return oggettobulk;
+        } catch (Exception exception) {
+            throw handleException(exception);
+        }
+    }
 
-	public boolean isLastSearchButtonHidden(){
-		return this.compoundfindclause == null && this.oggettobulk == null;
-	}
-	
-	public RemoteIterator lastFind(ActionContext actioncontext)
-			throws BusinessProcessException {
-		try {
-			return EJBCommonServices.openRemoteIterator(
-					actioncontext,
-					createComponentSession().cerca(
-							actioncontext.getUserContext(), this.compoundfindclause,
-							this.oggettobulk));			
-		} catch (Exception exception) {
-			throw handleException(exception);
-		}
-	}
-	
-	public RemoteIterator find(ActionContext actioncontext,
-			CompoundFindClause compoundfindclause, OggettoBulk oggettobulk)
-			throws BusinessProcessException {
-		try {
-			/**
-			 * Salvo l'ultima ricerca effettuata.
-			 */
-			this.compoundfindclause = compoundfindclause;
-			this.oggettobulk = oggettobulk;
-			
-			return EJBCommonServices.openRemoteIterator(
-					actioncontext,
-					createComponentSession().cerca(
-							actioncontext.getUserContext(), compoundfindclause,
-							oggettobulk));			
-		} catch (Exception exception) {
-			throw handleException(exception);
-		}
-	}
+    public void delete(ActionContext actioncontext)
+            throws BusinessProcessException {
+        int i = getModel().getCrudStatus();
+        try {
+            getModel().setToBeDeleted();
+            createComponentSession().eliminaConBulk(
+                    actioncontext.getUserContext(), getModel());
+            commitUserTransaction();
+        } catch (Exception exception) {
+            getModel().setCrudStatus(i);
+            throw handleException(exception);
+        }
+    }
 
-	public RemoteIterator find(ActionContext actioncontext,
-			CompoundFindClause compoundfindclause, OggettoBulk oggettobulk,
-			OggettoBulk oggettobulk1, String s) throws BusinessProcessException {
-		try {
-			return EJBCommonServices.openRemoteIterator(
-					actioncontext,
-					createComponentSession().cerca(
-							actioncontext.getUserContext(), compoundfindclause,
-							oggettobulk, oggettobulk1, s));
-		} catch (Exception exception) {
-			throw new BusinessProcessException(exception);
-		}
-	}
+    public boolean isLastSearchButtonHidden() {
+        return this.compoundfindclause == null && this.oggettobulk == null;
+    }
 
-	public BulkInfo getBulkInfo() {
-		if (getModel() == null)
-			return bulkInfo;
-		else
-			return super.getBulkInfo();
-	}
+    public RemoteIterator lastFind(ActionContext actioncontext)
+            throws BusinessProcessException {
+        try {
+            return EJBCommonServices.openRemoteIterator(
+                    actioncontext,
+                    createComponentSession().cerca(
+                            actioncontext.getUserContext(), this.compoundfindclause,
+                            this.oggettobulk));
+        } catch (Exception exception) {
+            throw handleException(exception);
+        }
+    }
 
-	public String getComponentSessioneName() {
-		return componentSessioneName;
-	}
+    public RemoteIterator find(ActionContext actioncontext,
+                               CompoundFindClause compoundfindclause, OggettoBulk oggettobulk)
+            throws BusinessProcessException {
+        try {
+            /**
+             * Salvo l'ultima ricerca effettuata.
+             */
+            this.compoundfindclause = compoundfindclause;
+            this.oggettobulk = oggettobulk;
 
-	public String getFreeSearchSet() {
-		return freeSearchSet;
-	}
+            return EJBCommonServices.openRemoteIterator(
+                    actioncontext,
+                    createComponentSession().cerca(
+                            actioncontext.getUserContext(), compoundfindclause,
+                            oggettobulk));
+        } catch (Exception exception) {
+            throw handleException(exception);
+        }
+    }
 
-	public Class getSearchBulkClass() {
-		return searchBulkClass;
-	}
+    public RemoteIterator find(ActionContext actioncontext,
+                               CompoundFindClause compoundfindclause, OggettoBulk oggettobulk,
+                               OggettoBulk oggettobulk1, String s) throws BusinessProcessException {
+        try {
+            return EJBCommonServices.openRemoteIterator(
+                    actioncontext,
+                    createComponentSession().cerca(
+                            actioncontext.getUserContext(), compoundfindclause,
+                            oggettobulk, oggettobulk1, s));
+        } catch (Exception exception) {
+            throw new BusinessProcessException(exception);
+        }
+    }
 
-	public BulkInfo getSearchBulkInfo() {
-		return searchBulkInfo;
-	}
+    public BulkInfo getBulkInfo() {
+        if (getModel() == null)
+            return bulkInfo;
+        else
+            return super.getBulkInfo();
+    }
 
-	public Dictionary getSearchResultColumns() {
-		if (getSearchResultColumnSet() == null)
-			return super.getSearchResultColumns();
-		else
-			return getModel().getBulkInfo().getColumnFieldPropertyDictionary(
-					getSearchResultColumnSet());
-	}
+    public String getComponentSessioneName() {
+        return componentSessioneName;
+    }
 
-	public String getSearchResultColumnSet() {
-		return searchResultColumnSet;
-	}
+    public void setComponentSessioneName(String s) {
+        componentSessioneName = s;
+    }
 
-	protected void init(Config config, ActionContext actioncontext)
-			throws BusinessProcessException {
-		try {
-			setBulkClassName(config.getInitParameter("bulkClassName"));
-			setSearchBulkClassName(config
-					.getInitParameter("searchBulkClassName"));
-			setComponentSessioneName(config
-					.getInitParameter("componentSessionName"));
-			setSearchResultColumnSet(config
-					.getInitParameter("searchResultColumnSet"));
-			setFreeSearchSet(config.getInitParameter("freeSearchSet"));
-			if (searchBulkClass == null)
-				setSearchBulkClass(bulkClass);
-		} catch (ClassNotFoundException _ex) {
-			throw new RuntimeException("Non trovata la classe bulk");
-		}
-		super.init(config, actioncontext);
-	}
+    public String getFreeSearchSet() {
+        return freeSearchSet;
+    }
 
-	public OggettoBulk initializeModelForEdit(ActionContext actioncontext,
-			OggettoBulk oggettobulk) throws BusinessProcessException {
-		try {
-			return createComponentSession().inizializzaBulkPerModifica(
-					actioncontext.getUserContext(),
-					super.initializeModelForEdit(actioncontext, oggettobulk));
-		} catch (Throwable throwable) {
-			throw new BusinessProcessException(throwable);
-		}
-	}
+    public void setFreeSearchSet(String s) {
+        freeSearchSet = s;
+    }
 
-	public OggettoBulk initializeModelForFreeSearch(
-			ActionContext actioncontext, OggettoBulk oggettobulk)
-			throws BusinessProcessException {
-		try {
-			return createComponentSession().inizializzaBulkPerRicercaLibera(
-					actioncontext.getUserContext(),
-					super.initializeModelForFreeSearch(actioncontext,
-							oggettobulk));
-		} catch (Exception exception) {
-			throw handleException(exception);
-		}
-	}
+    public Class getSearchBulkClass() {
+        return searchBulkClass;
+    }
 
-	public OggettoBulk initializeModelForInsert(ActionContext actioncontext,
-			OggettoBulk oggettobulk) throws BusinessProcessException {
-		try {
-			return createComponentSession().inizializzaBulkPerInserimento(
-					actioncontext.getUserContext(),
-					super.initializeModelForInsert(actioncontext, oggettobulk));
-		} catch (Exception exception) {
-			throw handleException(exception);
-		}
-	}
+    private void setSearchBulkClass(Class class1) {
+        searchBulkInfo = BulkInfo.getBulkInfo(searchBulkClass = class1);
+    }
 
-	public OggettoBulk initializeModelForSearch(ActionContext actioncontext,
-			OggettoBulk oggettobulk) throws BusinessProcessException {
-		try {
-			return createComponentSession().inizializzaBulkPerRicerca(
-					actioncontext.getUserContext(),
-					super.initializeModelForSearch(actioncontext, oggettobulk));
-		} catch (Exception exception) {
-			throw handleException(exception);
-		}
-	}
+    public BulkInfo getSearchBulkInfo() {
+        return searchBulkInfo;
+    }
 
-	private void setBulkClass(Class class1) throws ClassNotFoundException {
-		bulkInfo = BulkInfo.getBulkInfo(bulkClass = class1);
-	}
+    public Dictionary getSearchResultColumns() {
+        if (getSearchResultColumnSet() == null)
+            return super.getSearchResultColumns();
+        else
+            return getModel().getBulkInfo().getColumnFieldPropertyDictionary(
+                    getSearchResultColumnSet());
+    }
 
-	public void setBulkClassName(String s) throws ClassNotFoundException {
-		setBulkClass(getClass().getClassLoader().loadClass(s));
-	}
+    public String getSearchResultColumnSet() {
+        return searchResultColumnSet;
+    }
 
-	public void setComponentSessioneName(String s) {
-		componentSessioneName = s;
-	}
+    public void setSearchResultColumnSet(String s) {
+        searchResultColumnSet = s;
+    }
 
-	public void setFreeSearchSet(String s) {
-		freeSearchSet = s;
-	}
+    protected void init(Config config, ActionContext actioncontext)
+            throws BusinessProcessException {
+        try {
+            setBulkClassName(config.getInitParameter("bulkClassName"));
+            setSearchBulkClassName(config
+                    .getInitParameter("searchBulkClassName"));
+            setComponentSessioneName(config
+                    .getInitParameter("componentSessionName"));
+            setSearchResultColumnSet(config
+                    .getInitParameter("searchResultColumnSet"));
+            setFreeSearchSet(config.getInitParameter("freeSearchSet"));
+            if (searchBulkClass == null)
+                setSearchBulkClass(bulkClass);
+        } catch (ClassNotFoundException _ex) {
+            throw new RuntimeException("Non trovata la classe bulk");
+        }
+        super.init(config, actioncontext);
+    }
 
-	private void setSearchBulkClass(Class class1) {
-		searchBulkInfo = BulkInfo.getBulkInfo(searchBulkClass = class1);
-	}
+    public OggettoBulk initializeModelForEdit(ActionContext actioncontext,
+                                              OggettoBulk oggettobulk) throws BusinessProcessException {
+        try {
+            return createComponentSession().inizializzaBulkPerModifica(
+                    actioncontext.getUserContext(),
+                    super.initializeModelForEdit(actioncontext, oggettobulk));
+        } catch (Throwable throwable) {
+            throw new BusinessProcessException(throwable);
+        }
+    }
 
-	public void setSearchBulkClassName(String s) throws ClassNotFoundException {
-		if (s != null)
-			setSearchBulkClass(getClass().getClassLoader().loadClass(s));
-	}
+    public OggettoBulk initializeModelForFreeSearch(
+            ActionContext actioncontext, OggettoBulk oggettobulk)
+            throws BusinessProcessException {
+        try {
+            return createComponentSession().inizializzaBulkPerRicercaLibera(
+                    actioncontext.getUserContext(),
+                    super.initializeModelForFreeSearch(actioncontext,
+                            oggettobulk));
+        } catch (Exception exception) {
+            throw handleException(exception);
+        }
+    }
 
-	public void setSearchResultColumnSet(String s) {
-		searchResultColumnSet = s;
-	}
+    public OggettoBulk initializeModelForInsert(ActionContext actioncontext,
+                                                OggettoBulk oggettobulk) throws BusinessProcessException {
+        try {
+            return createComponentSession().inizializzaBulkPerInserimento(
+                    actioncontext.getUserContext(),
+                    super.initializeModelForInsert(actioncontext, oggettobulk));
+        } catch (Exception exception) {
+            throw handleException(exception);
+        }
+    }
 
-	/**
-	 * Metodo da sovrascrivere nelle classi Bulk figlie che implementeranno la
-	 * gestione PostIt 1. Progetti
-	 */
-	public it.cnr.jada.util.action.SimpleDetailCRUDController getCrudDettagliPostIt() {
-		return null;
-	}
+    public OggettoBulk initializeModelForSearch(ActionContext actioncontext,
+                                                OggettoBulk oggettobulk) throws BusinessProcessException {
+        try {
+            return createComponentSession().inizializzaBulkPerRicerca(
+                    actioncontext.getUserContext(),
+                    super.initializeModelForSearch(actioncontext, oggettobulk));
+        } catch (Exception exception) {
+            throw handleException(exception);
+        }
+    }
 
-	/**
-	 * Metodo da sovrascrivere nelle classi Bulk figlie che implementeranno la
-	 * gestione PostIt 1. Progetti
-	 */
-	public boolean isActive(OggettoBulk bulk, int sel) {
-		return true;
-	}
+    private void setBulkClass(Class class1) throws ClassNotFoundException {
+        bulkInfo = BulkInfo.getBulkInfo(bulkClass = class1);
+    }
 
-	public void update(ActionContext actioncontext)
-			throws BusinessProcessException {
-		try {
-			getModel().setToBeUpdated();
-			setModel(
-					actioncontext,
-					createComponentSession().modificaConBulk(
-							actioncontext.getUserContext(), getModel()));
-		} catch (Exception exception) {
-			throw handleException(exception);
-		}
-	}
+    public void setBulkClassName(String s) throws ClassNotFoundException {
+        setBulkClass(getClass().getClassLoader().loadClass(s));
+    }
+
+    public void setSearchBulkClassName(String s) throws ClassNotFoundException {
+        if (s != null)
+            setSearchBulkClass(getClass().getClassLoader().loadClass(s));
+    }
+
+    /**
+     * Metodo da sovrascrivere nelle classi Bulk figlie che implementeranno la
+     * gestione PostIt 1. Progetti
+     */
+    public it.cnr.jada.util.action.SimpleDetailCRUDController getCrudDettagliPostIt() {
+        return null;
+    }
+
+    /**
+     * Metodo da sovrascrivere nelle classi Bulk figlie che implementeranno la
+     * gestione PostIt 1. Progetti
+     */
+    public boolean isActive(OggettoBulk bulk, int sel) {
+        return true;
+    }
+
+    public void update(ActionContext actioncontext)
+            throws BusinessProcessException {
+        try {
+            getModel().setToBeUpdated();
+            setModel(
+                    actioncontext,
+                    createComponentSession().modificaConBulk(
+                            actioncontext.getUserContext(), getModel()));
+        } catch (Exception exception) {
+            throw handleException(exception);
+        }
+    }
 }

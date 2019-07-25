@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2019  Consiglio Nazionale delle Ricerche
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as
+ *     published by the Free Software Foundation, either version 3 of the
+ *     License, or (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.cnr.jada.action;
 
 import it.cnr.jada.UserContext;
@@ -10,97 +27,95 @@ import java.util.Enumeration;
 //            BusinessProcessException, BusinessProcess, Action, HookForward, 
 //            Forward, ActionMapping
 
-public interface ActionContext
-{
+public interface ActionContext {
 
-    public abstract BusinessProcess addBusinessProcess(BusinessProcess businessprocess)
-        throws BusinessProcessException;
+    BusinessProcess addBusinessProcess(BusinessProcess businessprocess)
+            throws BusinessProcessException;
 
-    public abstract HookForward addHookForward(BusinessProcess businessprocess, String s, Action action);
+    HookForward addHookForward(BusinessProcess businessprocess, String s, Action action);
 
-    public abstract HookForward addHookForward(BusinessProcess businessprocess, String s, Action action, String s1);
+    HookForward addHookForward(BusinessProcess businessprocess, String s, Action action, String s1);
 
-    public abstract HookForward addHookForward(String s, Action action);
+    HookForward addHookForward(String s, Action action);
 
-    public abstract HookForward addHookForward(String s, Action action, String s1);
+    HookForward addHookForward(String s, Action action, String s1);
 
-    public abstract HookForward addHookForward(String s, Forward forward);
+    HookForward addHookForward(String s, Forward forward);
 
-    public abstract void addRequestTracingUser(String s);
+    void addRequestTracingUser(String s);
 
-    public abstract BusinessProcess closeBusinessProcess()
-        throws BusinessProcessException;
+    BusinessProcess closeBusinessProcess()
+            throws BusinessProcessException;
 
-    public abstract BusinessProcess closeBusinessProcess(BusinessProcess businessprocess)
-        throws BusinessProcessException;
+    BusinessProcess closeBusinessProcess(BusinessProcess businessprocess)
+            throws BusinessProcessException;
 
-    public abstract BusinessProcess createBusinessProcess(String s)
-        throws BusinessProcessException;
+    BusinessProcess createBusinessProcess(String s)
+            throws BusinessProcessException;
 
-    public abstract BusinessProcess createBusinessProcess(String s, Object aobj[])
-        throws BusinessProcessException;
+    BusinessProcess createBusinessProcess(String s, Object aobj[])
+            throws BusinessProcessException;
 
-    public abstract boolean fill(Object obj)
-        throws ParseException;
+    boolean fill(Object obj)
+            throws ParseException;
 
-    public abstract boolean fill(Object obj, String s)
-        throws ParseException;
+    boolean fill(Object obj, String s)
+            throws ParseException;
 
-    public abstract boolean fillProperty(Object obj, String s, String s1)
-        throws ParseException;
+    boolean fillProperty(Object obj, String s, String s1)
+            throws ParseException;
 
-    public abstract Forward findActionForward(String s);
+    Forward findActionForward(String s);
 
-    public abstract Forward findDefaultForward();
+    Forward findDefaultForward();
 
-    public abstract Forward findForward(String s);
+    Forward findForward(String s);
 
-    public abstract String getApplicationId();
+    String getApplicationId();
 
-    public abstract BusinessProcess getBusinessProcess();
+    BusinessProcess getBusinessProcess();
 
-    public abstract BusinessProcess getBusinessProcess(String s);
+    void setBusinessProcess(BusinessProcess businessprocess);
 
-    public abstract BusinessProcess getBusinessProcessRoot(boolean flag);
+    BusinessProcess getBusinessProcess(String s);
 
-    public abstract Forward getCaller();
+    BusinessProcess getBusinessProcessRoot(boolean flag);
 
-    public abstract String getCurrentCommand();
+    Forward getCaller();
 
-    public abstract Enumeration getRequestTracingUsers();
+    String getCurrentCommand();
 
-    public abstract String getSessionId();
+    Enumeration getRequestTracingUsers();
 
-    public abstract String getTracingSessionDescription();
+    String getSessionId();
 
+    String getTracingSessionDescription();
 
-    public abstract UserContext getUserContext(boolean createSession);
+    void setTracingSessionDescription(String s);
 
-    public abstract UserContext getUserContext();
+    UserContext getUserContext(boolean createSession);
 
-    public abstract UserInfo getUserInfo();
+    UserContext getUserContext();
 
-    public abstract void invalidateSession();
+    void setUserContext(UserContext usercontext);
 
-    public abstract boolean isRequestTracingUser();
+    UserInfo getUserInfo();
 
-    public abstract boolean isRequestTracingUser(String s);
+    void setUserInfo(UserInfo userinfo);
 
-    public abstract void perform(Action action, ActionMapping actionmapping, String s);
+    void invalidateSession();
 
-    public abstract void removeHookForward(String s);
+    boolean isRequestTracingUser();
 
-    public abstract void removeRequestTracingUser(String s);
+    boolean isRequestTracingUser(String s);
 
-    public abstract void setBusinessProcess(BusinessProcess businessprocess);
+    void perform(Action action, ActionMapping actionmapping, String s);
 
-    public abstract void setTracingSessionDescription(String s);
+    void removeHookForward(String s);
 
-    public abstract void setUserContext(UserContext usercontext);
+    void removeRequestTracingUser(String s);
 
-    public abstract void setUserInfo(UserInfo userinfo);
+    void traceException(Throwable throwable);
 
-    public abstract void traceException(Throwable throwable);
-
-    public abstract void saveFocusedElement();
+    void saveFocusedElement();
 }

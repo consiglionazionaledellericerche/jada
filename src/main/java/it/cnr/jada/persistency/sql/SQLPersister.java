@@ -1,18 +1,23 @@
+/*
+ * Copyright (C) 2019  Consiglio Nazionale delle Ricerche
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as
+ *     published by the Free Software Foundation, either version 3 of the
+ *     License, or (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.cnr.jada.persistency.sql;
 
-import it.cnr.jada.persistency.DeleteException;
-import it.cnr.jada.persistency.FetchAllPolicy;
-import it.cnr.jada.persistency.FetchPolicy;
-import it.cnr.jada.persistency.FindException;
-import it.cnr.jada.persistency.IntrospectionError;
-import it.cnr.jada.persistency.IntrospectionException;
-import it.cnr.jada.persistency.Introspector;
-import it.cnr.jada.persistency.ObjectNotFoundException;
-import it.cnr.jada.persistency.PersistencyException;
-import it.cnr.jada.persistency.Persistent;
-import it.cnr.jada.persistency.PersistentCache;
-import it.cnr.jada.persistency.Persister;
-import it.cnr.jada.persistency.UpdateException;
+import it.cnr.jada.persistency.*;
 
 import java.io.Serializable;
 import java.sql.Connection;
@@ -25,285 +30,238 @@ import java.sql.SQLException;
 //            SQLBuilder, ColumnMap, ColumnMapping, SQLParameter
 
 public class SQLPersister extends Persister
-    implements Serializable
-{
+        implements Serializable {
 
-    public SQLPersister(Introspector introspector, ColumnMap columnmap, Connection connection1)
-    {
+    private final Connection connection;
+    private ColumnMap columnMap;
+    private PersistentCache persistentCache;
+    private FetchPolicy fetchPolicy;
+
+    public SQLPersister(Introspector introspector, ColumnMap columnmap, Connection connection1) {
         this(introspector, columnmap, connection1, null);
     }
 
-    public SQLPersister(Introspector introspector, ColumnMap columnmap, Connection connection1, PersistentCache persistentcache)
-    {
+    public SQLPersister(Introspector introspector, ColumnMap columnmap, Connection connection1, PersistentCache persistentcache) {
         super(introspector);
         fetchPolicy = FetchAllPolicy.FETCHALL;
         setColumnMap(columnmap);
         connection = connection1;
-        if(persistentcache == null)
+        if (persistentcache == null)
             persistentcache = new PersistentCache();
         persistentCache = persistentcache;
     }
 
-    public SQLPersister(Introspector introspector, Class class1, Connection connection1)
-    {
+    public SQLPersister(Introspector introspector, Class class1, Connection connection1) {
         this(introspector, class1, connection1, null);
     }
 
-    public SQLPersister(Introspector introspector, Class class1, Connection connection1, PersistentCache persistentcache)
-    {
+    public SQLPersister(Introspector introspector, Class class1, Connection connection1, PersistentCache persistentcache) {
         super(introspector);
         fetchPolicy = FetchAllPolicy.FETCHALL;
-        try
-        {
-            setColumnMap(((SQLPersistentInfo)introspector.getPersistentInfo(class1)).getDefaultColumnMap());
+        try {
+            setColumnMap(((SQLPersistentInfo) introspector.getPersistentInfo(class1)).getDefaultColumnMap());
             connection = connection1;
-            if(persistentcache == null)
+            if (persistentcache == null)
                 persistentcache = new PersistentCache();
             persistentCache = persistentcache;
-        }
-        catch(IntrospectionException introspectionexception)
-        {
+        } catch (IntrospectionException introspectionexception) {
             throw new IntrospectionError(introspectionexception);
         }
     }
 
-    public void clearCache()
-    {
+    public void clearCache() {
         persistentCache.clear();
     }
 
     public SQLBroker createBroker(Query query)
-        throws PersistencyException
-    {
+            throws PersistencyException {
         return createBroker(query, fetchPolicy);
     }
 
     public SQLBroker createBroker(Query query, FetchPolicy fetchpolicy)
-        throws PersistencyException
-    {
-        try{
-        	LoggableStatement preparedstatement = query.prepareStatement(getConnection());
+            throws PersistencyException {
+        try {
+            LoggableStatement preparedstatement = query.prepareStatement(getConnection());
             return createBroker(preparedstatement, preparedstatement.executeQuery(), query.getColumnMap(), fetchpolicy);
-        }catch(SQLException sqlexception){
+        } catch (SQLException sqlexception) {
             throw SQLExceptionHandler.getInstance().handleSQLException(sqlexception);
         }
     }
 
-    public SQLBroker createBroker(LoggableStatement statement, ResultSet resultset)
-    {
+    public SQLBroker createBroker(LoggableStatement statement, ResultSet resultset) {
         return createBroker(statement, resultset, getColumnMap(), fetchPolicy);
     }
 
-    public SQLBroker createBroker(LoggableStatement statement, ResultSet resultset, ColumnMap columnmap, FetchPolicy fetchpolicy)
-    {
+    public SQLBroker createBroker(LoggableStatement statement, ResultSet resultset, ColumnMap columnmap, FetchPolicy fetchpolicy) {
         return new SQLBroker(columnmap, getIntrospector(), persistentCache, statement, resultset, fetchpolicy);
     }
 
-    public SQLBuilder createSQLBuilder()
-    {
+    public SQLBuilder createSQLBuilder() {
         return new SQLBuilder(columnMap);
     }
 
     protected void doDelete(Persistent persistent)
-        throws PersistencyException
-    {
-        try
-        {
-        	LoggableStatement loggablestatement = getLoggableDeleteStatement();
-            try
-            {
+            throws PersistencyException {
+        try {
+            LoggableStatement loggablestatement = getLoggableDeleteStatement();
+            try {
                 setParametersUsing(loggablestatement, persistent, columnMap.getPrimaryColumnNames(), 1);
                 int i = loggablestatement.executeUpdate();
-                if(i == 0)
+                if (i == 0)
                     throw new ObjectNotFoundException("DELETE statment affected 0 rows.");
-                if(i > 1)
+                if (i > 1)
                     throw new DeleteException("DELETE statement affected more than 1 rows.");
+            } finally {
+                loggablestatement.close();
             }
-            finally
-            {
-            	loggablestatement.close();
-            }
-        }
-        catch(SQLException sqlexception)
-        {
+        } catch (SQLException sqlexception) {
             throw SQLExceptionHandler.getInstance().handleSQLException(sqlexception, persistent);
         }
     }
 
-	protected void doInsert(Persistent persistent)
-        throws PersistencyException
-    {
-        try
-        {
-        	LoggableStatement loggablestatement = getLoggableInsertStatement();
-            try
-            {
+    protected void doInsert(Persistent persistent)
+            throws PersistencyException {
+        try {
+            LoggableStatement loggablestatement = getLoggableInsertStatement();
+            try {
                 setParametersUsing(loggablestatement, persistent, columnMap.getColumnNames(), 1);
                 loggablestatement.execute();
+            } finally {
+                loggablestatement.close();
             }
-            finally
-            {
-            	loggablestatement.close();
-            }
-        }
-        catch(SQLException sqlexception)
-        {
+        } catch (SQLException sqlexception) {
             throw SQLExceptionHandler.getInstance().handleSQLException(sqlexception, persistent);
         }
     }
 
     protected void doUpdate(Persistent persistent)
-        throws PersistencyException
-    {
-        try
-        {
-        	LoggableStatement loggablestatement = getLoggableUpdateStatement();
-            try
-            {
+            throws PersistencyException {
+        try {
+            LoggableStatement loggablestatement = getLoggableUpdateStatement();
+            try {
                 int i = 1;
                 i = setParametersUsing(loggablestatement, persistent, columnMap.getNonPrimaryColumnNames(), i);
                 setParametersUsing(loggablestatement, persistent, columnMap.getPrimaryColumnNames(), i);
-                if(loggablestatement.executeUpdate() != 1)
+                if (loggablestatement.executeUpdate() != 1)
                     throw new UpdateException("UPDATE statement affected 0 or more than 1 rows.");
+            } finally {
+                loggablestatement.close();
             }
-            finally
-            {
-            	loggablestatement.close();
-            }
-        }
-        catch(SQLException sqlexception)
-        {
+        } catch (SQLException sqlexception) {
             throw SQLExceptionHandler.getInstance().handleSQLException(sqlexception, persistent);
         }
     }
 
     public Persistent findByPrimaryKey(Persistent persistent)
-        throws PersistencyException
-    {
+            throws PersistencyException {
         return findByPrimaryKey(persistent, persistent.getClass(), false);
     }
 
     protected Persistent findByPrimaryKey(Object obj, Class class1, boolean flag)
-        throws PersistencyException
-    {
-        try
-        {
-        	LoggableStatement loggablestatement;
-        	if (flag)
-        		loggablestatement = getLoggableSelectForUpdateStatement();
-        	else
-        		loggablestatement = getLoggableSelectStatement();
-        	loggablestatement.clearParameters();
+            throws PersistencyException {
+        try {
+            LoggableStatement loggablestatement;
+            if (flag)
+                loggablestatement = getLoggableSelectForUpdateStatement();
+            else
+                loggablestatement = getLoggableSelectStatement();
+            loggablestatement.clearParameters();
             setParametersUsing(loggablestatement, obj, columnMap.getPrimaryColumnNames(), 1);
             SQLBroker sqlbroker = createBroker(loggablestatement, loggablestatement.executeQuery());
-            if(!sqlbroker.next())
+            if (!sqlbroker.next())
                 return null;
             Persistent persistent = sqlbroker.fetch(class1);
-            if(sqlbroker.next())
-            {
+            if (sqlbroker.next()) {
                 sqlbroker.close();
                 throw new FindException("SELECT statement return more than one row");
-            } else
-            {
+            } else {
                 return persistent;
             }
-        }
-        catch(SQLException sqlexception)
-        {
+        } catch (SQLException sqlexception) {
             throw SQLExceptionHandler.getInstance().handleSQLException(sqlexception);
         }
     }
 
-    public ColumnMap getColumnMap()
-    {
+    public ColumnMap getColumnMap() {
         return columnMap;
     }
 
-    public Connection getConnection()
-    {
+    public void setColumnMap(ColumnMap columnmap) {
+        columnMap = columnmap;
+    }
+
+    public Connection getConnection() {
         return connection;
     }
 
     protected PreparedStatement getDeleteStatement()
-        throws SQLException
-    {
+            throws SQLException {
         return getConnection().prepareStatement(columnMap.getDefaultDeleteSQL());
     }
-    
-    protected LoggableStatement getLoggableDeleteStatement() throws SQLException
-	{
-	    return new LoggableStatement(getConnection(),columnMap.getDefaultDeleteSQL(),true,this.getClass());
-	}
-    public FetchPolicy getFetchPolicy()
-    {
+
+    protected LoggableStatement getLoggableDeleteStatement() throws SQLException {
+        return new LoggableStatement(getConnection(), columnMap.getDefaultDeleteSQL(), true, this.getClass());
+    }
+
+    public FetchPolicy getFetchPolicy() {
         return fetchPolicy;
     }
 
+    public void setFetchPolicy(FetchPolicy fetchpolicy) {
+        fetchPolicy = fetchpolicy;
+    }
+
     protected PreparedStatement getInsertStatement()
-        throws SQLException
-    {
+            throws SQLException {
         return getConnection().prepareStatement(columnMap.getDefaultInsertSQL());
     }
-    protected LoggableStatement getLoggableInsertStatement() throws SQLException
-	{
-	    return new LoggableStatement(getConnection(),columnMap.getDefaultInsertSQL(),true,this.getClass());
-	}
 
-    public PersistentCache getPersistentCache()
-    {
+    protected LoggableStatement getLoggableInsertStatement() throws SQLException {
+        return new LoggableStatement(getConnection(), columnMap.getDefaultInsertSQL(), true, this.getClass());
+    }
+
+    public PersistentCache getPersistentCache() {
         return persistentCache;
     }
 
+    public void setPersistentCache(PersistentCache persistentcache) {
+        persistentCache = persistentcache;
+    }
+
     protected PreparedStatement getSelectForUpdateStatement()
-        throws SQLException
-    {
+            throws SQLException {
         return getConnection().prepareStatement(columnMap.getDefaultSelectForUpdateSQL());
     }
 
     protected PreparedStatement getSelectStatement()
-        throws SQLException
-    {
+            throws SQLException {
         return getConnection().prepareStatement(columnMap.getDefaultSelectSQL());
     }
+
     protected LoggableStatement getLoggableSelectForUpdateStatement()
-    throws SQLException
-    {
-    	return new LoggableStatement(getConnection(),columnMap.getDefaultSelectForUpdateSQL(),true,this.getClass());
+            throws SQLException {
+        return new LoggableStatement(getConnection(), columnMap.getDefaultSelectForUpdateSQL(), true, this.getClass());
     }
 
-	protected LoggableStatement getLoggableSelectStatement()
-	    throws SQLException
-	{
-	    return new LoggableStatement(getConnection(),columnMap.getDefaultSelectSQL(),true,this.getClass());
-	}
+    protected LoggableStatement getLoggableSelectStatement()
+            throws SQLException {
+        return new LoggableStatement(getConnection(), columnMap.getDefaultSelectSQL(), true, this.getClass());
+    }
 
     protected PreparedStatement getUpdateStatement()
-        throws SQLException
-    {
+            throws SQLException {
         return getConnection().prepareStatement(columnMap.getDefaultUpdateSQL());
     }
-    protected LoggableStatement getLoggableUpdateStatement()
-    throws SQLException
-	{
-	    return new LoggableStatement(getConnection(),columnMap.getDefaultUpdateSQL(),true,this.getClass());
-	}
-    public void setColumnMap(ColumnMap columnmap)
-    {
-        columnMap = columnmap;
-    }
 
-    public void setFetchPolicy(FetchPolicy fetchpolicy)
-    {
-        fetchPolicy = fetchpolicy;
+    protected LoggableStatement getLoggableUpdateStatement()
+            throws SQLException {
+        return new LoggableStatement(getConnection(), columnMap.getDefaultUpdateSQL(), true, this.getClass());
     }
 
     protected int setParametersUsing(LoggableStatement preparedstatement, Object obj, String as[], int i)
-        throws SQLException
-    {
-        try
-        {
-            for(int j = 0; j < as.length;)
-            {
+            throws SQLException {
+        try {
+            for (int j = 0; j < as.length; ) {
                 ColumnMapping columnmapping = columnMap.getMappingForColumn(as[j]);
                 Object obj1 = getIntrospector().getPropertyValue(obj, columnmapping.getPropertyName());
                 SQLParameter.setParameterInPreparedStatement(i, preparedstatement, obj1, columnmapping.getSqlType(), columnmapping.getColumnScale(), columnmapping.getConverter());
@@ -312,20 +270,8 @@ public class SQLPersister extends Persister
             }
 
             return i;
-        }
-        catch(IntrospectionException introspectionexception)
-        {
+        } catch (IntrospectionException introspectionexception) {
             throw new IntrospectionError(introspectionexception);
         }
     }
-
-    public void setPersistentCache(PersistentCache persistentcache)
-    {
-        persistentCache = persistentcache;
-    }
-
-    private ColumnMap columnMap;
-    private final Connection connection;
-    private PersistentCache persistentCache;
-    private FetchPolicy fetchPolicy;
 }

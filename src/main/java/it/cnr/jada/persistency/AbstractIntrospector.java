@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2019  Consiglio Nazionale delle Ricerche
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as
+ *     published by the Free Software Foundation, either version 3 of the
+ *     License, or (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.cnr.jada.persistency;
 
 import org.slf4j.Logger;
@@ -16,16 +33,14 @@ public abstract class AbstractIntrospector
         implements Serializable, Introspector {
 
     public static final String INTROSPECTOR = "INTROSPECTOR";
+    private static final Logger logger = LoggerFactory.getLogger(AbstractIntrospector.class);
     private final Map persistentInfos = new HashMap();
     private final Constructor persistentInfoConstructor;
-    private static final Logger logger = LoggerFactory.getLogger(AbstractIntrospector.class);
 
     protected AbstractIntrospector(Class class1)
             throws IntrospectionException {
         try {
-            persistentInfoConstructor = class1.getConstructor(new Class[]{
-                    java.lang.Class.class, it.cnr.jada.persistency.Introspector.class
-            });
+            persistentInfoConstructor = class1.getConstructor(Class.class, Introspector.class);
         } catch (NoSuchMethodException _ex) {
             logger.error(INTROSPECTOR, _ex);
             throw new IntrospectionException("Impossibile creare un'istanza di " + class1 + ",manca un costruttore adeguato");

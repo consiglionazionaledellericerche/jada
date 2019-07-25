@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2019  Consiglio Nazionale delle Ricerche
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as
+ *     published by the Free Software Foundation, either version 3 of the
+ *     License, or (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.cnr.jada.persistency.sql;
 
 import it.cnr.jada.UserContext;
@@ -18,10 +35,10 @@ import java.util.Map;
 public class HomeCache
         implements Serializable {
 
+    private static final Logger logger = LoggerFactory.getLogger(HomeCache.class);
     private final PersistentCache persistentCache = new PersistentCache();
     private Connection connection;
     private Map homes;
-    private static final Logger logger = LoggerFactory.getLogger(HomeCache.class);
 
     public HomeCache(Connection connection1) {
         homes = new HashMap();
@@ -94,10 +111,10 @@ public class HomeCache
     }
 
     public PersistentHome getHome(Class class1, String s, String s1) {
-        Object obj = (Map) homes.get(class1);
+        Object obj = homes.get(class1);
         if (obj == null)
             homes.put(class1, obj = new HashMap());
-        Object obj1 = (Map) ((Map) (obj)).get(s);
+        Object obj1 = ((Map) (obj)).get(s);
         if (obj1 == null)
             ((Map) (obj)).put(s, obj1 = new HashMap());
         PersistentHome persistenthome = (PersistentHome) ((Map) (obj1)).get(s1);

@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2019  Consiglio Nazionale delle Ricerche
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as
+ *     published by the Free Software Foundation, either version 3 of the
+ *     License, or (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.cnr.jada.action;
 
 import it.cnr.jada.DetailedRuntimeException;
@@ -95,7 +112,7 @@ public abstract class AbstractAction
         try {
             int i = s.indexOf('(');
             int j = s.lastIndexOf(')');
-            String as[] = null;
+            String[] as = null;
             if (i > 0 && j > 0) {
                 StringTokenizer stringtokenizer = new StringTokenizer(s.substring(i + 1, j), ",");
                 as = new String[stringtokenizer.countTokens()];
@@ -107,8 +124,8 @@ public abstract class AbstractAction
             Method method = Introspector.getMethod(getClass(), s, as != null ? as.length + 1 : 1);
             if (method == null)
                 throw new ActionPerformingError("La action non implementa il comando " + s);
-            Class aclass[] = method.getParameterTypes();
-            java.lang.Object aobj[] = new java.lang.Object[aclass.length];
+            Class[] aclass = method.getParameterTypes();
+            java.lang.Object[] aobj = new java.lang.Object[aclass.length];
             aobj[0] = actioncontext;
             if (as != null) {
                 for (int l = 0; l < as.length; l++)

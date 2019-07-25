@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2019  Consiglio Nazionale delle Ricerche
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as
+ *     published by the Free Software Foundation, either version 3 of the
+ *     License, or (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.cnr.jada.persistency.sql;
 
 import it.cnr.jada.util.XmlWriter;
@@ -5,58 +22,126 @@ import it.cnr.jada.util.XmlWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
- * Oggetto che descrive la mappatura di una PersistentProperty su una colonna DB. 
- * Gli attributi di ColumnMapping sono: 
- * columnName Nome della colonna fisica su cui  mappata la property 
- * propertyName Nome della PersistentProperty su cui mappata la colonna 
- * primary se true la colonna fisica fa parte della chiave primaria della tabella 
- * fetchOnly se true la ColumnMapping viene aggiunta solo alla mappatura delle property; 
- * 		in pratica questa mappatura viene usata solo in lettura e non in scrittura. 
- * converterClassName Nome della classe da utilizzare come converter dal tipo di dati SQL al tipo della PersistentProperty e viceversa 
- * sqlType Il tipo SQL della colonna fisica; una stringa che puo assumere i seguenti valori: 
- * 	BIT 
- * 	TINYINT 
- * 	SMALLINT 
- * 	INTEGER 
- * 	BIGINT 
- * 	FLOAT 
- * 	REAL 
- * 	DOUBLE 
- * 	NUMERIC 
- * 	DECIMAL 
- * 	CHAR 
- * 	VARCHAR 
- * 	LONGVARCHAR 
- * 	DATE 
- * 	TIME 
- * 	TIMESTAMP 
- * 	BINARY 
- * 	VARBINARY 
- * 	LONGVARBINARY 
- * 	NULL 
- * 	OTHER 
- * 	JAVA_OBJECT 
- * 	DISTINCT 
- * 	STRUCT 
- * 	ARRAY 
- * 	BLOB 
- * 	CLOB 
- * 	REF 
- * columnSize Largezza fisica della colonna 
- * columnScale Scale della colonna (solo per le colonne di tipo DECIMAL) 
+ * Oggetto che descrive la mappatura di una PersistentProperty su una colonna DB.
+ * Gli attributi di ColumnMapping sono:
+ * columnName Nome della colonna fisica su cui  mappata la property
+ * propertyName Nome della PersistentProperty su cui mappata la colonna
+ * primary se true la colonna fisica fa parte della chiave primaria della tabella
+ * fetchOnly se true la ColumnMapping viene aggiunta solo alla mappatura delle property;
+ * in pratica questa mappatura viene usata solo in lettura e non in scrittura.
+ * converterClassName Nome della classe da utilizzare come converter dal tipo di dati SQL al tipo della PersistentProperty e viceversa
+ * sqlType Il tipo SQL della colonna fisica; una stringa che puo assumere i seguenti valori:
+ * BIT
+ * TINYINT
+ * SMALLINT
+ * INTEGER
+ * BIGINT
+ * FLOAT
+ * REAL
+ * DOUBLE
+ * NUMERIC
+ * DECIMAL
+ * CHAR
+ * VARCHAR
+ * LONGVARCHAR
+ * DATE
+ * TIME
+ * TIMESTAMP
+ * BINARY
+ * VARBINARY
+ * LONGVARBINARY
+ * NULL
+ * OTHER
+ * JAVA_OBJECT
+ * DISTINCT
+ * STRUCT
+ * ARRAY
+ * BLOB
+ * CLOB
+ * REF
+ * columnSize Largezza fisica della colonna
+ * columnScale Scale della colonna (solo per le colonne di tipo DECIMAL)
  * nullable Se false la colonna non puo contenere il valore SQL NULL
  */
-public class ColumnMapping implements Serializable{
+public class ColumnMapping implements Serializable {
+
+    private static final Map sqlTypeNames;
+    private static final Map reverseSqlTypeNames;
+    public static String SQLTYPE_BIT = "BIT";
+    public static String SQLTYPE_TINYINT = "TINYINT";
+    public static String SQLTYPE_SMALLINT = "SMALLINT";
+    public static String SQLTYPE_INTEGER = "INTEGER";
+    public static String SQLTYPE_BIGINT = "BIGINT";
+    public static String SQLTYPE_FLOAT = "FLOAT";
+    public static String SQLTYPE_REAL = "REAL";
+    public static String SQLTYPE_DOUBLE = "DOUBLE";
+    public static String SQLTYPE_NUMERIC = "NUMERIC";
+    public static String SQLTYPE_DECIMAL = "DECIMAL";
+    public static String SQLTYPE_CHAR = "CHAR";
+    public static String SQLTYPE_VARCHAR = "VARCHAR";
+    public static String SQLTYPE_LONGVARCHAR = "LONGVARCHAR";
+    public static String SQLTYPE_DATE = "DATE";
+    public static String SQLTYPE_TIME = "TIME";
+    public static String SQLTYPE_TIMESTAMP = "TIMESTAMP";
+    public static String SQLTYPE_BINARY = "BINARY";
+    public static String SQLTYPE_VARBINARY = "VARBINARY";
+    public static String SQLTYPE_LONGVARBINARY = "LONGVARBINARY";
+    public static String SQLTYPE_NULL = "NULL";
+    public static String SQLTYPE_OTHER = "OTHER";
+    public static String SQLTYPE_JAVA_OBJECT = "JAVA_OBJECT";
+    public static String SQLTYPE_DISTINCT = "DISTINCT";
+    public static String SQLTYPE_STRUCT = "STRUCT";
+    public static String SQLTYPE_ARRAY = "ARRAY";
+    public static String SQLTYPE_BLOB = "BLOB";
+    public static String SQLTYPE_CLOB = "CLOB";
+    public static String SQLTYPE_REF = "REF";
+
+    static {
+        sqlTypeNames = new HashMap();
+        sqlTypeNames.put(SQLTYPE_BIT, "-7");
+        sqlTypeNames.put(SQLTYPE_TINYINT, "-6");
+        sqlTypeNames.put(SQLTYPE_SMALLINT, "5");
+        sqlTypeNames.put(SQLTYPE_INTEGER, "4");
+        sqlTypeNames.put(SQLTYPE_BIGINT, "-5");
+        sqlTypeNames.put(SQLTYPE_FLOAT, "6");
+        sqlTypeNames.put(SQLTYPE_REAL, "7");
+        sqlTypeNames.put(SQLTYPE_DOUBLE, "8");
+        sqlTypeNames.put(SQLTYPE_NUMERIC, "2");
+        sqlTypeNames.put(SQLTYPE_DECIMAL, "3");
+        sqlTypeNames.put(SQLTYPE_CHAR, "1");
+        sqlTypeNames.put(SQLTYPE_VARCHAR, "12");
+        sqlTypeNames.put(SQLTYPE_LONGVARCHAR, "-1");
+        sqlTypeNames.put(SQLTYPE_DATE, "91");
+        sqlTypeNames.put(SQLTYPE_TIME, "92");
+        sqlTypeNames.put(SQLTYPE_TIMESTAMP, "93");
+        sqlTypeNames.put(SQLTYPE_BINARY, "-2");
+        sqlTypeNames.put(SQLTYPE_VARBINARY, "-3");
+        sqlTypeNames.put(SQLTYPE_LONGVARBINARY, "-4");
+        sqlTypeNames.put(SQLTYPE_NULL, "0");
+        sqlTypeNames.put(SQLTYPE_OTHER, "1111");
+        sqlTypeNames.put(SQLTYPE_JAVA_OBJECT, "2000");
+        sqlTypeNames.put(SQLTYPE_DISTINCT, "2001");
+        sqlTypeNames.put(SQLTYPE_STRUCT, "2002");
+        sqlTypeNames.put(SQLTYPE_ARRAY, "2003");
+        sqlTypeNames.put(SQLTYPE_BLOB, "2004");
+        sqlTypeNames.put(SQLTYPE_CLOB, "2005");
+        sqlTypeNames.put(SQLTYPE_REF, "2006");
+
+        reverseSqlTypeNames = new HashMap(sqlTypeNames.size());
+        Object obj;
+        for (Iterator iterator = sqlTypeNames.keySet().iterator(); iterator.hasNext(); reverseSqlTypeNames.put(sqlTypeNames.get(obj), obj))
+            obj = iterator.next();
+    }
 
     private String columnName;
     private String propertyName;
     private int sqlType;
     private SQLConverter converter;
-    private static final Map sqlTypeNames;
-    private static final Map reverseSqlTypeNames;
     private boolean primary;
     private int columnSize;
     private int columnScale;
@@ -64,228 +149,162 @@ public class ColumnMapping implements Serializable{
     private boolean fetchOnly;
     private Boolean orderable;
     private int ordinalPosition;
-	public static String SQLTYPE_BIT = "BIT";
-	public static String SQLTYPE_TINYINT = "TINYINT";
-	public static String SQLTYPE_SMALLINT = "SMALLINT";
-	public static String SQLTYPE_INTEGER = "INTEGER";
-	public static String SQLTYPE_BIGINT = "BIGINT";
-	public static String SQLTYPE_FLOAT = "FLOAT";
-	public static String SQLTYPE_REAL = "REAL";
-	public static String SQLTYPE_DOUBLE = "DOUBLE";
-	public static String SQLTYPE_NUMERIC = "NUMERIC";
-	public static String SQLTYPE_DECIMAL = "DECIMAL";
-	public static String SQLTYPE_CHAR = "CHAR";
-	public static String SQLTYPE_VARCHAR = "VARCHAR";
-	public static String SQLTYPE_LONGVARCHAR = "LONGVARCHAR";
-	public static String SQLTYPE_DATE = "DATE";
-	public static String SQLTYPE_TIME = "TIME";
-	public static String SQLTYPE_TIMESTAMP = "TIMESTAMP";
-	public static String SQLTYPE_BINARY = "BINARY";
-	public static String SQLTYPE_VARBINARY = "VARBINARY";
-	public static String SQLTYPE_LONGVARBINARY = "LONGVARBINARY";
-	public static String SQLTYPE_NULL = "NULL";
-	public static String SQLTYPE_OTHER = "OTHER";
-	public static String SQLTYPE_JAVA_OBJECT = "JAVA_OBJECT";
-	public static String SQLTYPE_DISTINCT = "DISTINCT";
-	public static String SQLTYPE_STRUCT = "STRUCT";
-	public static String SQLTYPE_ARRAY = "ARRAY";
-	public static String SQLTYPE_BLOB = "BLOB";
-	public static String SQLTYPE_CLOB = "CLOB";
-	public static String SQLTYPE_REF = "REF";
-	
-    static 
-    {
-		sqlTypeNames = new HashMap();
-		sqlTypeNames.put(SQLTYPE_BIT, "-7");
-		sqlTypeNames.put(SQLTYPE_TINYINT, "-6");
-		sqlTypeNames.put(SQLTYPE_SMALLINT, "5");
-		sqlTypeNames.put(SQLTYPE_INTEGER, "4");
-		sqlTypeNames.put(SQLTYPE_BIGINT, "-5");
-		sqlTypeNames.put(SQLTYPE_FLOAT, "6");
-		sqlTypeNames.put(SQLTYPE_REAL, "7");
-		sqlTypeNames.put(SQLTYPE_DOUBLE, "8");
-		sqlTypeNames.put(SQLTYPE_NUMERIC, "2");
-		sqlTypeNames.put(SQLTYPE_DECIMAL, "3");
-		sqlTypeNames.put(SQLTYPE_CHAR, "1");
-		sqlTypeNames.put(SQLTYPE_VARCHAR, "12");
-		sqlTypeNames.put(SQLTYPE_LONGVARCHAR, "-1");
-		sqlTypeNames.put(SQLTYPE_DATE, "91");
-		sqlTypeNames.put(SQLTYPE_TIME, "92");
-		sqlTypeNames.put(SQLTYPE_TIMESTAMP, "93");
-		sqlTypeNames.put(SQLTYPE_BINARY, "-2");
-		sqlTypeNames.put(SQLTYPE_VARBINARY, "-3");
-		sqlTypeNames.put(SQLTYPE_LONGVARBINARY, "-4");
-		sqlTypeNames.put(SQLTYPE_NULL, "0");
-		sqlTypeNames.put(SQLTYPE_OTHER, "1111");
-		sqlTypeNames.put(SQLTYPE_JAVA_OBJECT, "2000");
-		sqlTypeNames.put(SQLTYPE_DISTINCT, "2001");
-		sqlTypeNames.put(SQLTYPE_STRUCT, "2002");
-		sqlTypeNames.put(SQLTYPE_ARRAY, "2003");
-		sqlTypeNames.put(SQLTYPE_BLOB, "2004");
-		sqlTypeNames.put(SQLTYPE_CLOB, "2005");
-		sqlTypeNames.put(SQLTYPE_REF, "2006");
 
-        reverseSqlTypeNames = new HashMap(sqlTypeNames.size());
-        Object obj;
-        for(Iterator iterator = sqlTypeNames.keySet().iterator(); iterator.hasNext(); reverseSqlTypeNames.put(sqlTypeNames.get(obj), obj))
-            obj = iterator.next();
-    }
-    
     public ColumnMapping() {
         ordinalPosition = 0;
     }
 
-    void fillNullsFrom(ColumnMapping columnmapping){
-        if(columnmapping == null)
+    public static String getSqlTypeName(int i) {
+        return (String) reverseSqlTypeNames.get(String.valueOf(i));
+    }
+
+    public static int parseSqlTypeName(String s) throws ParseException {
+        return Integer.parseInt((String) sqlTypeNames.get(s.toUpperCase()));
+    }
+
+    void fillNullsFrom(ColumnMapping columnmapping) {
+        if (columnmapping == null)
             return;
-        if(columnScale == 0)
+        if (columnScale == 0)
             columnScale = columnmapping.columnScale;
-        if(columnSize == 0)
+        if (columnSize == 0)
             columnSize = columnmapping.columnSize;
-        if(nullable == null)
+        if (nullable == null)
             nullable = columnmapping.nullable;
-        if(!primary)
+        if (!primary)
             primary = columnmapping.primary;
-        if(sqlType == 0)
+        if (sqlType == 0)
             sqlType = columnmapping.sqlType;
-        if(orderable == null)
+        if (orderable == null)
             orderable = columnmapping.orderable;
     }
 
-    public String getColumnName(){
+    public String getColumnName() {
         return columnName;
     }
 
-    public int getColumnScale(){
+    public void setColumnName(String s) {
+        columnName = s;
+    }
+
+    public int getColumnScale() {
         return columnScale;
     }
 
-    public int getColumnSize(){
+    public void setColumnScale(int i) {
+        columnScale = i;
+    }
+
+    public int getColumnSize() {
         return columnSize;
     }
 
-    public SQLConverter getConverter(){
+    public void setColumnSize(int i) {
+        columnSize = i;
+    }
+
+    public SQLConverter getConverter() {
         return converter;
     }
 
-    public String getConverterClassName(){
-        if(converter == null)
+    public void setConverter(SQLConverter sqlconverter) {
+        converter = sqlconverter;
+    }
+
+    public String getConverterClassName() {
+        if (converter == null)
             return null;
         else
             return converter.getClass().getName();
     }
 
-    public int getOrdinalPosition(){
-        return ordinalPosition;
-    }
-
-    public String getPropertyName(){
-        return propertyName;
-    }
-
-    public int getSqlType(){
-        return sqlType;
-    }
-
-    public String getSqlTypeName(){
-        return getSqlTypeName(sqlType);
-    }
-
-    public static String getSqlTypeName(int i){
-        return (String)reverseSqlTypeNames.get(String.valueOf(i));
-    }
-
-    public boolean isFetchOnly(){
-        return fetchOnly;
-    }
-
-    public boolean isNullable(){
-        return nullable != Boolean.FALSE;
-    }
-
-    public boolean isOrderable(){
-        return orderable != Boolean.FALSE;
-    }
-
-    public boolean isPrimary(){
-        return primary;
-    }
-
-    public static int parseSqlTypeName(String s) throws ParseException{
-        return Integer.parseInt((String)sqlTypeNames.get(s.toUpperCase()));
-    }
-
-    public void setColumnName(String s){
-        columnName = s;
-    }
-
-    public void setColumnScale(int i){
-        columnScale = i;
-    }
-
-    public void setColumnSize(int i){
-        columnSize = i;
-    }
-
-    public void setConverter(SQLConverter sqlconverter){
-        converter = sqlconverter;
-    }
-
-    public void setConverterClassName(String s){
-        try{
-            setConverter((SQLConverter)Class.forName(s).newInstance());
-        }catch(ClassNotFoundException _ex){
+    public void setConverterClassName(String s) {
+        try {
+            setConverter((SQLConverter) Class.forName(s).newInstance());
+        } catch (ClassNotFoundException _ex) {
             throw new RuntimeException("Non \350 possibile trovare la classe " + s);
-        }catch(InstantiationException _ex){
+        } catch (InstantiationException _ex) {
             throw new RuntimeException("Non \350 possibile istanziare il SQLConverter " + s);
-        }catch(ClassCastException _ex){
+        } catch (ClassCastException _ex) {
             throw new RuntimeException("La classe " + s + " non \350 un SQLConverter");
-        }catch(IllegalAccessException _ex){
+        } catch (IllegalAccessException _ex) {
             throw new RuntimeException("IllegalAccessException durante l'istanziazione del SQLConveter" + s);
         }
     }
 
-    public void setFetchOnly(boolean flag){
-        fetchOnly = flag;
+    public int getOrdinalPosition() {
+        return ordinalPosition;
     }
 
-    public void setNullable(boolean flag){
-        nullable = flag ? Boolean.TRUE : Boolean.FALSE;
-    }
-
-    public void setOrderable(boolean flag){
-        orderable = !primary && !flag ? Boolean.FALSE : Boolean.TRUE;
-    }
-
-    public void setOrdinalPosition(int i){
+    public void setOrdinalPosition(int i) {
         ordinalPosition = i;
     }
 
-    public void setPrimary(boolean flag){
-        primary = flag;
+    public String getPropertyName() {
+        return propertyName;
     }
 
-    public void setPropertyName(String s){
+    public void setPropertyName(String s) {
         propertyName = s;
     }
 
-    public void setSqlType(int i){
+    public int getSqlType() {
+        return sqlType;
+    }
+
+    public void setSqlType(int i) {
         sqlType = i;
     }
 
-    public void setSqlTypeName(String s){
-        try{
+    public String getSqlTypeName() {
+        return getSqlTypeName(sqlType);
+    }
+
+    public void setSqlTypeName(String s) {
+        try {
             setSqlType(parseSqlTypeName(s));
-        }catch(ParseException _ex){
+        } catch (ParseException _ex) {
             throw new RuntimeException(s + " non \350 un tipo SQL conosciuto");
         }
     }
 
-    public String toString(){
+    public boolean isFetchOnly() {
+        return fetchOnly;
+    }
+
+    public void setFetchOnly(boolean flag) {
+        fetchOnly = flag;
+    }
+
+    public boolean isNullable() {
+        return nullable != Boolean.FALSE;
+    }
+
+    public void setNullable(boolean flag) {
+        nullable = flag ? Boolean.TRUE : Boolean.FALSE;
+    }
+
+    public boolean isOrderable() {
+        return orderable != Boolean.FALSE;
+    }
+
+    public void setOrderable(boolean flag) {
+        orderable = !primary && !flag ? Boolean.FALSE : Boolean.TRUE;
+    }
+
+    public boolean isPrimary() {
+        return primary;
+    }
+
+    public void setPrimary(boolean flag) {
+        primary = flag;
+    }
+
+    public String toString() {
         return getColumnName() + " -> " + getPropertyName();
     }
 
-    public void writeTo(XmlWriter xmlwriter) throws IOException{
+    public void writeTo(XmlWriter xmlwriter) throws IOException {
         xmlwriter.openTag("columnMapping");
         xmlwriter.printAttribute("columnName", getColumnName(), null);
         xmlwriter.printAttribute("propertyName", getPropertyName(), null);
@@ -297,5 +316,5 @@ public class ColumnMapping implements Serializable{
         xmlwriter.printAttribute("converterClassName", getConverterClassName(), null);
         xmlwriter.closeLastTag();
     }
-    
+
 }

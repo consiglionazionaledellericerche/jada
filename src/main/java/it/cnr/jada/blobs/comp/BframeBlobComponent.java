@@ -1,33 +1,37 @@
+/*
+ * Copyright (C) 2019  Consiglio Nazionale delle Ricerche
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as
+ *     published by the Free Software Foundation, either version 3 of the
+ *     License, or (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.cnr.jada.blobs.comp;
 
 import it.cnr.jada.UserContext;
 import it.cnr.jada.blobs.bulk.*;
 import it.cnr.jada.bulk.BulkHome;
-import it.cnr.jada.bulk.ColumnFieldProperty;
-import it.cnr.jada.bulk.OggettoBulk;
 import it.cnr.jada.comp.ApplicationException;
 import it.cnr.jada.comp.Component;
 import it.cnr.jada.comp.ComponentException;
 import it.cnr.jada.comp.RicercaComponent;
-import it.cnr.jada.ejb.BulkLoaderIterator;
-import it.cnr.jada.ejb.TransactionalBulkLoaderIterator;
 import it.cnr.jada.persistency.PersistencyException;
 import it.cnr.jada.persistency.sql.ColumnMapping;
-import it.cnr.jada.persistency.sql.CompoundFindClause;
 import it.cnr.jada.persistency.sql.SQLBuilder;
 import it.cnr.jada.persistency.sql.SQLQuery;
-import it.cnr.jada.util.Introspector;
 import it.cnr.jada.util.RemoteIterator;
-import it.cnr.jada.util.RemoteIteratorEnumeration;
-import org.apache.poi.hssf.usermodel.*;
 
-import java.io.*;
-import java.math.BigDecimal;
-import java.rmi.NoSuchObjectException;
+import java.io.Serializable;
 import java.sql.Blob;
-import java.sql.Timestamp;
-import java.util.Dictionary;
-import java.util.Enumeration;
 import java.util.Iterator;
 
 // Referenced classes of package it.cnr.jada.blobs.comp:
@@ -115,9 +119,9 @@ public class BframeBlobComponent extends RicercaComponent
         return selezione;
     }
 
-    public void insertBlob(UserContext context) throws ComponentException, Exception {
+    public void insertBlob(UserContext context) throws Exception {
         Bframe_blobBulk bframe_blob = new Bframe_blobBulk("tipo", "filename", "percorso");
-        BulkHome home = (BulkHome) getHome(context, Bframe_blobBulk.class);
+        BulkHome home = getHome(context, Bframe_blobBulk.class);
         bframe_blob.setUser(context.getUser());
         home.insert(bframe_blob, context);
         Blob blob = getHome(context, Bframe_blobBulk.class).getSQLBlob(bframe_blob, "BDATA");

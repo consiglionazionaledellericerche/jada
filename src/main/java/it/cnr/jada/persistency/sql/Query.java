@@ -1,32 +1,49 @@
+/*
+ * Copyright (C) 2019  Consiglio Nazionale delle Ricerche
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as
+ *     published by the Free Software Foundation, either version 3 of the
+ *     License, or (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.cnr.jada.persistency.sql;
 
 import it.cnr.jada.util.OrderConstants;
 
 import java.io.Serializable;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 // Referenced classes of package it.cnr.jada.persistency.sql:
 //            ColumnMap
 
 public interface Query
-    extends OrderConstants, Serializable
-{
+        extends OrderConstants, Serializable {
 
-    public abstract int executeCountQuery(Connection connection)
-        throws SQLException;
+    int executeCountQuery(Connection connection)
+            throws SQLException;
 
-    public abstract ColumnMap getColumnMap();
+    ColumnMap getColumnMap();
 
-    public abstract int getOrderBy(String s);
+    int getOrderBy(String s);
 
-    public abstract boolean isOrderableByProperty(String s);
+    boolean isOrderableByProperty(String s);
 
-    public abstract LoggableStatement prepareStatement(Connection connection)
-        throws SQLException;
+    LoggableStatement prepareStatement(Connection connection)
+            throws SQLException;
 
-    public abstract LoggableStatement prepareStatement(Connection connection, int i, int j)
-        throws SQLException;
+    LoggableStatement prepareStatement(Connection connection, int i, int j)
+            throws SQLException;
 
-    public abstract void setOrderBy(String s, int i);
+    void setOrderBy(String s, int i);
 
 }

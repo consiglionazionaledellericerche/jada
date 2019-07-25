@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2019  Consiglio Nazionale delle Ricerche
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as
+ *     published by the Free Software Foundation, either version 3 of the
+ *     License, or (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.cnr.jada.util.action;
 
 import it.cnr.jada.bulk.OggettoBulk;
@@ -14,57 +31,58 @@ import java.util.Enumeration;
 //            CondizioneComplessaBulk
 
 public abstract class CondizioneRicercaBulk extends OggettoBulk
-    implements Serializable, NodoAlbero
-{
+        implements Serializable, NodoAlbero {
 
-    public CondizioneRicercaBulk()
-    {
+    private static final Dictionary logicalOperatorOptions;
+
+    static {
+        logicalOperatorOptions = new OrderedHashtable();
+        logicalOperatorOptions.put("AND", "e");
+        logicalOperatorOptions.put("OR", "o");
+    }
+
+    private String logicalOperator;
+    private CondizioneComplessaBulk parent;
+
+    public CondizioneRicercaBulk() {
     }
 
     public abstract FindClause creaFindClause();
 
-    public String getLogicalOperator()
-    {
+    public String getLogicalOperator() {
         return logicalOperator;
     }
 
-    public Dictionary getLogicalOperatorOptions()
-    {
-        return logicalOperatorOptions;
-    }
-
-    public Object getObject()
-    {
-        return this;
-    }
-
-    public CondizioneComplessaBulk getParent()
-    {
-        return parent;
-    }
-
-    public boolean isPrimaCondizione()
-    {
-        return getParent() == null || getParent().getChildren().nextElement() == this;
-    }
-
-    public void setLogicalOperator(String s)
-    {
-        if("".equals(s))
+    public void setLogicalOperator(String s) {
+        if ("".equals(s))
             logicalOperator = null;
         else
             logicalOperator = s;
     }
 
-    public void setParent(CondizioneComplessaBulk condizionecomplessabulk)
-    {
+    public Dictionary getLogicalOperatorOptions() {
+        return logicalOperatorOptions;
+    }
+
+    public Object getObject() {
+        return this;
+    }
+
+    public CondizioneComplessaBulk getParent() {
+        return parent;
+    }
+
+    public void setParent(CondizioneComplessaBulk condizionecomplessabulk) {
         parent = condizionecomplessabulk;
     }
 
+    public boolean isPrimaCondizione() {
+        return getParent() == null || getParent().getChildren().nextElement() == this;
+    }
+
     public void validate()
-        throws ValidationException
-    {
-        if(logicalOperator == null && !isPrimaCondizione())
+            throws ValidationException {
+        if (logicalOperator == null && !isPrimaCondizione())
             throw new ValidationException("E' necessario specificare un operatore logico (e,o)");
         else
             return;
@@ -73,15 +91,4 @@ public abstract class CondizioneRicercaBulk extends OggettoBulk
     public abstract String getDescrizioneNodo();
 
     public abstract Enumeration getFigliNodo();
-
-    private static final Dictionary logicalOperatorOptions;
-    private String logicalOperator;
-    private CondizioneComplessaBulk parent;
-
-    static 
-    {
-        logicalOperatorOptions = new OrderedHashtable();
-        logicalOperatorOptions.put("AND", "e");
-        logicalOperatorOptions.put("OR", "o");
-    }
 }

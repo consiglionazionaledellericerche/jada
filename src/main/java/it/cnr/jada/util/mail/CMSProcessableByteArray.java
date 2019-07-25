@@ -1,26 +1,43 @@
-package it.cnr.jada.util.mail;
+/*
+ * Copyright (C) 2019  Consiglio Nazionale delle Ricerche
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as
+ *     published by the Free Software Foundation, either version 3 of the
+ *     License, or (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 
-import java.io.IOException;
-import java.io.OutputStream;
+package it.cnr.jada.util.mail;
 
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSProcessable;
+
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * a holding class for a byte array of data to be compressed.
  */
 public class CMSProcessableByteArray implements CMSProcessable {
-        private byte[] bytes;
+    private byte[] bytes;
 
-        public CMSProcessableByteArray(byte[] bytes) {
-                this.bytes = bytes;
-        }
+    public CMSProcessableByteArray(byte[] bytes) {
+        this.bytes = bytes;
+    }
 
-        public void write(OutputStream zOut) throws IOException, CMSException {
-                zOut.write(bytes);
-        }
+    public void write(OutputStream zOut) throws IOException, CMSException {
+        zOut.write(bytes);
+    }
 
-        public Object getContent() {
-                return bytes.clone();
-        }
+    public Object getContent() {
+        return bytes.clone();
+    }
 }

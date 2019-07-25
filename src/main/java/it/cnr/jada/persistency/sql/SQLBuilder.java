@@ -1,7 +1,23 @@
+/*
+ * Copyright (C) 2019  Consiglio Nazionale delle Ricerche
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as
+ *     published by the Free Software Foundation, either version 3 of the
+ *     License, or (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.cnr.jada.persistency.sql;
 
 import it.cnr.jada.DetailedRuntimeException;
-import it.cnr.jada.bulk.OggettoBulk;
 import it.cnr.jada.persistency.*;
 import it.cnr.jada.persistency.beans.BeanIntrospector;
 import it.cnr.jada.util.IntrospectionError;
@@ -145,9 +161,9 @@ public class SQLBuilder extends SQLQuery {
     public void addBetweenClause(String s, String s1, Object obj, Object obj1) {
         ColumnMapping columnmapping = super.columnMap.getMappingForProperty(s1);
         addSQLBetweenClause(s, Optional.ofNullable(columnmapping.getColumnName())
-                .filter(columnName -> columnName.indexOf(".") != -1)
-                .map(columnName -> columnName)
-                .orElse(super.columnMap.getTableName().concat(".").concat(columnmapping.getColumnName())),
+                        .filter(columnName -> columnName.indexOf(".") != -1)
+                        .map(columnName -> columnName)
+                        .orElse(super.columnMap.getTableName().concat(".").concat(columnmapping.getColumnName())),
                 obj, obj1, columnmapping.getSqlType(), columnmapping.getColumnScale(), columnmapping.getConverter());
     }
 
@@ -196,7 +212,7 @@ public class SQLBuilder extends SQLQuery {
      * 3° parametro valore di default della decode
      */
     public String addDecode(Object o, OrderedHashtable table, Object obj) {
-        String s = new String();
+        String s = "";
         s = s + "Decode (" + o + ",";
         for (Enumeration e = table.keys(); e.hasMoreElements(); ) {
             s = s + table.get(e.nextElement()) + ",";
@@ -231,9 +247,9 @@ public class SQLBuilder extends SQLQuery {
         if (columnmapping != null) {
             addSQLClause(s,
                     Optional.ofNullable(columnmapping.getColumnName())
-                    .filter(columnName -> columnName.indexOf(".") != -1)
-                    .map(columnName -> columnName)
-                    .orElse(super.columnMap.getTableName().concat(".").concat(columnmapping.getColumnName())),
+                            .filter(columnName -> columnName.indexOf(".") != -1)
+                            .map(columnName -> columnName)
+                            .orElse(super.columnMap.getTableName().concat(".").concat(columnmapping.getColumnName())),
                     i, obj, columnmapping.getSqlType(), columnmapping.getColumnScale(), columnmapping.getConverter(), flag, false);
         } else if (obj instanceof KeyedPersistent)
             try {
@@ -306,7 +322,7 @@ public class SQLBuilder extends SQLQuery {
 
     public void addClausesUsing(Persistent persistent, String as[], boolean flag)
             throws IntrospectionException {
-        addClausesUsing(persistent, ((Introspector) (BeanIntrospector.getSQLInstance())), as, flag);
+        addClausesUsing(persistent, BeanIntrospector.getSQLInstance(), as, flag);
     }
 
     public void addClausesUsing(Persistent persistent, Introspector introspector, String as[], boolean flag)
@@ -317,9 +333,9 @@ public class SQLBuilder extends SQLQuery {
             Object obj = introspector.getPropertyValue(persistent, s);
             if (flag || obj != null)
                 addSQLClause("AND", Optional.ofNullable(columnmapping.getColumnName())
-                        .filter(columnName -> columnName.indexOf(".") != -1)
-                        .map(columnName -> columnName)
-                        .orElse(super.columnMap.getTableName().concat(".").concat(columnmapping.getColumnName())),
+                                .filter(columnName -> columnName.indexOf(".") != -1)
+                                .map(columnName -> columnName)
+                                .orElse(super.columnMap.getTableName().concat(".").concat(columnmapping.getColumnName())),
                         EQUALS, obj, columnmapping.getSqlType(), columnmapping.getColumnScale(), columnmapping.getConverter(), true, false);
         }
 
@@ -332,9 +348,9 @@ public class SQLBuilder extends SQLQuery {
                 Object obj = introspector.getPropertyValue(persistent, columnmapping.getPropertyName());
                 if (flag || obj != null)
                     addSQLClause("AND", Optional.ofNullable(columnmapping.getColumnName())
-                            .filter(columnName -> columnName.indexOf(".") != -1)
-                            .map(columnName -> columnName)
-                            .orElse(super.columnMap.getTableName().concat(".").concat(columnmapping.getColumnName())),
+                                    .filter(columnName -> columnName.indexOf(".") != -1)
+                                    .map(columnName -> columnName)
+                                    .orElse(super.columnMap.getTableName().concat(".").concat(columnmapping.getColumnName())),
                             EQUALS, obj, columnmapping.getSqlType(), columnmapping.getColumnScale(), columnmapping.getConverter(), true, false);
             }
 
@@ -344,7 +360,7 @@ public class SQLBuilder extends SQLQuery {
     }
 
     public void addClausesUsing(Persistent persistent, boolean flag) {
-        addClausesUsing(persistent, ((Introspector) (BeanIntrospector.getSQLInstance())), flag);
+        addClausesUsing(persistent, BeanIntrospector.getSQLInstance(), flag);
     }
 
     public void addClauseUsing(String s, Persistent persistent, String s1, String s2, Introspector introspector, boolean flag, boolean flag1)
@@ -355,16 +371,18 @@ public class SQLBuilder extends SQLQuery {
         Class class1 = introspector.getPropertyType(persistent.getClass(), s2);
         if (it.cnr.jada.persistency.KeyedPersistent.class.isAssignableFrom(class1)) {
             PersistentProperty persistentproperty;
-            for (Iterator iterator = introspector.getPersistentInfo(class1).getOidPersistentProperties().values().iterator(); iterator.hasNext(); addClauseUsing(s, ((Persistent) ((KeyedPersistent) obj)), Prefix.prependPrefix(s1, s2), persistentproperty.getName(), introspector, flag, true))
+            for (Iterator iterator = introspector.getPersistentInfo(class1).getOidPersistentProperties().values().iterator(); iterator.hasNext();
+                    addClauseUsing(s, Optional.ofNullable(obj).filter(Persistent.class::isInstance).map(Persistent.class::cast).orElse(null),
+                            Prefix.prependPrefix(s1, s2), persistentproperty.getName(), introspector, flag, true))
                 persistentproperty = (PersistentProperty) iterator.next();
 
         } else {
             ColumnMapping columnmapping = super.columnMap.getMappingForProperty(Prefix.prependPrefix(s1, s2));
             if (columnmapping != null)
                 addSQLClause(s, Optional.ofNullable(columnmapping.getColumnName())
-                        .filter(columnName -> columnName.indexOf(".") != -1)
-                        .map(columnName -> columnName)
-                        .orElse(super.columnMap.getTableName().concat(".").concat(columnmapping.getColumnName())),
+                                .filter(columnName -> columnName.indexOf(".") != -1)
+                                .map(columnName -> columnName)
+                                .orElse(super.columnMap.getTableName().concat(".").concat(columnmapping.getColumnName())),
                         EQUALS, obj, columnmapping.getSqlType(), columnmapping.getColumnScale(), columnmapping.getConverter(), flag1, false);
         }
     }
@@ -545,7 +563,7 @@ public class SQLBuilder extends SQLQuery {
         }
         clauses.append(" (");
         clauses.append(sqlbuilder.getStatement());
-        for (Iterator iterator = ((SQLQuery) (sqlbuilder)).parameters.iterator(); iterator.hasNext(); super.parameters.add(iterator.next()))
+        for (Iterator iterator = sqlbuilder.parameters.iterator(); iterator.hasNext(); super.parameters.add(iterator.next()))
             ;
         clauses.append(") )");
         resetStatement();
@@ -658,7 +676,7 @@ public class SQLBuilder extends SQLQuery {
         addLogicalOperator(s);
         clauses.append(" EXISTS ( ");
         clauses.append(sqlbuilder.getStatement());
-        for (Iterator iterator = ((SQLQuery) (sqlbuilder)).parameters.iterator(); iterator.hasNext(); super.parameters.add(iterator.next()))
+        for (Iterator iterator = sqlbuilder.parameters.iterator(); iterator.hasNext(); super.parameters.add(iterator.next()))
             ;
         clauses.append(" )");
         resetStatement();
@@ -669,7 +687,7 @@ public class SQLBuilder extends SQLQuery {
         clauses.append(columnName);
         clauses.append(" IN ( ");
         clauses.append(sqlbuilder.getStatement());
-        for (Iterator iterator = ((SQLQuery) (sqlbuilder)).parameters.iterator(); iterator.hasNext(); super.parameters.add(iterator.next()))
+        for (Iterator iterator = sqlbuilder.parameters.iterator(); iterator.hasNext(); super.parameters.add(iterator.next()))
             ;
         clauses.append(" )");
         resetStatement();
@@ -680,7 +698,7 @@ public class SQLBuilder extends SQLQuery {
         clauses.append(columnName);
         clauses.append(" NOT IN ( ");
         clauses.append(sqlbuilder.getStatement());
-        for (Iterator iterator = ((SQLQuery) (sqlbuilder)).parameters.iterator(); iterator.hasNext(); super.parameters.add(iterator.next()))
+        for (Iterator iterator = sqlbuilder.parameters.iterator(); iterator.hasNext(); super.parameters.add(iterator.next()))
             ;
         clauses.append(" )");
         resetStatement();
@@ -719,7 +737,7 @@ public class SQLBuilder extends SQLQuery {
      * Costruisce una Join o un'autoJoin di uguaglianza
      */
     public void addSQLJoin(String s, String s1) {
-        addSQLJoin(s, this.EQUALS, s1);
+        addSQLJoin(s, EQUALS, s1);
     }
 
     /**
@@ -740,7 +758,8 @@ public class SQLBuilder extends SQLQuery {
         addLogicalOperator(s);
         clauses.append(" NOT EXISTS ( ");
         clauses.append(sqlbuilder.getStatement());
-        for (Iterator iterator = ((SQLQuery) (sqlbuilder)).parameters.iterator(); iterator.hasNext(); super.parameters.add(iterator.next()));
+        for (Iterator iterator = sqlbuilder.parameters.iterator(); iterator.hasNext(); super.parameters.add(iterator.next()))
+            ;
         clauses.append(" )");
         resetStatement();
     }
@@ -748,7 +767,8 @@ public class SQLBuilder extends SQLQuery {
     public void addMINUSClause(SQLBuilder sqlbuilder) {
         clauses.append(" MINUS ");
         clauses.append(sqlbuilder.getStatement());
-        for (Iterator iterator = ((SQLQuery) (sqlbuilder)).parameters.iterator(); iterator.hasNext(); super.parameters.add(iterator.next()));
+        for (Iterator iterator = sqlbuilder.parameters.iterator(); iterator.hasNext(); super.parameters.add(iterator.next()))
+            ;
         resetStatement();
     }
 
@@ -784,9 +804,9 @@ public class SQLBuilder extends SQLQuery {
         ColumnMapping columnmapping = super.columnMap.getMappingForProperty(s);
         if (columnmapping != null)
             addUpdateSQLClause(Optional.ofNullable(columnmapping.getColumnName())
-                    .filter(columnName -> columnName.indexOf(".") != -1)
-                    .map(columnName -> columnName)
-                    .orElse(super.columnMap.getTableName().concat(".").concat(columnmapping.getColumnName())),
+                            .filter(columnName -> columnName.indexOf(".") != -1)
+                            .map(columnName -> columnName)
+                            .orElse(super.columnMap.getTableName().concat(".").concat(columnmapping.getColumnName())),
                     obj, columnmapping.getSqlType(), columnmapping.getColumnScale(), columnmapping.getConverter());
         else if (obj instanceof KeyedPersistent)
             try {
@@ -804,9 +824,9 @@ public class SQLBuilder extends SQLQuery {
         ColumnMapping columnmapping = super.columnMap.getMappingForProperty(s);
         if (columnmapping != null)
             addUpdateSQLClause(Optional.ofNullable(columnmapping.getColumnName())
-                    .filter(columnName -> columnName.indexOf(".") != -1)
-                    .map(columnName -> columnName)
-                    .orElse(super.columnMap.getTableName().concat(".").concat(columnmapping.getColumnName())),
+                            .filter(columnName -> columnName.indexOf(".") != -1)
+                            .map(columnName -> columnName)
+                            .orElse(super.columnMap.getTableName().concat(".").concat(columnmapping.getColumnName())),
                     null, columnmapping.getSqlType(), columnmapping.getColumnScale(), columnmapping.getConverter());
         else
             try {
@@ -924,7 +944,7 @@ public class SQLBuilder extends SQLQuery {
                 if (clauses.length() > 0)
                     stringbuffer.append(" AND");
                 for (Iterator iterator1 = joins.values().iterator(); iterator1.hasNext(); ) {
-                    String as[] = (String[]) iterator1.next();
+                    String[] as = (String[]) iterator1.next();
                     stringbuffer.append(" ( ");
                     stringbuffer.append(as[1]);
                     stringbuffer.append(" ) \n");
@@ -1063,7 +1083,7 @@ public class SQLBuilder extends SQLQuery {
             return false;
         } else {
             ColumnMapping columnmapping = getColumnMap().getMappingForProperty(s);
-            return columnmapping != null ? columnmapping.isOrderable() : false;
+            return columnmapping != null && columnmapping.isOrderable();
         }
     }
 
@@ -1180,7 +1200,7 @@ public class SQLBuilder extends SQLQuery {
         }
         havingClauses.append(" (");
         havingClauses.append(sqlbuilder.getStatement());
-        for (Iterator iterator = ((SQLQuery) (sqlbuilder)).parameters.iterator(); iterator.hasNext(); super.parameters.add(iterator.next()))
+        for (Iterator iterator = sqlbuilder.parameters.iterator(); iterator.hasNext(); super.parameters.add(iterator.next()))
             ;
         havingClauses.append(") )");
         resetStatement();

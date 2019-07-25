@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2019  Consiglio Nazionale delle Ricerche
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as
+ *     published by the Free Software Foundation, either version 3 of the
+ *     License, or (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.cnr.jada.util.action;
 
 import it.cnr.jada.DetailedRuntimeException;
@@ -37,8 +54,8 @@ public class SelezionatoreListaAction extends SelezionatoreAction
         SelezionatoreListaBP selezionatorelistabp = (SelezionatoreListaBP) actioncontext.getBusinessProcess();
         final Optional<HookForward> seleziona =
                 Optional.ofNullable(actioncontext.findForward("seleziona"))
-                    .filter(HookForward.class::isInstance)
-                    .map(HookForward.class::cast);
+                        .filter(HookForward.class::isInstance)
+                        .map(HookForward.class::cast);
         if (seleziona.isPresent()) {
             if (selezionatorelistabp.getSelectionListener() == null) {
                 seleziona.get().addParameter("selectedElements", selezionatorelistabp.getSelectedElements(actioncontext));
@@ -277,8 +294,8 @@ public class SelezionatoreListaAction extends SelezionatoreAction
             SelezionatoreListaBP selezionatorelistabp = (SelezionatoreListaBP) context.getBusinessProcess();
             selezionatorelistabp.deSelectAll(context);
             return context.findDefaultForward();
-        } catch(Throwable e) {
-            return handleException(context,e);
+        } catch (Throwable e) {
+            return handleException(context, e);
         }
     }
 
@@ -353,7 +370,7 @@ public class SelezionatoreListaAction extends SelezionatoreAction
         try {
             doCloseForm(actioncontext);
         } catch (BusinessProcessException businessprocessexception) {
-            return handleException(actioncontext, ((Throwable) (businessprocessexception)));
+            return handleException(actioncontext, businessprocessexception);
         }
         setErrorMessage(actioncontext, "Tempo a disposizione per la ricerca scaduto.");
         return actioncontext.findDefaultForward();
@@ -410,7 +427,7 @@ public class SelezionatoreListaAction extends SelezionatoreAction
                         });
                 bp.setIterator(context,
                         searchProvider.search(context, new CompoundFindClause(), oggettoBulk));
-            } catch (RemoteException|BusinessProcessException e) {
+            } catch (RemoteException | BusinessProcessException e) {
                 return handleException(context, e);
             }
         }
@@ -467,7 +484,7 @@ public class SelezionatoreListaAction extends SelezionatoreAction
                             }
                         });
 
-                RicercaLiberaBP ricercaLiberaBP = (RicercaLiberaBP)context.createBusinessProcess("RicercaLibera");
+                RicercaLiberaBP ricercaLiberaBP = (RicercaLiberaBP) context.createBusinessProcess("RicercaLibera");
                 ricercaLiberaBP.setSearchProvider(searchProvider);
                 ricercaLiberaBP.setFreeSearchSet(
                         Optional.ofNullable(bp.getFormField())
@@ -489,7 +506,7 @@ public class SelezionatoreListaAction extends SelezionatoreAction
                         .ifPresent(condizioneRicercaBulk -> {
                             ricercaLiberaBP.setCondizioneRadice(condizioneRicercaBulk);
                             ricercaLiberaBP.setCondizioneCorrente(
-                                    (CondizioneRicercaBulk)condizioneRicercaBulk.children.stream()
+                                    (CondizioneRicercaBulk) condizioneRicercaBulk.children.stream()
                                             .filter(CondizioneSempliceBulk.class::isInstance)
                                             .map(CondizioneSempliceBulk.class::cast)
                                             .reduce((first, second) -> second)
@@ -497,14 +514,14 @@ public class SelezionatoreListaAction extends SelezionatoreAction
                             );
                             ricercaLiberaBP.setRadice(condizioneRicercaBulk);
                         });
-                context.addHookForward("searchResult",this,"doRigheSelezionate");
+                context.addHookForward("searchResult", this, "doRigheSelezionate");
                 context.addHookForward("close", this, "doCloseRicercaLibera");
                 return context.addBusinessProcess(ricercaLiberaBP);
             } else {
                 return context.findDefaultForward();
             }
-        } catch(Throwable e) {
-            return handleException(context,e);
+        } catch (Throwable e) {
+            return handleException(context, e);
         }
     }
 
@@ -518,14 +535,14 @@ public class SelezionatoreListaAction extends SelezionatoreAction
                     .filter(SelezionatoreListaBP.class::isInstance)
                     .map(SelezionatoreListaBP.class::cast)
                     .orElseThrow(() -> new DetailedRuntimeException("Business process non trovato!"));
-            HookForward hook = (HookForward)context.getCaller();
+            HookForward hook = (HookForward) context.getCaller();
             Optional.ofNullable(hook.getParameter("remoteIterator"))
                     .filter(RemoteIterator.class::isInstance)
                     .map(RemoteIterator.class::cast)
                     .ifPresent(ri -> {
                         try {
-                            bp.setIterator(context,ri);
-                        } catch (RemoteException|BusinessProcessException e) {
+                            bp.setIterator(context, ri);
+                        } catch (RemoteException | BusinessProcessException e) {
                             throw new DetailedRuntimeException(e);
                         }
                     });
@@ -537,8 +554,8 @@ public class SelezionatoreListaAction extends SelezionatoreAction
                     });
             bp.setDirty(true);
             return context.findDefaultForward();
-        } catch(Throwable e) {
-            return handleException(context,e);
+        } catch (Throwable e) {
+            return handleException(context, e);
         }
     }
 }

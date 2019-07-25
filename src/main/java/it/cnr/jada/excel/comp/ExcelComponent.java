@@ -1,4 +1,21 @@
 /*
+ * Copyright (C) 2019  Consiglio Nazionale delle Ricerche
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as
+ *     published by the Free Software Foundation, either version 3 of the
+ *     License, or (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/*
  * Created on Jan 24, 2006
  *
  * To change the template for this generated file go to
@@ -28,10 +45,7 @@ import it.cnr.jada.util.SendMail;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import java.beans.IntrospectionException;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.sql.Clob;
-import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -53,7 +67,7 @@ public class ExcelComponent extends GenericComponent {
             insertBulk(usercontext, excel_spooler);
             BulkHome home = (BulkHome) homeCache.getHome(excel_spooler);
 
-            homeCache.getHome(excel_spooler).setSQLLob(excel_spooler,"QUERY", query);
+            homeCache.getHome(excel_spooler).setSQLLob(excel_spooler, "QUERY", query);
 
             for (Enumeration enumeration = columns.elements(); enumeration.hasMoreElements(); ) {
                 ColumnFieldProperty columnfieldproperty = (ColumnFieldProperty) enumeration.nextElement();
@@ -62,7 +76,7 @@ public class ExcelComponent extends GenericComponent {
                     Excel_spooler_paramBulk excel_param = new Excel_spooler_paramBulk();
                     excel_param.setExcel_spooler(excel_spooler);
                     excel_param.setColumn_name(columnMapping.getColumnName());
-                    excel_param.setColumn_type(columnMapping.getSqlTypeName(columnMapping.getSqlType()));
+                    excel_param.setColumn_type(ColumnMapping.getSqlTypeName(columnMapping.getSqlType()));
                     excel_param.setColumn_label((String) columnLabel.get(columnfieldproperty));
                     if (!columnfieldproperty.isNotTableHeader()) {
                         excel_param.setHeader_label((String) columnHeaderLabel.get(columnfieldproperty));

@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2019  Consiglio Nazionale delle Ricerche
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as
+ *     published by the Free Software Foundation, either version 3 of the
+ *     License, or (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.cnr.jada.bulk;
 
 import it.cnr.jada.util.OrderedHashtable;
@@ -6,110 +23,110 @@ import java.io.Serializable;
 import java.util.Dictionary;
 import java.util.Enumeration;
 
-public class FieldPropertySet implements Cloneable, Serializable{
+public class FieldPropertySet implements Cloneable, Serializable {
 
     private String name;
     private OrderedHashtable properties;
     private BulkInfo bulkInfo;
     private String label;
 
-    public FieldPropertySet(){
+    public FieldPropertySet() {
         properties = new OrderedHashtable();
     }
 
-    public FieldPropertySet(BulkInfo bulkinfo){
-    	this.properties = new OrderedHashtable();
+    public FieldPropertySet(BulkInfo bulkinfo) {
+        this.properties = new OrderedHashtable();
         this.bulkInfo = bulkinfo;
     }
 
-    public FieldPropertySet(BulkInfo bulkinfo, String name){
-    	this.properties = new OrderedHashtable();
+    public FieldPropertySet(BulkInfo bulkinfo, String name) {
+        this.properties = new OrderedHashtable();
         this.bulkInfo = bulkinfo;
         this.name = name;
     }
 
-    public void addColumnFieldProperty(ColumnFieldProperty columnfieldproperty){
+    public void addColumnFieldProperty(ColumnFieldProperty columnfieldproperty) {
         addFieldProperty(columnfieldproperty);
     }
 
-    public void addFieldProperties(FieldPropertySet fieldpropertyset){
+    public void addFieldProperties(FieldPropertySet fieldpropertyset) {
         FieldProperty fieldproperty;
-        for(Enumeration enumeration = fieldpropertyset.properties.elements(); enumeration.hasMoreElements(); properties.put(fieldproperty.getName(), fieldproperty))
-            fieldproperty = (FieldProperty)enumeration.nextElement();
+        for (Enumeration enumeration = fieldpropertyset.properties.elements(); enumeration.hasMoreElements(); properties.put(fieldproperty.getName(), fieldproperty))
+            fieldproperty = (FieldProperty) enumeration.nextElement();
 
     }
 
-    public void addFieldProperty(FieldProperty fieldproperty){
+    public void addFieldProperty(FieldProperty fieldproperty) {
         bulkInfo.completeFieldProperty(fieldproperty);
         properties.put(fieldproperty.getName(), fieldproperty);
     }
 
-    public void addFindFieldProperty(FieldProperty fieldproperty){
+    public void addFindFieldProperty(FieldProperty fieldproperty) {
         addFieldProperty(fieldproperty);
     }
 
-    public void addFormFieldProperty(FieldProperty fieldproperty){
+    public void addFormFieldProperty(FieldProperty fieldproperty) {
         addFieldProperty(fieldproperty);
     }
 
-    public void addPrintFieldProperty(FieldProperty fieldproperty){
+    public void addPrintFieldProperty(FieldProperty fieldproperty) {
         addFieldProperty(fieldproperty);
     }
 
-    protected Object clone(){
+    protected Object clone() {
         return clone(null);
     }
 
-    public Object clone(BulkInfo bulkinfo){
-        try{
-            FieldPropertySet fieldpropertyset = (FieldPropertySet)super.clone();
-            fieldpropertyset.properties = (OrderedHashtable)properties.clone();
+    public Object clone(BulkInfo bulkinfo) {
+        try {
+            FieldPropertySet fieldpropertyset = (FieldPropertySet) super.clone();
+            fieldpropertyset.properties = (OrderedHashtable) properties.clone();
             fieldpropertyset.bulkInfo = bulkinfo;
             return fieldpropertyset;
-        }catch(CloneNotSupportedException _ex){
+        } catch (CloneNotSupportedException _ex) {
             return null;
         }
     }
 
-    public BulkInfo getBulkInfo(){
+    public BulkInfo getBulkInfo() {
         return bulkInfo;
     }
 
-    public Enumeration getFieldProperties(){
-        return properties.elements();
-    }
-
-    public FieldProperty getFieldProperty(String name){
-        return (FieldProperty)properties.get(name);
-    }
-
-    public Dictionary getFieldPropertyDictionary(){
-        return properties;
-    }
-
-    public String getLabel(){
-        return label;
-    }
-
-    public String getName(){
-        return name;
-    }
-
-    public void setBulkInfo(BulkInfo bulkinfo){
+    public void setBulkInfo(BulkInfo bulkinfo) {
         bulkInfo = bulkinfo;
     }
 
-    public void setLabel(String s){
+    public Enumeration getFieldProperties() {
+        return properties.elements();
+    }
+
+    public FieldProperty getFieldProperty(String name) {
+        return (FieldProperty) properties.get(name);
+    }
+
+    public Dictionary getFieldPropertyDictionary() {
+        return properties;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String s) {
         label = s;
     }
 
-    public void setName(String s){
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String s) {
         name = s;
     }
 
-    public String toString(){
+    public String toString() {
         StringBuffer stringbuffer = new StringBuffer();
-        for(Enumeration enumeration = properties.elements(); enumeration.hasMoreElements(); stringbuffer.append('\n'))
+        for (Enumeration enumeration = properties.elements(); enumeration.hasMoreElements(); stringbuffer.append('\n'))
             stringbuffer.append(enumeration.nextElement());
         return stringbuffer.toString();
     }

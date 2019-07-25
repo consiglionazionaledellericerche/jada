@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2019  Consiglio Nazionale delle Ricerche
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as
+ *     published by the Free Software Foundation, either version 3 of the
+ *     License, or (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.cnr.jada.util.action;
 
 import it.cnr.jada.DetailedRuntimeException;
@@ -37,14 +54,14 @@ public class SelezionatoreListaBP extends AbstractSelezionatoreBP
     private Dictionary columns;
     private int currentPage;
     private Forward forward;
-    private OggettoBulk pageContents[];
+    private OggettoBulk[] pageContents;
     private int firstPage;
     private int pageFrameSize;
     private int pageSize;
     private int pageCount;
     private int elementsCount;
     private RemotePagedIterator pagedIterator;
-    private Button navigatorToolbar[];
+    private Button[] navigatorToolbar;
     private BulkInfo bulkInfo;
     private ObjectReplacer objectReplacer;
     private SelectionListener selectionListener;
@@ -106,7 +123,7 @@ public class SelezionatoreListaBP extends AbstractSelezionatoreBP
     }
 
     public Button[] createNavigatorToolbar() {
-        Button abutton[] = new Button[4];
+        Button[] abutton = new Button[4];
         int i = 0;
         abutton[i++] = new Button(Config.getHandler().getProperties(getClass()), "Navigator.previousFrame");
         abutton[i++] = new Button(Config.getHandler().getProperties(getClass()), "Navigator.previous");
@@ -567,7 +584,7 @@ public class SelezionatoreListaBP extends AbstractSelezionatoreBP
 
     public void writeHTMLNavigator(JspWriter jspwriter)
             throws IOException, ServletException {
-        Button abutton[] = getNavigatorToolbar();
+        Button[] abutton = getNavigatorToolbar();
         boolean isBootstrap = this.getParentRoot().isBootstrap();
         if (isBootstrap) {
             jspwriter.println("<nav aria-label=\"Page navigation\"><ul class=\"pagination justify-content-center\">");

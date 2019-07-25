@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2019  Consiglio Nazionale delle Ricerche
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as
+ *     published by the Free Software Foundation, either version 3 of the
+ *     License, or (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.cnr.jada.bulk;
 
 import it.cnr.jada.DetailedException;
@@ -8,67 +25,55 @@ import java.io.Serializable;
 //            FieldProperty
 
 public class FillException extends DetailedException
-    implements Serializable
-{
+        implements Serializable {
 
-    public FillException()
-    {
+    private FieldProperty field;
+    private String prefix;
+    private String text;
+
+    public FillException() {
     }
 
-    public FillException(String s)
-    {
+    public FillException(String s) {
         super(s);
     }
 
-    public FillException(String s, Throwable throwable)
-    {
+    public FillException(String s, Throwable throwable) {
         super(s, throwable);
     }
 
-    public FillException(String s, Throwable throwable, String s1, FieldProperty fieldproperty, String s2)
-    {
+    public FillException(String s, Throwable throwable, String s1, FieldProperty fieldproperty, String s2) {
         super(s, throwable);
         prefix = s1;
         text = s2;
         field = fieldproperty;
     }
 
-    public FillException(Throwable throwable)
-    {
+    public FillException(Throwable throwable) {
         super(throwable);
     }
 
-    public FieldProperty getField()
-    {
+    public FieldProperty getField() {
         return field;
     }
 
-    public String getPrefix()
-    {
-        return prefix;
-    }
-
-    public String getText()
-    {
-        return text;
-    }
-
-    public void setField(FieldProperty fieldproperty)
-    {
+    public void setField(FieldProperty fieldproperty) {
         field = fieldproperty;
     }
 
-    public void setPrefix(String s)
-    {
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public void setPrefix(String s) {
         prefix = s;
     }
 
-    public void setText(String s)
-    {
-        text = s;
+    public String getText() {
+        return text;
     }
 
-    private FieldProperty field;
-    private String prefix;
-    private String text;
+    public void setText(String s) {
+        text = s;
+    }
 }

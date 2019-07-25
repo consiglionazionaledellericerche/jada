@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2019  Consiglio Nazionale delle Ricerche
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as
+ *     published by the Free Software Foundation, either version 3 of the
+ *     License, or (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.cnr.jada.util.action;
 
 import it.cnr.jada.action.ActionContext;
@@ -10,36 +27,28 @@ import java.util.BitSet;
 //            SelectionListener
 
 public class BaseSelectionListener
-    implements Serializable, SelectionListener
-{
+        implements Serializable, SelectionListener {
 
-    public BaseSelectionListener()
-    {
+    public BaseSelectionListener() {
     }
 
-    public void clearSelection(ActionContext actioncontext)
-    {
+    public void clearSelection(ActionContext actioncontext) {
     }
 
-    public void deselectAll(ActionContext actioncontext)
-    {
+    public void deselectAll(ActionContext actioncontext) {
     }
 
-    public BitSet getSelection(ActionContext actioncontext, OggettoBulk aoggettobulk[], BitSet bitset)
-    {
+    public BitSet getSelection(ActionContext actioncontext, OggettoBulk aoggettobulk[], BitSet bitset) {
         return null;
     }
 
-    public void initializeSelection(ActionContext actioncontext)
-    {
+    public void initializeSelection(ActionContext actioncontext) {
     }
 
-    public void selectAll(ActionContext actioncontext)
-    {
+    public void selectAll(ActionContext actioncontext) {
     }
 
-    public BitSet setSelection(ActionContext actioncontext, OggettoBulk aoggettobulk[], BitSet bitset, BitSet bitset1)
-    {
+    public BitSet setSelection(ActionContext actioncontext, OggettoBulk aoggettobulk[], BitSet bitset, BitSet bitset1) {
         return null;
     }
 }

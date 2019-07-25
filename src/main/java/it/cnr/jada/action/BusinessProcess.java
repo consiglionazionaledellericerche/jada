@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2019  Consiglio Nazionale delle Ricerche
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as
+ *     published by the Free Software Foundation, either version 3 of the
+ *     License, or (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.cnr.jada.action;
 
 import it.cnr.jada.DetailedRuntimeException;
@@ -8,369 +25,198 @@ import it.cnr.jada.util.ejb.EJBCommonServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.rmi.RemoteException;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Properties;
-import java.util.StringTokenizer;
-
 import javax.ejb.EJBException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
+import java.io.IOException;
+import java.io.Serializable;
+import java.rmi.RemoteException;
+import java.util.*;
+
 /**
- * Un BusinessProcess ha la responsabilit  di mantenere lo stato del processo di business che   stato 
- * avviato in seguito alla richiesta di un client. 
+ * Un BusinessProcess ha la responsabilit  di mantenere lo stato del processo di business che   stato
+ * avviato in seguito alla richiesta di un client.
  * I BusinessProcess vengono mantenuti nella sessione, quindi sopravvivono tra una action e l'altra.
- * Ogni richiesta originata da un client determina la selezione di un business process corrente. 
- * Durante la valutazione della Action o nell'esecuzione di una JSP in seguito alla valutazione di un 
- * forward viene mantenuto il riferimento a tale business process, per cui   possibile colloquiare 
- * con tale istanza per reperire tutte le informazioni necessarie alla svolgimento della action e 
+ * Ogni richiesta originata da un client determina la selezione di un business process corrente.
+ * Durante la valutazione della Action o nell'esecuzione di una JSP in seguito alla valutazione di un
+ * forward viene mantenuto il riferimento a tale business process, per cui   possibile colloquiare
+ * con tale istanza per reperire tutte le informazioni necessarie alla svolgimento della action e
  * alla successiva costruzione della risposta.
- * Nell'ambito di una action   possibile accedere al business process corrente tramite l'ActionContext, 
- * mentre in una JSP mediante un metodo statico di BusinessProcess. 
- *   responsabilit  della JSP includere nella risposta il riferimento al business process in cui 
+ * Nell'ambito di una action   possibile accedere al business process corrente tramite l'ActionContext,
+ * mentre in una JSP mediante un metodo statico di BusinessProcess.
+ * responsabilit  della JSP includere nella risposta il riferimento al business process in cui
  * dovr  essere valutata la prossima action.
- * La valutazione di una action pu  portare alla creazione di un nuovo business process o alla chiusura 
- * di quello corrente. Nel caso di un nuovo business process   possibile aggiungerlo come figlio del 
- * business process corrente. In tal caso le ricerche di forward che non portano ad un risultato immediato, 
+ * La valutazione di una action pu  portare alla creazione di un nuovo business process o alla chiusura
+ * di quello corrente. Nel caso di un nuovo business process   possibile aggiungerlo come figlio del
+ * business process corrente. In tal caso le ricerche di forward che non portano ad un risultato immediato,
  * procedono nella gerarchia dei padri prima di passare alla mappatura statica.
- * Un business process pu  essere restituito da una action come forward; 
+ * Un business process pu  essere restituito da una action come forward;
  * in tale caso verr  cercato il forward dal nome "default" nell'ambito del business process restituito.
- * Esiste sempre un business process che rappresenta la radice della gerarchia di tutti i business process. 
+ * Esiste sempre un business process che rappresenta la radice della gerarchia di tutti i business process.
  * Se non specificato dalla richiesta esso   il business process di default.
- * Un BusinessProcess non pu  essere istanziato direttamente, ma solo tramite il metodo createBusinessProcess 
- * dell'ActionContext, specificando il nome contenuto all'interno del file di configurazione della ActionServlet. 
- * Subito dopo la creazione di un BusinessProcess viene invocato il metodo init con i parametri specificati 
+ * Un BusinessProcess non pu  essere istanziato direttamente, ma solo tramite il metodo createBusinessProcess
+ * dell'ActionContext, specificando il nome contenuto all'interno del file di configurazione della ActionServlet.
+ * Subito dopo la creazione di un BusinessProcess viene invocato il metodo init con i parametri specificati
  * nel file di configurazione.
  */
-public class BusinessProcess implements Forward, Serializable{
+public class BusinessProcess implements Forward, Serializable {
+    public static final String ROOTBPNAME = "rootbp";
+    public static final int IGNORE_TRANSACTION = 0;
+    public static final int INHERIT_TRANSACTION = 1;
+    public static final int REQUIRES_NEW_TRANSACTION = 2;
+    public static final int REQUIRES_TRANSACTION = 3;
     private transient static final Logger logger = LoggerFactory.getLogger(BusinessProcess.class);
-
     private static final long serialVersionUID = 1L;
-	private Map<String, BusinessProcess> children;
-	public static final String ROOTBPNAME = "rootbp";
-	private BusinessProcess parent;
-	private BusinessProcessMapping mapping;
-	private String path;
-	private String name;
-	private Map<String, Forward> hooks;
-	private UserTransaction userTransaction;
-	private int transactionPolicy;
-	private boolean busy;
-	private Properties resources;
-	private Character function;
-	public static final int IGNORE_TRANSACTION = 0;
-	public static final int INHERIT_TRANSACTION = 1;
-	public static final int REQUIRES_NEW_TRANSACTION = 2;
-	public static final int REQUIRES_TRANSACTION = 3;
+    private Map<String, BusinessProcess> children;
+    private BusinessProcess parent;
+    private BusinessProcessMapping mapping;
+    private String path;
+    private String name;
+    private Map<String, Forward> hooks;
+    private UserTransaction userTransaction;
+    private int transactionPolicy;
+    private boolean busy;
+    private Properties resources;
+    private Character function;
 
-	protected BusinessProcess(){
-		children = new Hashtable<String, BusinessProcess>();
-		path = "";
-		name = ROOTBPNAME;
-		hooks = new Hashtable<String, Forward>();
-		busy = false;
-		transactionPolicy = 0;
-	}
+    protected BusinessProcess() {
+        children = new Hashtable<String, BusinessProcess>();
+        path = "";
+        name = ROOTBPNAME;
+        hooks = new Hashtable<String, Forward>();
+        busy = false;
+        transactionPolicy = 0;
+    }
+
     /**
      * Costruisce un nuovo BusinessProcess
      * function - Una stringa contenente la modalit  transazionale del BusinessProcess. Le modalit  ammesse sono:
      * La modalit  transazionale di default   "Th"
      */
-	protected BusinessProcess(String function){
-		children = new Hashtable<String, BusinessProcess>();
-		path = "";
-		name = ROOTBPNAME;
-		hooks = new Hashtable<String, Forward>();
-		busy = false;
-		if (function.length() > 0)
-			this.function = function.charAt(0);  
-		int i = function.indexOf('T') + 1;		
-		int transactionType = 0;
-		if(i > 0 && i < function.length())
-			switch(function.charAt(i)){
-			case 105: // 'i'
-				transactionType = IGNORE_TRANSACTION;
-				break;
+    protected BusinessProcess(String function) {
+        children = new Hashtable<String, BusinessProcess>();
+        path = "";
+        name = ROOTBPNAME;
+        hooks = new Hashtable<String, Forward>();
+        busy = false;
+        if (function.length() > 0)
+            this.function = function.charAt(0);
+        int i = function.indexOf('T') + 1;
+        int transactionType = 0;
+        if (i > 0 && i < function.length())
+            switch (function.charAt(i)) {
+                case 105: // 'i'
+                    transactionType = IGNORE_TRANSACTION;
+                    break;
 
-			case 110: // 'n'
-				transactionType = REQUIRES_NEW_TRANSACTION;
-				break;
+                case 110: // 'n'
+                    transactionType = REQUIRES_NEW_TRANSACTION;
+                    break;
 
-			case 114: // 'r'
-				transactionType = REQUIRES_TRANSACTION;
-				break;
+                case 114: // 'r'
+                    transactionType = REQUIRES_TRANSACTION;
+                    break;
 
-			case 104: // 'h'
-			default:
-				transactionType = INHERIT_TRANSACTION;
-				break;
-			}
-		transactionPolicy = transactionType;
-	}
-    /**
-     * Aggiunge un business process come figlio del ricevente. 
-     * Se esiste un altro BusinessProcess figlio con lo stesso nome di quello specificato 
-     * viene prima chiuso quello gi  esistente
-     */
-	public void addChild(BusinessProcess businessprocess) throws BusinessProcessException{
-		addChild(businessprocess, (ActionContext)null);
-	}
-	
-	public void addChild(BusinessProcess businessprocess, ActionContext actionContext) throws BusinessProcessException{
-		if(businessprocess.getName() == null)
-			return;
-		BusinessProcess businessprocess1 = getChild(businessprocess.getName());
-		if(businessprocess1 != null)
-			businessprocess1.closed(actionContext);
-		synchronized(children){
-			children.put(businessprocess.getName(), businessprocess);
-			businessprocess.parent = this;
-			businessprocess.path = path + "/" + businessprocess.getName();
-		}
-	}
+                case 104: // 'h'
+                default:
+                    transactionType = INHERIT_TRANSACTION;
+                    break;
+            }
+        transactionPolicy = transactionType;
+    }
 
-	/**  
-     * Aggiunge un business process come figlio del ricevente. 
-     */
-	public void addChild(BusinessProcess businessprocess,boolean remove) throws BusinessProcessException{
-		// RP Per limitare il numero dei livelli delle consultazioni viene chiuso un livello intermedio
-		// ed il nome del bp   sempre lo stesso, per evitare la chiusura dei figli che hanno lo stesso nome
-		if(remove)
-			addChild(businessprocess);
-		else{
-			if(businessprocess.getName() == null)
-				return;
-			synchronized(children){
-				children.put(businessprocess.getName(), businessprocess);
-				businessprocess.parent = this;
-				businessprocess.path = path + "/" + businessprocess.getName();
-			}
-		}
-	}
     /**
-     * Aggiunge un HookForward al ricevente. Gli hook forward sono i primi forward ad essere ricercati.
-     */
-	protected HookForward addHookForward(String name, Forward forward){
-		HookForward hookforward = new HookForward(name, forward);
-		hooks.put(name, hookforward);
-		return hookforward;
-	}
-
-	public synchronized void clearBusy(){
-		busy = false;
-	}
-
-	public void closeAllChildren(ActionContext context) throws BusinessProcessException{
-		synchronized(children){
-			for(Iterator<BusinessProcess> iterator = children.values().iterator(); iterator.hasNext(); iterator.remove()){
-				BusinessProcess businessprocess = (BusinessProcess)iterator.next();
-				businessprocess.closed(context);
-			}
-		}
-	}
-    /**
-     * Metodo invocato all'atto della chiusura di un business process. 
-     * L'implementazione di default invoca lo stesso metodo sui business process figli.
-     */
-	protected void closed(ActionContext context) throws BusinessProcessException{
-		synchronized(children){
-			for(Iterator<BusinessProcess> iterator = children.values().iterator(); iterator.hasNext(); ((BusinessProcess)iterator.next()).closed(context));
-		}
-		if(getUserTransaction() != null)
-			try{
-				getUserTransaction().remove();
-			}catch(Throwable throwable){
-				throw new BusinessProcessException(throwable);
-			}
-		parent = null;
-	}	
-	
-	public void closeAllChildren() throws BusinessProcessException{
-		synchronized(children){
-			for(Iterator<BusinessProcess> iterator = children.values().iterator(); iterator.hasNext(); iterator.remove()){
-				BusinessProcess businessprocess = (BusinessProcess)iterator.next();
-				businessprocess.closed();
-			}
-		}
-	}
-    /**
-     * Metodo invocato all'atto della chiusura di un business process. 
-     * L'implementazione di default invoca lo stesso metodo sui business process figli.
-     */
-	protected void closed() throws BusinessProcessException{
-		synchronized(children){
-			for(Iterator<BusinessProcess> iterator = children.values().iterator(); iterator.hasNext(); ((BusinessProcess)iterator.next()).closed());
-		}
-		if(getUserTransaction() != null)
-			try{
-				getUserTransaction().remove();
-			}catch(Throwable throwable){
-				throw new BusinessProcessException(throwable);
-			}
-		parent = null;
-	}
-    /**
-     * Effettua una commit della UserTransaction associata al ricevente. 
-     * Se il ricevente non   in modalit  transazionale esce senza effettuare nulla.
-     */
-	public void commitUserTransaction() throws BusinessProcessException{
-		if(getUserTransaction() != null)
-			try{
-				getUserTransaction().commit();
-			}catch(Throwable throwable){
-				throw new BusinessProcessException(throwable);
-			}
-	}
-    /**
-     * Crea una componente per il ricevente.
-     */
-	public Object createComponentSession(String jndiName, Class<?> sessionClass) throws BusinessProcessException{
-		return createComponentSession(jndiName);
-	}
-    /**
-     * Crea una componente per il ricevente.
-     */
-	public Object createComponentSession(String jndiName) throws BusinessProcessException{
-		try{
-			if(getUserTransaction() == null)
-				return EJBCommonServices.createEJB(jndiName);
-			else
-				return EJBCommonServices.createEJB(userTransaction, jndiName);
-		}catch(Throwable throwable){
-			throw new BusinessProcessException(throwable);
-		}
-	}
-    /**
-     * Metodo statico da usare in una JSP per aggiungere il riferimento al business process in cui 
-     * dovr  essere eseguita la prossima action. 
+     * Metodo statico da usare in una JSP per aggiungere il riferimento al business process in cui
+     * dovr  essere eseguita la prossima action.
      * Va usato all'interno di una FORM che scatena una action.
      */
-	public static void encode(BusinessProcess businessprocess, PageContext pagecontext) throws IOException{
-		if(businessprocess == null)
-			return;
-		JspWriter jspwriter = pagecontext.getOut();
-		jspwriter.print("<INPUT TYPE=HIDDEN NAME=\"");
-		jspwriter.print(it.cnr.jada.action.BusinessProcess.class.getName());
-		jspwriter.print("\" VALUE=\"");
-		jspwriter.print(businessprocess.getPath());
-		HttpSession httpsession = HttpActionContext.getSession((HttpServletRequest)pagecontext.getRequest(), false);
-		if(httpsession != null){
-			jspwriter.print('$');
-			jspwriter.print(httpsession.getId().substring(0,httpsession.getId().indexOf('.')==-1?httpsession.getId().length():httpsession.getId().indexOf('.')));
-		}
-		jspwriter.println("\">");
-	}
+    public static void encode(BusinessProcess businessprocess, PageContext pagecontext) throws IOException {
+        if (businessprocess == null)
+            return;
+        JspWriter jspwriter = pagecontext.getOut();
+        jspwriter.print("<INPUT TYPE=HIDDEN NAME=\"");
+        jspwriter.print(it.cnr.jada.action.BusinessProcess.class.getName());
+        jspwriter.print("\" VALUE=\"");
+        jspwriter.print(businessprocess.getPath());
+        HttpSession httpsession = HttpActionContext.getSession((HttpServletRequest) pagecontext.getRequest(), false);
+        if (httpsession != null) {
+            jspwriter.print('$');
+            jspwriter.print(httpsession.getId().substring(0, httpsession.getId().indexOf('.') == -1 ? httpsession.getId().length() : httpsession.getId().indexOf('.')));
+        }
+        jspwriter.println("\">");
+    }
+
     /**
-     * Metodo obsoleto. Mantenuto per compatibilit . Ritorna semplicemente la stringa che viene passata
-     */
-	@Deprecated
-	public String encodePath(String path){
-		return path;
-	}
-    /**
-     * Costruisce un URL col riferimento ad un BusinessProcess utilizzabile per effettuare 
+     * Costruisce un URL col riferimento ad un BusinessProcess utilizzabile per effettuare
      * una GET mantenendo il BusinessProcess corrente.
      */
-	public static String encodeUrl(HttpServletRequest httpservletrequest, BusinessProcess businessprocess, String url) throws IOException{
-		if(businessprocess == null)
-			return url;
-		StringBuffer stringbuffer = new StringBuffer(url);
-		stringbuffer.append('?');
-		stringbuffer.append(it.cnr.jada.action.BusinessProcess.class.getName());
-		stringbuffer.append('=');
-		stringbuffer.append(businessprocess.getPath());
-		HttpSession httpsession = httpservletrequest.getSession(false);
-		if(httpsession != null){
-			stringbuffer.append('$');
-			stringbuffer.append(httpsession.getId().substring(0,httpsession.getId().indexOf('.')==-1?httpsession.getId().length():httpsession.getId().indexOf('.')));
-		}
-		return stringbuffer.toString();
-	}
+    public static String encodeUrl(HttpServletRequest httpservletrequest, BusinessProcess businessprocess, String url) throws IOException {
+        if (businessprocess == null)
+            return url;
+        StringBuffer stringbuffer = new StringBuffer(url);
+        stringbuffer.append('?');
+        stringbuffer.append(it.cnr.jada.action.BusinessProcess.class.getName());
+        stringbuffer.append('=');
+        stringbuffer.append(businessprocess.getPath());
+        HttpSession httpsession = httpservletrequest.getSession(false);
+        if (httpsession != null) {
+            stringbuffer.append('$');
+            stringbuffer.append(httpsession.getId(), 0, httpsession.getId().indexOf('.') == -1 ? httpsession.getId().length() : httpsession.getId().indexOf('.'));
+        }
+        return stringbuffer.toString();
+    }
+
     /**
-     * Costruisce un URL col riferimento ad un BusinessProcess utilizzabile per effettuare una 
+     * Costruisce un URL col riferimento ad un BusinessProcess utilizzabile per effettuare una
      * GET mantenendo il BusinessProcess corrente.
      */
-	public static String encodeUrl(HttpServletRequest httpservletrequest, String url) throws IOException{
-		return encodeUrl(httpservletrequest, getBusinessProcess(httpservletrequest), url);
-	}
-    /**
-     * Ricerca il "default" forward.
-     */
-	public Forward findDefaultForward(){
-	    return Optional.of(getParentRoot().isBootstrap())
-                .filter(bootstrap -> bootstrap)
-                .map(aBoolean -> findForward("bootstrap"))
-                .filter(forward -> Optional.ofNullable(forward).isPresent())
-                .orElseGet(() -> findForward("default"));
-	}
-    /**
-     * Ricerca un forward nell'ambito del ricevente. La ricerca valuta dapprima gli hook, 
-     * quindi i forward static definiti nell'ambito del ricevente, quindi la ricerca passa al padre del ricevente.
-     */
-	public Forward findForward(String s){
-		Forward forward = findHookForward(s);
-		if(forward != null)
-			return forward;
-		if(mapping != null)
-			forward = mapping.findForward(s);
-		if(forward != null)
-			return forward;
-		if(parent != null)
-			forward = parent.findForward(s);
-		return forward;
-	}
+    public static String encodeUrl(HttpServletRequest httpservletrequest, String url) throws IOException {
+        return encodeUrl(httpservletrequest, getBusinessProcess(httpservletrequest), url);
+    }
 
-	protected Forward findHookForward(String name){
-		return (Forward)hooks.get(name);
-	}
     /**
      * Recupera il business process corrente dai parametri di una HttpRequest.
      */
-	public static BusinessProcess getBusinessProcess(HttpServletRequest httpservletrequest){
-		BusinessProcess businessprocess = (BusinessProcess)httpservletrequest.getAttribute(it.cnr.jada.action.BusinessProcess.class.getName());
-		if(businessprocess == null){
-			String s = httpservletrequest.getParameter(it.cnr.jada.action.BusinessProcess.class.getName());
-			businessprocess = getBusinessProcess(httpservletrequest, s);
-			if(s != null)
-				httpservletrequest.setAttribute(it.cnr.jada.action.BusinessProcess.class.getName(), businessprocess);
-		}
-		return businessprocess;
-	}
+    public static BusinessProcess getBusinessProcess(HttpServletRequest httpservletrequest) {
+        BusinessProcess businessprocess = (BusinessProcess) httpservletrequest.getAttribute(it.cnr.jada.action.BusinessProcess.class.getName());
+        if (businessprocess == null) {
+            String s = httpservletrequest.getParameter(it.cnr.jada.action.BusinessProcess.class.getName());
+            businessprocess = getBusinessProcess(httpservletrequest, s);
+            if (s != null)
+                httpservletrequest.setAttribute(it.cnr.jada.action.BusinessProcess.class.getName(), businessprocess);
+        }
+        return businessprocess;
+    }
+
     /**
      * Recupera il business process corrente dai parametri di una HttpRequest.
      */
-	public static BusinessProcess getBusinessProcess(HttpServletRequest httpservletrequest, String bpname){
-		if(bpname == null)
-			return null;
-		int i = bpname.indexOf('$');
-		int j = bpname.indexOf('.');
-		if(i >= 0){
-			HttpSession httpsession = HttpActionContext.getSession(httpservletrequest, false);
-			if(httpsession == null || !httpsession.getId().substring(0,httpsession.getId().indexOf('.')==-1?httpsession.getId().length():httpsession.getId().indexOf('.')).equals(bpname.substring(i + 1,j==-1?bpname.length():j)))
-				throw new NoSuchSessionException();
-			bpname = bpname.substring(0, i);
-		}
-		BusinessProcess businessprocess = Optional.ofNullable(getBusinessProcessRoot(httpservletrequest)).
-				orElse((BusinessProcess)httpservletrequest.getAttribute(it.cnr.jada.action.BusinessProcess.class.getName()));
-		for(StringTokenizer stringtokenizer = new StringTokenizer(bpname, "/"); businessprocess != null && stringtokenizer.hasMoreTokens();)
-			if((businessprocess = businessprocess.getChild(stringtokenizer.nextToken())) == null)
-				throw new NoSuchBusinessProcessException("BusinessProcess inesistente ["+bpname+"]", bpname);
-		return businessprocess;
-	}
+    public static BusinessProcess getBusinessProcess(HttpServletRequest httpservletrequest, String bpname) {
+        if (bpname == null)
+            return null;
+        int i = bpname.indexOf('$');
+        int j = bpname.indexOf('.');
+        if (i >= 0) {
+            HttpSession httpsession = HttpActionContext.getSession(httpservletrequest, false);
+            if (httpsession == null || !httpsession.getId().substring(0, httpsession.getId().indexOf('.') == -1 ? httpsession.getId().length() : httpsession.getId().indexOf('.')).equals(bpname.substring(i + 1, j == -1 ? bpname.length() : j)))
+                throw new NoSuchSessionException();
+            bpname = bpname.substring(0, i);
+        }
+        BusinessProcess businessprocess = Optional.ofNullable(getBusinessProcessRoot(httpservletrequest)).
+                orElse((BusinessProcess) httpservletrequest.getAttribute(it.cnr.jada.action.BusinessProcess.class.getName()));
+        for (StringTokenizer stringtokenizer = new StringTokenizer(bpname, "/"); businessprocess != null && stringtokenizer.hasMoreTokens(); )
+            if ((businessprocess = businessprocess.getChild(stringtokenizer.nextToken())) == null)
+                throw new NoSuchBusinessProcessException("BusinessProcess inesistente [" + bpname + "]", bpname);
+        return businessprocess;
+    }
+
     /**
      * Recupera il business process root dalla HttpSession associata ad una HttpRequest.
      */
-	public static BusinessProcess getBusinessProcessRoot(HttpServletRequest httpservletrequest){
-		return Optional.ofNullable(HttpActionContext.getSession(httpservletrequest))
+    public static BusinessProcess getBusinessProcessRoot(HttpServletRequest httpservletrequest) {
+        return Optional.ofNullable(HttpActionContext.getSession(httpservletrequest))
                 .map(session -> session.getAttribute(ROOTBPNAME))
                 .filter(BusinessProcess.class::isInstance)
                 .map(BusinessProcess.class::cast)
@@ -378,226 +224,20 @@ public class BusinessProcess implements Forward, Serializable{
                         .filter(BusinessProcess.class::isInstance)
                         .map(BusinessProcess.class::cast)
                         .orElse(null));
-	}
+    }
 
-	/**
-     * Restituisce il figlio del ricevente dal nome specificato,
-     */
-	public BusinessProcess getChild(String bpname){
-		if(children == null)
-			return null;
-		synchronized(children){
-			return (BusinessProcess)children.get(bpname);
-		}
-	}
-    /**
-     * Restituisce una enumeration dei figli del ricevente.
-     */
-	public Enumeration<BusinessProcess> getChildren(){
-		return Collections.enumeration(children.values());
-	}
-    /**
-     * Restituisce il nome del ricevente.
-     */
-	public String getName(){
-		return name;
-	}
-	/**
-	 * Ritorna il livello del BusinessProcess corrente 
-	 */
-	public int getBPLevel(){
-		int result = 0;
-		BusinessProcess bp = this;
-		while(bp.getParent() != null){
-			result++;
-			bp = bp.getParent();
-		}
-		return result;
-	}
-    /**
-     * Restituisce il padre del ricevente.
-     */
-	public BusinessProcess getParent(){
-		return parent;
-	}
-    /**
-     * Restituisce una stringa formata dal nome del ricevente pi  quello dei suoi padri. 
-     * Il nome del processo root   quello pi  a sinistra. Come separatore viene usato il carattere '/'
-     */
-	public String getPath(){
-		return path;
-	}
-    /**
-     * Restituisce una risorsa associata al ricevente. 
-     * Ogni istanza di FormBP possiede un dizionario di risorse locali; 
-     * ogni risorsa non trovata localmente viene richiesta tramite
-     */
-	public String getResource(String name){
-		if(resources == null)
-			return Config.getHandler().getProperty(getClass(), name);
-		else
-			return resources.getProperty(name);
-	}
-
-	public Properties getResources(){
-		if(resources == null)
-			return Config.getHandler().getProperties(getClass());
-		else
-			return resources;
-	}
-    /**
-     * Restituisce il business process root.
-     */
-	public BusinessProcess getRoot(){
-		if(parent == null)
-			return this;
-		else
-			return parent.getRoot();
-	}
-
-	public int getTransactionPolicy(){
-		return transactionPolicy;
-	}
-    /**
-     * Restituisce il valore della propriet  'userTransaction'
-     */
-	public UserTransaction getUserTransaction(){
-		return userTransaction;
-	}
-    /**
-     * Effettua una gestione standard delle eccezioni.
-     */
-	public BusinessProcessException handleException(Throwable throwable){
-		try{
-			throw throwable;
-		}catch(BusinessProcessException businessprocessexception){
-			return businessprocessexception;
-		}catch(Throwable throwable1){
-			return new BusinessProcessException(throwable1);
-		}
-	}
-    /**
-     * Gestisce una UserTransactionTimeoutException. La gestione standard prevede solamente 
-     * la chiusura del ricevente (che non   pi  utilizzabile).
-     */
-	protected void handleUserTransactionTimeout(ActionContext actioncontext) throws BusinessProcessException{
-		actioncontext.closeBusinessProcess(this);
-	}
-    /**
-     * Invocato dall ActionServlet in seguito alla istanziazione di un BusinessProcess.
-     */
-	protected void init(it.cnr.jada.action.Config config, ActionContext actioncontext) throws BusinessProcessException{
-	}
-
-	public final void initializeUserTransaction(ActionContext actioncontext) throws BusinessProcessException{
-		try{
-			switch(transactionPolicy){
-			default:
-				break;
-
-			case REQUIRES_NEW_TRANSACTION:
-				userTransaction = EJBCommonServices.createUserTransaction(actioncontext, this);
-				break;
-
-			case REQUIRES_TRANSACTION:
-				if(actioncontext.getBusinessProcess().getUserTransaction() == null)
-					userTransaction = EJBCommonServices.createUserTransaction(actioncontext, this);
-				else
-					userTransaction = NestedUserTransaction.createNestedUserTransaction(actioncontext.getBusinessProcess().getUserTransaction());
-				break;
-
-			case INHERIT_TRANSACTION:
-				userTransaction = NestedUserTransaction.createNestedUserTransaction(actioncontext.getBusinessProcess().getUserTransaction());
-				break;
-			}
-			if (userTransaction != null)
-				actioncontext.getUserInfo().setUserTransaction(userTransaction);
-		}catch(RemoteException remoteexception){
-			throw new BusinessProcessException(remoteexception);
-		}catch(EJBException ejbexception){
-			throw new BusinessProcessException(ejbexception);
-		}
-	}
-
-	public synchronized boolean isBusy(){
-		if(busy)
-			return true;
-		for(Iterator<BusinessProcess> iterator = children.values().iterator(); iterator.hasNext();){
-			BusinessProcess businessprocess = (BusinessProcess)iterator.next();
-			if(businessprocess.isBusy())
-				return true;
-		}
-		return false;
-	}
-    /**
-     * Esegue il forward "default" associato al ricevente.
-     */
-	public void perform(ActionContext actioncontext){
-		actioncontext.findDefaultForward().perform(actioncontext);
-	}
-    /**
-     * Rimuove un business process dall'elenco dei figli del ricevente.
-     */
-	public BusinessProcess removeChild(ActionContext context, String name) throws BusinessProcessException{
-		synchronized(children){
-			BusinessProcess businessprocess = getChild(name);
-			if(businessprocess != null)
-				businessprocess.closed(context);
-			children.remove(name);
-			return businessprocess;
-		}
-	}	
-    /**
-     * Rimuove un business process dall'elenco dei figli del ricevente.
-     */
-	public BusinessProcess removeChild(String name) throws BusinessProcessException{
-		return removeChild(null, name);
-	}
-    /**
-     * Rimuove un hook dall'elenco degli hook del ricevente.
-     */
-	protected void removeHookForward(String name){
-		hooks.remove(name);
-	}
-    /**
-     * Effettua una rollback della UserTransaction associata al ricevente. 
-     * Se il ricevente non è in modalità  transazionale esce senza effettuare nulla.
-     */
-	public void rollbackUserTransaction() throws BusinessProcessException{
-		if(getUserTransaction() != null)
-			try{
-				getUserTransaction().rollback();
-			}catch(Throwable throwable){
-				throw new BusinessProcessException(throwable);
-			}
-	}
-	/**
-	 * Effettua una rollback e rimuove la UserTransaction associata al ricevente.
-	 * Se il ricevente non è in modalità  transazionale esce senza effettuare nulla.
-	 */
-	public void rollbackAndCloseUserTransaction() throws BusinessProcessException{
-		Optional.ofNullable(getUserTransaction())
-				.ifPresent(userTransaction1 -> {
-					try{
-						userTransaction1.rollback();
-						userTransaction1.remove();
-						this.userTransaction = null;
-					}catch(Throwable throwable){
-						throw new DetailedRuntimeException(throwable);
-					}
-				});
-	}
     /**
      * Imposta il business process corrente all'intern di una HttpRequest.
      */
-	public static void setBusinessProcess(HttpServletRequest httpservletrequest, BusinessProcess businessprocess){
-		httpservletrequest.setAttribute(it.cnr.jada.action.BusinessProcess.class.getName(), businessprocess);
-	}
+    public static void setBusinessProcess(HttpServletRequest httpservletrequest, BusinessProcess businessprocess) {
+        httpservletrequest.setAttribute(it.cnr.jada.action.BusinessProcess.class.getName(), businessprocess);
+    }
+
     /**
      * Imposta il business process root all'interno di una HttpRequest.
      */
-	public static void setBusinessProcessRoot(HttpServletRequest httpservletrequest, BusinessProcess businessprocess){
-		businessprocess.setRoot();
+    public static void setBusinessProcessRoot(HttpServletRequest httpservletrequest, BusinessProcess businessprocess) {
+        businessprocess.setRoot();
         final String s = Optional.ofNullable(HttpActionContext.getSession(httpservletrequest))
                 .map(session -> {
                     session.setAttribute(ROOTBPNAME, businessprocess);
@@ -610,78 +250,490 @@ public class BusinessProcess implements Forward, Serializable{
         logger.debug("Add ROOT BP on {}", s);
     }
 
-	public synchronized boolean setBusy(){
-		if(isBusy())
-			return false;
-		else
-			return busy = true;
-	}
     /**
-     * Imposta Il BusinessProcessMapping da cui   stato instanziato il ricevente. 
+     * Aggiunge un business process come figlio del ricevente.
+     * Se esiste un altro BusinessProcess figlio con lo stesso nome di quello specificato
+     * viene prima chiuso quello gi  esistente
+     */
+    public void addChild(BusinessProcess businessprocess) throws BusinessProcessException {
+        addChild(businessprocess, null);
+    }
+
+    public void addChild(BusinessProcess businessprocess, ActionContext actionContext) throws BusinessProcessException {
+        if (businessprocess.getName() == null)
+            return;
+        BusinessProcess businessprocess1 = getChild(businessprocess.getName());
+        if (businessprocess1 != null)
+            businessprocess1.closed(actionContext);
+        synchronized (children) {
+            children.put(businessprocess.getName(), businessprocess);
+            businessprocess.parent = this;
+            businessprocess.path = path + "/" + businessprocess.getName();
+        }
+    }
+
+    /**
+     * Aggiunge un business process come figlio del ricevente.
+     */
+    public void addChild(BusinessProcess businessprocess, boolean remove) throws BusinessProcessException {
+        // RP Per limitare il numero dei livelli delle consultazioni viene chiuso un livello intermedio
+        // ed il nome del bp   sempre lo stesso, per evitare la chiusura dei figli che hanno lo stesso nome
+        if (remove)
+            addChild(businessprocess);
+        else {
+            if (businessprocess.getName() == null)
+                return;
+            synchronized (children) {
+                children.put(businessprocess.getName(), businessprocess);
+                businessprocess.parent = this;
+                businessprocess.path = path + "/" + businessprocess.getName();
+            }
+        }
+    }
+
+    /**
+     * Aggiunge un HookForward al ricevente. Gli hook forward sono i primi forward ad essere ricercati.
+     */
+    protected HookForward addHookForward(String name, Forward forward) {
+        HookForward hookforward = new HookForward(name, forward);
+        hooks.put(name, hookforward);
+        return hookforward;
+    }
+
+    public synchronized void clearBusy() {
+        busy = false;
+    }
+
+    public void closeAllChildren(ActionContext context) throws BusinessProcessException {
+        synchronized (children) {
+            for (Iterator<BusinessProcess> iterator = children.values().iterator(); iterator.hasNext(); iterator.remove()) {
+                BusinessProcess businessprocess = iterator.next();
+                businessprocess.closed(context);
+            }
+        }
+    }
+
+    /**
+     * Metodo invocato all'atto della chiusura di un business process.
+     * L'implementazione di default invoca lo stesso metodo sui business process figli.
+     */
+    protected void closed(ActionContext context) throws BusinessProcessException {
+        synchronized (children) {
+            for (Iterator<BusinessProcess> iterator = children.values().iterator(); iterator.hasNext(); iterator.next().closed(context))
+                ;
+        }
+        if (getUserTransaction() != null)
+            try {
+                getUserTransaction().remove();
+            } catch (Throwable throwable) {
+                throw new BusinessProcessException(throwable);
+            }
+        parent = null;
+    }
+
+    public void closeAllChildren() throws BusinessProcessException {
+        synchronized (children) {
+            for (Iterator<BusinessProcess> iterator = children.values().iterator(); iterator.hasNext(); iterator.remove()) {
+                BusinessProcess businessprocess = iterator.next();
+                businessprocess.closed();
+            }
+        }
+    }
+
+    /**
+     * Metodo invocato all'atto della chiusura di un business process.
+     * L'implementazione di default invoca lo stesso metodo sui business process figli.
+     */
+    protected void closed() throws BusinessProcessException {
+        synchronized (children) {
+            for (Iterator<BusinessProcess> iterator = children.values().iterator(); iterator.hasNext(); iterator.next().closed())
+                ;
+        }
+        if (getUserTransaction() != null)
+            try {
+                getUserTransaction().remove();
+            } catch (Throwable throwable) {
+                throw new BusinessProcessException(throwable);
+            }
+        parent = null;
+    }
+
+    /**
+     * Effettua una commit della UserTransaction associata al ricevente.
+     * Se il ricevente non   in modalit  transazionale esce senza effettuare nulla.
+     */
+    public void commitUserTransaction() throws BusinessProcessException {
+        if (getUserTransaction() != null)
+            try {
+                getUserTransaction().commit();
+            } catch (Throwable throwable) {
+                throw new BusinessProcessException(throwable);
+            }
+    }
+
+    /**
+     * Crea una componente per il ricevente.
+     */
+    public Object createComponentSession(String jndiName, Class<?> sessionClass) throws BusinessProcessException {
+        return createComponentSession(jndiName);
+    }
+
+    /**
+     * Crea una componente per il ricevente.
+     */
+    public Object createComponentSession(String jndiName) throws BusinessProcessException {
+        try {
+            if (getUserTransaction() == null)
+                return EJBCommonServices.createEJB(jndiName);
+            else
+                return EJBCommonServices.createEJB(userTransaction, jndiName);
+        } catch (Throwable throwable) {
+            throw new BusinessProcessException(throwable);
+        }
+    }
+
+    /**
+     * Metodo obsoleto. Mantenuto per compatibilit . Ritorna semplicemente la stringa che viene passata
+     */
+    @Deprecated
+    public String encodePath(String path) {
+        return path;
+    }
+
+    /**
+     * Ricerca il "default" forward.
+     */
+    public Forward findDefaultForward() {
+        return Optional.of(getParentRoot().isBootstrap())
+                .filter(bootstrap -> bootstrap)
+                .map(aBoolean -> findForward("bootstrap"))
+                .filter(forward -> Optional.ofNullable(forward).isPresent())
+                .orElseGet(() -> findForward("default"));
+    }
+
+    /**
+     * Ricerca un forward nell'ambito del ricevente. La ricerca valuta dapprima gli hook,
+     * quindi i forward static definiti nell'ambito del ricevente, quindi la ricerca passa al padre del ricevente.
+     */
+    public Forward findForward(String s) {
+        Forward forward = findHookForward(s);
+        if (forward != null)
+            return forward;
+        if (mapping != null)
+            forward = mapping.findForward(s);
+        if (forward != null)
+            return forward;
+        if (parent != null)
+            forward = parent.findForward(s);
+        return forward;
+    }
+
+    protected Forward findHookForward(String name) {
+        return hooks.get(name);
+    }
+
+    /**
+     * Restituisce il figlio del ricevente dal nome specificato,
+     */
+    public BusinessProcess getChild(String bpname) {
+        if (children == null)
+            return null;
+        synchronized (children) {
+            return children.get(bpname);
+        }
+    }
+
+    /**
+     * Restituisce una enumeration dei figli del ricevente.
+     */
+    public Enumeration<BusinessProcess> getChildren() {
+        return Collections.enumeration(children.values());
+    }
+
+    /**
+     * Restituisce il nome del ricevente.
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Ritorna il livello del BusinessProcess corrente
+     */
+    public int getBPLevel() {
+        int result = 0;
+        BusinessProcess bp = this;
+        while (bp.getParent() != null) {
+            result++;
+            bp = bp.getParent();
+        }
+        return result;
+    }
+
+    /**
+     * Restituisce il padre del ricevente.
+     */
+    public BusinessProcess getParent() {
+        return parent;
+    }
+
+    /**
+     * Restituisce una stringa formata dal nome del ricevente pi  quello dei suoi padri.
+     * Il nome del processo root   quello pi  a sinistra. Come separatore viene usato il carattere '/'
+     */
+    public String getPath() {
+        return path;
+    }
+
+    /**
+     * Restituisce una risorsa associata al ricevente.
+     * Ogni istanza di FormBP possiede un dizionario di risorse locali;
+     * ogni risorsa non trovata localmente viene richiesta tramite
+     */
+    public String getResource(String name) {
+        if (resources == null)
+            return Config.getHandler().getProperty(getClass(), name);
+        else
+            return resources.getProperty(name);
+    }
+
+    public Properties getResources() {
+        if (resources == null)
+            return Config.getHandler().getProperties(getClass());
+        else
+            return resources;
+    }
+
+    /**
+     * Restituisce il business process root.
+     */
+    public BusinessProcess getRoot() {
+        if (parent == null)
+            return this;
+        else
+            return parent.getRoot();
+    }
+
+    public int getTransactionPolicy() {
+        return transactionPolicy;
+    }
+
+    /**
+     * Restituisce il valore della propriet  'userTransaction'
+     */
+    public UserTransaction getUserTransaction() {
+        return userTransaction;
+    }
+
+    /**
+     * Effettua una gestione standard delle eccezioni.
+     */
+    public BusinessProcessException handleException(Throwable throwable) {
+        try {
+            throw throwable;
+        } catch (BusinessProcessException businessprocessexception) {
+            return businessprocessexception;
+        } catch (Throwable throwable1) {
+            return new BusinessProcessException(throwable1);
+        }
+    }
+
+    /**
+     * Gestisce una UserTransactionTimeoutException. La gestione standard prevede solamente
+     * la chiusura del ricevente (che non   pi  utilizzabile).
+     */
+    protected void handleUserTransactionTimeout(ActionContext actioncontext) throws BusinessProcessException {
+        actioncontext.closeBusinessProcess(this);
+    }
+
+    /**
+     * Invocato dall ActionServlet in seguito alla istanziazione di un BusinessProcess.
+     */
+    protected void init(it.cnr.jada.action.Config config, ActionContext actioncontext) throws BusinessProcessException {
+    }
+
+    public final void initializeUserTransaction(ActionContext actioncontext) throws BusinessProcessException {
+        try {
+            switch (transactionPolicy) {
+                default:
+                    break;
+
+                case REQUIRES_NEW_TRANSACTION:
+                    userTransaction = EJBCommonServices.createUserTransaction(actioncontext, this);
+                    break;
+
+                case REQUIRES_TRANSACTION:
+                    if (actioncontext.getBusinessProcess().getUserTransaction() == null)
+                        userTransaction = EJBCommonServices.createUserTransaction(actioncontext, this);
+                    else
+                        userTransaction = NestedUserTransaction.createNestedUserTransaction(actioncontext.getBusinessProcess().getUserTransaction());
+                    break;
+
+                case INHERIT_TRANSACTION:
+                    userTransaction = NestedUserTransaction.createNestedUserTransaction(actioncontext.getBusinessProcess().getUserTransaction());
+                    break;
+            }
+            if (userTransaction != null)
+                actioncontext.getUserInfo().setUserTransaction(userTransaction);
+        } catch (RemoteException remoteexception) {
+            throw new BusinessProcessException(remoteexception);
+        } catch (EJBException ejbexception) {
+            throw new BusinessProcessException(ejbexception);
+        }
+    }
+
+    public synchronized boolean isBusy() {
+        if (busy)
+            return true;
+        for (Iterator<BusinessProcess> iterator = children.values().iterator(); iterator.hasNext(); ) {
+            BusinessProcess businessprocess = iterator.next();
+            if (businessprocess.isBusy())
+                return true;
+        }
+        return false;
+    }
+
+    /**
+     * Esegue il forward "default" associato al ricevente.
+     */
+    public void perform(ActionContext actioncontext) {
+        actioncontext.findDefaultForward().perform(actioncontext);
+    }
+
+    /**
+     * Rimuove un business process dall'elenco dei figli del ricevente.
+     */
+    public BusinessProcess removeChild(ActionContext context, String name) throws BusinessProcessException {
+        synchronized (children) {
+            BusinessProcess businessprocess = getChild(name);
+            if (businessprocess != null)
+                businessprocess.closed(context);
+            children.remove(name);
+            return businessprocess;
+        }
+    }
+
+    /**
+     * Rimuove un business process dall'elenco dei figli del ricevente.
+     */
+    public BusinessProcess removeChild(String name) throws BusinessProcessException {
+        return removeChild(null, name);
+    }
+
+    /**
+     * Rimuove un hook dall'elenco degli hook del ricevente.
+     */
+    protected void removeHookForward(String name) {
+        hooks.remove(name);
+    }
+
+    /**
+     * Effettua una rollback della UserTransaction associata al ricevente.
+     * Se il ricevente non è in modalità  transazionale esce senza effettuare nulla.
+     */
+    public void rollbackUserTransaction() throws BusinessProcessException {
+        if (getUserTransaction() != null)
+            try {
+                getUserTransaction().rollback();
+            } catch (Throwable throwable) {
+                throw new BusinessProcessException(throwable);
+            }
+    }
+
+    /**
+     * Effettua una rollback e rimuove la UserTransaction associata al ricevente.
+     * Se il ricevente non è in modalità  transazionale esce senza effettuare nulla.
+     */
+    public void rollbackAndCloseUserTransaction() throws BusinessProcessException {
+        Optional.ofNullable(getUserTransaction())
+                .ifPresent(userTransaction1 -> {
+                    try {
+                        userTransaction1.rollback();
+                        userTransaction1.remove();
+                        this.userTransaction = null;
+                    } catch (Throwable throwable) {
+                        throw new DetailedRuntimeException(throwable);
+                    }
+                });
+    }
+
+    public synchronized boolean setBusy() {
+        if (isBusy())
+            return false;
+        else
+            return busy = true;
+    }
+
+    /**
+     * Imposta Il BusinessProcessMapping da cui   stato instanziato il ricevente.
      * Effettua l'inizializzaione del BusinessProcess.
      */
-	protected void setMapping(BusinessProcessMapping businessprocessmapping, ActionContext actioncontext) throws BusinessProcessException{
-		name = businessprocessmapping.getName();
-		mapping = businessprocessmapping;
-		init(businessprocessmapping.getConfig(), actioncontext);
-	}
-
-	public void setResource(String name, String value){
-		if(resources == null)
-			resources = new Properties(Config.getHandler().getProperties(getClass()));
-		resources.setProperty(name, value);
-	}
-
-	private void setRoot(){
-		name = "";
-		path = "";
-	}
-	/**
-	 * Invia l'E-Mail con l'errore
-	 * @param context
-	 * @param user
-	 * @param esercizio
-	 * @param cd_unita_organizzativa
-	 * @param stack_trace
-	 */
-    public void insertError(ActionContext context, String user, Integer esercizio, String cd_unita_organizzativa, String stack_trace){
-		String text = "Errore interno del Server Esercizio:"+esercizio+" Utente:"+user+" UO:"+cd_unita_organizzativa;
-		logger.error(text.concat("/n").concat(getPath()).concat("/n").concat(stack_trace));
-		SendMail.sendErrorMail(text,getPath()+"<BR>"+stack_trace);		
+    protected void setMapping(BusinessProcessMapping businessprocessmapping, ActionContext actioncontext) throws BusinessProcessException {
+        name = businessprocessmapping.getName();
+        mapping = businessprocessmapping;
+        init(businessprocessmapping.getConfig(), actioncontext);
     }
+
+    public void setResource(String name, String value) {
+        if (resources == null)
+            resources = new Properties(Config.getHandler().getProperties(getClass()));
+        resources.setProperty(name, value);
+    }
+
+    private void setRoot() {
+        name = "";
+        path = "";
+    }
+
     /**
-     * 
+     * Invia l'E-Mail con l'errore
+     *
+     * @param context
+     * @param user
+     * @param esercizio
+     * @param cd_unita_organizzativa
+     * @param stack_trace
+     */
+    public void insertError(ActionContext context, String user, Integer esercizio, String cd_unita_organizzativa, String stack_trace) {
+        String text = "Errore interno del Server Esercizio:" + esercizio + " Utente:" + user + " UO:" + cd_unita_organizzativa;
+        logger.error(text.concat("/n").concat(getPath()).concat("/n").concat(stack_trace));
+        SendMail.sendErrorMail(text, getPath() + "<BR>" + stack_trace);
+    }
+
+    /**
      * @return
      */
-	public BusinessProcessMapping getMapping() {
-		return mapping;
-	}
-	public Character getFunction() {
-		return function;
-	}
-	public void setFunction(Character function) {
-		this.function = function;
-	}
-	
-	public BusinessProcess getParent(int liv) {
-		BusinessProcess bp=this;
-	 	if(liv!=0) 
-			for(int i=1;i<liv;i++){
-				bp=bp.getParent();   
-			} 
-		
-		return bp;
-	}
-	
-	public BusinessProcess getParentRoot() {
-		BusinessProcess bp = this;
-		while(bp.getParent() != null) {
-			bp = bp.getParent();
-		}
-		return bp;
-	}	
-	
-	public boolean isBootstrap() {
-		return false;
-	}
- }
+    public BusinessProcessMapping getMapping() {
+        return mapping;
+    }
+
+    public Character getFunction() {
+        return function;
+    }
+
+    public void setFunction(Character function) {
+        this.function = function;
+    }
+
+    public BusinessProcess getParent(int liv) {
+        BusinessProcess bp = this;
+        if (liv != 0)
+            for (int i = 1; i < liv; i++) {
+                bp = bp.getParent();
+            }
+
+        return bp;
+    }
+
+    public BusinessProcess getParentRoot() {
+        BusinessProcess bp = this;
+        while (bp.getParent() != null) {
+            bp = bp.getParent();
+        }
+        return bp;
+    }
+
+    public boolean isBootstrap() {
+        return false;
+    }
+}

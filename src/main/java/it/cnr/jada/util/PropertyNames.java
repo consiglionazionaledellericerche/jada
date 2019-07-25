@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2019  Consiglio Nazionale delle Ricerche
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as
+ *     published by the Free Software Foundation, either version 3 of the
+ *     License, or (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.cnr.jada.util;
 
 import it.cnr.jada.util.ejb.EJBCommonServices;
@@ -9,17 +26,17 @@ import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.Optional;
+import java.util.Properties;
 
 public class PropertyNames {
-    private static final Logger logger = LoggerFactory.getLogger(PropertyNames.class);
-    private static Properties properties;
-
     public static final String ORACLE_PROPERTIES = "oracle.properties";
     public static final String POSTGRES_PROPERTIES = "postgres.properties";
     public static final String POSTGRE_SQL = "PostgreSQL";
     public static final String H2 = "H2";
     public static final String ORACLE = "Oracle";
+    private static final Logger logger = LoggerFactory.getLogger(PropertyNames.class);
+    private static Properties properties;
 
     static {
         Connection connection = null;
@@ -45,7 +62,7 @@ public class PropertyNames {
                     break;
                 }
             }
-        } catch (IOException|SQLException e) {
+        } catch (IOException | SQLException e) {
             logger.error("Cannot load property file", e);
         } finally {
             Optional.ofNullable(connection)

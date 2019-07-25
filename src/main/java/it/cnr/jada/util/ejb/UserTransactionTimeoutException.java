@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2019  Consiglio Nazionale delle Ricerche
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as
+ *     published by the Free Software Foundation, either version 3 of the
+ *     License, or (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.cnr.jada.util.ejb;
 
 import it.cnr.jada.UserTransaction;
@@ -6,29 +23,24 @@ import java.io.Serializable;
 import java.rmi.RemoteException;
 
 public class UserTransactionTimeoutException extends RemoteException
-    implements Serializable
-{
+        implements Serializable {
 
-    public UserTransactionTimeoutException(String s)
-    {
+    private UserTransaction userTransaction;
+
+    public UserTransactionTimeoutException(String s) {
         super(s);
     }
 
-    public UserTransactionTimeoutException(String s, UserTransaction usertransaction)
-    {
+    public UserTransactionTimeoutException(String s, UserTransaction usertransaction) {
         super(s);
         userTransaction = usertransaction;
     }
 
-    public UserTransaction getUserTransaction()
-    {
+    public UserTransaction getUserTransaction() {
         return userTransaction;
     }
 
-    public void setUserTransaction(UserTransaction usertransaction)
-    {
+    public void setUserTransaction(UserTransaction usertransaction) {
         userTransaction = usertransaction;
     }
-
-    private UserTransaction userTransaction;
 }

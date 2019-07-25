@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2019  Consiglio Nazionale delle Ricerche
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as
+ *     published by the Free Software Foundation, either version 3 of the
+ *     License, or (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.cnr.jada.util.action;
 
 import it.cnr.jada.bulk.FieldValidationMap;
@@ -7,20 +24,19 @@ import java.util.Enumeration;
 // Referenced classes of package it.cnr.jada.util.action:
 //            Selection
 
-public interface ListController
-{
+public interface ListController {
 
-    public abstract String getControllerName();
+    String getControllerName();
 
-    public abstract Enumeration getElements();
+    Enumeration getElements();
 
-    public abstract FieldValidationMap getFieldValidationMap();
+    FieldValidationMap getFieldValidationMap();
 
-    public abstract String getInputPrefix();
+    String getInputPrefix();
 
-    public abstract Selection getSelection();
+    Selection getSelection();
 
-    public abstract boolean isGrowable();
+    boolean isGrowable();
 
-    public abstract boolean isShrinkable();
+    boolean isShrinkable();
 }

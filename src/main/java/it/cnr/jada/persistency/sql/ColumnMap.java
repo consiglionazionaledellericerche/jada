@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2019  Consiglio Nazionale delle Ricerche
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as
+ *     published by the Free Software Foundation, either version 3 of the
+ *     License, or (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.cnr.jada.persistency.sql;
 
 import it.cnr.jada.util.XmlWriter;
@@ -18,9 +35,9 @@ public class ColumnMap
     private HashMap properties;
     private HashMap primaryColumns;
     private String tableName;
-    private String columnNames[];
-    private String primaryColumnNames[];
-    private String nonPrimaryColumnNames[];
+    private String[] columnNames;
+    private String[] primaryColumnNames;
+    private String[] nonPrimaryColumnNames;
     private String name;
     private String _extends;
     private String defaultInsertSQL;
@@ -106,7 +123,7 @@ public class ColumnMap
 
     private void buildClausesForPrimaryKey(StringBuffer stringbuffer) {
         stringbuffer.append(" WHERE\n");
-        String as[] = getPrimaryColumnNames();
+        String[] as = getPrimaryColumnNames();
         for (int i = 0; i < as.length; ) {
             stringbuffer.append("\t( ");
             stringbuffer.append(getTableName());
@@ -132,7 +149,7 @@ public class ColumnMap
         stringbuffer.append(EJBCommonServices.getDefaultSchema());
         stringbuffer.append(getTableName());
         stringbuffer.append(" (\n");
-        String as[] = getColumnNames();
+        String[] as = getColumnNames();
         for (int i = 0; i < as.length; ) {
             stringbuffer.append('\t');
             stringbuffer.append(as[i]);
@@ -160,10 +177,10 @@ public class ColumnMap
 
     private String buildDefaultSelectHeaderSQL() {
         return Arrays.asList(getColumnNames()).stream()
-                .map(columnName ->  Optional.ofNullable(columnName)
-                                        .filter(s -> s.indexOf(".") != -1)
-                                        .map(s -> s)
-                                        .orElse(getTableName().concat(".").concat(columnName))
+                .map(columnName -> Optional.ofNullable(columnName)
+                        .filter(s -> s.indexOf(".") != -1)
+                        .map(s -> s)
+                        .orElse(getTableName().concat(".").concat(columnName))
                 ).collect(Collectors.joining(",")).concat("\n");
     }
 
@@ -182,7 +199,7 @@ public class ColumnMap
         stringbuffer.append(EJBCommonServices.getDefaultSchema());
         stringbuffer.append(getTableName());
         stringbuffer.append(" SET\n");
-        String as[] = getNonPrimaryColumnNames();
+        String[] as = getNonPrimaryColumnNames();
         for (int i = 0; i < as.length; ) {
             stringbuffer.append('\t');
             stringbuffer.append(as[i]);

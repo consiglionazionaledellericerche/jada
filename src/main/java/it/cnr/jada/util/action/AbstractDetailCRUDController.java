@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2019  Consiglio Nazionale delle Ricerche
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as
+ *     published by the Free Software Foundation, either version 3 of the
+ *     License, or (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.cnr.jada.util.action;
 
 import it.cnr.jada.action.ActionContext;
@@ -38,8 +55,8 @@ public abstract class AbstractDetailCRUDController extends NestedFormController
     private int currentPageFrame;
     private boolean enabled;
     private boolean collapsed;
-    private Button crudToolbar[];
-    private Button navigatorToolbar[];
+    private Button[] crudToolbar;
+    private Button[] navigatorToolbar;
 
     public AbstractDetailCRUDController(String s, FormController formcontroller) {
         this(s, formcontroller, true);
@@ -144,7 +161,7 @@ public abstract class AbstractDetailCRUDController extends NestedFormController
     public abstract int countDetails();
 
     protected Button[] createCRUDToolbar() {
-        Button abutton[] = new Button[5];
+        Button[] abutton = new Button[5];
         abutton[0] = new Button(Config.getHandler().getProperties(getClass()), "CRUDToolbar.add");
         abutton[1] = new Button(Config.getHandler().getProperties(getClass()), "CRUDToolbar.filter");
         abutton[2] = new Button(Config.getHandler().getProperties(getClass()), "CRUDToolbar.remove");
@@ -236,7 +253,7 @@ public abstract class AbstractDetailCRUDController extends NestedFormController
 
     public int[] getSelectedRows(ActionContext actioncontext) {
         Selection selection1 = new Selection(actioncontext, getInputPrefix());
-        int ai[] = new int[selection1.size()];
+        int[] ai = new int[selection1.size()];
         int i = 0;
         for (SelectionIterator selectioniterator = selection1.iterator(); selectioniterator.hasNext(); )
             ai[i++] = selectioniterator.nextIndex();
@@ -479,6 +496,7 @@ public abstract class AbstractDetailCRUDController extends NestedFormController
     public void closeButtonGROUPToolbar(PageContext pagecontext) throws IOException {
         writeBootstrap(pagecontext, "</div>");
     }
+
     protected final void writeCRUDToolbar(PageContext pagecontext, boolean canAddToCRUD, boolean canFilter, boolean canRemoveFromCRUD, boolean closedToolbar)
             throws IOException, ServletException {
         writeCRUDToolbar(pagecontext, canAddToCRUD, canFilter, canRemoveFromCRUD, closedToolbar, true);
@@ -556,7 +574,7 @@ public abstract class AbstractDetailCRUDController extends NestedFormController
         table.setSelectable(enabled);
         table.setReadonly(flag3 || !enabled);
         table.setCustomizer(tablecustomizer);
-        table.setRows(Collections.enumeration(list != null ? ((java.util.Collection) (list)) : ((java.util.Collection) (Collections.EMPTY_LIST))));
+        table.setRows(Collections.enumeration(list != null ? list : Collections.EMPTY_LIST));
         boolean flag4 = "100%".equals(height) && "100%".equals(width);
         if (flag4) {
             jspwriter.println("<table class=\"Panel\" style=\"width:100%;height=100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">");
@@ -612,7 +630,7 @@ public abstract class AbstractDetailCRUDController extends NestedFormController
         table.setSelectable(enabled);
         table.setReadonly(isInputReadonly() || isReadOnly || !enabled);
         table.setCustomizer(tablecustomizer);
-        table.setRows(Collections.enumeration(list != null ? ((java.util.Collection) (list)) : ((java.util.Collection) (Collections.EMPTY_LIST))));
+        table.setRows(Collections.enumeration(list != null ? list : Collections.EMPTY_LIST));
         boolean flag4 = "100%".equals(height) && "100%".equals(width);
         if (flag4) {
             jspwriter.println("<table class=\"Panel\" style=\"width:100%;height=100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">");

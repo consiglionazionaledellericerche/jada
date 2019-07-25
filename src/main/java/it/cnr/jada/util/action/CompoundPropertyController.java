@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2019  Consiglio Nazionale delle Ricerche
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as
+ *     published by the Free Software Foundation, either version 3 of the
+ *     License, or (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.cnr.jada.util.action;
 
 import it.cnr.jada.action.ActionContext;
@@ -12,46 +29,37 @@ import java.io.Serializable;
 //            NestedFormController, FormController
 
 public class CompoundPropertyController extends NestedFormController
-    implements Serializable
-{
+        implements Serializable {
 
-    public CompoundPropertyController(String s, Class class1, String s1, FormController formcontroller)
-    {
+    private final BulkInfo bulkInfo;
+    private final Class modelClass;
+    private String propertyName;
+
+    public CompoundPropertyController(String s, Class class1, String s1, FormController formcontroller) {
         super(s, formcontroller);
         propertyName = s1;
         modelClass = class1;
         bulkInfo = BulkInfo.getBulkInfo(class1);
     }
 
-    public BulkInfo getBulkInfo()
-    {
+    public BulkInfo getBulkInfo() {
         return bulkInfo;
     }
 
-    public String getPropertyName()
-    {
+    public String getPropertyName() {
         return propertyName;
     }
 
-    public void resync(ActionContext actioncontext)
-    {
-        try
-        {
-            setModel(actioncontext, (OggettoBulk)Introspector.getPropertyValue(getParentModel(), propertyName));
-            super.resync(actioncontext);
-        }
-        catch(Exception exception)
-        {
-            throw new IntrospectionError(exception);
-        }
-    }
-
-    public void setPropertyName(String s)
-    {
+    public void setPropertyName(String s) {
         propertyName = s;
     }
 
-    private String propertyName;
-    private final BulkInfo bulkInfo;
-    private final Class modelClass;
+    public void resync(ActionContext actioncontext) {
+        try {
+            setModel(actioncontext, (OggettoBulk) Introspector.getPropertyValue(getParentModel(), propertyName));
+            super.resync(actioncontext);
+        } catch (Exception exception) {
+            throw new IntrospectionError(exception);
+        }
+    }
 }

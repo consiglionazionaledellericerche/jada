@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2019  Consiglio Nazionale delle Ricerche
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as
+ *     published by the Free Software Foundation, either version 3 of the
+ *     License, or (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package it.cnr.jada.comp;
 
 import it.cnr.jada.bulk.FieldProperty;
@@ -9,22 +26,20 @@ import java.io.Serializable;
 //            CRUDConstraintException
 
 public class CRUDTooLargeConstraintException extends CRUDConstraintException
-    implements Serializable
-{
+        implements Serializable {
 
-    public CRUDTooLargeConstraintException(String s, OggettoBulk oggettobulk, int i)
-    {
+    private final int maxLength;
+
+    public CRUDTooLargeConstraintException(String s, OggettoBulk oggettobulk, int i) {
         super(s, oggettobulk);
         maxLength = i;
     }
 
-    public int getMaxLength()
-    {
+    public int getMaxLength() {
         return maxLength;
     }
 
-    public String getUserMessage()
-    {
+    public String getUserMessage() {
         StringBuffer stringbuffer = new StringBuffer();
         FieldProperty fieldproperty = getFormFieldProperty();
         stringbuffer.append("Il campo \"");
@@ -34,6 +49,4 @@ public class CRUDTooLargeConstraintException extends CRUDConstraintException
         stringbuffer.append(" caratteri.");
         return stringbuffer.toString();
     }
-
-    private final int maxLength;
 }
