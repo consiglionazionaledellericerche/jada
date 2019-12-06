@@ -488,11 +488,11 @@ public class GenericComponent implements Component, Serializable, Cloneable {
             throws ComponentException, PersistencyException {
         if (oggettobulk instanceof Persistent) {
             switch (oggettobulk.getCrudStatus()) {
-                case 1: // '\001'
+                case OggettoBulk.TO_BE_CREATED: // '\001'
                     insertBulk(usercontext, oggettobulk, flag);
                     break;
 
-                case 2: // '\002'
+                case OggettoBulk.TO_BE_UPDATED: // '\002'
                     updateBulk(usercontext, oggettobulk, flag);
                     break;
             }
@@ -510,7 +510,7 @@ public class GenericComponent implements Component, Serializable, Cloneable {
                 makeBulkListPersistent(usercontext, abulkcollection[j], flag);
 
         }
-        if (oggettobulk.getCrudStatus() == 3)
+        if (oggettobulk.getCrudStatus() == OggettoBulk.TO_BE_DELETED)
             deleteBulk(usercontext, oggettobulk);
     }
 
@@ -601,19 +601,19 @@ public class GenericComponent implements Component, Serializable, Cloneable {
             throws ComponentException, PersistencyException, OutdatedResourceException, BusyResourceException, PrimaryKeyChangedException {
         if (oggettobulk instanceof Persistent) {
             switch (oggettobulk.getCrudStatus()) {
-                case 1: // '\001'
+                case OggettoBulk.TO_BE_CREATED: // '\001'
                     validateBulkForInsert(usercontext, oggettobulk);
                     break;
 
-                case 2: // '\002'
+                case OggettoBulk.TO_BE_UPDATED: // '\002'
                     validateBulkForUpdate(usercontext, oggettobulk);
                     break;
 
-                case 3: // '\003'
+                case OggettoBulk.TO_BE_DELETED: // '\003'
                     validateBulkForDelete(usercontext, oggettobulk);
                     break;
 
-                case 4: // '\004'
+                case OggettoBulk.TO_BE_CHECKED: // '\004'
                     validateBulkForCheck(usercontext, oggettobulk);
                     break;
             }

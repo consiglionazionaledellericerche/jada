@@ -29,6 +29,7 @@ import it.cnr.jada.util.ejb.TransactionClosedException;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
+import java.util.Enumeration;
 import java.util.StringTokenizer;
 
 // Referenced classes of package it.cnr.jada.util.action:
@@ -392,6 +393,21 @@ public class BulkAction extends FormAction
         }
     }
 
+    public Forward doSearchLike(ActionContext actioncontext, String s) {
+        try {
+            BulkBP bulkbp = (BulkBP) actioncontext.getBusinessProcess();
+            bulkbp.fillModel(actioncontext);
+            FormField formfield = getFormField(actioncontext, s);
+            try {
+                return (Forward) Introspector.invoke(this, "doSearchLike", formfield.getField().getName(), actioncontext);
+            } catch (NoSuchMethodException _ex) {
+                return searchLike(actioncontext, formfield, formfield.getField().getColumnSet());
+            }
+        } catch (Exception exception) {
+            return handleException(actioncontext, exception);
+        }
+    }
+
     public Forward doSelection(ActionContext actioncontext, String s)
             throws BusinessProcessException {
         try {
@@ -571,6 +587,22 @@ public class BulkAction extends FormAction
             return selectFromSearchResult(actioncontext, formfield, bulkinfo, bulkbp.find(actioncontext, null, oggettobulk1, oggettobulk, formfield.getField().getProperty()), s);
         } catch (Exception exception) {
             return handleException(actioncontext, exception);
+        }
+    }
+
+    public Forward searchLike(ActionContext actioncontext, FormField formfield, String s) {
+        try {
+            BulkBP bulkbp = (BulkBP)actioncontext.getBusinessProcess();
+            OggettoBulk oggettobulk = formfield.getModel();
+            OggettoBulk oggettobulk1 = (OggettoBulk)formfield.getField().getValueFrom(oggettobulk);
+            String nameSearchtool = formfield.getField().getFormName();
+
+            CompoundFindClause clause = oggettobulk1.getBulkInfo().buildFindClausesLikeFrom(oggettobulk1, null, 8194, nameSearchtool, null);
+            oggettobulk1 = this.createEmptyModelForSearchTool(actioncontext, formfield);
+
+            return this.selectFromSearchResult(actioncontext, formfield, bulkbp.find(actioncontext, clause, oggettobulk1, oggettobulk, formfield.getField().getProperty()), s);
+        } catch (Exception var7) {
+            return this.handleException(actioncontext, var7);
         }
     }
 

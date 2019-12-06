@@ -25,6 +25,7 @@ import it.cnr.jada.util.IntrospectionError;
 import it.cnr.jada.util.Introspector;
 import it.cnr.jada.util.OrderedHashtable;
 import it.cnr.jada.util.XMLObjectFiller;
+import it.cnr.jada.util.action.FormField;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -343,6 +344,60 @@ public class BulkInfo implements Serializable {
         }
     }
 
+    public CompoundFindClause buildFindClausesLikeFrom(OggettoBulk oggettobulk, Boolean boolean1, int operator, String nameSearchtool, CompoundFindClause compoundfindclause) {
+        try {
+            Enumeration enumeration = getFindFieldProperties();
+
+            while(true) {
+                FieldProperty fieldproperty;
+                do {
+                    do {
+                        if (!enumeration.hasMoreElements()) {
+                            return compoundfindclause;
+                        }
+
+                        fieldproperty = (FieldProperty)enumeration.nextElement();
+                    } while(fieldproperty.getProperty() == null);
+                } while(boolean1 != null && fieldproperty.isEnabledOnFreeSearch() != boolean1);
+
+                String s = fieldproperty.getFindProperty() != null ? fieldproperty.getFindProperty() : fieldproperty.getProperty();
+                Object obj = Introspector.getPropertyValue(oggettobulk, s);
+                if (obj != null) {
+                    if (compoundfindclause == null) {
+                        compoundfindclause = new CompoundFindClause();
+                    }
+
+                    Enumeration enumerationColumnsLike = getFormFieldProperties(nameSearchtool);
+                    if (enumerationColumnsLike != null){
+                        while(true) {
+                            FieldProperty fieldpropertyLike;
+                            do {
+                                do {
+                                    if (!enumerationColumnsLike.hasMoreElements()) {
+                                        return compoundfindclause;
+                                    }
+
+                                    fieldpropertyLike = (FieldProperty)enumerationColumnsLike.nextElement();
+                                } while(fieldpropertyLike.getProperty() == null);
+                            } while(boolean1 != null && fieldpropertyLike.isEnabledOnFreeSearch() != boolean1);
+
+                            String propertyNameLike = fieldpropertyLike.getFindProperty() != null ? fieldpropertyLike.getFindProperty() : fieldpropertyLike.getProperty();
+                            SimpleFindClause simplefindclauseLike = new SimpleFindClause();
+                            simplefindclauseLike.setPropertyName(propertyNameLike);
+                            simplefindclauseLike.setLogicalOperator("OR");
+                            simplefindclauseLike.setOperator(operator);
+                            simplefindclauseLike.setValue(obj);
+                            simplefindclauseLike.setCaseSensitive(fieldpropertyLike.isCaseSensitiveSearch());
+                            compoundfindclause.addChild(simplefindclauseLike);
+                        }
+                    }
+                }
+            }
+        } catch (Exception var9) {
+            throw new IntrospectionError(var9);
+        }
+    }
+
     void completeFieldProperty(FieldProperty fieldproperty) {
         FieldProperty fieldproperty1 = getFieldProperty(fieldproperty.getName());
         if (fieldproperty1 == null)
@@ -559,6 +614,10 @@ public class BulkInfo implements Serializable {
     }
 
     public void writeFormForSearchTool(JspWriter out, Object bean, String formName, String labelClass, String inputClass, String prefix, int status, boolean readonly, int j, boolean showLabels, FieldValidationMap fieldvalidationmap, boolean isBootstrap) throws IOException {
+        writeFormForSearchTool(null, out, bean, formName, labelClass, inputClass, prefix, status, readonly, j, showLabels, fieldvalidationmap, isBootstrap);
+    }
+
+    public void writeFormForSearchToolWithLike(JspWriter out, Object bean, String formName, String labelClass, String inputClass, String prefix, int status, boolean readonly, int j, boolean showLabels, FieldValidationMap fieldvalidationmap, boolean isBootstrap) throws IOException {
         writeFormForSearchTool(null, out, bean, formName, labelClass, inputClass, prefix, status, readonly, j, showLabels, fieldvalidationmap, isBootstrap);
     }
 
