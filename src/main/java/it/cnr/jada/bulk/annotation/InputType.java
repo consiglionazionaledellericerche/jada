@@ -35,6 +35,8 @@ public enum InputType {
 
     SEARCHTOOL,
 
+    SEARCHTOOL_WITH_LIKE,
+
     SELECT,
 
     CHECKBOX,

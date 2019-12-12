@@ -160,6 +160,15 @@ public class ColumnFieldProperty extends FieldProperty implements Serializable {
             jspwriter.print("&nbsp;");
     }
 
+    protected void writeSearchToolWithLike(JspWriter jspwriter, Object obj, boolean flag, Object obj1, String s, String s1, String s2, int i, FieldValidationMap fieldvalidationmap, boolean isBootstrap) throws IOException, IntrospectionException, InvocationTargetException {
+        if (i != 5)
+            super.writeSearchToolWithLike(jspwriter, obj, flag, obj1, s, s1, s2, i, fieldvalidationmap, isBootstrap);
+        else if (getPrintProperty() != null)
+            writeReadonlyText(jspwriter, obj, s, s1);
+        else
+            jspwriter.print("&nbsp;");
+    }
+
     protected void writeSelect(JspWriter jspwriter, Object obj, boolean flag, Object obj1, String s, String s1, String s2, int i, FieldValidationMap fieldvalidationmap, boolean isBootstrap) throws IOException, IntrospectionException, InvocationTargetException {
         if (i == 5)
             writeReadonlyText(jspwriter, obj, s, s1);

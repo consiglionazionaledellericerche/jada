@@ -93,7 +93,7 @@ public abstract class BulkBP extends FormBP
         if (fieldproperty.getInputTypeIndex() == 5 && fieldproperty.isCompleteOnSave())
             try {
                 Object obj = fieldproperty.getValueFrom(oggettobulk);
-                if ((obj instanceof OggettoBulk) && ((OggettoBulk) obj).getCrudStatus() != 5) {
+                if ((obj instanceof OggettoBulk) && ((OggettoBulk) obj).getCrudStatus() != OggettoBulk.NORMAL) {
                     OggettoBulk oggettobulk1 = (OggettoBulk) obj;
                     boolean flag = true;
                     for (Enumeration enumeration = oggettobulk1.getBulkInfo().getFindFieldProperties(); enumeration.hasMoreElements(); )

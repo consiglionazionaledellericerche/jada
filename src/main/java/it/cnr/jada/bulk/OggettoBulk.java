@@ -93,7 +93,7 @@ public abstract class OggettoBulk implements Cloneable, FetchListener, Persisten
 
     public OggettoBulk() {
         operabile = true;
-        crudStatus = 0;
+        crudStatus = UNDEFINED;
     }
 
     @JsonIgnore
@@ -127,7 +127,7 @@ public abstract class OggettoBulk implements Cloneable, FetchListener, Persisten
     }
 
     public void deletedUsing(Persister persister, UserContext userContext) {
-        crudStatus = 0;
+        crudStatus = UNDEFINED;
     }
 
     public void deletingUsing(Persister persister, UserContext userContext) {
@@ -139,7 +139,7 @@ public abstract class OggettoBulk implements Cloneable, FetchListener, Persisten
 
     public void fetchedFrom(Broker broker)
             throws IntrospectionException, FetchException {
-        crudStatus = 5;
+        crudStatus = NORMAL;
     }
 
     public boolean fillFromActionContext(ActionContext actioncontext, String s, int bpStatus, FieldValidationMap fieldvalidationmap)
@@ -294,7 +294,7 @@ public abstract class OggettoBulk implements Cloneable, FetchListener, Persisten
     }
 
     public void insertedUsing(Persister persister, UserContext userContext) {
-        crudStatus = 5;
+        crudStatus = NORMAL;
     }
 
     public void insertingUsing(Persister persister, UserContext userContext) {
@@ -302,7 +302,7 @@ public abstract class OggettoBulk implements Cloneable, FetchListener, Persisten
 
     @JsonIgnore
     public boolean isNew() {
-        return crudStatus == 1;
+        return crudStatus == TO_BE_CREATED;
     }
 
     @JsonIgnore
@@ -321,22 +321,22 @@ public abstract class OggettoBulk implements Cloneable, FetchListener, Persisten
 
     @JsonIgnore
     public boolean isToBeChecked() {
-        return crudStatus == 4;
+        return crudStatus == OggettoBulk.TO_BE_CHECKED;
     }
 
     @JsonIgnore
     public boolean isToBeCreated() {
-        return crudStatus == 1;
+        return crudStatus == OggettoBulk.TO_BE_CREATED;
     }
 
     @JsonIgnore
     public boolean isToBeDeleted() {
-        return crudStatus == 3;
+        return crudStatus == OggettoBulk.TO_BE_DELETED;
     }
 
     @JsonIgnore
     public boolean isToBeUpdated() {
-        return crudStatus == 2;
+        return crudStatus == OggettoBulk.TO_BE_UPDATED;
     }
 
     public int primaryKeyHashCode() {
@@ -344,29 +344,29 @@ public abstract class OggettoBulk implements Cloneable, FetchListener, Persisten
     }
 
     public void setToBeChecked() {
-        if (crudStatus == 5)
-            setCrudStatus(4);
+        if (crudStatus == NORMAL)
+            setCrudStatus(TO_BE_CHECKED);
     }
 
     public void setToBeCreated() {
-        if (crudStatus == 3)
-            setCrudStatus(5);
-        else if (crudStatus == 0)
-            setCrudStatus(1);
+        if (crudStatus == TO_BE_DELETED)
+            setCrudStatus(NORMAL);
+        else if (crudStatus == UNDEFINED)
+            setCrudStatus(TO_BE_CREATED);
     }
 
     public void setToBeDeleted() {
-        if (crudStatus == 1)
-            setCrudStatus(0);
-        else if (crudStatus != 0)
-            setCrudStatus(3);
+        if (crudStatus == TO_BE_CREATED)
+            setCrudStatus(UNDEFINED);
+        else if (crudStatus != UNDEFINED)
+            setCrudStatus(TO_BE_DELETED);
     }
 
     public void setToBeUpdated() {
-        if (crudStatus == 5)
-            setCrudStatus(2);
-        else if (crudStatus == 0)
-            setCrudStatus(1);
+        if (crudStatus == NORMAL)
+            setCrudStatus(TO_BE_UPDATED);
+        else if (crudStatus == UNDEFINED)
+            setCrudStatus(TO_BE_CREATED);
     }
 
     public String toString() {
@@ -379,7 +379,7 @@ public abstract class OggettoBulk implements Cloneable, FetchListener, Persisten
     }
 
     public void updatedUsing(Persister persister, UserContext userContext) {
-        crudStatus = 5;
+        crudStatus = NORMAL;
     }
 
     public void updatingUsing(Persister persister, UserContext userContext) {

@@ -177,6 +177,7 @@ public class FieldProperty implements Serializable {
     public static final int FILE = 14;
     public static final int DESCTOOL = 15;
     public static final int LABEL = 16;
+    public static final int SEARCHTOOL_WITH_LIKE = 17;
     public static final int DEFAULT_LAYOUT = -1;
     public static final int VERTICAL_LAYOUT = 0;
     public static final int HORIZONTAL_LAYOUT = 1;
@@ -186,10 +187,11 @@ public class FieldProperty implements Serializable {
     private static Button searchButton;
     private static Button newButton;
     private static Button freeSearchButton;
+    private static Button searchLikeButton;
     private static Button crudButton;
     private static String[] inputTypeNames = {
             "UNDEFINED", "HIDDEN", "PASSWORD", "RADIOGROUP", "ROTEXT", "SEARCHTOOL", "SELECT", "TEXT", "TEXTAREA", "CHECKBOX",
-            "CRUDTOOL", "BUTTON", "TABLE", "FORM", "FILE", "DESCTOOL", "LABEL"
+            "CRUDTOOL", "BUTTON", "TABLE", "FORM", "FILE", "DESCTOOL", "LABEL", "SEARCHTOOL_WITH_LIKE"
     };
     private static Button confirmButton;
     private static Button cancelButton;
@@ -365,6 +367,9 @@ public class FieldProperty implements Serializable {
         else
             return JSPUtils.encodeHtmlString(s);
     }
+    private boolean isSearchtoolType(){
+        return inputType == SEARCHTOOL || inputType == SEARCHTOOL_WITH_LIKE;
+    }
 
     public boolean fillBulkFromActionContext(OggettoBulk oggettobulk, ActionContext actioncontext, String s, int i, FieldValidationMap fieldvalidationmap)
             throws FillException {
@@ -379,15 +384,15 @@ public class FieldProperty implements Serializable {
         if (isReadonly(oggettobulk, bpStatus))
             return false;
         try {
-            if (inputType == 5) {
+            if (isSearchtoolType()) {
                 if (formName != null) {
                     OggettoBulk oggettobulk1 = (OggettoBulk) getValueFrom(oggettobulk);
-                    if (oggettobulk1 != null && oggettobulk1.getCrudStatus() != 5)
+                    if (oggettobulk1 != null && oggettobulk1.getCrudStatus() != OggettoBulk.NORMAL)
                         return oggettobulk1.fillFromHttpRequest(servletrequest, mergePrefix(s, name), 0, fieldvalidationmap);
                 }
                 return false;
             }
-            if (inputType == 13) {
+            if (inputType == FORM) {
                 if (formName != null) {
                     OggettoBulk oggettobulk2 = (OggettoBulk) getValueFrom(oggettobulk);
                     if (oggettobulk2 != null)
@@ -463,7 +468,7 @@ public class FieldProperty implements Serializable {
             style = fieldproperty.style;
         if (labelStyle == null)
             labelStyle = fieldproperty.labelStyle;
-        if (inputType == 0)
+        if (inputType == UNDEFINED)
             inputType = fieldproperty.inputType;
         if (maxLength == 0)
             maxLength = fieldproperty.maxLength;
@@ -680,6 +685,12 @@ public class FieldProperty implements Serializable {
         if (freeSearchButton == null)
             freeSearchButton = new Button(Config.getHandler().getProperties(getClass()), "freeSearchButton");
         return freeSearchButton;
+    }
+
+    private Button getSearchLikeButton() {
+        if (searchLikeButton == null)
+            searchLikeButton = new Button(Config.getHandler().getProperties(getClass()), "searchLikeButton");
+        return searchLikeButton;
     }
 
     public String getFreeSearchSet() {
@@ -1257,7 +1268,7 @@ public class FieldProperty implements Serializable {
 
     @JsonIgnore
     public boolean isNoWrap() {
-        return inputType == 5;
+        return isSearchtoolType();
     }
 
     public boolean isNullable() {
@@ -1270,15 +1281,15 @@ public class FieldProperty implements Serializable {
 
     public boolean isReadonly(Object obj, int i) {
         try {
-            if (inputType == 4)
+            if (inputType == ROTEXT)
                 return true;
             if (obj == null)
                 return true;
-            if (property == null && inputType == 11 && readonlyProperty == null)
+            if (property == null && inputType == BUTTON && readonlyProperty == null)
                 return false;
-            if (property == null && inputType == 11 && readonlyProperty != null && !((Boolean) Introspector.getPropertyValue(obj, readonlyProperty)).booleanValue())
+            if (property == null && inputType == BUTTON && readonlyProperty != null && !((Boolean) Introspector.getPropertyValue(obj, readonlyProperty)).booleanValue())
                 return false;
-            if (printProperty != null && (inputType == 7 || inputType == 8))
+            if (printProperty != null && (inputType == TEXT || inputType == TEXTAREA))
                 return true;
             if (i != 4 && !Introspector.isPropertyWriteable(obj, property))
                 return true;
@@ -1550,23 +1561,23 @@ public class FieldProperty implements Serializable {
             if (!readonly || isEnabledOnView())
                 readonly = isReadonly(obj, i);
             switch (inputType) {
-                case 7: // '\007'
+                case TEXT: // '\007'
                     writeText(jspwriter, obj, readonly, obj1, cssClass, s1, s2, i, fieldvalidationmap, isBootstrap);
                     break;
 
-                case 2: // '\002'
+                case PASSWORD: // '\002'
                     writePassword(jspwriter, obj, readonly, obj1, cssClass, s1, s2, i, fieldvalidationmap);
                     break;
 
-                case 8: // '\b'
+                case TEXTAREA: // '\b'
                     writeTextArea(jspwriter, obj, readonly, obj1, cssClass, s1, s2, i, fieldvalidationmap, isBootstrap);
                     break;
 
-                case 6: // '\006'
+                case SELECT: // '\006'
                     writeSelect(jspwriter, obj, readonly, obj1, cssClass, s1, s2, i, fieldvalidationmap, isBootstrap);
                     break;
 
-                case 3: // '\003'
+                case RADIOGROUP: // '\003'
                     writeRadioGroup(jspwriter, obj, readonly, obj1, cssClass, s1, s2, i, fieldvalidationmap, isBootstrap);
                     break;
 
@@ -1574,31 +1585,35 @@ public class FieldProperty implements Serializable {
                     writeCheckBox(jspwriter, obj, readonly, obj1, cssClass, s1, s2, i, fieldvalidationmap, isBootstrap);
                     break;
 
-                case 4: // '\004'
+                case ROTEXT: // '\004'
                     writeReadonlyText(jspwriter, obj, readonly, obj1, cssClass, s1, s2, i, fieldvalidationmap, isBootstrap);
                     break;
 
-                case 5: // '\005'
+                case SEARCHTOOL: // '\005'
                     writeSearchTool(jspwriter, obj, readonly, obj1, cssClass, s1, s2, i, fieldvalidationmap, isBootstrap);
                     break;
 
-                case 10: // '\n'
+                case SEARCHTOOL_WITH_LIKE: // '\t'
+                    writeSearchToolWithLike(jspwriter, obj, readonly, obj1, cssClass, s1, s2, i, fieldvalidationmap, isBootstrap);
+                    break;
+
+                case CRUDTOOL: // '\n'
                     writeCRUDTool(jspwriter, obj, readonly, obj1, cssClass, s1, s2, i, fieldvalidationmap, isBootstrap);
                     break;
 
-                case 1: // '\001'
+                case HIDDEN: // '\001'
                     writeHidden(jspwriter, obj, readonly, obj1, cssClass, s1, s2, i, fieldvalidationmap);
                     break;
 
-                case 11: // '\013'
+                case BUTTON: // '\013'
                     writeButton(jspwriter, obj, readonly, obj1, cssClass, s1, s2, i, fieldvalidationmap, isBootstrap);
                     break;
 
-                case 12: // '\f'
+                case TABLE: // '\f'
                     writeTable(jspwriter, obj, readonly, obj1, cssClass, s1, s2, i, fieldvalidationmap, isBootstrap);
                     break;
 
-                case 13: // '\r'
+                case FORM: // '\r'
                     writeForm(jspwriter, obj, readonly, obj1, cssClass, s1, s2, i, fieldvalidationmap, isBootstrap);
                     break;
 
@@ -1668,7 +1683,7 @@ public class FieldProperty implements Serializable {
 
     public void writeLabel(Object bp, JspWriter jspwriter, Object obj, String s, boolean isBootstrap)
             throws IOException {
-        if (inputType == 11) {
+        if (inputType == BUTTON) {
             return;
         } else {
             jspwriter.print("<span");
@@ -1860,7 +1875,7 @@ public class FieldProperty implements Serializable {
             jspwriter.print("\">");
             if (formName != null) {
                 BulkInfo.getBulkInfo(getPropertyType(getBulkInfo().getBulkClass())).writeFormForSearchTool(jspwriter, obj1, formName, null, null,
-                        mergePrefix(s2, name), 0, readonly || (obj1 instanceof OggettoBulk) && ((OggettoBulk) obj1).getCrudStatus() == 5,
+                        mergePrefix(s2, name), 0, readonly || (obj1 instanceof OggettoBulk) && ((OggettoBulk) obj1).getCrudStatus() == OggettoBulk.NORMAL,
                         1, false, fieldvalidationmap, isBootstrap);
             }
             getNewButton().write(jspwriter, !readonly, "javascript:submitForm('doBlankSearch(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
@@ -1875,7 +1890,7 @@ public class FieldProperty implements Serializable {
             if (formName != null) {
                 jspwriter.println("<table cellspacing=\"0\" cellspacing=\"0\" border=\"0\"><tr><td>");
                 jspwriter.println("<table cellspacing=\"0\" cellspacing=\"0\" border=\"0\">");
-                BulkInfo.getBulkInfo(getPropertyType(getBulkInfo().getBulkClass())).writeForm(jspwriter, obj1, formName, null, null, mergePrefix(s2, name), 0, readonly || (obj1 instanceof OggettoBulk) && ((OggettoBulk) obj1).getCrudStatus() == 5, 1, false, fieldvalidationmap, isBootstrap);
+                BulkInfo.getBulkInfo(getPropertyType(getBulkInfo().getBulkClass())).writeForm(jspwriter, obj1, formName, null, null, mergePrefix(s2, name), 0, readonly || (obj1 instanceof OggettoBulk) && ((OggettoBulk) obj1).getCrudStatus() == OggettoBulk.NORMAL, 1, false, fieldvalidationmap, isBootstrap);
                 jspwriter.println("</table>");
                 jspwriter.println("</td><td>");
             }
@@ -1884,6 +1899,50 @@ public class FieldProperty implements Serializable {
             getFreeSearchButton().write(jspwriter, !readonly, "javascript:submitForm('doFreeSearch(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
             if (getCRUDBusinessProcessName() != null)
                 getCrudButton().write(jspwriter, !readonly, "javascript:submitForm('doCRUD(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
+            if (formName != null) {
+                jspwriter.println("</td></tr>");
+                jspwriter.println("</table>");
+            }
+            jspwriter.println("</span>");
+        }
+    }
+
+    protected void writeSearchToolWithLike(JspWriter jspwriter, Object obj, boolean readonly, Object obj1, String s, String s1, String s2,
+                                   int i, FieldValidationMap fieldvalidationmap, boolean isBootstrap)
+            throws IOException, IntrospectionException, InvocationTargetException {
+        if (isBootstrap) {
+            jspwriter.println("<div class=\"input-group input-group-searchtool ");
+            jspwriter.print(Optional.ofNullable(formName).filter(s3 -> !Optional.ofNullable(inputCssClass).isPresent()).map(name -> "w-100 ").orElse(inputCssClass));
+            jspwriter.print(Optional.ofNullable(inputCssClass).map(css -> css).orElse(""));
+            jspwriter.print("\">");
+            if (formName != null) {
+                BulkInfo.getBulkInfo(getPropertyType(getBulkInfo().getBulkClass())).writeFormForSearchTool(jspwriter, obj1, formName, null, null,
+                        mergePrefix(s2, name), 0, readonly || (obj1 instanceof OggettoBulk) && ((OggettoBulk) obj1).getCrudStatus() == OggettoBulk.NORMAL,
+                        1, false, fieldvalidationmap, isBootstrap);
+            }
+            getNewButton().write(jspwriter, !readonly, "javascript:submitForm('doBlankSearch(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
+            getSearchButton().write(jspwriter, !readonly, "javascript:submitForm('doSearch(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
+            getFreeSearchButton().write(jspwriter, !readonly, "javascript:submitForm('doFreeSearch(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
+            if (getCRUDBusinessProcessName() != null) {
+                getCrudButton().write(jspwriter, !readonly, "javascript:submitForm('doCRUD(" + mergePrefix(s2, getName()) + ")')", isBootstrap, " input-group-addon");
+            }
+            getSearchLikeButton().write(jspwriter, !readonly, "javascript:submitForm('doSearchLike(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
+            jspwriter.println("</div>");
+        } else {
+            jspwriter.println("<span>");
+            if (formName != null) {
+                jspwriter.println("<table cellspacing=\"0\" cellspacing=\"0\" border=\"0\"><tr><td>");
+                jspwriter.println("<table cellspacing=\"0\" cellspacing=\"0\" border=\"0\">");
+                BulkInfo.getBulkInfo(getPropertyType(getBulkInfo().getBulkClass())).writeForm(jspwriter, obj1, formName, null, null, mergePrefix(s2, name), 0, readonly || (obj1 instanceof OggettoBulk) && ((OggettoBulk) obj1).getCrudStatus() == OggettoBulk.NORMAL, 1, false, fieldvalidationmap, isBootstrap);
+                jspwriter.println("</table>");
+                jspwriter.println("</td><td>");
+            }
+            getNewButton().write(jspwriter, !readonly, "javascript:submitForm('doBlankSearch(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
+            getSearchButton().write(jspwriter, !readonly, "javascript:submitForm('doSearch(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
+            getFreeSearchButton().write(jspwriter, !readonly, "javascript:submitForm('doFreeSearch(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
+            if (getCRUDBusinessProcessName() != null)
+                getCrudButton().write(jspwriter, !readonly, "javascript:submitForm('doCRUD(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
+            getSearchLikeButton().write(jspwriter, !readonly, "javascript:submitForm('doSearchLike(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
             if (formName != null) {
                 jspwriter.println("</td></tr>");
                 jspwriter.println("</table>");
