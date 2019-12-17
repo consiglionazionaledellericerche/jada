@@ -444,20 +444,32 @@ public class SelezionatoreListaAction extends SelezionatoreAction
                     .filter(CRUDBP.class::isInstance)
                     .map(CRUDBP.class::cast);
 
-            if (crudbp.isPresent() || Optional.ofNullable(bp).filter(SearchProvider.class::isInstance).isPresent()) {
+            if (crudbp.isPresent() ||
+                    Optional.ofNullable(bp)
+                            .filter(SearchProvider.class::isInstance)
+                            .isPresent() ||
+                    Optional.ofNullable(bp.getParent())
+                            .filter(SearchProvider.class::isInstance)
+                            .isPresent()
+
+            ) {
                 SearchProvider searchProvider = Optional.ofNullable(bp.getFormField())
                         .map(formField -> crudbp.get().getSearchProvider(
                                 formField.getModel(),
                                 formField.getField().getProperty()))
                         .map(SearchProvider.class::cast)
                         .orElseGet(() -> {
-                            if (crudbp.isPresent())
+                            if (crudbp.isPresent()) {
                                 return crudbp.get().getSearchProvider();
-                            else
+                            } else {
                                 return Optional.ofNullable(bp)
                                         .filter(SearchProvider.class::isInstance)
                                         .map(SearchProvider.class::cast)
-                                        .orElse(null);
+                                        .orElseGet(() -> Optional.ofNullable(bp.getParent())
+                                                .filter(SearchProvider.class::isInstance)
+                                                .map(SearchProvider.class::cast)
+                                                .orElse(null));
+                            }
                         });
 
                 OggettoBulk oggettoBulk = Optional.ofNullable(bp.getFormField())

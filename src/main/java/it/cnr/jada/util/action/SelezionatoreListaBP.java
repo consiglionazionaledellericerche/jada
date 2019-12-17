@@ -146,7 +146,14 @@ public class SelezionatoreListaBP extends AbstractSelezionatoreBP
         List<Button> buttons = new ArrayList<Button>();
         buttons.add(new Button(Config.getHandler().getProperties(getClass()), "Toolbar.print"));
         buttons.add(new Button(Config.getHandler().getProperties(getClass()), "Toolbar.excel"));
-        if (searchProvider.isPresent() || Optional.ofNullable(this).filter(SearchProvider.class::isInstance).isPresent()) {
+        if (searchProvider.isPresent() ||
+                Optional.ofNullable(this)
+                        .filter(SearchProvider.class::isInstance)
+                        .isPresent() ||
+                Optional.ofNullable(getParent())
+                        .filter(SearchProvider.class::isInstance)
+                        .isPresent()
+        ) {
             Button button = new Button(Config.getHandler().getProperties(getClass()), "Toolbar.freeSearchFilter");
             button.setSeparator(true);
             buttons.add(button);
