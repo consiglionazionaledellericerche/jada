@@ -385,7 +385,11 @@ public class SelezionatoreListaAction extends SelezionatoreAction
         Optional<CRUDBP> crudbp = Optional.ofNullable(bp.getParent())
                 .filter(CRUDBP.class::isInstance)
                 .map(CRUDBP.class::cast);
-        if (crudbp.isPresent() || Optional.ofNullable(bp).filter(SearchProvider.class::isInstance).isPresent()) {
+        Optional<SearchProvider> parentSearchProvider = Optional.ofNullable(bp.getParent())
+                .filter(SearchProvider.class::isInstance)
+                .map(SearchProvider.class::cast);
+
+        if (crudbp.isPresent() || parentSearchProvider.isPresent() || Optional.ofNullable(bp).filter(SearchProvider.class::isInstance).isPresent()) {
             try {
                 OggettoBulk oggettoBulk = Optional.ofNullable(bp.getFormField())
                         .map(formField -> bp.getBulkInfo())
@@ -417,13 +421,16 @@ public class SelezionatoreListaAction extends SelezionatoreAction
                                 formField.getField().getProperty()))
                         .map(SearchProvider.class::cast)
                         .orElseGet(() -> {
-                            if (crudbp.isPresent())
+                            if (crudbp.isPresent()) {
                                 return crudbp.get().getSearchProvider();
-                            else
+                            } else if (parentSearchProvider.isPresent()) {
+                                return parentSearchProvider.get();
+                            } else {
                                 return Optional.ofNullable(bp)
                                         .filter(SearchProvider.class::isInstance)
                                         .map(SearchProvider.class::cast)
                                         .orElse(null);
+                            }
                         });
                 bp.setIterator(context,
                         searchProvider.search(context, new CompoundFindClause(), oggettoBulk));
