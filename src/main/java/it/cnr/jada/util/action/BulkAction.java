@@ -30,6 +30,7 @@ import it.cnr.jada.util.ejb.TransactionClosedException;
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.Enumeration;
+import java.util.Optional;
 import java.util.StringTokenizer;
 
 // Referenced classes of package it.cnr.jada.util.action:
@@ -596,8 +597,12 @@ public class BulkAction extends FormAction
             OggettoBulk oggettobulk = formfield.getModel();
             OggettoBulk oggettobulk1 = (OggettoBulk)formfield.getField().getValueFrom(oggettobulk);
             String nameSearchtool = formfield.getField().getFormName();
+            BulkInfo bulkInfo = Optional.ofNullable(oggettobulk1)
+                                    .map(OggettoBulk::getBulkInfo)
+                                    .orElseGet(() -> BulkInfo.getBulkInfo(formfield.getField().getPropertyType()));
 
-            CompoundFindClause clause = oggettobulk1.getBulkInfo().buildFindClausesLikeFrom(oggettobulk1, null, 8194, nameSearchtool, null);
+
+            CompoundFindClause clause = bulkInfo.buildFindClausesLikeFrom(oggettobulk1, null, 8194, nameSearchtool, null);
             oggettobulk1 = this.createEmptyModelForSearchTool(actioncontext, formfield);
 
             return this.selectFromSearchResult(actioncontext, formfield, bulkbp.find(actioncontext, clause, oggettobulk1, oggettobulk, formfield.getField().getProperty()), s);
