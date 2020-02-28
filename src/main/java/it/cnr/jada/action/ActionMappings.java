@@ -118,4 +118,7 @@ public class ActionMappings implements Serializable {
         return actions;
     }
 
+    public Hashtable<String, BusinessProcessMapping> getBusinessProcesses() {
+        return businessProcesses;
+    }
 }

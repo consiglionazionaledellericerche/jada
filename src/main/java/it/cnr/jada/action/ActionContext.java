@@ -118,4 +118,6 @@ public interface ActionContext {
     void traceException(Throwable throwable);
 
     void saveFocusedElement();
+
+    ActionMapping getActionMapping();
 }

@@ -479,6 +479,7 @@ public class FormBP extends BusinessProcess implements Serializable {
     public void writeTitleBar(PageContext pagecontext) throws IOException, ServletException {
         JspWriter jspwriter = pagecontext.getOut();
         HttpServletRequest httpservletrequest = (HttpServletRequest) pagecontext.getRequest();
+
         StringBuffer stringbuffer = new StringBuffer();
         stringbuffer.append(pagecontext.getRequest().getScheme());
         stringbuffer.append("://");
@@ -486,9 +487,12 @@ public class FormBP extends BusinessProcess implements Serializable {
         stringbuffer.append(':');
         stringbuffer.append(pagecontext.getRequest().getServerPort());
         stringbuffer.append(JSPUtils.getAppRoot(httpservletrequest));
-        stringbuffer.append("help");
+        stringbuffer.append("restapi/help?jspName=");
         stringbuffer.append(httpservletrequest.getServletPath());
+        stringbuffer.append("&bpName=");
+        stringbuffer.append(BusinessProcess.getBusinessProcess(httpservletrequest).getName());
         getHelpButton().setHref("javascript:doHelp('" + stringbuffer.toString() + "')");
+
         jspwriter.println("<!-- TITLEBAR -->");
         if (HttpActionContext.isFromBootstrap(pagecontext)) {
             List<Button> buttons = new ArrayList<Button>();

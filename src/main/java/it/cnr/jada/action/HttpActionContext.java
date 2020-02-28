@@ -801,4 +801,8 @@ public class HttpActionContext
                         })
                 );
     }
+
+    public ActionMapping getActionMapping() {
+        return actionMapping;
+    }
 }
