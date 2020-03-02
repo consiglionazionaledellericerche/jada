@@ -492,6 +492,8 @@ public class SelezionatoreListaAction extends SelezionatoreAction
                         .filter(OggettoBulk.class::isInstance)
                         .map(OggettoBulk.class::cast)
                         .orElseGet(() -> {
+                            if (Optional.ofNullable(bp).filter(SelezionatoreSearchBP.class::isInstance).isPresent())
+                                return bp.getModel();
                             if (crudbp.isPresent()) {
                                 try {
                                     return crudbp.get().createEmptyModelForFreeSearch(context);
