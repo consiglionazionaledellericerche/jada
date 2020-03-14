@@ -481,11 +481,6 @@ public class FormBP extends BusinessProcess implements Serializable {
         HttpServletRequest httpservletrequest = (HttpServletRequest) pagecontext.getRequest();
 
         StringBuffer stringbuffer = new StringBuffer();
-        stringbuffer.append(pagecontext.getRequest().getScheme());
-        stringbuffer.append("://");
-        stringbuffer.append(pagecontext.getRequest().getServerName());
-        stringbuffer.append(':');
-        stringbuffer.append(pagecontext.getRequest().getServerPort());
         stringbuffer.append(JSPUtils.getAppRoot(httpservletrequest));
         stringbuffer.append("restapi/help?jspName=");
         stringbuffer.append(httpservletrequest.getServletPath());
