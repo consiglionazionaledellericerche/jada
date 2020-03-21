@@ -23,6 +23,7 @@ import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.Optional;
 
 // Referenced classes of package it.cnr.jada.persistency.sql:
 //SQLExceptionHandler, ColumnMap, ColumnMapping, SQLConverter, 
@@ -172,7 +173,12 @@ public class SQLBroker extends Broker
             if (columnmapping instanceof RemoveColumnMapping || columnmapping instanceof AddColumnMapping)
                 return null;
             else
-                return fetchColumnValue(columnmapping.getColumnName(), class1);
+                return fetchColumnValue(
+                        Optional.ofNullable(columnmapping.getColumnName())
+                            .filter(s1 -> s1.contains("."))
+                            .map(s1 -> s1.substring(s1.indexOf(".") + 1))
+                            .orElse(columnmapping.getColumnName()),
+                        class1);
         } catch (SQLException sqlexception) {
             throw new FetchException("SQLException while fetchPropertyValue", sqlexception);
         }
