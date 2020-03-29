@@ -179,7 +179,11 @@ public class JSPUtils
     }
 
     public static String getAppRoot(HttpServletRequest httpservletrequest) {
-        String s = httpservletrequest.getRequestURI().substring(0, httpservletrequest.getRequestURI().indexOf(httpservletrequest.getServletPath()));
+        String s = httpservletrequest.getRequestURI().substring(0, Optional.ofNullable(httpservletrequest.getRequestURI())
+                .map(s1 -> s1.indexOf(httpservletrequest.getServletPath()))
+                .filter(integer -> integer > 0)
+                .orElse(httpservletrequest.getRequestURI().length())
+        );
         if (!s.startsWith("/"))
             s = "/" + s;
         if (!s.endsWith("/"))

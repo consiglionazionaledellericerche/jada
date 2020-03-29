@@ -57,6 +57,8 @@ public class HttpActionContext
     public static final String SIGLA_ACTIONCOUNTER_DISABLE = "SIGLA_ACTIONCOUNTER_DISABLE";
     private static final String requestTracingUserAttributeName = "it.cnr.jada.action.HttpActionContext.requestTracingUsers";
     private static final String tracingSessionDescriptionAttributeName = "it.cnr.jada.action.HttpActionContext.tracingSessionDescription";
+    public static final String SCROLLX = "scrollx";
+    public static final String SCROLLY = "scrolly";
     private File actionDirFile;
     private HttpServlet servlet;
     private HttpServletRequest request;
@@ -786,8 +788,8 @@ public class HttpActionContext
         Optional.ofNullable(request)
                 .ifPresent(httpServletRequest -> Optional.ofNullable(httpServletRequest.getSession(false))
                         .ifPresent(httpSession -> {
-                            String scrollx = httpServletRequest.getParameter("scrollx");
-                            String scrolly = httpServletRequest.getParameter("scrolly");
+                            Optional<String> scrollx = Optional.ofNullable(httpServletRequest.getParameter(SCROLLX));
+                            Optional<String> scrolly = Optional.ofNullable(httpServletRequest.getParameter(SCROLLY));
                             Map<String, String> focusedElement = Optional.ofNullable(httpSession.getAttribute(CONTEXT_FOCUSED_ELEMENT))
                                     .filter(Map.class::isInstance)
                                     .map(Map.class::cast)
@@ -795,7 +797,9 @@ public class HttpActionContext
                             Optional.ofNullable(httpServletRequest.getParameter("requestor"))
                                     .filter(requestor -> requestor.length() > 0)
                                     .ifPresent(requestor -> {
-                                        focusedElement.put(requestor, scrollx.concat(",").concat(scrolly));
+                                        focusedElement.put(requestor,
+                                                scrollx.map(s -> s.concat(",")).orElse("").concat(scrolly.orElse(""))
+                                        );
                                         httpSession.setAttribute(CONTEXT_FOCUSED_ELEMENT, focusedElement);
                                     });
                         })
