@@ -552,6 +552,10 @@ public class BusinessProcess implements Forward, Serializable {
     protected void init(it.cnr.jada.action.Config config, ActionContext actioncontext) throws BusinessProcessException {
     }
 
+    public BusinessProcess initBusinessProcess(ActionContext actioncontext) throws BusinessProcessException {
+        return this;
+    }
+
     public final void initializeUserTransaction(ActionContext actioncontext) throws BusinessProcessException {
         try {
             switch (transactionPolicy) {

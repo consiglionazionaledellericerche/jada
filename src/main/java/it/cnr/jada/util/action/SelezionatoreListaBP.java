@@ -440,6 +440,8 @@ public class SelezionatoreListaBP extends AbstractSelezionatoreBP
     }
 
     public boolean isOrderableBy(String s) {
+        if (!Optional.ofNullable(iterator).isPresent())
+            return false;
         try {
             return ((RemoteOrderable) iterator).isOrderableBy(s);
         } catch (RemoteException remoteexception) {
