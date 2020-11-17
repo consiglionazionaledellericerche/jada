@@ -2371,6 +2371,16 @@ public class FieldProperty implements Serializable {
             jspwriter.print(rows);
             jspwriter.print("\"");
         }
+        int j = getMaxLength(obj);
+        if (j > 0) {
+            jspwriter.print(" maxLength=");
+            jspwriter.print(j);
+        }
+        int k = getInputSize(obj);
+        if (k > 0) {
+            jspwriter.print(" size=");
+            jspwriter.print(k);
+        }
         jspwriter.print(" onfocus=\"focused(this)\"");
         jspwriter.print(" onclick=\"cancelBubble(event)\"");
         jspwriter.print(">");
