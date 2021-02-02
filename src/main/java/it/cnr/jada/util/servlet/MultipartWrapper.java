@@ -38,6 +38,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MultipartWrapper extends HttpServletRequestWrapper {
@@ -89,4 +90,9 @@ public class MultipartWrapper extends HttpServletRequestWrapper {
     public UploadedFile getFile(String name) {
         return mreq.getFile(name);
     }
+
+    public List<UploadedFile> getFiles(String name) {
+        return mreq.getFiles(name);
+    }
+
 }

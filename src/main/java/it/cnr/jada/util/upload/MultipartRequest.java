@@ -30,19 +30,19 @@ package it.cnr.jada.util.upload;
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
 
+import it.cnr.jada.DetailedRuntimeException;
+
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Vector;
+import java.util.*;
 
 public class MultipartRequest {
 
     private static final int DEFAULT_MAX_POST_SIZE = 100000000;
     protected Hashtable parameters;
-    protected Hashtable files;
+    protected Hashtable<String, List<UploadedFile>> files;
 
     public MultipartRequest(ServletRequest request, String saveDirectory)
             throws IOException {
@@ -90,31 +90,47 @@ public class MultipartRequest {
             } else if (part.isFile()) {
                 FilePart filePart = (FilePart) part;
                 String fileName = filePart.getFileName();
+                UploadedFile uploadedFile = Optional.ofNullable(fileName)
+                    .map(s -> {
+                        try {
+                            filePart.writeTo(dir);
+                        } catch (IOException e) {
+                            throw new DetailedRuntimeException(e);
+                        }
+                        return new UploadedFile(dir.toString(), fileName, filePart.getContentType());
+                    }).orElseGet(() -> new UploadedFile(null, null, null));
                 if (fileName != null) {
-                    filePart.writeTo(dir);
-                    files.put(name, new UploadedFile(dir.toString(), fileName, filePart.getContentType()));
-                } else {
-                    files.put(name, new UploadedFile(null, null, null));
+                    List existingValues = (List) files.get(name);
+                    if (existingValues == null) {
+                        existingValues = new ArrayList();
+                        files.put(name, existingValues);
+                    }
+                    existingValues.add(uploadedFile);
                 }
             }
         }
     }
 
+
+    public List<UploadedFile> getFiles(String name) {
+        return Optional.ofNullable(files)
+                    .flatMap(h -> Optional.ofNullable(h.get(name)))
+                    .orElse(Collections.emptyList());
+    }
+
     public String getContentType(String name) {
-        try {
-            UploadedFile file = (UploadedFile) files.get(name);
-            return file.getContentType();
-        } catch (Exception _ex) {
-            return null;
-        }
+        return getFiles(name)
+                .stream()
+                .findFirst()
+                .map(UploadedFile::getContentType)
+                .orElse(null);
     }
 
     public UploadedFile getFile(String name) {
-        try {
-            return (UploadedFile) files.get(name);
-        } catch (Exception _ex) {
-            return null;
-        }
+        return getFiles(name)
+                .stream()
+                .findFirst()
+                .orElse(null);
     }
 
     public Enumeration getFileNames() {
@@ -122,12 +138,11 @@ public class MultipartRequest {
     }
 
     public String getFilesystemName(String name) {
-        try {
-            UploadedFile file = (UploadedFile) files.get(name);
-            return file.getFilesystemName();
-        } catch (Exception _ex) {
-            return null;
-        }
+        return getFiles(name)
+                .stream()
+                .findFirst()
+                .map(UploadedFile::getFilesystemName)
+                .orElse(null);
     }
 
     public String getParameter(String name) {

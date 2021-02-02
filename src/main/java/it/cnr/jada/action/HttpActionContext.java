@@ -485,6 +485,13 @@ public class HttpActionContext
             return null;
     }
 
+    public List<UploadedFile> getMultipartParameters(String s) {
+        if (request instanceof MultipartWrapper)
+            return ((MultipartWrapper) request).getFiles(s);
+        else
+            return Collections.emptyList();
+    }
+
     public String getParameter(String s) {
         return request.getParameter(s);
     }

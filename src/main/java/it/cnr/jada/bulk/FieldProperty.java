@@ -320,6 +320,11 @@ public class FieldProperty implements Serializable {
     private String buttonClass;
     @JsonIgnore
     private String inputCssClass;
+    @JsonIgnore
+    private Boolean multiple;
+    @JsonIgnore
+    private Boolean fromFolder;
+
 
     public FieldProperty() {
         enabledOnSearch = false;
@@ -522,6 +527,10 @@ public class FieldProperty implements Serializable {
             buttonClass = fieldproperty.buttonClass;
         if (inputCssClass == null)
             inputCssClass = fieldproperty.inputCssClass;
+        if (multiple == null)
+            multiple = fieldproperty.multiple;
+        if (fromFolder == null)
+            fromFolder = fieldproperty.fromFolder;
 
         if (CRUDBusinessProcessName == null)
             CRUDBusinessProcessName = fieldproperty.CRUDBusinessProcessName;
@@ -851,6 +860,22 @@ public class FieldProperty implements Serializable {
 
     public void setName(String s) {
         name = s;
+    }
+
+    public boolean getMultiple() {
+        return multiple;
+    }
+
+    public void setMultiple(boolean multiple) {
+        this.multiple = multiple;
+    }
+
+    public Boolean getFromFolder() {
+        return fromFolder;
+    }
+
+    public void setFromFolder(Boolean fromFolder) {
+        this.fromFolder = fromFolder;
     }
 
     private Button getNewButton() {
@@ -2272,6 +2297,12 @@ public class FieldProperty implements Serializable {
             obj1 = getStringValueFrom(obj, obj1);
         if (printProperty != null)
             flag = true;
+        if (Optional.ofNullable(multiple).orElse(Boolean.FALSE))
+            jspwriter.print(" multiple ");
+
+        if (Optional.ofNullable(fromFolder).orElse(Boolean.FALSE))
+            jspwriter.print(" multiple webkitdirectory directory ");
+
         if (flag || obj == null) {
             jspwriter.print(" readonly disabled");
             s4 = mergeStyles(s4, "background-color:transparent;color:BlackText;");
@@ -2319,7 +2350,7 @@ public class FieldProperty implements Serializable {
         if (isBootstrap) {
             jspwriter.println("<span ");
             jspwriter.print(" id=\"span-" + s3 + "\"");
-            jspwriter.print(" class=\"custom-file-control\" title=\"Scegli file...\"></span></label>");
+            jspwriter.print(" class=\"custom-file-control font-weight-bold\" title=\"Scegli file...\"></span></label>");
         }
         if (command != null && !flag && i != 4) {
             getConfirmButton().write(jspwriter, !flag, "confirmModalInputChange(this,'" + s3 + "','" + command + "')", "name = \"" + s3 + ".confirm\" onfocus=\"modalInputButtonFocused(this,'" + s3 + "')\"", isBootstrap);
