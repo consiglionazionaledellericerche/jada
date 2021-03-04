@@ -21,14 +21,16 @@ import java.io.File;
 
 public class UploadedFile {
 
-    private String dir;
-    private String filename;
-    private String type;
+    private final String dir;
+    private final String filename;
+    private final String type;
+    private final String filePath;
 
-    UploadedFile(String dir, String filename, String type) {
+    UploadedFile(String dir, String filename, String filePath, String type) {
         this.dir = dir;
         this.filename = filename;
         this.type = type;
+        this.filePath = filePath;
     }
 
     public String getContentType() {
@@ -56,5 +58,9 @@ public class UploadedFile {
         if (getFile() == null)
             return 0;
         return getFile().length();
+    }
+
+    public String getFilePath() {
+        return filePath;
     }
 }

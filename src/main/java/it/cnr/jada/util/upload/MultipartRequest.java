@@ -97,8 +97,8 @@ public class MultipartRequest {
                         } catch (IOException e) {
                             throw new DetailedRuntimeException(e);
                         }
-                        return new UploadedFile(dir.toString(), fileName, filePart.getContentType());
-                    }).orElseGet(() -> new UploadedFile(null, null, null));
+                        return new UploadedFile(dir.toString(), fileName, filePart.getFilePath(), filePart.getContentType());
+                    }).orElseGet(() -> new UploadedFile(null, null, null, null));
                 if (fileName != null) {
                     List existingValues = (List) files.get(name);
                     if (existingValues == null) {
