@@ -35,6 +35,12 @@ public class CollapsableDetailCRUDController extends SimpleDetailCRUDController 
         super(s, class1, s1, formcontroller, flag);
     }
 
+    public void closeHTMLTable(PageContext pagecontext) throws IOException, ServletException{
+        JspWriter jspwriter = pagecontext.getOut();
+        jspwriter.println("</div>");
+        jspwriter.println("</div>");
+    }
+
     @Override
     protected void writeHTMLTable(PageContext pagecontext, String columnSet,
                                   boolean isAddButtonVisible, boolean isFilterButtonVisible, boolean isRemoveButtonVisible,
@@ -42,24 +48,28 @@ public class CollapsableDetailCRUDController extends SimpleDetailCRUDController 
                                   boolean readonly, TableCustomizer tablecustomizer, List rows)
             throws IOException, ServletException {
         JspWriter jspwriter = pagecontext.getOut();
-        jspwriter.println("<div class=\"card border-primary\">");
-        jspwriter.println("<div class=\"card-header\">");
-        jspwriter.println("<h5 class=\"mb-0\">");
-        jspwriter.println("<a class=\"text-primary\" onclick=\"submitForm('doToggle(" + getInputPrefix() + ")')\">");
-        jspwriter.print("<i aria-hidden=\"true\" class=\"fa " + getIconClassCollapsed() + "\"></i> ");
-        jspwriter.print(getControllerName());
+        jspwriter.println("<div class=\"card "+ getBorderClass() + "\">");
+        jspwriter.println("<div class=\"card-header d-flex\">");
+        jspwriter.println("<a class=\""+ getTextClass() + " d-flex w-100\" onclick=\"submitForm('doToggle(" + getInputPrefix() + ")')\">");
+        jspwriter.print("<span class=\"h4 mb-0\">" + getControllerName() + "</span>");
+        jspwriter.print("<i aria-hidden=\"true\" class=\"ml-auto fa fa-2x " + getIconClassCollapsed() + "\"></i> ");
         jspwriter.print("</a>");
-        jspwriter.println("</h5>");
         jspwriter.println("</div>");
         jspwriter.println("<div class=\"card-block\">");
         if (!isCollapsed())
             super.writeHTMLTable(pagecontext, columnSet, isAddButtonVisible, isFilterButtonVisible, isRemoveButtonVisible,
                     width, height, readonly, tablecustomizer, rows);
-        jspwriter.println("</div>");
-        jspwriter.println("</div>");
+    }
+
+    protected String getBorderClass() {
+        return "border-primary";
+    }
+
+    protected String getTextClass() {
+        return "text-primary";
     }
 
     protected String getIconClassCollapsed() {
-        return isCollapsed() ? "fa-chevron-circle-down" : "fa-chevron-circle-up";
+        return isCollapsed() ? "fa-angle-down" : "fa-angle-up";
     }
 }
