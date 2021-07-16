@@ -417,7 +417,7 @@ public abstract class OggettoBulk implements Cloneable, FetchListener, Persisten
             jspwriter.print("<td>");
             fieldproperty.writeLabel(jspwriter, this, null, isBootstrap);
             jspwriter.print("</td><td>");
-            fieldproperty.writeInput(jspwriter, this, false, null, null, null, i, fieldvalidationmap, isBootstrap);
+            fieldproperty.writeInput(jspwriter, this, false, isBootstrap ? "form-control" : "FormInput", null, null, i, fieldvalidationmap, isBootstrap);
             jspwriter.print("</td>");
         }
     }
