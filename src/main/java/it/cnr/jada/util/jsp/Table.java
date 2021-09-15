@@ -229,7 +229,7 @@ public class Table
                     continue colonne;
             }
             jspwriter.print("<td");
-            columnfieldproperty.writeHeaderStyle(jspwriter, null, "TableHeader");
+            columnfieldproperty.writeHeaderStyle(jspwriter, null, columnfieldproperty.isTextTruncate() ? "text-truncate":"TableHeader");
             if (columnfieldproperty.isNoWrap())
                 jspwriter.print(" nowrap");
 
@@ -321,7 +321,7 @@ public class Table
             }
             if (columnfieldproperty.isNotTableHeader()) {
                 jspwriter.print("<td");
-                columnfieldproperty.writeHeaderStyle(jspwriter, null, "TableHeader align-middle");
+                columnfieldproperty.writeHeaderStyle(jspwriter, null, columnfieldproperty.isTextTruncate() ? "text-truncate" : "TableHeader align-middle");
                 if (columnfieldproperty.isNoWrap())
                     jspwriter.print(" nowrap");
 

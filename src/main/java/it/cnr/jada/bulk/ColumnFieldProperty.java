@@ -38,8 +38,11 @@ public class ColumnFieldProperty extends FieldProperty implements Serializable {
     private String columnStyle;
     @JsonIgnore
     private String headerLabel;
+    @JsonIgnore
+    private Boolean textTruncate;
 
     public ColumnFieldProperty() {
+        this.textTruncate = Boolean.FALSE;
     }
 
     public String getColumnStyle() {
@@ -56,6 +59,14 @@ public class ColumnFieldProperty extends FieldProperty implements Serializable {
 
     public void setHeaderStyle(String s) {
         headerStyle = s;
+    }
+
+    public Boolean isTextTruncate() {
+        return textTruncate;
+    }
+
+    public void setTextTruncate(Boolean textTruncate) {
+        this.textTruncate = textTruncate;
     }
 
     protected void writeCheckBox(JspWriter jspwriter, Object obj, boolean flag, Object obj1, String s, String s1, String s2, int i, FieldValidationMap fieldvalidationmap, boolean isBootstrap) throws IOException, IntrospectionException, InvocationTargetException {
@@ -289,5 +300,38 @@ public class ColumnFieldProperty extends FieldProperty implements Serializable {
         setHeaderStyle(nvl(fieldPropertyAnnotation.headerStyle()));
         setColumnStyle(nvl(fieldPropertyAnnotation.columnStyle()));
         setHeaderLabel(nvl(fieldPropertyAnnotation.headerLabel()));
+    }
+    @Override
+    public void writeLabel(Object bp, JspWriter jspwriter, Object obj, boolean isBootstrap)
+            throws IOException {
+        writeLabel(bp, jspwriter, obj, null, isBootstrap);
+    }
+
+    public void writeLabel(Object bp, JspWriter jspwriter, Object obj, String s, boolean isBootstrap)
+            throws IOException {
+        String label;
+        if (getInputTypeIndex() == BUTTON) {
+            return;
+        } else {
+            label = "";
+            if (bp != null) {
+                try {
+                    String dLabel = (String) Introspector.getPropertyValue(bp, Introspector.buildMetodName("label", getName()));
+                    label = encodeHtmlText(dLabel);
+                } catch (InvocationTargetException | IntrospectionException e) {
+                    label = encodeHtmlText(getLabel());
+                }
+            } else
+                label = encodeHtmlText(getLabel());
+        }
+        jspwriter.print("<span");
+        writeLabelStyle(jspwriter, s, getLabelStyle(), obj);
+        if (isTextTruncate()) {
+            jspwriter.print(" title=\"" + label +"\"");
+        }
+        jspwriter.print(">");
+        jspwriter.print(label);
+        jspwriter.print("</span>");
+        return;
     }
 }
