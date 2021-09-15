@@ -229,7 +229,7 @@ public class Table
                     continue colonne;
             }
             jspwriter.print("<td");
-            columnfieldproperty.writeHeaderStyle(jspwriter, null, columnfieldproperty.isTextTruncate() ? "text-truncate":"TableHeader");
+            columnfieldproperty.writeHeaderStyle(jspwriter, null, getHeaderStyle(columnfieldproperty, isBootstrap));
             if (columnfieldproperty.isNoWrap())
                 jspwriter.print(" nowrap");
 
@@ -238,6 +238,19 @@ public class Table
             columnfieldproperty.writeLabel(bp, jspwriter, null, isBootstrap);
         }
 
+    }
+
+    public String getHeaderStyle(ColumnFieldProperty columnFieldProperty, boolean isBootstrap){
+       StringBuffer headerStyle = new StringBuffer();
+       if (columnFieldProperty.isTextTruncate()) {
+           headerStyle.append("text-truncate");
+           if (!isBootstrap) {
+               headerStyle.append(" TableHeader");
+           }
+       } else {
+           headerStyle.append("TableHeader");
+       }
+       return headerStyle.toString();
     }
 
     public void writeTableWithColumnHeader(JspWriter jspwriter, FieldValidationMap fieldvalidationmap, int i, Hashtable labelHeader, boolean isBootstrap) throws IOException {
@@ -321,7 +334,7 @@ public class Table
             }
             if (columnfieldproperty.isNotTableHeader()) {
                 jspwriter.print("<td");
-                columnfieldproperty.writeHeaderStyle(jspwriter, null, columnfieldproperty.isTextTruncate() ? "text-truncate" : "TableHeader align-middle");
+                columnfieldproperty.writeHeaderStyle(jspwriter, null, getHeaderStyle(columnfieldproperty, isBootstrap).concat(" align-middle"));
                 if (columnfieldproperty.isNoWrap())
                     jspwriter.print(" nowrap");
 
