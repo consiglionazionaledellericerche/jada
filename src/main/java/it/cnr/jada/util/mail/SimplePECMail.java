@@ -34,6 +34,14 @@ public class SimplePECMail extends MultiPartEmail {
         setAuthentication(userName, password);
     }
 
+    public SimplePECMail(String userName, String password, String sslSmtpPort) {
+        super();
+        this.userName = userName;
+        setSSLOnConnect(true);
+        setSslSmtpPort(sslSmtpPort);
+        setAuthentication(userName, password);
+    }
+
     @Override
     public Email addBcc(String email, String name) throws EmailException {
         throw new EmailException("PEC non consente invii in Bcc");
