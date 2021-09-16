@@ -29,16 +29,6 @@ public class SimplePECMail extends MultiPartEmail {
     public SimplePECMail(String userName, String password) {
         super();
         this.userName = userName;
-        setSSLOnConnect(true);
-        setSslSmtpPort("465");
-        setAuthentication(userName, password);
-    }
-
-    public SimplePECMail(String userName, String password, String sslSmtpPort) {
-        super();
-        this.userName = userName;
-        setSSLOnConnect(true);
-        setSslSmtpPort(sslSmtpPort);
         setAuthentication(userName, password);
     }
 
