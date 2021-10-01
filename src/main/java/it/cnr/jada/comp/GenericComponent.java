@@ -424,17 +424,17 @@ public class GenericComponent implements Component, Serializable, Cloneable {
         }
     }
 
-    protected final RemoteIterator iterator(UserContext usercontext, Query query, Class class1, String s) throws ComponentException {
+    protected final RemoteIterator iterator(UserContext usercontext, Query query, Class class1, String fetchPolicyName) throws ComponentException {
         try {
             if (query == null)
                 return new EmptyRemoteIterator();
             if (Optional.ofNullable(usercontext).map(u -> !u.isTransactional()).orElse(true)) {
                 BulkLoaderIterator bulkLoaderIterator = (BulkLoaderIterator) EJBCommonServices.createEJB("JADAEJB_BulkLoaderIterator");
-                bulkLoaderIterator.ejbCreate(usercontext, query, class1, s);
+                bulkLoaderIterator.ejbCreate(usercontext, query, class1, fetchPolicyName);
                 return bulkLoaderIterator;
             } else {
                 TransactionalBulkLoaderIterator transationalBulkLoaderIterator = (TransactionalBulkLoaderIterator) EJBCommonServices.createEJB("JADAEJB_TransactionalBulkLoaderIterator");
-                transationalBulkLoaderIterator.ejbCreate(usercontext, query, class1, s);
+                transationalBulkLoaderIterator.ejbCreate(usercontext, query, class1, fetchPolicyName);
                 return transationalBulkLoaderIterator;
             }
         } catch (EJBException ejbexception) {

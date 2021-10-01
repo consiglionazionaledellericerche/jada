@@ -117,7 +117,7 @@ public interface BulkLoaderIterator extends RemotePagedIterator, RemoteOrderable
     void ejbCreate(UserContext usercontext, Query query1, Class<?> class1)
             throws CreateException, ComponentException;
 
-    void ejbCreate(UserContext usercontext, Query query1, Class<?> class1, String s)
+    void ejbCreate(UserContext usercontext, Query query1, Class<?> class1, String fetchPolicyName)
             throws CreateException, ComponentException;
 
     void ejbRemove()

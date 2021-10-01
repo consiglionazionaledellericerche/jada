@@ -20,6 +20,7 @@ package it.cnr.jada.persistency;
 import it.cnr.jada.DetailedRuntimeException;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.Iterator;
 import java.util.Optional;
@@ -236,10 +237,10 @@ public abstract class Broker
                 .filter(aClass -> !Modifier.isAbstract(aClass.getModifiers()))
                 .map(aClass -> {
                     try {
-                        return aClass.newInstance();
+                        return aClass.getDeclaredConstructor().newInstance();
                     } catch (InstantiationException e) {
                         throw new DetailedRuntimeException("Can't instantiate " + class1.getName());
-                    } catch (IllegalAccessException e) {
+                    } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
                         throw new DetailedRuntimeException("Illegal access exception while instantiate " + class1.getName());
                     }
                 })

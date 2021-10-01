@@ -106,11 +106,11 @@ public abstract class BaseBulkLoaderIteratorBean {
         ejbCreate(usercontext, query1, class1, null);
     }
 
-    public void ejbCreate(UserContext usercontext, Query query1, Class<?> class1, String s) throws CreateException, ComponentException {
+    public void ejbCreate(UserContext usercontext, Query query1, Class<?> class1, String fetchPolicyName) throws CreateException, ComponentException {
         bulkClass = class1;
         query = query1;
         userContext = usercontext;
-        fetchPolicyName = s;
+        this.fetchPolicyName = fetchPolicyName;
         try {
             initialize();
         } catch (PersistencyException _ex) {

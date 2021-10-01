@@ -48,6 +48,8 @@ public class Button implements Serializable, Cloneable {
     private String title;
     private int labelPosition;
 
+    public static final String INPUT_FILE = "file-selector";
+
     public Button() {
         labelPosition = 1;
     }
@@ -187,10 +189,11 @@ public class Button implements Serializable, Cloneable {
     }
 
     /* Metodo inserito da Marco Spasiano per gestire l'accessKey*/
-    public static void write(JspWriter jspwriter, String name, String image, boolean flag, String label, int layoutImg, String href, String buttonStyle,
+    public static void write(JspWriter jspwriter, String name, String image, boolean flag, String label, int layoutImg,
+                             String href, String buttonStyle,
                              String title, String s6, String accessKey, boolean isBootstrap) throws IOException {
-
-        jspwriter.print("<button");
+        boolean isFileButton = Optional.ofNullable(buttonStyle).filter(s -> s.contains("btn-file")).isPresent();
+        jspwriter.print(isFileButton ? "<label" :"<button");
         if (flag && !isBootstrap) {
             if (href == null)
                 jspwriter.print(" class=\"DisabledButton\"");
@@ -247,7 +250,7 @@ public class Button implements Serializable, Cloneable {
                 jspwriter.print("\"");
             }
         }
-        if (href != null) {
+        if (href != null && !isFileButton) {
             jspwriter.print(" onclick=\"cancelBubble(event); if (disableDblClick()) ");
             jspwriter.print(href);
             jspwriter.print("; return false\"");
@@ -274,6 +277,13 @@ public class Button implements Serializable, Cloneable {
             jspwriter.print("\"");
         }
         jspwriter.print(">");
+        if (href != null && isFileButton) {
+            jspwriter.print("<input name=\"" + INPUT_FILE + "\" type=\"file\" style=\"display:none\" ");
+            jspwriter.print(" onchange=\"cancelBubble(event); if (disableDblClick()) ");
+            jspwriter.print(href);
+            jspwriter.print("; return false\"");
+            jspwriter.print(">");
+        }
         if (image != null) {
             if (!isBootstrap) {
                 jspwriter.print("<img align=\"middle\" class=\"Button\" src=\"");
@@ -317,7 +327,7 @@ public class Button implements Serializable, Cloneable {
         if (label != null && !isBootstrap)
             jspwriter.print(label);
 
-        jspwriter.print("</button>");
+        jspwriter.print(isFileButton ? "</label>" :"</button>");
 
     }
 
