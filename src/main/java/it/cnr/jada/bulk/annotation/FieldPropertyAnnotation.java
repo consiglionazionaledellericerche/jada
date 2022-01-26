@@ -142,6 +142,7 @@ public @interface FieldPropertyAnnotation {
      * "SEARCHTOOL" --> Corrisponde a diversi (in genere due, tipo "Codice e Descrizione") campi di input html (se valorizzato l'attributo "formName"),
      * 					altrimenti presenta solamente tre pulsanti atti a riplire i campi, effettuare la ricerca, effettuare la ricerca libera.
      * "CRUDTOOL" --> Corrisponde ad un bottone html utilizzato per effettuare operazioni di CRUD su una mappa diversa.
+     * "VIEWTOOL" --> Corrisponde ad un bottone html utilizzato per effettuare operazioni di VIEW su una mappa diversa.
      * "DESCTOOL" --> Corrisponde ad campo di input html a cui e associato una "descProperty" da valorizzare per mostrare una property ulteriore a quella di base.
      */
     InputType inputType() default InputType.UNDEFINED;
@@ -237,6 +238,11 @@ public @interface FieldPropertyAnnotation {
      * Nome del CRUDBP da utilizzare sull'attivazione del bottone del CRUDTOOL
      */
     String CRUDBusinessProcessName() default "";
+
+    /**
+     * Nome del BP da utilizzare sull'attivazione del bottone del VIEWTOOL
+     */
+    String VIEWBusinessProcessName() default "";
 
     /**
      * URL di immagine; valido solo per inputType = "BUTTON"

@@ -43,6 +43,8 @@ public enum InputType {
 
     CRUDTOOL,
 
+    VIEWTOOL,
+
     BUTTON,
 
     DESCTOOL,

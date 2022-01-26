@@ -262,7 +262,44 @@ public class BulkAction extends FormAction
                 actioncontext.addHookForward("bringback", this, "doBringBackCRUD");
                 HookForward hookforward = (HookForward) actioncontext.findForward("bringback");
                 hookforward.addParameter("field", formfield);
+                if (Optional.ofNullable(formfield.getField().getVIEWBusinessProcessName()).map(el->el.equals(formfield.getField().getCRUDBusinessProcessName())).orElse(Boolean.FALSE)) {
+                    OggettoBulk oggettobulk = formfield.getModel();
+                    OggettoBulk oggettobulk1 = (OggettoBulk) formfield.getField().getValueFrom(oggettobulk);
+                    if (Optional.ofNullable(oggettobulk1).map(OggettoBulk::getCrudStatus).filter(el->el==OggettoBulk.NORMAL).isPresent())
+                        crudbp.basicEdit(actioncontext, oggettobulk1, true);
+                }
                 return actioncontext.addBusinessProcess(crudbp);
+            } catch (Exception exception1) {
+                return handleException(actioncontext, exception1);
+            }
+        } catch (Exception exception) {
+            return handleException(actioncontext, exception);
+        }
+    }
+
+    public Forward doVIEW(ActionContext actioncontext, String s) {
+        try {
+            BulkBP bulkbp = (BulkBP) actioncontext.getBusinessProcess();
+            bulkbp.fillModel(actioncontext);
+            FormField formfield = getFormField(actioncontext, s);
+            try {
+                return (Forward) Introspector.invoke(this, "doVIEW", formfield.getField().getName(), actioncontext);
+            } catch (NoSuchMethodException _ex) {
+            }
+            try {
+                OggettoBulk oggettobulk = formfield.getModel();
+                OggettoBulk oggettobulk1 = (OggettoBulk) formfield.getField().getValueFrom(oggettobulk);
+                if (Optional.ofNullable(oggettobulk1).map(OggettoBulk::getCrudStatus).filter(el->el==OggettoBulk.NORMAL).isPresent()) {
+                    CRUDBP crudbp = (CRUDBP) actioncontext.getUserInfo().createBusinessProcess(actioncontext, formfield.getField().getVIEWBusinessProcessName(), new Object[]{
+                            "R"
+                    });
+                    crudbp.basicEdit(actioncontext, oggettobulk1, true);
+                    crudbp.setStatus(FormController.VIEW);
+                    return actioncontext.addBusinessProcess(crudbp);
+                } else {
+                    bulkbp.setMessage("Completare la ricerca del record prima di procedere alla sua visualizzazione.");
+                    return actioncontext.findDefaultForward();
+                }
             } catch (Exception exception1) {
                 return handleException(actioncontext, exception1);
             }

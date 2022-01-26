@@ -113,6 +113,7 @@ import java.util.*;
  * * "TEXTAREA",
  * * "CHECKBOX",
  * * "CRUDTOOL"
+ * * "VIEWTOOL"
  * * "BUTTON"
  * * "DESCTOOL"
  * <p>
@@ -139,6 +140,7 @@ import java.util.*;
  * Nome del Format da utilizzare per convertire il testo digitato in un campo di input di tipo TEXT o TEXTAREA
  * in valore da assegnare alla property. Se nullo viene utilizzato "format".
  * CRUDBusinessProcessName (null); Nome del CRUDBP da utilizzare sull'attivazione del bottone del CRUDTOOL
+ * VIEWBusinessProcessName (null); Nome del BP da utilizzare sull'attivazione del bottone del VIEWTOOL
  * completeOnSave (true); Se true il FormController che governa l'editing dell'OggettoBulk può tentare di completare automaticamente il valore della FieldProperty SEARCHTOOL sulla base delle informazioni inserite nei campi di ricerca.
  * nullable (true); Se true e inputType = SELECT viene aggiunta una voce vuota allinizio dell'elenco delle opzioni selezionabili. Se l'utente seleziona tale voce la property viene impostata a null.
  * enabledOnEdit (true); Se true il campo viene abilitato in modalità FormController.EDIT.
@@ -178,6 +180,7 @@ public class FieldProperty implements Serializable {
     public static final int DESCTOOL = 15;
     public static final int LABEL = 16;
     public static final int SEARCHTOOL_WITH_LIKE = 17;
+    public static final int VIEWTOOL = 18;
     public static final int DEFAULT_LAYOUT = -1;
     public static final int VERTICAL_LAYOUT = 0;
     public static final int HORIZONTAL_LAYOUT = 1;
@@ -189,9 +192,10 @@ public class FieldProperty implements Serializable {
     private static Button freeSearchButton;
     private static Button searchLikeButton;
     private static Button crudButton;
+    private static Button viewButton;
     private static String[] inputTypeNames = {
             "UNDEFINED", "HIDDEN", "PASSWORD", "RADIOGROUP", "ROTEXT", "SEARCHTOOL", "SELECT", "TEXT", "TEXTAREA", "CHECKBOX",
-            "CRUDTOOL", "BUTTON", "TABLE", "FORM", "FILE", "DESCTOOL", "LABEL", "SEARCHTOOL_WITH_LIKE"
+            "CRUDTOOL", "BUTTON", "TABLE", "FORM", "FILE", "DESCTOOL", "LABEL", "SEARCHTOOL_WITH_LIKE", "VIEWTOOL"
     };
     private static Button confirmButton;
     private static Button cancelButton;
@@ -276,6 +280,8 @@ public class FieldProperty implements Serializable {
     private Format editFormat;
     @JsonIgnore
     private String CRUDBusinessProcessName;
+    @JsonIgnore
+    private String VIEWBusinessProcessName;
     @JsonIgnore
     private boolean enabledOnFreeSearch;
     @JsonIgnore
@@ -534,6 +540,8 @@ public class FieldProperty implements Serializable {
 
         if (CRUDBusinessProcessName == null)
             CRUDBusinessProcessName = fieldproperty.CRUDBusinessProcessName;
+        if (VIEWBusinessProcessName == null)
+            VIEWBusinessProcessName = fieldproperty.VIEWBusinessProcessName;
 
     }
 
@@ -603,10 +611,25 @@ public class FieldProperty implements Serializable {
         CRUDBusinessProcessName = s;
     }
 
+    @JsonIgnore
+    public String getVIEWBusinessProcessName() {
+        return VIEWBusinessProcessName;
+    }
+
+    public void setVIEWBusinessProcessName(String VIEWBusinessProcessName) {
+        this.VIEWBusinessProcessName = VIEWBusinessProcessName;
+    }
+
     private Button getCrudButton() {
         if (crudButton == null)
             crudButton = new Button(Config.getHandler().getProperties(getClass()), "crudButton");
         return crudButton;
+    }
+
+    private Button getViewButton() {
+        if (viewButton == null)
+            viewButton = new Button(Config.getHandler().getProperties(getClass()), "viewButton");
+        return viewButton;
     }
 
     public Format getEditFormat() {
@@ -1520,6 +1543,19 @@ public class FieldProperty implements Serializable {
         jspwriter.println("</span>");
     }
 
+    protected void writeVIEWTool(JspWriter jspwriter, Object obj, boolean flag, Object obj1, String s, String s1, String s2,
+                                 int i, FieldValidationMap fieldvalidationmap, boolean isBootstrap)
+            throws IOException, IntrospectionException, InvocationTargetException {
+        jspwriter.println("<span>");
+        if (formName != null) {
+            jspwriter.println("<table>");
+            BulkInfo.getBulkInfo(getPropertyType(getBulkInfo().getBulkClass())).writeForm(jspwriter, obj, formName, null, null, mergePrefix(s2, formName), i, flag, fieldvalidationmap, isBootstrap);
+            jspwriter.println("</table>");
+        }
+        getCrudButton().write(jspwriter, !flag, "javascript:submitForm('doVIEW(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
+        jspwriter.println("</span>");
+    }
+
     private void writeException(JspWriter jspwriter, Throwable throwable)
             throws IOException {
         jspwriter.println("<textarea style=\"background-color:red\">");
@@ -1624,6 +1660,10 @@ public class FieldProperty implements Serializable {
 
                 case CRUDTOOL: // '\n'
                     writeCRUDTool(jspwriter, obj, readonly, obj1, cssClass, s1, s2, i, fieldvalidationmap, isBootstrap);
+                    break;
+
+                case VIEWTOOL: // '\n'
+                    writeVIEWTool(jspwriter, obj, readonly, obj1, cssClass, s1, s2, i, fieldvalidationmap, isBootstrap);
                     break;
 
                 case HIDDEN: // '\001'
@@ -1906,9 +1946,15 @@ public class FieldProperty implements Serializable {
             getNewButton().write(jspwriter, !readonly, "javascript:submitForm('doBlankSearch(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
             getSearchButton().write(jspwriter, !readonly, "javascript:submitForm('doSearch(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
             getFreeSearchButton().write(jspwriter, !readonly, "javascript:submitForm('doFreeSearch(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
-            if (getCRUDBusinessProcessName() != null) {
+            if (getCRUDBusinessProcessName() != null && getVIEWBusinessProcessName() != null && getCRUDBusinessProcessName().equals(getVIEWBusinessProcessName()))
+                if (readonly)
+                    getViewButton().write(jspwriter, true, "javascript:submitForm('doVIEW(" + mergePrefix(s2, getName()) + ")')", isBootstrap, " input-group-addon");
+                else
+                    getCrudButton().write(jspwriter, !readonly, "javascript:submitForm('doCRUD(" + mergePrefix(s2, getName()) + ")')", isBootstrap, " input-group-addon");
+            else if (getCRUDBusinessProcessName() != null)
                 getCrudButton().write(jspwriter, !readonly, "javascript:submitForm('doCRUD(" + mergePrefix(s2, getName()) + ")')", isBootstrap, " input-group-addon");
-            }
+            else if (getVIEWBusinessProcessName() != null)
+                getViewButton().write(jspwriter, true, "javascript:submitForm('doVIEW(" + mergePrefix(s2, getName()) + ")')", isBootstrap, " input-group-addon");
             jspwriter.println("</div>");
         } else {
             jspwriter.println("<span>");
@@ -1922,8 +1968,15 @@ public class FieldProperty implements Serializable {
             getNewButton().write(jspwriter, !readonly, "javascript:submitForm('doBlankSearch(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
             getSearchButton().write(jspwriter, !readonly, "javascript:submitForm('doSearch(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
             getFreeSearchButton().write(jspwriter, !readonly, "javascript:submitForm('doFreeSearch(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
-            if (getCRUDBusinessProcessName() != null)
+            if (getCRUDBusinessProcessName() != null && getVIEWBusinessProcessName() != null && getCRUDBusinessProcessName().equals(getVIEWBusinessProcessName()))
+                if (readonly)
+                    getViewButton().write(jspwriter, true, "javascript:submitForm('doVIEW(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
+                else
+                    getCrudButton().write(jspwriter, !readonly, "javascript:submitForm('doCRUD(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
+            else if (getCRUDBusinessProcessName() != null)
                 getCrudButton().write(jspwriter, !readonly, "javascript:submitForm('doCRUD(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
+            else if (getVIEWBusinessProcessName() != null)
+                getViewButton().write(jspwriter, true, "javascript:submitForm('doVIEW(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
             if (formName != null) {
                 jspwriter.println("</td></tr>");
                 jspwriter.println("</table>");
@@ -1948,9 +2001,15 @@ public class FieldProperty implements Serializable {
             getNewButton().write(jspwriter, !readonly, "javascript:submitForm('doBlankSearch(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
             getSearchButton().write(jspwriter, !readonly, "javascript:submitForm('doSearch(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
             getFreeSearchButton().write(jspwriter, !readonly, "javascript:submitForm('doFreeSearch(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
-            if (getCRUDBusinessProcessName() != null) {
+            if (getCRUDBusinessProcessName() != null && getVIEWBusinessProcessName() != null && getCRUDBusinessProcessName().equals(getVIEWBusinessProcessName()))
+                if (readonly)
+                    getViewButton().write(jspwriter, true, "javascript:submitForm('doVIEW(" + mergePrefix(s2, getName()) + ")')", isBootstrap, " input-group-addon");
+                else
+                    getCrudButton().write(jspwriter, !readonly, "javascript:submitForm('doCRUD(" + mergePrefix(s2, getName()) + ")')", isBootstrap, " input-group-addon");
+            else if (getCRUDBusinessProcessName() != null)
                 getCrudButton().write(jspwriter, !readonly, "javascript:submitForm('doCRUD(" + mergePrefix(s2, getName()) + ")')", isBootstrap, " input-group-addon");
-            }
+            else if (getVIEWBusinessProcessName() != null)
+                getViewButton().write(jspwriter, true, "javascript:submitForm('doVIEW(" + mergePrefix(s2, getName()) + ")')", isBootstrap, " input-group-addon");
             getSearchLikeButton().write(jspwriter, !readonly, "javascript:submitForm('doSearchLike(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
             jspwriter.println("</div>");
         } else {
@@ -1965,8 +2024,15 @@ public class FieldProperty implements Serializable {
             getNewButton().write(jspwriter, !readonly, "javascript:submitForm('doBlankSearch(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
             getSearchButton().write(jspwriter, !readonly, "javascript:submitForm('doSearch(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
             getFreeSearchButton().write(jspwriter, !readonly, "javascript:submitForm('doFreeSearch(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
-            if (getCRUDBusinessProcessName() != null)
+            if (getCRUDBusinessProcessName() != null && getVIEWBusinessProcessName() != null && getCRUDBusinessProcessName().equals(getVIEWBusinessProcessName()))
+                if (readonly)
+                    getViewButton().write(jspwriter, true, "javascript:submitForm('doVIEW(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
+                else
+                    getCrudButton().write(jspwriter, !readonly, "javascript:submitForm('doCRUD(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
+            else if (getCRUDBusinessProcessName() != null)
                 getCrudButton().write(jspwriter, !readonly, "javascript:submitForm('doCRUD(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
+            else if (getVIEWBusinessProcessName() != null)
+                getViewButton().write(jspwriter, true, "javascript:submitForm('doVIEW(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
             getSearchLikeButton().write(jspwriter, !readonly, "javascript:submitForm('doSearchLike(" + mergePrefix(s2, getName()) + ")')", isBootstrap);
             if (formName != null) {
                 jspwriter.println("</td></tr>");
@@ -2536,6 +2602,7 @@ public class FieldProperty implements Serializable {
 
         setNullable(fieldPropertyAnnotation.nullable());
         setCRUDBusinessProcessName(nvl(fieldPropertyAnnotation.CRUDBusinessProcessName()));
+        setVIEWBusinessProcessName(nvl(fieldPropertyAnnotation.VIEWBusinessProcessName()));
         setImg(nvl(fieldPropertyAnnotation.img()));
         setHref(nvl(fieldPropertyAnnotation.href()));
         setCommand(nvl(fieldPropertyAnnotation.command()));
