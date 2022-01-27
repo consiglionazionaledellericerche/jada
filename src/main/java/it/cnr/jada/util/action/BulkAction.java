@@ -290,9 +290,7 @@ public class BulkAction extends FormAction
                 OggettoBulk oggettobulk = formfield.getModel();
                 OggettoBulk oggettobulk1 = (OggettoBulk) formfield.getField().getValueFrom(oggettobulk);
                 if (Optional.ofNullable(oggettobulk1).map(OggettoBulk::getCrudStatus).filter(el->el==OggettoBulk.NORMAL).isPresent()) {
-                    CRUDBP crudbp = (CRUDBP) actioncontext.getUserInfo().createBusinessProcess(actioncontext, formfield.getField().getVIEWBusinessProcessName(), new Object[]{
-                            "R"
-                    });
+                    CRUDBP crudbp = (CRUDBP) actioncontext.getUserInfo().createBusinessProcess(actioncontext, formfield.getField().getVIEWBusinessProcessName(), new Object[]{});
                     crudbp.basicEdit(actioncontext, oggettobulk1, true);
                     crudbp.setStatus(FormController.VIEW);
                     return actioncontext.addBusinessProcess(crudbp);
