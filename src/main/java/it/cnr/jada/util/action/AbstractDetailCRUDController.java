@@ -490,7 +490,7 @@ public abstract class AbstractDetailCRUDController extends NestedFormController
     }
 
     public void openButtonGROUPToolbar(PageContext pagecontext) {
-        writeBootstrap(pagecontext, "<div class=\"btn-group w-100 border rounded\" role=\"group\">");
+        writeBootstrap(pagecontext, "<div class=\"btn-group border rounded\" role=\"group\">");
     }
 
     public void closeButtonGROUPToolbar(PageContext pagecontext) throws IOException {
