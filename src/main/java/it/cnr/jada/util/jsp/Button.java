@@ -244,7 +244,7 @@ public class Button implements Serializable, Cloneable {
                         } else {
                             jspwriter.print(" btn-sm ");
                         }
-                        image = "fa fa-fw fa-star";
+                        image = "fa fa-fw fa-share";
                     }
                 }
                 jspwriter.print("\"");
