@@ -355,6 +355,8 @@ public class GenericComponent implements Component, Serializable, Cloneable {
             return new ApplicationException(applicationpersistencyexception.getMessage(), applicationpersistencyexception);
         } catch (ApplicationPersistencyDiscardedException applicationpersistencydiscardedexception) {
             return new ApplicationException(applicationpersistencydiscardedexception.getMessage(), applicationpersistencydiscardedexception);
+        } catch (ApplicationRuntimeException applicationruntimeexception) {
+            return new ApplicationException(applicationruntimeexception.getMessage(), applicationruntimeexception);
         } catch (ComponentException componentexception) {
             if (componentexception.getDetail() != null && componentexception.getClass() == it.cnr.jada.comp.ComponentException.class) {
                 ComponentException componentexception1 = handleException(componentexception.getDetail());
