@@ -134,7 +134,7 @@
         <dependency>
             <groupId>it.cnr.si</groupId>
             <artifactId>firmadigitale</artifactId>
-            <version>1.18</version>
+            <version>1.17</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
