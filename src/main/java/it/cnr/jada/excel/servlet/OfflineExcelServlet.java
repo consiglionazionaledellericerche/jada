@@ -86,6 +86,7 @@ public class OfflineExcelServlet extends HttpServlet {
                         response.setContentType(serverConn.getContentType());
                         response.setContentLength(serverConn.getContentLength());
                         response.setDateHeader("Expires", 0);
+                        response.setHeader("Content-Disposition", "attachment; filename=" + file);
                         javax.servlet.ServletOutputStream os = response.getOutputStream();
                         byte[] buffer = new byte[response.getBufferSize()];
                         int buflength;
