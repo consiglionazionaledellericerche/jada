@@ -90,6 +90,35 @@ public abstract class Broker
         return fetch(class1, s, flag, true);
     }
 
+    public Persistent fetch(Persistent persistent, Class class1, String s, boolean flag, boolean addToFetchQueue)
+            throws FetchException {
+        try {
+            Object obj = null;
+            if (it.cnr.jada.persistency.KeyedPersistent.class.isAssignableFrom(class1)) {
+                Object obj1 = fetchOid(class1, s);
+                if (obj1 == null)
+                    return null;
+                KeyedPersistent keyedpersistent = getCache().get(obj1);
+                if (keyedpersistent == null) {
+                    getCache().put(obj1, keyedpersistent = (KeyedPersistent) introspector.getPropertyValue(persistent, s));
+                    if (keyedpersistent != null)
+                        fetchOid(keyedpersistent, s);
+                }
+                if (flag && addToFetchQueue)
+                    getCache().addToFetchQueue(introspector, keyedpersistent, fetchPolicy.addPrefix(s));
+                if (!flag)
+                    fetch(keyedpersistent, s);
+                obj = keyedpersistent;
+            } else {
+                obj = newInstance(class1);
+                fetch(((Persistent) (obj)), s);
+            }
+            return ((Persistent) (obj));
+        } catch (IntrospectionException introspectionexception) {
+            throw new IntrospectionError(introspectionexception);
+        }
+    }
+
     public Persistent fetch(Class class1, String s, boolean flag, boolean addToFetchQueue)
             throws FetchException {
         try {
@@ -166,12 +195,17 @@ public abstract class Broker
             Class class1 = introspector.getPropertyType(persistent.getClass(), s);
             String s2 = Prefix.prependPrefix(s1, s);
             Object obj = null;
-            if (it.cnr.jada.persistency.KeyedPersistent.class.isAssignableFrom(class1))
-                obj = fetch(class1, s2, true, fetchPolicyInclude(s2));
-            else if (it.cnr.jada.persistency.Persistent.class.isAssignableFrom(class1))
+            if (it.cnr.jada.persistency.KeyedPersistent.class.isAssignableFrom(class1)) {
+                if (Modifier.isAbstract(class1.getModifiers())) {
+                    obj = fetch(persistent, class1, s2, true, fetchPolicyInclude(s2));
+                } else {
+                    obj = fetch(class1, s2, true, fetchPolicyInclude(s2));
+                }
+            } else if (it.cnr.jada.persistency.Persistent.class.isAssignableFrom(class1)) {
                 obj = fetch(class1, s2, false);
-            else
+            } else {
                 obj = fetchPropertyValue(s2, class1);
+            }
             introspector.setPropertyValue(persistent, s, obj);
             return obj;
         } catch (IntrospectionException introspectionexception) {
