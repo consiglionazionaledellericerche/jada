@@ -17,11 +17,12 @@
 
 package it.cnr.jada.persistency;
 
+import it.cnr.jada.bulk.OggettoBulk;
+
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 public class PersistentCache
         implements Serializable {
@@ -105,6 +106,25 @@ public class PersistentCache
         removeFromFetchQueue(introspector, persistent, FetchAllPolicy.FETCHALL);
     }
 
+    private FetchPolicy removeFromFetchQueueByKey(Persistent persistent) {
+        FetchPolicy fetchpolicy2 = fetchQueue.remove(persistent);
+        if (fetchpolicy2 == null && persistent instanceof OggettoBulk) {
+            final Optional<Entry<Persistent, FetchPolicy>> any = fetchQueue
+                    .entrySet()
+                    .stream()
+                    .filter(s -> {
+                        if (s.getKey() instanceof OggettoBulk) {
+                            return ((OggettoBulk) persistent).equalsByPrimaryKey(s.getKey());
+                        }
+                        return false;
+                    }).findAny();
+            if (any.isPresent()) {
+                return fetchQueue.remove(any.get().getKey());
+            }
+        }
+        return fetchpolicy2;
+    }
+
     public void removeFromFetchQueue(Introspector introspector, Persistent persistent, FetchPolicy fetchpolicy)
             throws IntrospectionException {
         if (fetchpolicy.equals(FetchAllPolicy.FETCHALL))
@@ -117,7 +137,7 @@ public class PersistentCache
         } else {
             fetchedQueue.put(persistent, fetchpolicy.addFetchPolicy(fetchedQueue.get(persistent)));
         }
-        FetchPolicy fetchpolicy2 = fetchQueue.remove(persistent);
+        FetchPolicy fetchpolicy2 = removeFromFetchQueueByKey(persistent);
         if (fetchpolicy2 == null) {
             for (Iterator<Entry<Persistent, FetchPolicy>> iterator = fetchQueue.entrySet().iterator(); iterator.hasNext(); ) {
                 Entry<Persistent, FetchPolicy> persistentKey = iterator.next();

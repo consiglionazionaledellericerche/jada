@@ -21,6 +21,7 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 // Referenced classes of package it.cnr.jada.persistency:
 //            PersistentInfo, IntrospectionException, Introspector, SimpleFetchPolicy, 
@@ -55,7 +56,7 @@ public class SimplePersistentInfo
             throw new RuntimeException("Tentativo di costruire un SQLPersistentInfo per una classe che non \350 Persistent");
         persistentClass = class1;
         introspector = introspector1;
-        if (class1 != java.lang.Object.class && it.cnr.jada.persistency.Persistent.class.isAssignableFrom(class1.getSuperclass())) {
+        if (class1 != java.lang.Object.class && Optional.ofNullable(class1.getSuperclass()).isPresent() && it.cnr.jada.persistency.Persistent.class.isAssignableFrom(class1.getSuperclass())) {
             PersistentInfo persistentinfo = introspector1.getPersistentInfo(class1.getSuperclass());
             if (persistentinfo != null)
                 initializeFrom(persistentinfo);

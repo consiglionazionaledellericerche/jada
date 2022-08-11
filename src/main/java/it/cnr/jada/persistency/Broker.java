@@ -196,7 +196,7 @@ public abstract class Broker
             String s2 = Prefix.prependPrefix(s1, s);
             Object obj = null;
             if (it.cnr.jada.persistency.KeyedPersistent.class.isAssignableFrom(class1)) {
-                if (Modifier.isAbstract(class1.getModifiers())) {
+                if (Modifier.isAbstract(class1.getModifiers()) || Modifier.isInterface(class1.getModifiers())) {
                     obj = fetch(persistent, class1, s2, true, fetchPolicyInclude(s2));
                 } else {
                     obj = fetch(class1, s2, true, fetchPolicyInclude(s2));
