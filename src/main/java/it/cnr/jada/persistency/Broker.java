@@ -101,7 +101,7 @@ public abstract class Broker
                 KeyedPersistent keyedpersistent = getCache().get(obj1);
                 if (keyedpersistent == null) {
                     getCache().put(obj1, keyedpersistent = (KeyedPersistent) introspector.getPropertyValue(persistent, s));
-                    if (keyedpersistent != null)
+                    if (keyedpersistent != null && addToFetchQueue)
                         fetchOid(keyedpersistent, s);
                 }
                 if (flag && addToFetchQueue)
