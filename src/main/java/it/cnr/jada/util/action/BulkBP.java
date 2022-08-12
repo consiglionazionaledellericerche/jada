@@ -259,6 +259,12 @@ public abstract class BulkBP extends FormBP
         return editable;
     }
 
+    public boolean isModelCrudStatusNormal() {
+        return Optional.ofNullable(getModel())
+                .filter(oggettoBulk -> oggettoBulk.getCrudStatus() == OggettoBulk.NORMAL)
+                .isPresent();
+    }
+
     public void setEditable(boolean flag) {
         editable = flag;
     }
