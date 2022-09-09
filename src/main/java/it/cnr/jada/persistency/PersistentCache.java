@@ -44,7 +44,7 @@ public class PersistentCache
 
     public void addToFetchQueue(Introspector introspector, Persistent persistent, FetchPolicy fetchpolicy)
             throws IntrospectionException {
-        if (fetchpolicy == null)
+        if (fetchpolicy == null || persistent == null)
             return;
         FetchPolicy fetchpolicy1 = fetchedQueue.get(persistent);
         if (FetchAllPolicy.FETCHALL.equals(fetchpolicy1))
