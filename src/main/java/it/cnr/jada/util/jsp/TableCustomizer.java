@@ -25,6 +25,8 @@ public interface TableCustomizer {
 
     String getRowStyle(Object obj);
 
+    String getRowCSSClass(Object obj, boolean even);
+
     boolean isRowEnabled(Object obj);
 
     boolean isRowReadonly(Object obj);

@@ -32,6 +32,7 @@ import it.cnr.jada.util.ejb.EJBCommonServices;
 import it.cnr.jada.util.jsp.Button;
 import it.cnr.jada.util.jsp.JSPUtils;
 import it.cnr.jada.util.jsp.Table;
+import it.cnr.jada.util.jsp.TableCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -716,6 +717,10 @@ public class SelezionatoreListaBP extends AbstractSelezionatoreBP
         pagecontext.getOut();
         table.setSelection(super.selection);
         table.setRows(new ArrayEnumeration(pageContents));
+        Optional.ofNullable(this)
+                .filter(TableCustomizer.class::isInstance)
+                .map(TableCustomizer.class::cast)
+                .ifPresent(tableCustomizer -> table.setCustomizer(tableCustomizer));
         if (getClass().getName().equalsIgnoreCase(SelezionatoreListaBP.class.getName()))
             bp = getParent();
         else

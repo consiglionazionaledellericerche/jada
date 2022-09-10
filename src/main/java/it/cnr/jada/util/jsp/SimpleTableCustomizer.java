@@ -32,6 +32,11 @@ public class SimpleTableCustomizer
         return null;
     }
 
+    @Override
+    public String getRowCSSClass(Object obj, boolean even) {
+        return null;
+    }
+
     public boolean isRowEnabled(Object obj) {
         return false;
     }

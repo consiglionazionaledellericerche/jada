@@ -448,6 +448,12 @@ public class Table
             } else {
                 jspwriter.print((resto == 0 ? "TableRow" : "TableRowPar"));
             }
+            if (customizer != null) {
+                String s1 = customizer.getRowCSSClass(obj, resto == 0);
+                if (s1 != null) {
+                    jspwriter.print(" " + s1);
+                }
+            }
             jspwriter.print('"');
             if (customizer != null) {
                 String s1 = customizer.getRowStyle(obj);
