@@ -44,4 +44,7 @@ public interface RicercaComponentSession extends GenericComponentSession {
     RemoteIterator cerca(UserContext usercontext, CompoundFindClause compoundfindclause, OggettoBulk oggettobulk, String homeMethodName)
             throws ComponentException, RemoteException;
 
+    RemoteIterator cerca(UserContext usercontext, CompoundFindClause compoundfindclause, OggettoBulk oggettobulk, String homeMethodName, Object... parameters)
+            throws ComponentException, RemoteException;
+
 }

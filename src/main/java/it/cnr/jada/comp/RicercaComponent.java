@@ -132,6 +132,31 @@ public class RicercaComponent extends GenericComponent implements Serializable, 
     }
 
     /**
+     * Implementazione fisica del metodo cerca(UserContext,CompoundFindClause,OggettoBulk).
+     * Costruisce l'istruzione SQL corrispondente ad una ricerca con le clausole specificate.
+     * L'implementazione standard invoca il metodo selectByClause sull'Home dell'OggettoBulk specificato
+     * come prototipo.
+     */
+    protected Query select(UserContext usercontext, CompoundFindClause compoundfindclause, OggettoBulk oggettobulk, String homeMethodName, Object... parameters) throws ComponentException, PersistencyException {
+        try {
+            if (compoundfindclause == null) {
+                if (oggettobulk != null)
+                    compoundfindclause = oggettobulk.buildFindClauses(null);
+            } else {
+                compoundfindclause = CompoundFindClause.and(compoundfindclause, oggettobulk.buildFindClauses(Boolean.FALSE));
+            }
+            try {
+                return (Query) Introspector.invoke(getHome(usercontext, oggettobulk), homeMethodName, usercontext, oggettobulk, compoundfindclause, parameters);
+            } catch (NoSuchMethodException ex) {
+                return getHome(usercontext, oggettobulk).selectByClause(usercontext, compoundfindclause);
+            }
+        } catch (InvocationTargetException invocationtargetexception) {
+            throw handleException(invocationtargetexception.getTargetException());
+        } catch (IllegalAccessException illegalaccessexception) {
+            throw handleException(illegalaccessexception);
+        }
+    }
+    /**
      * Implementazione fisica del metodo cerca(UserContext,CompoundFindClause,OggettoBulk,OggettoBulk,String).
      * Costruisce l'struzione SQL corrispondente ad una ricerca con le clausole specificate.
      * L'implementazione standard invoca il metodo selectOptionsByClause sull'Home dell'OggettoBulk specificato
@@ -206,4 +231,29 @@ public class RicercaComponent extends GenericComponent implements Serializable, 
         }
     }
 
+
+    /**
+     * Esegue una operazione di ricerca di un OggettoBulk con clausole.
+     *
+     * @param homeMethodName Specificare il metodo della home da richiamare altrimenti verrà eseguito il fallback su select
+     *                       Pre-post-conditions:
+     *                       Nome: Clausole non specificate
+     *                       Pre: L'albero delle clausole non   specficato (nullo)
+     *                       Post: Viene generato un albero di clausole usando tutti i valori non nulli degli attributi dell'OggettoBulk
+     *                       specificato come prototipo. L'elenco degli attributi da utilizzare per ottenere le clausole   estratto
+     *                       dal BulkInfo dell'OggettoBulk
+     *                       Nome: Tutti i controlli superati
+     *                       Pre: Albero delle clausole di ricerca specificato (non nullo)
+     *                       Post: Viene effettuata una ricerca di OggettoBulk compatibili con il bulk specificato.
+     *                       La ricerca deve essere effettuata utilizzando le clausole specificate da "clausole".
+     *                       L'operazione di lettura viene effettuata con una FetchPolicy il cui nome   ottenuto concatenando il
+     *                       nome della component con la stringa ".find"
+     */
+    public RemoteIterator cerca(UserContext usercontext, CompoundFindClause compoundfindclause, OggettoBulk oggettobulk, String homeMethodName, Object... parameters) throws ComponentException {
+        try {
+            return iterator(usercontext, select(usercontext, compoundfindclause, oggettobulk, homeMethodName, parameters), oggettobulk.getClass(), getFetchPolicyName("find"));
+        } catch (Throwable throwable) {
+            throw handleException(throwable);
+        }
+    }
 }
