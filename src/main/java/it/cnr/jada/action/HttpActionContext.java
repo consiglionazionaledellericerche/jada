@@ -457,6 +457,23 @@ public class HttpActionContext
             }
         return businessprocess;
     }
+    /**
+     *
+     * @return il {@link BusinessProcess} corrente
+     */
+    public BusinessProcess getCurrentBusinessProcess() {
+        return getCurrentBusinessProcess(getBusinessProcess(false));
+    }
+    /**
+     *
+     * @return il {@link BusinessProcess} corrente
+     */
+    private BusinessProcess getCurrentBusinessProcess(BusinessProcess parent) {
+        return Optional.ofNullable(parent)
+                .flatMap(bp -> Collections.list(bp.getChildren()).stream().findAny())
+                .map(bp -> getCurrentBusinessProcess(bp))
+                .orElse(parent);
+    }
 
     public Forward getCaller() {
         return caller;

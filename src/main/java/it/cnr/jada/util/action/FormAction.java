@@ -114,6 +114,19 @@ public class FormAction extends AbstractAction implements Serializable {
     }
 
     /**
+     * Metodo invocato dalla breadcrumb
+     * @param actioncontext
+     * @param businessProcessPath
+     * @return
+     * @throws BusinessProcessException
+     */
+    public Forward doBreadcrumb(ActionContext actioncontext, String businessProcessPath) throws BusinessProcessException {
+        final BusinessProcess businessProcess = actioncontext.getBusinessProcess(businessProcessPath);
+        businessProcess.closeAllChildren();
+        actioncontext.setBusinessProcess(businessProcess);
+        return actioncontext.findDefaultForward();
+    }
+    /**
      * Description copied from class:
      * Gestisce in maniera standard le eccezioni generate da un perform di una action.
      * La gestione standard prevede: Se l'eccezione  una RemoteException ne viene estratto il detail e

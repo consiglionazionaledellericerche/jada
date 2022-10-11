@@ -476,6 +476,35 @@ public class FormBP extends BusinessProcess implements Serializable {
         jspwriter.println("</tr>");
     }
 
+    public List<BulkBP> getBPChain(BusinessProcess businessProcess, List<BulkBP> result) {
+        return Optional.ofNullable(businessProcess.getParent())
+                .filter(BulkBP.class::isInstance)
+                .map(BulkBP.class::cast)
+                .map(bulkBP -> {
+                    result.add(0, bulkBP);
+                    return getBPChain(bulkBP, result);
+                })
+                .orElse(result);
+    }
+
+    public void writeBreadcrumb(HttpServletRequest httpServletRequest, BusinessProcess businessProcess, JspWriter jspwriter) throws IOException {
+        List<BulkBP> chains = new ArrayList<BulkBP>();
+        chains = getBPChain(businessProcess, chains);
+        if (Optional.ofNullable(chains).filter(bulkBPS -> !bulkBPS.isEmpty()).isPresent()) {
+            jspwriter.println("<nav aria-label=\"breadcrumb\" class=\"pt-0\"><ol class=\"breadcrumb bg-primary py-0 my-0\">");
+            for (BulkBP bulkBP : chains) {
+                jspwriter.println("<li class=\"breadcrumb-item\">");
+                jspwriter.println("<a " + "onclick=\"cancelBubble(event); if (disableDblClick()) submitForm('doBreadcrumb("+ bulkBP.getPath() +")'); return false\">");
+                jspwriter.print(bulkBP.getBulkInfo().getShortDescription());
+                jspwriter.print("</a>");
+                jspwriter.println("</li>");
+            }
+            jspwriter.println("<li class=\"breadcrumb-item mr-n4\">&nbsp;</li>");
+            jspwriter.println("</ol></nav>");
+        }
+
+    }
+
     public void writeTitleBar(PageContext pagecontext) throws IOException, ServletException {
         JspWriter jspwriter = pagecontext.getOut();
         HttpServletRequest httpservletrequest = (HttpServletRequest) pagecontext.getRequest();
@@ -502,10 +531,12 @@ public class FormBP extends BusinessProcess implements Serializable {
                 }
             }
             buttons.add(getCloseButton());
-            jspwriter.println("<div class=\"title-bar bg-primary text-white d-flex\">");
+            jspwriter.println("<div class=\"title-bar bg-primary text-white d-flex align-items-center shadow rounded\">");
+            writeBreadcrumb(httpservletrequest, this, jspwriter);
             jspwriter.print("<sigla-page-title class=\"h6 mr-auto pt-2 pl-2\">");
             jspwriter.print(getFormTitle().replace("<script>document.write(document.title)</script>", ""));
             jspwriter.print("</sigla-page-title>");
+
             jspwriter.println("<div id=\"titleToolbar\" class=\"p-1\">");
             JSPUtils.toolbarBootstrap(jspwriter, buttons, this);
             jspwriter.println("</div>");

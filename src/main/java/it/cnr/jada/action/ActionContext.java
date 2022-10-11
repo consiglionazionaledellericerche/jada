@@ -120,4 +120,10 @@ public interface ActionContext {
     void saveFocusedElement();
 
     ActionMapping getActionMapping();
+
+    /**
+     *
+     * @return il {@link BusinessProcess} corrente
+     */
+    BusinessProcess getCurrentBusinessProcess();
 }
