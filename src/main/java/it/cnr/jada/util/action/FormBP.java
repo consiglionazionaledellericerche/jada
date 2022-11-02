@@ -495,7 +495,13 @@ public class FormBP extends BusinessProcess implements Serializable {
             for (BulkBP bulkBP : chains) {
                 jspwriter.println("<li class=\"breadcrumb-item\">");
                 jspwriter.println("<a " + "onclick=\"cancelBubble(event); if (disableDblClick()) submitForm('doBreadcrumb("+ bulkBP.getPath() +")'); return false\">");
-                jspwriter.print(bulkBP.getBulkInfo().getShortDescription());
+                jspwriter.print(
+                        Optional.ofNullable(bulkBP)
+                                .flatMap(bulkBP1 -> Optional.ofNullable(bulkBP1.getModel()))
+                                .flatMap(oggettoBulk -> Optional.ofNullable(oggettoBulk.getBulkInfo()))
+                                .flatMap(bulkInfo -> Optional.ofNullable(bulkInfo.getShortDescription()))
+                                .orElse("")
+                );
                 jspwriter.print("</a>");
                 jspwriter.println("</li>");
             }
