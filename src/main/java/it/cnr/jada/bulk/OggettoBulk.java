@@ -26,6 +26,7 @@ import it.cnr.jada.bulk.annotation.InputType;
 import it.cnr.jada.persistency.*;
 import it.cnr.jada.persistency.beans.BeanIntrospector;
 import it.cnr.jada.persistency.sql.CompoundFindClause;
+import it.cnr.jada.util.action.BulkBP;
 import it.cnr.jada.util.action.CRUDBP;
 
 import javax.servlet.ServletRequest;
@@ -291,6 +292,10 @@ public abstract class OggettoBulk implements Cloneable, FetchListener, Persisten
 
     public OggettoBulk initializeForSearch(CRUDBP crudbp, ActionContext actioncontext) {
         return initialize(crudbp, actioncontext);
+    }
+
+    public OggettoBulk initializeForPrint(BulkBP bulkBP, ActionContext actioncontext) {
+        return this;
     }
 
     public void insertedUsing(Persister persister, UserContext userContext) {
