@@ -745,7 +745,11 @@ public class SQLBuilder extends SQLQuery {
      * indica se la join da effettuare è di uguaglianza o di disuguaglianza
      */
     public void addSQLJoin(String s, int parametro, String s1) {
-        addLogicalOperator("AND");
+       addSQLJoin(FindClause.AND, s, parametro, s1);
+    }
+
+    public void addSQLJoin(String logicalOperator, String s, int parametro, String s1) {
+        addLogicalOperator(logicalOperator);
         clauses.append("( ");
         clauses.append(s);
         clauses.append(convertParameterJoin(parametro));
