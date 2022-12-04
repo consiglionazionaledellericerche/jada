@@ -678,32 +678,45 @@ public class BulkInfo implements Serializable {
      * Scrive un campo di input HTML con la sua label associato a una formFieldProperty
      */
     public void writeFormField(JspWriter out, Object bean, String formName, String name, String prefix, int labelColspan, int inputColspan, int status, boolean readonly, FieldValidationMap fieldvalidationmap, boolean isBootstrap) throws IOException {
-        writeFormField(null, out, bean, formName, name, prefix, labelColspan, inputColspan, status, readonly, fieldvalidationmap, isBootstrap);
+        writeFormField(out, bean, formName, name, prefix, labelColspan, inputColspan, status, readonly, fieldvalidationmap, isBootstrap, Boolean.TRUE);
+    }
+    public void writeFormField(JspWriter out, Object bean, String formName, String name, String prefix, int labelColspan, int inputColspan, int status, boolean readonly, FieldValidationMap fieldvalidationmap, boolean isBootstrap, boolean isInsideTable) throws IOException {
+        writeFormField(null, out, bean, formName, name, prefix, labelColspan, inputColspan, status, readonly, fieldvalidationmap, isBootstrap, isInsideTable);
     }
 
     /**
      * Scrive un campo di input HTML con la sua label associato a una formFieldProperty
      */
     public void writeFormField(Object bp, JspWriter out, Object bean, String formName, String name, String prefix, int labelColspan, int inputColspan, int status, boolean readonly, FieldValidationMap fieldvalidationmap, boolean isBootstrap) throws IOException {
+        writeFormField(bp, out, bean, formName, name, prefix, labelColspan, inputColspan, status, readonly, fieldvalidationmap, isBootstrap, Boolean.TRUE);
+    }
+
+    public void writeFormField(Object bp, JspWriter out, Object bean, String formName, String name, String prefix, int labelColspan, int inputColspan, int status, boolean readonly, FieldValidationMap fieldvalidationmap, boolean isBootstrap, boolean isInsideTable) throws IOException {
         FieldProperty fieldproperty = getFormFieldProperty(formName, name);
         if (fieldproperty != null) {
-            out.print("<td");
-            if (labelColspan > 1) {
-                out.print(" colspan=\"");
-                out.print(labelColspan);
-                out.print("\"");
+            if (isInsideTable) {
+                out.print("<td");
+                if (labelColspan > 1) {
+                    out.print(" colspan=\"");
+                    out.print(labelColspan);
+                    out.print("\"");
+                }
+                out.print(">");
             }
-            out.print(">");
             fieldproperty.writeLabel(bp, out, bean, "FormLabel", isBootstrap);
-            out.print("</td><td");
-            if (inputColspan > 1) {
-                out.print(" colspan=\"");
-                out.print(inputColspan);
-                out.print("\"");
+            if (isInsideTable) {
+                out.print("</td><td");
+                if (inputColspan > 1) {
+                    out.print(" colspan=\"");
+                    out.print(inputColspan);
+                    out.print("\"");
+                }
+                out.print(">");
             }
-            out.print(">");
             fieldproperty.writeInput(out, bean, readonly, isBootstrap ? "form-control" : "FormInput", null, prefix, status, fieldvalidationmap, isBootstrap);
-            out.print("</td>");
+            if (isInsideTable) {
+                out.print("</td>");
+            }
         }
     }
 

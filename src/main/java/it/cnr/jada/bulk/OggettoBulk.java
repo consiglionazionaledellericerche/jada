@@ -417,44 +417,68 @@ public abstract class OggettoBulk implements Cloneable, FetchListener, Persisten
 
     public void writeFormField(JspWriter jspwriter, String s, int i, FieldValidationMap fieldvalidationmap, boolean isBootstrap)
             throws IOException {
-        FieldProperty fieldproperty = getBulkInfo().getFormFieldProperty(null, s);
-        if (fieldproperty != null) {
-            jspwriter.print("<td>");
-            fieldproperty.writeLabel(jspwriter, this, null, isBootstrap);
-            jspwriter.print("</td><td>");
-            fieldproperty.writeInput(jspwriter, this, false, isBootstrap ? "form-control" : "FormInput", null, null, i, fieldvalidationmap, isBootstrap);
-            jspwriter.print("</td>");
-        }
+        writeFormField(jspwriter, s, i, fieldvalidationmap, isBootstrap, Boolean.TRUE);
     }
 
+    public void writeFormField(JspWriter jspwriter, String s, int i, FieldValidationMap fieldvalidationmap, boolean isBootstrap, Boolean isInsideTable)
+            throws IOException {
+        FieldProperty fieldproperty = getBulkInfo().getFormFieldProperty(null, s);
+        if (fieldproperty != null) {
+            if(!isInsideTable) {
+                fieldproperty.writeLabel(jspwriter, this, null, isBootstrap);
+                fieldproperty.writeInput(jspwriter, this, false, isBootstrap ? "form-control" : "FormInput", null, null, i, fieldvalidationmap, isBootstrap);
+            } else {
+                jspwriter.print("<td>");
+                fieldproperty.writeLabel(jspwriter, this, null, isBootstrap);
+                jspwriter.print("</td><td>");
+                fieldproperty.writeInput(jspwriter, this, false, isBootstrap ? "form-control" : "FormInput", null, null, i, fieldvalidationmap, isBootstrap);
+                jspwriter.print("</td>");
+            }
+        }
+    }
     public void writeFormField(JspWriter jspwriter, String s, String s1, String s2, int i, int j, int k,
                                FieldValidationMap fieldvalidationmap, boolean isBootstrap)
             throws IOException {
+        writeFormField(jspwriter, s, s1, s2, i, j, k, fieldvalidationmap, isBootstrap, Boolean.TRUE);
+    }
+    public void writeFormField(JspWriter jspwriter, String s, String s1, String s2, int i, int j, int k,
+                               FieldValidationMap fieldvalidationmap, boolean isBootstrap, Boolean isInsideTable)
+            throws IOException {
         FieldProperty fieldproperty = getBulkInfo().getFormFieldProperty(s, s1);
         if (fieldproperty != null) {
-            jspwriter.print("<td");
-            if (i > 1) {
-                jspwriter.print(" colspan=\"");
-                jspwriter.print(i);
-                jspwriter.print("\"");
+            if (isInsideTable) {
+                jspwriter.print("<td");
+                if (i > 1) {
+                    jspwriter.print(" colspan=\"");
+                    jspwriter.print(i);
+                    jspwriter.print("\"");
+                }
+                jspwriter.print(">");
             }
-            jspwriter.print(">");
             fieldproperty.writeLabel(jspwriter, this, null, isBootstrap);
-            jspwriter.print("</td><td");
-            if (j > 1) {
-                jspwriter.print(" colspan=\"");
-                jspwriter.print(j);
-                jspwriter.print("\"");
+            if (isInsideTable) {
+                jspwriter.print("</td><td");
+                if (j > 1) {
+                    jspwriter.print(" colspan=\"");
+                    jspwriter.print(j);
+                    jspwriter.print("\"");
+                }
+                jspwriter.print(">");
             }
-            jspwriter.print(">");
             fieldproperty.writeInput(jspwriter, this, false, null, null, s2, k, fieldvalidationmap, isBootstrap);
-            jspwriter.print("</td>");
+            if (isInsideTable) {
+                jspwriter.print("</td>");
+            }
         }
     }
-
     public void writeFormField(JspWriter jspwriter, String s, String s1, String s2, int i, FieldValidationMap fieldvalidationmap, boolean isBootstrap)
             throws IOException {
-        writeFormField(jspwriter, s, s1, s2, 1, 1, i, fieldvalidationmap, isBootstrap);
+        writeFormField(jspwriter, s, s1, s2, i, fieldvalidationmap, isBootstrap, Boolean.TRUE);
+    }
+
+    public void writeFormField(JspWriter jspwriter, String s, String s1, String s2, int i, FieldValidationMap fieldvalidationmap, boolean isBootstrap, Boolean isInsideTable)
+            throws IOException {
+        writeFormField(jspwriter, s, s1, s2, 1, 1, i, fieldvalidationmap, isBootstrap, isInsideTable);
     }
 
     public void writeFormInput(JspWriter jspwriter, String s, int i, FieldValidationMap fieldvalidationmap, boolean isBootstrap)

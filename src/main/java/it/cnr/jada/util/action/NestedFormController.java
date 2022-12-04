@@ -230,17 +230,31 @@ public abstract class NestedFormController
 
     public void writeFormField(JspWriter jspwriter, String s)
             throws IOException {
-        getBulkInfo().writeFormField(this, jspwriter, getModel(), null, s, getInputPrefix(), 1, 1, getStatus(), isInputReadonly(), getFieldValidationMap(), isBootstrap());
+        writeFormField(jspwriter, s, Boolean.TRUE);
+    }
+    public void writeFormField(JspWriter jspwriter, String s, Boolean isInsideTable)
+            throws IOException {
+        getBulkInfo().writeFormField(this, jspwriter, getModel(), null, s, getInputPrefix(), 1, 1, getStatus(), isInputReadonly(), getFieldValidationMap(), isBootstrap(), isInsideTable);
     }
 
     public void writeFormField(JspWriter jspwriter, String s, String s1)
             throws IOException {
-        getBulkInfo().writeFormField(this, jspwriter, getModel(), s, s1, getInputPrefix(), 1, 1, getStatus(), isInputReadonly(), getFieldValidationMap(), isBootstrap());
+        writeFormField(jspwriter, s, s1, Boolean.TRUE);
+    }
+
+    public void writeFormField(JspWriter jspwriter, String s, String s1, Boolean isInsideTable)
+            throws IOException {
+        getBulkInfo().writeFormField(this, jspwriter, getModel(), s, s1, getInputPrefix(), 1, 1, getStatus(), isInputReadonly(), getFieldValidationMap(), isBootstrap(), isInsideTable);
     }
 
     public void writeFormField(JspWriter jspwriter, String s, String s1, int i, int j)
             throws IOException {
-        getBulkInfo().writeFormField(this, jspwriter, getModel(), s, s1, getInputPrefix(), i, j, getStatus(), isInputReadonly(), getFieldValidationMap(), isBootstrap());
+        writeFormField(jspwriter, s, s1, i, j, Boolean.TRUE);
+    }
+
+    public void writeFormField(JspWriter jspwriter, String s, String s1, int i, int j, Boolean isInsideTable)
+            throws IOException {
+        getBulkInfo().writeFormField(this, jspwriter, getModel(), s, s1, getInputPrefix(), i, j, getStatus(), isInputReadonly(), getFieldValidationMap(), isBootstrap(), isInsideTable);
     }
 
     public void writeFormInput(JspWriter jspwriter, String s)

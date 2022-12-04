@@ -338,20 +338,33 @@ public abstract class BulkBP extends FormBP
             throws IOException {
         getBulkInfo().writeForm(jspwriter, getModel(), s, null, null, getInputPrefix(), getStatus(), isInputReadonly(), getFieldValidationMap(), this.getParentRoot().isBootstrap());
     }
-
     public void writeFormField(JspWriter jspwriter, String fieldName)
             throws IOException {
-        getBulkInfo().writeFormField(this, jspwriter, getModel(), null, fieldName, getInputPrefix(), 1, 1, getStatus(), isInputReadonly() && isInputReadonlyFieldName(fieldName), getFieldValidationMap(), this.getParentRoot().isBootstrap());
+        writeFormField(jspwriter, fieldName, Boolean.TRUE);
+    }
+
+    public void writeFormField(JspWriter jspwriter, String fieldName, Boolean isInsideTable)
+            throws IOException {
+        getBulkInfo().writeFormField(this, jspwriter, getModel(), null, fieldName, getInputPrefix(), 1, 1, getStatus(), isInputReadonly() && isInputReadonlyFieldName(fieldName), getFieldValidationMap(), this.getParentRoot().isBootstrap(), isInsideTable);
     }
 
     public void writeFormField(JspWriter jspwriter, String formName, String fieldName)
             throws IOException {
-        getBulkInfo().writeFormField(this, jspwriter, getModel(), formName, fieldName, getInputPrefix(), 1, 1, getStatus(), isInputReadonly() && isInputReadonlyFieldName(fieldName), getFieldValidationMap(), this.getParentRoot().isBootstrap());
+        writeFormField(jspwriter, formName, fieldName, Boolean.TRUE);
     }
 
+    public void writeFormField(JspWriter jspwriter, String formName, String fieldName, Boolean isInsideTable)
+            throws IOException {
+        getBulkInfo().writeFormField(this, jspwriter, getModel(), formName, fieldName, getInputPrefix(), 1, 1, getStatus(), isInputReadonly() && isInputReadonlyFieldName(fieldName), getFieldValidationMap(), this.getParentRoot().isBootstrap(), isInsideTable);
+    }
     public void writeFormField(JspWriter jspwriter, String formName, String fieldName, int labelColspan, int inputColspan)
             throws IOException {
-        getBulkInfo().writeFormField(this, jspwriter, getModel(), formName, fieldName, getInputPrefix(), labelColspan, inputColspan, getStatus(), isInputReadonly() && isInputReadonlyFieldName(fieldName), getFieldValidationMap(), this.getParentRoot().isBootstrap());
+        writeFormField(jspwriter, formName, fieldName, labelColspan, inputColspan, Boolean.TRUE);
+    }
+
+    public void writeFormField(JspWriter jspwriter, String formName, String fieldName, int labelColspan, int inputColspan, Boolean isInsideTable)
+            throws IOException {
+        getBulkInfo().writeFormField(this, jspwriter, getModel(), formName, fieldName, getInputPrefix(), labelColspan, inputColspan, getStatus(), isInputReadonly() && isInputReadonlyFieldName(fieldName), getFieldValidationMap(), this.getParentRoot().isBootstrap(), isInsideTable);
     }
 
     public void writeFormInput(JspWriter jspwriter, String fieldName)

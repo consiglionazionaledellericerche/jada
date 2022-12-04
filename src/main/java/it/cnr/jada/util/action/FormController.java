@@ -79,11 +79,19 @@ public interface FormController
 
     void writeFormField(JspWriter jspwriter, String s)
             throws IOException;
+    void writeFormField(JspWriter jspwriter, String s, Boolean isInsideTable)
+            throws IOException;
 
     void writeFormField(JspWriter jspwriter, String s, String s1)
             throws IOException;
 
+    void writeFormField(JspWriter jspwriter, String s, String s1, Boolean isInsideTable)
+            throws IOException;
+
     void writeFormField(JspWriter jspwriter, String s, String s1, int i, int j)
+            throws IOException;
+
+    void writeFormField(JspWriter jspwriter, String s, String s1, int i, int j, Boolean isInsideTable)
             throws IOException;
 
     void writeFormInput(JspWriter jspwriter, String s)
