@@ -27,9 +27,14 @@ import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Optional;
@@ -195,9 +200,17 @@ public class ActionServlet extends HttpServlet implements Serializable {
             log.debug(detailInfoUser.toString());
         }
         log.debug("======FINE SUBMIT======");
-        log.info("{} URL:{} comand:{} ng: {}", infoUser, httpservletrequest.getRequestURI(), comando,
+        final Optional<HttpSession> session = Optional.ofNullable(httpactioncontext.getSession(false));
+        log.info("{} URL:{} comand:{} ng: {} Session: {} - {}", infoUser, httpservletrequest.getRequestURI(), comando,
                 userContext
                         .map(context -> context.getAttributes().getOrDefault("bootstrap", Boolean.FALSE))
-                        .orElse(Boolean.FALSE));
+                        .orElse(Boolean.FALSE),
+                session.map(HttpSession::getId).orElse(""),
+                session
+                        .map(HttpSession::getLastAccessedTime)
+                        .map(aLong -> LocalDateTime.ofInstant(Instant.ofEpochMilli(aLong), ZoneId.systemDefault()))
+                        .map(localDateTime -> DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss").format(localDateTime))
+                        .orElse("")
+        );
     }
 }
