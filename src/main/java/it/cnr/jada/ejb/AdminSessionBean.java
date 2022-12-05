@@ -25,6 +25,7 @@ import it.cnr.jada.util.EventTracer;
 import it.cnr.jada.util.ejb.EJBCommonServices;
 import it.cnr.jada.util.ejb.EJBTracer;
 
+import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import java.beans.Introspector;
 import java.io.ByteArrayOutputStream;
@@ -113,5 +114,15 @@ public class AdminSessionBean implements AdminSession {
         it.cnr.jada.util.Introspector.resetPropertiesCache();
         Config.getHandler().reset();
         BulkInfo.resetBulkInfos();
+    }
+
+    @Override
+    public String getTransactionalInterface() {
+        return null;
+    }
+
+    @Override
+    public void ejbRemove() throws EJBException {
+
     }
 }

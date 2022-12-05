@@ -86,9 +86,8 @@ public class EJBCommonServices implements Serializable {
         }
     }
 
-    @Deprecated
-    public static final Object createEJB(String jndiName, Class sessionClass) {
-        return createRemoteEJB(jndiName);
+    public static final <T extends GenericComponentSession> T  createEJB(String jndiName, Class<T> sessionClass) {
+        return (T)createRemoteEJB(jndiName);
     }
 
     public static final Object createEJB(String s) {

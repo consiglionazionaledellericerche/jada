@@ -23,7 +23,7 @@ import javax.ejb.Remote;
 import java.rmi.RemoteException;
 
 @Remote
-public interface AdminSession {
+public interface AdminSession extends GenericComponentSession {
 
     void addSQLTraceUser(String s)
             throws RemoteException;
