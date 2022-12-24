@@ -25,7 +25,7 @@ import java.io.Serializable;
 // Referenced classes of package it.cnr.jada.bulk:
 //            OggettoBulk
 
-class BulkPrimaryKey
+public class BulkPrimaryKey
         implements Serializable {
 
     private OggettoBulk bulk;
