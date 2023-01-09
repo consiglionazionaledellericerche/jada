@@ -984,7 +984,12 @@ public class SQLBuilder extends SQLQuery {
                             Integer integer = (Integer) orderByClauses.get(columnmapping.getPropertyName());
                             if (integer != null && integer.intValue() != 0) {
                                 stringbuffer.append(s);
-                                stringbuffer.append(columnmapping.getColumnName());
+                                stringbuffer.append(
+                                        Optional.ofNullable(columnmapping.getColumnName())
+                                            .filter(s1 -> s1.indexOf(" ") != -1)
+                                            .map(s1 -> s1.substring(0, s1.indexOf(" ")))
+                                            .orElse(columnmapping.getColumnName())
+                                );
                                 stringbuffer.append(' ');
                                 stringbuffer.append(integer.intValue() != -1 ? "ASC" : "DESC");
                                 s = ", ";
