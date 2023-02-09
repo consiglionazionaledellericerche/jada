@@ -43,6 +43,8 @@ import java.util.Iterator;
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
 public class SendMail {
+    public static final String JAVA_COMP_ENV_MAIL_MAIL_SESSION = "java:comp/env/mail/MailSession";
+    public static final String JAVA_JBOSS_MAIL_DEFAULT = "java:jboss/mail/Default";
     private static javax.mail.Session mail_session;
 
     public static void sendErrorMail(String subject, String text, java.util.List<String> addressTO, java.util.List<String> addressCC, java.util.List<String> addressBCC) {
@@ -56,9 +58,9 @@ public class SendMail {
             javax.naming.InitialContext ctx = new javax.naming.InitialContext();
             if (mail_session == null) {
                 try {
-                    mail_session = (javax.mail.Session) ctx.lookup("java:comp/env/mail/MailSession");
+                    mail_session = (javax.mail.Session) ctx.lookup(JAVA_COMP_ENV_MAIL_MAIL_SESSION);
                 } catch (NamingException e) {
-                    mail_session = (javax.mail.Session) ctx.lookup("java:jboss/mail/Default");
+                    mail_session = (javax.mail.Session) ctx.lookup(JAVA_JBOSS_MAIL_DEFAULT);
                 }
             }
             MimeMessage msg = new MimeMessage(mail_session);
@@ -93,9 +95,9 @@ public class SendMail {
             javax.naming.InitialContext ctx = new javax.naming.InitialContext();
             if (mail_session == null) {
                 try {
-                    mail_session = (javax.mail.Session) ctx.lookup("java:comp/env/mail/MailSession");
+                    mail_session = (javax.mail.Session) ctx.lookup(JAVA_COMP_ENV_MAIL_MAIL_SESSION);
                 } catch (NamingException e) {
-                    mail_session = (javax.mail.Session) ctx.lookup("java:mail/MailSession");
+                    mail_session = (javax.mail.Session) ctx.lookup(JAVA_JBOSS_MAIL_DEFAULT);
                 }
             }
             MimeMessage msg = new MimeMessage(mail_session);
