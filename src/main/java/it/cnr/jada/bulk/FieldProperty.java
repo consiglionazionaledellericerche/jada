@@ -775,9 +775,9 @@ public class FieldProperty implements Serializable {
         return inputType;
     }
 
-    public Dictionary getKeysFrom(Object obj)
+    public Object getKeysFrom(Object obj)
             throws IntrospectionException, InvocationTargetException {
-        return (Dictionary) Introspector.getPropertyValue(obj, keysProperty);
+        return Introspector.getPropertyValue(obj, keysProperty);
     }
 
     public String getKeysProperty() {
@@ -1118,9 +1118,16 @@ public class FieldProperty implements Serializable {
             else
                 obj1 = Introspector.getPropertyValue(obj1, printProperty);
         if (obj != null && keysProperty != null && obj1 != null) {
-            Dictionary dictionary = (Dictionary) Introspector.getPropertyValue(obj, keysProperty);
-            if (dictionary != null)
-                obj1 = dictionary.get(obj1);
+            final Optional<Dictionary> dictionaryKeys = Optional.ofNullable(getKeysFrom(obj))
+                    .filter(Dictionary.class::isInstance)
+                    .map(Dictionary.class::cast);
+            final Optional<Map> mapkeys = Optional.ofNullable(getKeysFrom(obj))
+                    .filter(Map.class::isInstance)
+                    .map(Map.class::cast);
+            if (dictionaryKeys.isPresent())
+                obj1 = dictionaryKeys.get().get(obj1);
+            else if (mapkeys.isPresent())
+                obj1 = mapkeys.get().get(obj1);
         }
         if (obj1 == null)
             return null;
@@ -1865,47 +1872,60 @@ public class FieldProperty implements Serializable {
             }
 
         } else if (keysProperty != null) {
-            Dictionary dictionary = getKeysFrom(obj);
-            if (dictionary != null) {
-                for (Enumeration enumeration1 = dictionary.keys(); enumeration1.hasMoreElements(); ) {
-                    if (isBootstrap) {
-                        jspwriter.println("<label class=\"form-check-label form-check-inline\">");
-                    }
-                    Object obj3 = enumeration1.nextElement();
-                    jspwriter.print("<input type=\"radio\" name=\"");
-                    jspwriter.print(mergePrefix(s2, name));
-                    jspwriter.print('"');
-                    if (flag || obj == null)
-                        jspwriter.print(" disabled");
-                    if (s1 != null) {
-                        jspwriter.print(' ');
-                        jspwriter.print(s1);
-                    }
-                    if (isBootstrap) {
-                        jspwriter.print(" class=\"form-check-input\" ");
-                    }
-                    jspwriter.print(" value=\"");
-                    jspwriter.print(format(obj3));
-                    jspwriter.print('"');
-                    if (obj3.equals(obj1))
-                        jspwriter.print(" checked");
-                    jspwriter.print(" onfocus=\"focused(this)\"");
-                    jspwriter.print(" onclick=\"cancelBubble(event)\"");
-                    jspwriter.print(">");
-                    jspwriter.print(encodeHtmlText(format(dictionary.get(obj3))));
-                    if (isBootstrap) {
-                        jspwriter.println("</label>");
-                    }
-                    if (layout != 1)
-                        jspwriter.print("<br>");
-
+            final Optional<Dictionary> dictionaryKeys = Optional.ofNullable(getKeysFrom(obj))
+                    .filter(Dictionary.class::isInstance)
+                    .map(Dictionary.class::cast);
+            final Optional<Map> mapkeys = Optional.ofNullable(getKeysFrom(obj))
+                    .filter(Map.class::isInstance)
+                    .map(Map.class::cast);
+            if (dictionaryKeys.isPresent()) {
+                for (Enumeration enumeration1 = dictionaryKeys.get().keys(); enumeration1.hasMoreElements(); ) {
+                    Object key = enumeration1.nextElement();
+                    writeRadioGroup(key, dictionaryKeys.get().get(key), jspwriter, obj, flag, obj1, cssClass, s1, s2,
+                            i, fieldvalidationmap, isBootstrap);
                 }
-
+            } else if (mapkeys.isPresent()) {
+                for (Object key : mapkeys.get().keySet()){
+                    writeRadioGroup(key, mapkeys.get().get(key), jspwriter, obj, flag, obj1, cssClass, s1, s2,
+                                    i, fieldvalidationmap, isBootstrap);
+                }
             }
         }
         jspwriter.print("</div>");
     }
 
+    public void writeRadioGroup(Object key, Object value, JspWriter jspwriter, Object obj, boolean flag, Object obj1, String cssClass, String s1, String s2,
+                      int i, FieldValidationMap fieldvalidationmap, boolean isBootstrap) throws IOException, IntrospectionException, InvocationTargetException{
+        if (isBootstrap) {
+            jspwriter.println("<label class=\"form-check-label form-check-inline\">");
+        }
+        jspwriter.print("<input type=\"radio\" name=\"");
+        jspwriter.print(mergePrefix(s2, name));
+        jspwriter.print('"');
+        if (flag || obj == null)
+            jspwriter.print(" disabled");
+        if (s1 != null) {
+            jspwriter.print(' ');
+            jspwriter.print(s1);
+        }
+        if (isBootstrap) {
+            jspwriter.print(" class=\"form-check-input\" ");
+        }
+        jspwriter.print(" value=\"");
+        jspwriter.print(format(key));
+        jspwriter.print('"');
+        if (key.equals(obj1))
+            jspwriter.print(" checked");
+        jspwriter.print(" onfocus=\"focused(this)\"");
+        jspwriter.print(" onclick=\"cancelBubble(event)\"");
+        jspwriter.print(">");
+        jspwriter.print(encodeHtmlText(format(value)));
+        if (isBootstrap) {
+            jspwriter.println("</label>");
+        }
+        if (layout != 1)
+            jspwriter.print("<br>");
+    }
     public void writeReadonlyText(JspWriter jspwriter, Object obj, String s, String s1)
             throws IOException {
         try {
@@ -2129,20 +2149,39 @@ public class FieldProperty implements Serializable {
                 }
 
         } else if (keysProperty != null) {
-            Dictionary dictionary = getKeysFrom(obj);
-            flag1 = dictionary != null;
-            if (flag1) {
-                for (Enumeration enumeration1 = dictionary.keys(); enumeration1.hasMoreElements(); stringbuffer.append("</option>")) {
-                    Object obj4 = enumeration1.nextElement();
-                    stringbuffer.append("<option value=\"");
-                    stringbuffer.append(format(obj4));
-                    stringbuffer.append('"');
-                    if (flag2 && ((Collection) (obj2)).contains(obj4) || !flag2 && obj4.equals(obj1))
-                        stringbuffer.append(" selected");
-                    stringbuffer.append(">");
-                    stringbuffer.append(encodeHtmlText(format(dictionary.get(obj4))));
-                }
+            final Optional<Dictionary> dictionaryKeys = Optional.ofNullable(getKeysFrom(obj))
+                    .filter(Dictionary.class::isInstance)
+                    .map(Dictionary.class::cast);
+            final Optional<Map> mapkeys = Optional.ofNullable(getKeysFrom(obj))
+                    .filter(Map.class::isInstance)
+                    .map(Map.class::cast);
 
+
+            flag1 = dictionaryKeys.isPresent() || mapkeys.isPresent();
+            if (flag1) {
+                if (dictionaryKeys.isPresent()) {
+                    for (Enumeration enumeration1 = dictionaryKeys.get().keys(); enumeration1.hasMoreElements(); ) {
+                        Object key = enumeration1.nextElement();
+                        stringbuffer.append("<option value=\"");
+                        stringbuffer.append(format(key));
+                        stringbuffer.append('"');
+                        if (flag2 && ((Collection) (obj2)).contains(key) || !flag2 && key.equals(obj1))
+                            stringbuffer.append(" selected");
+                        stringbuffer.append(">");
+                        stringbuffer.append(encodeHtmlText(format(dictionaryKeys.get().get(key))));
+
+                    }
+                } else if (mapkeys.isPresent()) {
+                    for (Object key : mapkeys.get().keySet()){
+                        stringbuffer.append("<option value=\"");
+                        stringbuffer.append(format(key));
+                        stringbuffer.append('"');
+                        if (flag2 && ((Collection) (obj2)).contains(key) || !flag2 && key.equals(obj1))
+                            stringbuffer.append(" selected");
+                        stringbuffer.append(">");
+                        stringbuffer.append(encodeHtmlText(format(mapkeys.get().get(key))));
+                    }
+                }
             }
         }
         if (flag2 && !flag) {
@@ -2160,7 +2199,15 @@ public class FieldProperty implements Serializable {
             if (!isBootstrap)
                 writeMandatoryStyle(jspwriter, i);
         }
-        writeInputStyle(jspwriter, cssClass, s3, obj, obj1);
+        writeInputStyle(
+                jspwriter,
+                Optional.ofNullable(inputCssClass)
+                        .map(s -> cssClass.concat(" ").concat(s))
+                        .orElse(cssClass),
+                s3,
+                obj,
+                obj1
+        );
         if (s1 != null) {
             jspwriter.print(' ');
             jspwriter.print(s1);
