@@ -18,6 +18,7 @@
 package it.cnr.jada.util;
 
 import java.util.Enumeration;
+import java.util.Optional;
 
 public final class ArrayEnumeration
         implements Enumeration {
@@ -30,7 +31,7 @@ public final class ArrayEnumeration
     }
 
     public final boolean hasMoreElements() {
-        return index < array.length;
+        return index < Optional.ofNullable(array).map(objects -> objects.length).orElse(index);
     }
 
     public final Object nextElement() {
