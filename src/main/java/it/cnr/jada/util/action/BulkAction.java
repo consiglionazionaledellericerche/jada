@@ -522,8 +522,8 @@ public class BulkAction extends FormAction
         try {
             BulkBP _tmp = (BulkBP) actioncontext.getBusinessProcess();
             RicercaLiberaBP ricercaliberabp = (RicercaLiberaBP) actioncontext.createBusinessProcess("RicercaLibera");
-            ricercaliberabp.setPrototype(oggettobulk);
             ricercaliberabp.setFreeSearchSet(_tmp.getFreeSearchSet());
+            ricercaliberabp.setPrototype(oggettobulk);
             actioncontext.addHookForward("filter", this, "doBringBackFilter");
             HookForward hookforward = (HookForward) actioncontext.findForward("filter");
             hookforward.addParameter("controller", crudcontroller);
