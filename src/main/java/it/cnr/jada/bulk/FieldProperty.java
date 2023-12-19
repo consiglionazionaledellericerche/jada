@@ -1861,7 +1861,13 @@ public class FieldProperty implements Serializable {
                 if (obj2.equals(obj1))
                     jspwriter.print(" checked");
                 jspwriter.print(" onfocus=\"focused(this)\"");
-                jspwriter.print(" onclick=\"cancelBubble(event)\"");
+                if (command != null && i != 4) {
+                    jspwriter.print(" onclick=\"submitForm('");
+                    jspwriter.print(command);
+                    jspwriter.print("')\"");
+                } else {
+                    jspwriter.print(" onclick=\"cancelBubble(event)\"");
+                }
                 jspwriter.print(">");
                 jspwriter.print(encodeHtmlText(getStringValueFrom(obj, obj2)));
                 if (isBootstrap) {
@@ -1917,7 +1923,13 @@ public class FieldProperty implements Serializable {
         if (key.equals(obj1))
             jspwriter.print(" checked");
         jspwriter.print(" onfocus=\"focused(this)\"");
-        jspwriter.print(" onclick=\"cancelBubble(event)\"");
+        if (command != null && i != 4) {
+            jspwriter.print(" onclick=\"submitForm('");
+            jspwriter.print(command);
+            jspwriter.print("')\"");
+        } else {
+            jspwriter.print(" onclick=\"cancelBubble(event)\"");
+        }
         jspwriter.print(">");
         jspwriter.print(encodeHtmlText(format(value)));
         if (isBootstrap) {
