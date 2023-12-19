@@ -402,6 +402,9 @@ public abstract class BulkBP extends FormBP
         getBulkInfo().writeFormLabel(this, jspwriter, getModel(), formName, fieldName, cssClass, this.getParentRoot().isBootstrap());
     }
 
+    protected String getFreeSearchSet() {
+        return "default";
+    }
     class ContextSearchProvider
             implements Serializable, SearchProvider {
 
