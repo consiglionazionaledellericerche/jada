@@ -1214,4 +1214,8 @@ public class SQLBuilder extends SQLQuery {
         havingClauses.append(") )");
         resetStatement();
     }
+
+    public void addSQLHaving(String havingClause) {
+        havingClauses.append(havingClause);
+    }
 }
