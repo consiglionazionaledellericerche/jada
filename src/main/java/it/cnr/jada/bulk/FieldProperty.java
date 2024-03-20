@@ -26,6 +26,7 @@ import it.cnr.jada.persistency.beans.BeanIntrospector;
 import it.cnr.jada.persistency.sql.ColumnMapping;
 import it.cnr.jada.persistency.sql.SQLPersistentInfo;
 import it.cnr.jada.util.*;
+import it.cnr.jada.util.action.BulkBP;
 import it.cnr.jada.util.action.FormController;
 import it.cnr.jada.util.jsp.Button;
 import it.cnr.jada.util.jsp.JSPUtils;
@@ -1626,7 +1627,12 @@ public class FieldProperty implements Serializable {
                            int i, FieldValidationMap fieldvalidationmap, boolean isBootstrap)
             throws IOException {
         try {
-            if (!readonly || isEnabledOnView())
+            if ((!readonly || isEnabledOnView()) &&
+                    Optional.ofNullable(bp)
+                            .filter(BulkBP.class::isInstance)
+                            .map(BulkBP.class::cast)
+                            .map(bulkBP -> bulkBP.isInputReadonlyFieldName(getProperty()))
+                            .orElse(Boolean.TRUE))
                 readonly = isReadonly(obj, i);
             switch (inputType) {
                 case TEXT: // '\007'

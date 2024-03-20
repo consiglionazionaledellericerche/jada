@@ -713,7 +713,7 @@ public class BulkInfo implements Serializable {
                 }
                 out.print(">");
             }
-            fieldproperty.writeInput(out, bean, readonly, isBootstrap ? "form-control" : "FormInput", null, prefix, status, fieldvalidationmap, isBootstrap);
+            fieldproperty.writeInput(bp, out, bean, readonly, isBootstrap ? "form-control" : "FormInput", null, prefix, status, fieldvalidationmap, isBootstrap);
             if (isInsideTable) {
                 out.print("</td>");
             }
