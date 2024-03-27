@@ -383,8 +383,7 @@ public class GenericComponent implements Component, Serializable, Cloneable {
         EJBTracer.getInstance().incrementActiveComponentCounter();
     }
 
-    protected void initializeKeysAndOptionsInto(UserContext usercontext, OggettoBulk oggettobulk)
-            throws ComponentException {
+    public void initializeKeysAndOptionsInto(UserContext usercontext, OggettoBulk oggettobulk) throws ComponentException {
         if (!(oggettobulk instanceof Persistent))
             return;
         getHome(usercontext, oggettobulk.getClass());

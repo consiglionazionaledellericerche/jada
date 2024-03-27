@@ -266,6 +266,25 @@ public class TransactionalCRUDComponentSession extends TransactionalSessionImpl 
     }
 
     @Override
+    public OggettoBulk initializeKeysAndOptionsInto(UserContext param0, OggettoBulk param1) throws ComponentException, RemoteException {
+        try {
+            return (it.cnr.jada.bulk.OggettoBulk) invoke("initializeKeysAndOptionsInto", new Object[]{
+                    param0,
+                    param1});
+        } catch (java.rmi.RemoteException e) {
+            throw e;
+        } catch (java.lang.reflect.InvocationTargetException e) {
+            try {
+                throw e.getTargetException();
+            } catch (it.cnr.jada.comp.ComponentException ex) {
+                throw ex;
+            } catch (Throwable ex) {
+                throw new java.rmi.RemoteException("Uncaugth exception", ex);
+            }
+        }
+    }
+
+    @Override
     public boolean isLockedBulk(UserContext userContext, OggettoBulk oggettoBulk) throws ComponentException, RemoteException {
         try {
             return (Boolean) invoke("isLockedBulk", new Object[]{

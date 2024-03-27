@@ -60,6 +60,8 @@ public interface CRUDComponentSession extends RicercaComponentSession {
     OggettoBulk[] modificaConBulk(UserContext usercontext, OggettoBulk[] oggettobulk)
             throws ComponentException, RemoteException;
 
+    OggettoBulk initializeKeysAndOptionsInto(UserContext usercontext, OggettoBulk oggettobulk)
+            throws ComponentException, RemoteException;
     boolean isLockedBulk(UserContext usercontext, OggettoBulk oggettobulk)
             throws ComponentException, RemoteException;
 }

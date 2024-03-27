@@ -338,4 +338,24 @@ public class CRUDComponentSessionBean extends RicercaComponentSessionBean implem
             return true;
         }
     }
+    public OggettoBulk initializeKeysAndOptionsInto(UserContext usercontext, OggettoBulk oggettobulk) throws ComponentException, EJBException {
+        pre_component_invocation(usercontext, componentObj);
+        try {
+            ((CRUDComponent) componentObj).initializeKeysAndOptionsInto(usercontext, oggettobulk);
+            component_invocation_succes(usercontext, componentObj);
+            return oggettobulk;
+        } catch (NoRollbackException norollbackexception) {
+            component_invocation_succes(usercontext, componentObj);
+            throw norollbackexception;
+        } catch (ComponentException componentexception) {
+            component_invocation_failure(usercontext, componentObj);
+            throw componentexception;
+        } catch (RuntimeException runtimeexception) {
+            throw uncaughtRuntimeException(usercontext, componentObj, runtimeexception);
+        } catch (Error error) {
+            throw uncaughtError(usercontext, componentObj, error);
+        }
+    }
+
+
 }
