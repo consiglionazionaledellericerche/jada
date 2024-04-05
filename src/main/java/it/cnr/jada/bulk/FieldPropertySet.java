@@ -22,6 +22,7 @@ import it.cnr.jada.util.OrderedHashtable;
 import java.io.Serializable;
 import java.util.Dictionary;
 import java.util.Enumeration;
+import java.util.Optional;
 
 public class FieldPropertySet implements Cloneable, Serializable {
 
@@ -57,6 +58,12 @@ public class FieldPropertySet implements Cloneable, Serializable {
     }
 
     public void addFieldProperty(FieldProperty fieldproperty) {
+        if (Optional.ofNullable(fieldproperty.getExtend()).isPresent()) {
+            Optional.ofNullable(getFieldProperty(fieldproperty.getExtend()))
+                    .ifPresent(fieldPropertyFrom -> {
+                        fieldproperty.fillNullsFrom(fieldPropertyFrom);
+                    });
+        }
         bulkInfo.completeFieldProperty(fieldproperty);
         properties.put(fieldproperty.getName(), fieldproperty);
     }

@@ -273,6 +273,12 @@ public class BulkInfo implements Serializable {
     }
 
     public void addFieldProperty(FieldProperty fieldproperty) {
+        if (Optional.ofNullable(fieldproperty.getExtend()).isPresent()) {
+            Optional.ofNullable(getFieldProperty(fieldproperty.getExtend()))
+                    .ifPresent(fieldPropertyFrom -> {
+                        fieldproperty.fillNullsFrom(fieldPropertyFrom);
+                    });
+        }
         fieldProperties.put(fieldproperty.getName(), fieldproperty);
         fieldPropertiesByProperty.put(fieldproperty.getProperty(), fieldproperty);
         fieldproperty.setBulkInfo(this);

@@ -331,6 +331,8 @@ public class FieldProperty implements Serializable {
     private Boolean multiple;
     @JsonIgnore
     private Boolean fromFolder;
+    @JsonIgnore
+    private String extend;
 
 
     public FieldProperty() {
@@ -2611,6 +2613,14 @@ public class FieldProperty implements Serializable {
         } catch (Exception exception) {
             return inputSize;
         }
+    }
+
+    public String getExtend() {
+        return extend;
+    }
+
+    public void setExtend(String extend) {
+        this.extend = extend;
     }
 
     protected String nvl(String target) {
