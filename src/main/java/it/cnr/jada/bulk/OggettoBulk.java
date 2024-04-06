@@ -523,4 +523,8 @@ public abstract class OggettoBulk implements Cloneable, FetchListener, Persisten
         if (fieldproperty != null)
             fieldproperty.writeLabel(jspwriter, this, s2, isBootstrap);
     }
+
+    public Boolean isOptionDisabled(FieldProperty fieldProperty, Object key) {
+        return Boolean.FALSE;
+    }
 }

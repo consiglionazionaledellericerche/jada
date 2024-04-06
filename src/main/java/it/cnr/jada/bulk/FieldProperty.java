@@ -2159,11 +2159,20 @@ public class FieldProperty implements Serializable {
             if (flag1)
                 for (; enumeration.hasMoreElements(); stringbuffer.append("</option>")) {
                     Object obj3 = enumeration.nextElement();
+                    final int key = j++;
                     stringbuffer.append("<option value=\"");
-                    stringbuffer.append(j++);
+                    stringbuffer.append(key);
                     stringbuffer.append('"');
                     if (flag2 && ((Collection) (obj2)).contains(obj3) || !flag2 && obj3.equals(obj1))
                         stringbuffer.append(" selected");
+                    if (Optional.ofNullable(obj)
+                            .filter(OggettoBulk.class::isInstance)
+                            .map(OggettoBulk.class::cast)
+                            .map(bulk -> bulk.isOptionDisabled(this, key))
+                            .orElse(Boolean.FALSE)
+                    ) {
+                        stringbuffer.append(" disabled");
+                    }
                     stringbuffer.append(">");
                     stringbuffer.append(encodeHtmlText(getStringValueFrom(bp, obj, obj3)));
                 }
@@ -2187,6 +2196,14 @@ public class FieldProperty implements Serializable {
                         stringbuffer.append('"');
                         if (flag2 && ((Collection) (obj2)).contains(key) || !flag2 && key.equals(obj1))
                             stringbuffer.append(" selected");
+                        if (Optional.ofNullable(obj)
+                                        .filter(OggettoBulk.class::isInstance)
+                                        .map(OggettoBulk.class::cast)
+                                        .map(bulk -> bulk.isOptionDisabled(this, key))
+                                        .orElse(Boolean.FALSE)
+                        ) {
+                            stringbuffer.append(" disabled");
+                        }
                         stringbuffer.append(">");
                         stringbuffer.append(encodeHtmlText(format(dictionaryKeys.get().get(key))));
 
@@ -2198,6 +2215,14 @@ public class FieldProperty implements Serializable {
                         stringbuffer.append('"');
                         if (flag2 && ((Collection) (obj2)).contains(key) || !flag2 && key.equals(obj1))
                             stringbuffer.append(" selected");
+                        if (Optional.ofNullable(obj)
+                                .filter(OggettoBulk.class::isInstance)
+                                .map(OggettoBulk.class::cast)
+                                .map(bulk -> bulk.isOptionDisabled(this, key))
+                                .orElse(Boolean.FALSE)
+                        ) {
+                            stringbuffer.append(" disabled");
+                        }
                         stringbuffer.append(">");
                         stringbuffer.append(encodeHtmlText(format(mapkeys.get().get(key))));
                     }
