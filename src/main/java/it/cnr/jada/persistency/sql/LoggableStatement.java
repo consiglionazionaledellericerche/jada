@@ -32,7 +32,7 @@ import java.util.*;
 public final class LoggableStatement {
     public static boolean IS_ENABLED = false;
     private Logger log;
-    private BigDecimal TimeWarning = new BigDecimal(30000);
+    private BigDecimal TimeWarning = new BigDecimal(System.getProperty("it.cnr.jada.statement.timeout.warning", "30000"));
 
     /**
      * used for storing parameter values needed for producing log
