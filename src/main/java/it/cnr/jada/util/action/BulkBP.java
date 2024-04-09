@@ -369,22 +369,22 @@ public abstract class BulkBP extends FormBP
 
     public void writeFormInput(JspWriter jspwriter, String fieldName)
             throws IOException {
-        getBulkInfo().writeFormInput(jspwriter, getModel(), null, fieldName, isInputReadonly() && isInputReadonlyFieldName(fieldName), this.getParentRoot().isBootstrap() ? "form-control" : "FormInput", null, getInputPrefix(), getStatus(), getFieldValidationMap(), this.getParentRoot().isBootstrap());
+        getBulkInfo().writeFormInput(this, jspwriter, getModel(), null, fieldName, isInputReadonly() && isInputReadonlyFieldName(fieldName), this.getParentRoot().isBootstrap() ? "form-control" : "FormInput", null, getInputPrefix(), getStatus(), getFieldValidationMap(), this.getParentRoot().isBootstrap());
     }
 
     public void writeFormInput(JspWriter jspwriter, String formName, String fieldName)
             throws IOException {
-        getBulkInfo().writeFormInput(jspwriter, getModel(), formName, fieldName, isInputReadonly(), null, null, getInputPrefix(), getStatus(), getFieldValidationMap(), this.getParentRoot().isBootstrap());
+        getBulkInfo().writeFormInput(this, jspwriter, getModel(), formName, fieldName, isInputReadonly(), null, null, getInputPrefix(), getStatus(), getFieldValidationMap(), this.getParentRoot().isBootstrap());
     }
 
     public void writeFormInput(JspWriter jspwriter, String formName, String fieldName, boolean inputReadOnly, String cssClass, String s3)
             throws IOException {
-        getBulkInfo().writeFormInput(jspwriter, getModel(), formName, fieldName, (inputReadOnly || isInputReadonly()) && isInputReadonlyFieldName(fieldName), Optional.ofNullable(cssClass).orElseGet(() -> this.getParentRoot().isBootstrap() ? "form-control" : "FormInput"), s3, getInputPrefix(), getStatus(), getFieldValidationMap(), this.getParentRoot().isBootstrap());
+        getBulkInfo().writeFormInput(this, jspwriter, getModel(), formName, fieldName, (inputReadOnly || isInputReadonly()) && isInputReadonlyFieldName(fieldName), Optional.ofNullable(cssClass).orElseGet(() -> this.getParentRoot().isBootstrap() ? "form-control" : "FormInput"), s3, getInputPrefix(), getStatus(), getFieldValidationMap(), this.getParentRoot().isBootstrap());
     }
 
     public void writeFormInputByStatus(JspWriter jspwriter, String fieldName)
             throws IOException {
-        getBulkInfo().writeFormInput(jspwriter, getModel(), null, fieldName, getStatus() == 2 || isInputReadonly(), null, null, getInputPrefix(), getStatus(), getFieldValidationMap(), this.getParentRoot().isBootstrap());
+        getBulkInfo().writeFormInput(this, jspwriter, getModel(), null, fieldName, getStatus() == 2 || isInputReadonly(), null, null, getInputPrefix(), getStatus(), getFieldValidationMap(), this.getParentRoot().isBootstrap());
     }
 
     public void writeFormLabel(JspWriter jspwriter, String fieldName)

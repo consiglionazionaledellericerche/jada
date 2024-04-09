@@ -729,6 +729,15 @@ public class BulkInfo implements Serializable {
     /**
      * Scrive un campo di input HTML senza label associato a una formFieldProperty
      */
+    public void writeFormInput(Object bp, JspWriter out, Object bean, String formName, String name, boolean readonly, String cssClass, String attributes, String prefix, int status, FieldValidationMap fieldvalidationmap, boolean isBootstrap) throws IOException {
+        FieldProperty fieldproperty = getFormFieldProperty(formName, name);
+        if (fieldproperty != null)
+            fieldproperty.writeInput(bp, out, bean, readonly, Optional.ofNullable(cssClass).orElseGet(() -> isBootstrap ? "form-control" : "FormInput"), attributes, prefix, status, fieldvalidationmap, isBootstrap);
+    }
+
+    /**
+     * Scrive un campo di input HTML senza label associato a una formFieldProperty
+     */
     public void writeFormInput(JspWriter out, Object bean, String formName, String name, boolean readonly, String cssClass, String attributes, String prefix, int status, FieldValidationMap fieldvalidationmap, boolean isBootstrap) throws IOException {
         FieldProperty fieldproperty = getFormFieldProperty(formName, name);
         if (fieldproperty != null)
