@@ -148,7 +148,13 @@
 			propertyName="dt_prossima_esecuzione"
 			sqlTypeName="TIMESTAMP"
 			columnSize="7"
-			nullable="true" />	
+			nullable="true" />
+		<columnMapping
+			columnName="BEFORE_STATEMENT"
+			propertyName="beforeStatement"
+			sqlTypeName="VARCHAR"
+			columnSize="4000"
+			nullable="true" />
 	</defaultColumnMap>
 	<persistentProperty
 		name="sheet_name" />
@@ -162,6 +168,8 @@
 		name="ds_estrazione" />	
 	<persistentProperty
 		name="query" />
+	<persistentProperty
+		name="beforeStatement" />
 	<persistentProperty
 		name="errore" />
 	<persistentProperty

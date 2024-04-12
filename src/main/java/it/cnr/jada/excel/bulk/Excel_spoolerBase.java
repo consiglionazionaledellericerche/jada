@@ -23,6 +23,7 @@ package it.cnr.jada.excel.bulk;
 
 import it.cnr.jada.persistency.Keyed;
 
+import javax.persistence.Column;
 import java.sql.Timestamp;
 
 public class Excel_spoolerBase extends Excel_spoolerKey implements Keyed {
@@ -68,6 +69,9 @@ public class Excel_spoolerBase extends Excel_spoolerKey implements Keyed {
     private String ti_intervallo;
     //	  DT_PROSSIMA_ESECUZIONE DATE
     private Timestamp dt_prossima_esecuzione;
+
+    private String beforeStatement;
+
     private java.lang.String ds_estrazione;
 
     public Excel_spoolerBase() {
@@ -212,5 +216,13 @@ public class Excel_spoolerBase extends Excel_spoolerKey implements Keyed {
 
     public void setErrore(java.lang.String errore) {
         this.errore = errore;
+    }
+
+    public String getBeforeStatement() {
+        return beforeStatement;
+    }
+
+    public void setBeforeStatement(String beforeStatement) {
+        this.beforeStatement = beforeStatement;
     }
 }
