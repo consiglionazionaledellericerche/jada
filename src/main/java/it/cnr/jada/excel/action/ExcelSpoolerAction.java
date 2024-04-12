@@ -184,7 +184,7 @@ public class ExcelSpoolerAction extends SelezionatoreListaAction {
             }
 
             actioncontext.closeBusinessProcess(selezionatorelistabp);
-            bframeExcelComponentSession.addQueue(actioncontext.getUserContext(), columnLabel, columnHeaderLabel, longDescription, colonnedaEstrarre, query.toString(), query.getColumnMap(), (OggettoBulk) Introspector.newInstance(selezionatorelistabp.getBulkInfo().getBulkClass(), new Object[]{}));
+            bframeExcelComponentSession.addQueue(actioncontext.getUserContext(), columnLabel, columnHeaderLabel, longDescription, colonnedaEstrarre, query.toString(), null, query.getColumnMap(), (OggettoBulk) Introspector.newInstance(selezionatorelistabp.getBulkInfo().getBulkClass(), new Object[]{}));
             OfflineExcelSpoolerBP excelSpoolerBP = (OfflineExcelSpoolerBP) actioncontext.createBusinessProcess("OfflineExcelSpoolerBP");
             return actioncontext.addBusinessProcess(excelSpoolerBP);
         } catch (BusinessProcessException businessprocessexception) {

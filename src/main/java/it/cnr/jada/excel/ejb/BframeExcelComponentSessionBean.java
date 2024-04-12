@@ -55,10 +55,18 @@ public class BframeExcelComponentSessionBean extends it.cnr.jada.ejb.GenericComp
         componentObj = new ExcelComponent();
     }
 
-    public Excel_spoolerBulk addQueue(it.cnr.jada.UserContext param0, it.cnr.jada.util.OrderedHashtable param1, it.cnr.jada.util.OrderedHashtable param2, String param3, java.util.Dictionary param4, String param5, it.cnr.jada.persistency.sql.ColumnMap param6, it.cnr.jada.bulk.OggettoBulk param7) throws it.cnr.jada.comp.ComponentException, javax.ejb.EJBException {
+    public Excel_spoolerBulk addQueue(it.cnr.jada.UserContext param0,
+                                      it.cnr.jada.util.OrderedHashtable param1,
+                                      it.cnr.jada.util.OrderedHashtable param2,
+                                      String param3,
+                                      java.util.Dictionary param4,
+                                      String param5,
+                                      String param6,
+                                      it.cnr.jada.persistency.sql.ColumnMap param7,
+                                      it.cnr.jada.bulk.OggettoBulk param8) throws it.cnr.jada.comp.ComponentException, javax.ejb.EJBException {
         pre_component_invocation(param0, componentObj);
         try {
-            Excel_spoolerBulk result = componentObj.addQueue(param0, param1, param2, param3, param4, param5, param6, param7);
+            Excel_spoolerBulk result = componentObj.addQueue(param0, param1, param2, param3, param4, param5, param6, param7, param8);
             component_invocation_succes(param0, componentObj);
             return result;
         } catch (it.cnr.jada.comp.NoRollbackException e) {

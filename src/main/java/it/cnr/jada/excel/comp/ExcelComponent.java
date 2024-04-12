@@ -59,7 +59,15 @@ public class ExcelComponent extends GenericComponent {
         super();
     }
 
-    public Excel_spoolerBulk addQueue(UserContext usercontext, OrderedHashtable columnLabel, OrderedHashtable columnHeaderLabel, String longDescription, Dictionary columns, String query, it.cnr.jada.persistency.sql.ColumnMap columnMap, it.cnr.jada.bulk.OggettoBulk oggettoBulk) throws ComponentException {
+    public Excel_spoolerBulk addQueue(UserContext usercontext,
+                                      OrderedHashtable columnLabel,
+                                      OrderedHashtable columnHeaderLabel,
+                                      String longDescription,
+                                      Dictionary columns,
+                                      String query,
+                                      String beforeStatement,
+                                      it.cnr.jada.persistency.sql.ColumnMap columnMap,
+                                      it.cnr.jada.bulk.OggettoBulk oggettoBulk) throws ComponentException {
         try {
             Excel_spoolerBulk excel_spooler = new Excel_spoolerBulk();
             excel_spooler.setSheet_name(longDescription);
@@ -68,6 +76,9 @@ public class ExcelComponent extends GenericComponent {
             BulkHome home = (BulkHome) homeCache.getHome(excel_spooler);
 
             homeCache.getHome(excel_spooler).setSQLLob(excel_spooler, "QUERY", query);
+            if (beforeStatement != null) {
+                homeCache.getHome(excel_spooler).setSQLLob(excel_spooler, "BEFORE_STATEMENT", beforeStatement);
+            }
 
             for (Enumeration enumeration = columns.elements(); enumeration.hasMoreElements(); ) {
                 ColumnFieldProperty columnfieldproperty = (ColumnFieldProperty) enumeration.nextElement();

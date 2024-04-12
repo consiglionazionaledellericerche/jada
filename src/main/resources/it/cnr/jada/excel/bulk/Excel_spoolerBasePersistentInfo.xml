@@ -149,12 +149,6 @@
 			sqlTypeName="TIMESTAMP"
 			columnSize="7"
 			nullable="true" />
-		<columnMapping
-			columnName="BEFORE_STATEMENT"
-			propertyName="beforeStatement"
-			sqlTypeName="VARCHAR"
-			columnSize="4000"
-			nullable="true" />
 	</defaultColumnMap>
 	<persistentProperty
 		name="sheet_name" />
@@ -169,7 +163,7 @@
 	<persistentProperty
 		name="query" />
 	<persistentProperty
-		name="beforeStatement" />
+		name="before_statement" />
 	<persistentProperty
 		name="errore" />
 	<persistentProperty
