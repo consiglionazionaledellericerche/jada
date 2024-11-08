@@ -55,6 +55,7 @@ public class Button implements Serializable, Cloneable {
     }
 
     public Button(Properties properties, String s) {
+        name = s;
         labelPosition = 1;
         img = properties.getProperty(s + ".img");
         disabledImg = properties.getProperty(s + ".disabledImg");
