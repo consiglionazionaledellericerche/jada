@@ -513,10 +513,11 @@ public class SelezionatoreListaAction extends SelezionatoreAction
                                 .map(formField -> formField.getField())
                                 .map(fieldProperty -> fieldProperty.getFreeSearchSet())
                                 .orElseGet(() -> {
-                                    if (crudbp.isPresent())
+                                    if (crudbp.isPresent()) {
                                         return crudbp.get().getFreeSearchSet();
-                                    else
-                                        return "default";
+                                    } else {
+                                        return bp.getFreeSearchSet();
+                                    }
                                 })
                 );
                 ricercaLiberaBP.setShowSearchResult(false);
