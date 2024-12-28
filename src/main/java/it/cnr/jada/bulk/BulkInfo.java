@@ -481,7 +481,7 @@ public class BulkInfo implements Serializable {
         return (FieldProperty) fieldPropertiesByProperty.get(s);
     }
 
-    public Enumeration getFindFieldProperties() {
+    public Enumeration<FieldProperty> getFindFieldProperties() {
         return findFieldProperties.getFieldProperties();
     }
 
@@ -489,11 +489,11 @@ public class BulkInfo implements Serializable {
         return findFieldProperties.getFieldProperty(s);
     }
 
-    public Enumeration getFormFieldProperties() {
+    public Enumeration<FieldProperty> getFormFieldProperties() {
         return getFormFieldProperties("default");
     }
 
-    public Enumeration getFormFieldProperties(String s) {
+    public Enumeration<FieldProperty> getFormFieldProperties(String s) {
         if (s == null)
             s = "default";
         FieldPropertySet fieldpropertyset = (FieldPropertySet) forms.get(s);

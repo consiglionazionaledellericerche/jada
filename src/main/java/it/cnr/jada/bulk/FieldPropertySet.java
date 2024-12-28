@@ -27,21 +27,21 @@ import java.util.Optional;
 public class FieldPropertySet implements Cloneable, Serializable {
 
     private String name;
-    private OrderedHashtable properties;
+    private OrderedHashtable<String, FieldProperty> properties;
     private BulkInfo bulkInfo;
     private String label;
 
     public FieldPropertySet() {
-        properties = new OrderedHashtable();
+        properties = new OrderedHashtable<String, FieldProperty>();
     }
 
     public FieldPropertySet(BulkInfo bulkinfo) {
-        this.properties = new OrderedHashtable();
+        this.properties = new OrderedHashtable<String, FieldProperty>();
         this.bulkInfo = bulkinfo;
     }
 
     public FieldPropertySet(BulkInfo bulkinfo, String name) {
-        this.properties = new OrderedHashtable();
+        this.properties = new OrderedHashtable<String, FieldProperty>();
         this.bulkInfo = bulkinfo;
         this.name = name;
     }
@@ -52,7 +52,7 @@ public class FieldPropertySet implements Cloneable, Serializable {
 
     public void addFieldProperties(FieldPropertySet fieldpropertyset) {
         FieldProperty fieldproperty;
-        for (Enumeration enumeration = fieldpropertyset.properties.elements(); enumeration.hasMoreElements(); properties.put(fieldproperty.getName(), fieldproperty))
+        for (Enumeration<FieldProperty> enumeration = fieldpropertyset.properties.elements(); enumeration.hasMoreElements(); properties.put(fieldproperty.getName(), fieldproperty))
             fieldproperty = (FieldProperty) enumeration.nextElement();
 
     }
@@ -103,7 +103,7 @@ public class FieldPropertySet implements Cloneable, Serializable {
         bulkInfo = bulkinfo;
     }
 
-    public Enumeration getFieldProperties() {
+    public Enumeration<FieldProperty> getFieldProperties() {
         return properties.elements();
     }
 

@@ -23,15 +23,12 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
 
-// Referenced classes of package it.cnr.jada.util:
-//            OrderedHashtableEnumerator
-
-public class OrderedHashtable extends Dictionary
+public class OrderedHashtable<K,V> extends Dictionary<K,V>
         implements Serializable, Cloneable {
 
     public static final Hashtable EMPTY_HASHTABLE = new Hashtable();
     private Vector keys;
-    private Hashtable values;
+    private Hashtable<K,V> values;
 
     public OrderedHashtable() {
         keys = new Vector();
@@ -70,7 +67,7 @@ public class OrderedHashtable extends Dictionary
         return values.get(keys.elementAt(i));
     }
 
-    public synchronized Object get(Object obj) {
+    public synchronized V get(Object obj) {
         return values.get(obj);
     }
 
@@ -82,19 +79,19 @@ public class OrderedHashtable extends Dictionary
         return keys.elements();
     }
 
-    public synchronized Object put(Object obj, Object obj1) {
+    public synchronized V put(K obj, V obj1) {
         if (values.get(obj) == null)
             keys.addElement(obj);
         return values.put(obj, obj1);
     }
 
-    public synchronized Object putFirst(Object obj, Object obj1) {
+    public synchronized Object putFirst(K obj, V obj1) {
         if (values.get(obj) == null)
             keys.add(0, obj);
         return values.put(obj, obj1);
     }
 
-    public synchronized Object remove(Object obj) {
+    public synchronized V remove(Object obj) {
         keys.removeElement(obj);
         return values.remove(obj);
     }

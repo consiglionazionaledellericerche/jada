@@ -18,6 +18,7 @@
 package it.cnr.jada.bulk;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import it.cnr.jada.DetailedRuntimeException;
 import it.cnr.jada.UserContext;
 import it.cnr.jada.action.ActionContext;
 import it.cnr.jada.action.HttpActionContext;
@@ -26,6 +27,7 @@ import it.cnr.jada.bulk.annotation.InputType;
 import it.cnr.jada.persistency.*;
 import it.cnr.jada.persistency.beans.BeanIntrospector;
 import it.cnr.jada.persistency.sql.CompoundFindClause;
+import it.cnr.jada.util.Introspector;
 import it.cnr.jada.util.action.BulkBP;
 import it.cnr.jada.util.action.CRUDBP;
 
@@ -34,8 +36,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public abstract class OggettoBulk implements Cloneable, FetchListener, PersistencyListener, Serializable {
     public static final int UNDEFINED = 0;
@@ -396,6 +404,50 @@ public abstract class OggettoBulk implements Cloneable, FetchListener, Persisten
 
     public void validate(OggettoBulk oggettobulk)
             throws ValidationException {
+    }
+
+    public void validateNullable() throws ValidationException {
+        validateNullable("default");
+    }
+
+    public void validateNullable(String form) throws ValidationException {
+        validateFieldPropertyNullable(
+                Collections.list(getBulkInfo().getFormFieldProperties(form))
+                        .stream()
+                        .map(FieldProperty::getName)
+                        .toArray(String[]::new)
+        );
+    }
+
+    public void validateFieldPropertyNullable(String... fieldPropertyNames) throws ValidationException {
+        List<FieldProperty> fieldProperties = Stream.of(fieldPropertyNames)
+                .map(s -> getBulkInfo().getFormFieldProperty(s))
+                .filter(fieldProperty -> !fieldProperty.isNullable())
+                .collect(Collectors.toList());
+        fieldProperties = fieldProperties.stream()
+                .filter(fieldProperty -> {
+                    try {
+                        return Introspector.getPropertyValue(this, fieldProperty.getProperty()) == null;
+                    } catch (java.beans.IntrospectionException|InvocationTargetException e) {
+                        throw new DetailedRuntimeException(e);
+                    }
+                }).collect(Collectors.toList());
+        String label = fieldProperties
+                .stream()
+                .map(FieldProperty::getLabel)
+                .collect(Collectors.joining(", ", "\"", "\""));
+        if (!fieldProperties.isEmpty()) {
+            throw new ValidationException(
+                String.format(
+                    "Il valore " +
+                    (fieldProperties.size() == 0x1 ? "del campo" : "dei campi") +
+                    " %s non può essere nullo!", label
+                ), fieldProperties
+                .stream()
+                .map(FieldProperty::getName)
+                .collect(Collectors.joining(","))
+            );
+        }
     }
 
     public void writeForm(JspWriter jspwriter, int i, FieldValidationMap fieldvalidationmap, boolean isBootstrap)
