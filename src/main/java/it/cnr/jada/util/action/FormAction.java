@@ -18,10 +18,7 @@
 package it.cnr.jada.util.action;
 
 import it.cnr.jada.action.*;
-import it.cnr.jada.comp.ApplicationException;
-import it.cnr.jada.comp.ApplicationRuntimeException;
-import it.cnr.jada.comp.ComponentException;
-import it.cnr.jada.comp.OptionRequestException;
+import it.cnr.jada.comp.*;
 import it.cnr.jada.util.Introspector;
 
 import java.io.Serializable;
@@ -144,6 +141,11 @@ public class FormAction extends AbstractAction implements Serializable {
             } catch (BusinessProcessException businessprocessexception) {
                 return handleException(actioncontext, businessprocessexception);
             }
+        } catch (CRUDTooLargeConstraintException crudTooLargeConstraintException) {
+            setErrorMessage(actioncontext, crudTooLargeConstraintException.getUserMessage());
+            if (crudTooLargeConstraintException.getDetail() != null)
+                actioncontext.traceException(crudTooLargeConstraintException.getDetail());
+            return actioncontext.findDefaultForward();
         } catch (ApplicationException | ApplicationRuntimeException applicationexception) {
             setErrorMessage(actioncontext, applicationexception.getMessage());
             if (applicationexception.getDetail() != null)
