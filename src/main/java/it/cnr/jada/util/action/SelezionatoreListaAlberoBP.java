@@ -195,7 +195,7 @@ public class SelezionatoreListaAlberoBP extends SelezionatoreListaBP
             if (oggettobulk != null) {
                 if (flag)
                     jspwriter.print(" > ");
-                fieldproperty.writeReadonlyText(jspwriter, oggettobulk, "MenuItem", "onclick=\"javascript:submitForm('doGoToLevel(" + i + ")')\" onMouseOver=\"mouseOver(this)\" onMouseOut=\"mouseOut(this)\" onMouseDown=\"mouseDown(this)\" onMouseUp=\"mouseUp(this)\"");
+                fieldproperty.writeReadonlyAnchor(jspwriter, oggettobulk, "MenuItem", "onclick=\"javascript:submitForm('doGoToLevel(" + i + ")')\" onMouseOver=\"mouseOver(this)\" onMouseOut=\"mouseOut(this)\" onMouseDown=\"mouseDown(this)\" onMouseUp=\"mouseUp(this)\"");
                 flag = true;
             }
             i++;
@@ -204,7 +204,7 @@ public class SelezionatoreListaAlberoBP extends SelezionatoreListaBP
         if (getParentElement() != null) {
             if (flag)
                 jspwriter.print(" > ");
-            fieldproperty.writeReadonlyText(jspwriter, getParentElement(), "MenuItem", "onclick=\"javascript:submitForm('doGoToLevel(" + i + ")')\" onMouseOver=\"mouseOver(this)\" onMouseOut=\"mouseOut(this)\" onMouseDown=\"mouseDown(this)\" onMouseUp=\"mouseUp(this)\"");
+            fieldproperty.writeReadonlyAnchor(jspwriter, getParentElement(), "MenuItem", "onclick=\"javascript:submitForm('doGoToLevel(" + i + ")')\" onMouseOver=\"mouseOver(this)\" onMouseOut=\"mouseOut(this)\" onMouseDown=\"mouseDown(this)\" onMouseUp=\"mouseUp(this)\"");
         }
         jspwriter.print("</div>");
     }

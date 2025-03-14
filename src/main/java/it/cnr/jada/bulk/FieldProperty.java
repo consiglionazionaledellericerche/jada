@@ -381,7 +381,8 @@ public class FieldProperty implements Serializable {
         else
             return JSPUtils.encodeHtmlString(s);
     }
-    private boolean isSearchtoolType(){
+
+    private boolean isSearchtoolType() {
         return inputType == SEARCHTOOL || inputType == SEARCHTOOL_WITH_LIKE;
     }
 
@@ -1899,9 +1900,9 @@ public class FieldProperty implements Serializable {
                             i, fieldvalidationmap, isBootstrap);
                 }
             } else if (mapkeys.isPresent()) {
-                for (Object key : mapkeys.get().keySet()){
+                for (Object key : mapkeys.get().keySet()) {
                     writeRadioGroup(key, mapkeys.get().get(key), jspwriter, obj, flag, obj1, cssClass, s1, s2,
-                                    i, fieldvalidationmap, isBootstrap);
+                            i, fieldvalidationmap, isBootstrap);
                 }
             }
         }
@@ -1909,7 +1910,7 @@ public class FieldProperty implements Serializable {
     }
 
     public void writeRadioGroup(Object key, Object value, JspWriter jspwriter, Object obj, boolean flag, Object obj1, String cssClass, String s1, String s2,
-                      int i, FieldValidationMap fieldvalidationmap, boolean isBootstrap) throws IOException, IntrospectionException, InvocationTargetException{
+                                int i, FieldValidationMap fieldvalidationmap, boolean isBootstrap) throws IOException, IntrospectionException, InvocationTargetException {
         if (isBootstrap) {
             jspwriter.println("<label class=\"form-check-label form-check-inline\">");
         }
@@ -1946,19 +1947,27 @@ public class FieldProperty implements Serializable {
         if (layout != 1)
             jspwriter.print("<br>");
     }
-    public void writeReadonlyText(JspWriter jspwriter, Object obj, String s, String s1)
-            throws IOException {
+
+    public void writeReadonlyAnchor(JspWriter jspwriter, Object obj, String cssClass, String attribute) throws IOException {
+        writeReadonlyText(jspwriter, obj, cssClass, attribute, "a");
+    }
+
+    public void writeReadonlyText(JspWriter jspwriter, Object obj, String cssClass, String attribute) throws IOException {
+        writeReadonlyText(jspwriter, obj, cssClass, attribute, "span");
+    }
+
+    public void writeReadonlyText(JspWriter jspwriter, Object obj, String cssClass, String attribute, String tagName) throws IOException {
         try {
             String s2 = getStringValueFrom(obj);
-            jspwriter.print("<span");
-            writeInputStyle(jspwriter, s, style, obj, s2);
-            if (s1 != null) {
+            jspwriter.print(String.format("<%s ", tagName));
+            writeInputStyle(jspwriter, cssClass, style, obj, s2);
+            if (attribute != null) {
                 jspwriter.print(' ');
-                jspwriter.print(s1);
+                jspwriter.print(attribute);
             }
             jspwriter.print(">");
             jspwriter.print(encodeHtmlText(s2));
-            jspwriter.print("</span>");
+            jspwriter.print(String.format("</%s>", tagName));
         } catch (Exception _ex) {
             jspwriter.print("&nbsp;");
         }

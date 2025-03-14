@@ -142,14 +142,14 @@ public class ColumnFieldProperty extends FieldProperty implements Serializable {
             super.writeRadioGroup(jspwriter, obj, flag, obj1, s, s1, s2, i, fieldvalidationmap, isBootstrap);
     }
 
-    public void writeReadonlyText(JspWriter jspwriter, Object obj, String s, String s1) throws IOException {
+    public void writeReadonlyText(JspWriter jspwriter, Object obj, String cssClass, String attribute) throws IOException {
         try {
             String s2 = getStringValueFrom(obj);
             jspwriter.print("<span");
-            writeInputStyle(jspwriter, s, getStyle(), obj, s2);
-            if (s1 != null) {
+            writeInputStyle(jspwriter, cssClass, getStyle(), obj, s2);
+            if (attribute != null) {
                 jspwriter.print(' ');
-                jspwriter.print(s1);
+                jspwriter.print(attribute);
             }
             jspwriter.print(">");
             String s3 = encodeHtmlText(s2).trim();
