@@ -29,6 +29,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
 import java.sql.*;
 import java.util.Dictionary;
+import java.util.List;
 
 // Referenced classes of package it.cnr.jada.bulk:
 //            BusyResourceException, OggettoBulk, OutdatedResourceException
@@ -574,5 +575,9 @@ public class BulkHome extends PersistentHome implements Serializable {
             oggettobulk.setUtuv(oggettobulk.getUser());
         oggettobulk.setDuva(getServerTimestamp());
         super.update(persistent, userContext);
+    }
+
+    public <T extends OggettoBulk> List<T> findAll(UserContext userContext) throws PersistencyException {
+        return fetchAll(createSQLBuilder());
     }
 }
