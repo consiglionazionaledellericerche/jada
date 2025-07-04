@@ -41,11 +41,6 @@ public final class Introspector
     private static Hashtable rwproperties = new Hashtable();
     private static Map methodCache = new HashMap();
     private static Map constructorCache = new HashMap();
-    private static Object[] arr1 = new Object[1];
-    private static Object[] arr2 = new Object[2];
-    private static Object[] arr3 = new Object[3];
-    private static Object[] arr4 = new Object[4];
-    private static Object[] arr5 = new Object[5];
 
     public Introspector() {
     }
@@ -476,18 +471,19 @@ public final class Introspector
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         Method method = getMethod(obj.getClass(), s, aobj);
         if (method == null)
-            throw new NoSuchMethodException("No method " + s + " in class " + obj.getClass() + " with parameters specified.");
+            throw new NoSuchMethodException(String.format("No method %s in class %s with parameters %s specified.", s, obj.getClass(), Arrays.toString(aobj)));
         else
             return method.invoke(obj, aobj);
     }
 
     public static Object invoke(Object obj, String s, Object obj1)
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        Object[] arr1 = new Object[1];
         synchronized (obj) {
             arr1[0] = obj1;
             Method method = getMethod(obj.getClass(), s, arr1);
             if (method == null)
-                throw new NoSuchMethodException("No method " + s + " in class " + obj.getClass() + " with parameters specified.");
+                throw new NoSuchMethodException(String.format("No method %s in class %s with parameters %s specified.", s, obj.getClass(), obj1));
             else
                 return method.invoke(obj, arr1);
         }
@@ -495,12 +491,13 @@ public final class Introspector
 
     public static Object invoke(Object obj, String s, Object obj1, Object obj2)
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        Object[] arr2 = new Object[2];
         synchronized (obj) {
             arr2[0] = obj1;
             arr2[1] = obj2;
             Method method = getMethod(obj.getClass(), s, arr2);
             if (method == null)
-                throw new NoSuchMethodException("No method " + s + " in class " + obj.getClass() + " with parameters specified.");
+                throw new NoSuchMethodException(String.format("No method %s in class %s with parameters %s specified.", s, obj.getClass(), Arrays.toString(arr2)));
             else
                 return method.invoke(obj, arr2);
         }
@@ -508,13 +505,14 @@ public final class Introspector
 
     public static Object invoke(Object obj, String s, Object obj1, Object obj2, Object obj3)
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        Object[] arr3 = new Object[3];
         synchronized (obj) {
             arr3[0] = obj1;
             arr3[1] = obj2;
             arr3[2] = obj3;
             Method method = getMethod(obj.getClass(), s, arr3);
             if (method == null)
-                throw new NoSuchMethodException("No method " + s + " in class " + obj.getClass() + " with parameters specified.");
+                throw new NoSuchMethodException(String.format("No method %s in class %s with parameters %s specified.", s, obj.getClass(), Arrays.toString(arr3)));
             else
                 return method.invoke(obj, arr3);
         }
@@ -522,6 +520,7 @@ public final class Introspector
 
     public static Object invoke(Object obj, String s, Object obj1, Object obj2, Object obj3, Object obj4)
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        Object[] arr4 = new Object[4];
         synchronized (obj) {
             arr4[0] = obj1;
             arr4[1] = obj2;
@@ -529,13 +528,14 @@ public final class Introspector
             arr4[3] = obj4;
             Method method = getMethod(obj.getClass(), s, arr4);
             if (method == null)
-                throw new NoSuchMethodException("No method " + s + " in class " + obj.getClass() + " with parameters specified.");
+                throw new NoSuchMethodException(String.format("No method %s in class %s with parameters %s specified.", s, obj.getClass(), Arrays.toString(arr4)));
             else
                 return method.invoke(obj, arr4);
         }
     }
 
     public static Object invoke(Object obj, String s, Object obj1, Object obj2, Object obj3, Object obj4, Object obj5) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        Object[] arr5 = new Object[5];
         synchronized (obj) {
             arr5[0] = obj1;
             arr5[1] = obj2;
@@ -545,7 +545,7 @@ public final class Introspector
 
             Method method = getMethod(obj.getClass(), s, arr5);
             if (method == null)
-                throw new NoSuchMethodException("No method " + s + " in class " + obj.getClass() + " with parameters specified.");
+                throw new NoSuchMethodException(String.format("No method %s in class %s with parameters %s specified.", s, obj.getClass(), Arrays.toString(arr5)));
             else
                 return method.invoke(obj, arr5);
         }
@@ -649,53 +649,57 @@ public final class Introspector
             throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
         Constructor constructor = getConstructor(class1, aobj);
         if (constructor == null)
-            throw new NoSuchMethodException("No constructor in class " + class1 + " with parameters specified.");
+            throw new NoSuchMethodException(String.format("No constructor in class %s with parameters %s specified.", class1, Arrays.toString(aobj)));
         else
             return constructor.newInstance(aobj);
     }
 
     public static Object newInstance(Class class1, Object obj)
             throws NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException {
+        Object[] arr1 = new Object[1];
         arr1[0] = obj;
         Constructor constructor = getConstructor(class1, arr1);
         if (constructor == null)
-            throw new NoSuchMethodException("No constructor in class " + class1 + " with parameters specified.");
+            throw new NoSuchMethodException(String.format("No constructor in class %s with parameters %s specified.", class1, Arrays.toString(arr1)));
         else
             return constructor.newInstance(arr1);
     }
 
     public static Object newInstance(Class class1, Object obj, Object obj1)
             throws NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException {
+        Object[] arr2 = new Object[2];
         arr2[0] = obj;
         arr2[1] = obj1;
         Constructor constructor = getConstructor(class1, arr2);
         if (constructor == null)
-            throw new NoSuchMethodException("No constructor in class " + class1 + " with parameters specified.");
+            throw new NoSuchMethodException(String.format("No constructor in class %s with parameters %s specified.", class1, Arrays.toString(arr2)));
         else
             return constructor.newInstance(arr2);
     }
 
     public static Object newInstance(Class class1, Object obj, Object obj1, Object obj2)
             throws NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException {
+        Object[] arr3 = new Object[3];
         arr3[0] = obj;
         arr3[1] = obj1;
         arr3[2] = obj2;
         Constructor constructor = getConstructor(class1, arr3);
         if (constructor == null)
-            throw new NoSuchMethodException("No constructor in class " + class1 + " with parameters specified.");
+            throw new NoSuchMethodException(String.format("No constructor in class %s with parameters %s specified.", class1, Arrays.toString(arr3)));
         else
             return constructor.newInstance(arr3);
     }
 
     public static Object newInstance(Class class1, Object obj, Object obj1, Object obj2, Object obj3)
             throws NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException {
+        Object[] arr4 = new Object[4];
         arr4[0] = obj;
         arr4[1] = obj1;
         arr4[2] = obj2;
         arr4[3] = obj3;
         Constructor constructor = getConstructor(class1, arr4);
         if (constructor == null)
-            throw new NoSuchMethodException("No constructor in class " + class1 + " with parameters specified.");
+            throw new NoSuchMethodException(String.format("No constructor in class %s with parameters %s specified.", class1, Arrays.toString(arr4)));
         else
             return constructor.newInstance(arr4);
     }
