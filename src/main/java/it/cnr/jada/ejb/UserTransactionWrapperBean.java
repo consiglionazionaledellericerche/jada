@@ -26,10 +26,10 @@ import it.cnr.jada.util.ejb.UserTransactionTimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import javax.ejb.*;
-import javax.transaction.*;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.Resource;
+import jakarta.ejb.*;
+import jakarta.transaction.*;
 import java.lang.reflect.InvocationTargetException;
 import java.rmi.RemoteException;
 import java.util.HashMap;

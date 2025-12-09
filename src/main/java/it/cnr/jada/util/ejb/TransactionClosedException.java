@@ -17,7 +17,7 @@
 
 package it.cnr.jada.util.ejb;
 
-import javax.ejb.EJBException;
+import jakarta.ejb.EJBException;
 import java.io.Serializable;
 
 public class TransactionClosedException extends EJBException

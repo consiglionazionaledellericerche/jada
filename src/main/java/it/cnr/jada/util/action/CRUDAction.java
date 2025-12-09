@@ -28,7 +28,7 @@ import it.cnr.jada.persistency.sql.ApplicationPersistencyDiscardedException;
 import it.cnr.jada.util.RemoteIterator;
 import it.cnr.jada.util.ejb.EJBCommonServices;
 
-import javax.ejb.RemoveException;
+import jakarta.ejb.RemoveException;
 import java.io.Serializable;
 import java.rmi.RemoteException;
 

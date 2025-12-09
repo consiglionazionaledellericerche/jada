@@ -26,7 +26,7 @@ import it.cnr.jada.util.action.FormAction;
 import it.cnr.jada.util.action.OptionBP;
 import it.cnr.jada.util.ejb.EJBCommonServices;
 
-import javax.ejb.EJBException;
+import jakarta.ejb.EJBException;
 import java.rmi.RemoteException;
 
 public class CancellaSchedulazioneExcelAction extends FormAction {

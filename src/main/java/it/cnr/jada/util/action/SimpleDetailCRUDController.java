@@ -27,9 +27,9 @@ import it.cnr.jada.util.Introspector;
 import it.cnr.jada.util.MultipleComparator;
 import it.cnr.jada.util.OrderedHashMap;
 import it.cnr.jada.util.jsp.TableCustomizer;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.jsp.PageContext;
 
-import javax.servlet.ServletException;
-import javax.servlet.jsp.PageContext;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
@@ -176,7 +176,7 @@ public class SimpleDetailCRUDController extends AbstractDetailCRUDController
         if (i == 0)
             orderByClauses.remove(s);
         else
-            orderByClauses.put(s, new Integer(i));
+            orderByClauses.put(s, Integer.valueOf(i));
         sort();
     }
 

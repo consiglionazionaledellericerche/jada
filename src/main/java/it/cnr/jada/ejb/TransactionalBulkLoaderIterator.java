@@ -24,9 +24,9 @@ import it.cnr.jada.persistency.sql.Query;
 import it.cnr.jada.util.RemoteOrderable;
 import it.cnr.jada.util.RemotePagedIterator;
 
-import javax.ejb.CreateException;
-import javax.ejb.EJBException;
-import javax.ejb.Remote;
+import jakarta.ejb.CreateException;
+import jakarta.ejb.EJBException;
+import jakarta.ejb.Remote;
 import java.rmi.RemoteException;
 
 @Remote

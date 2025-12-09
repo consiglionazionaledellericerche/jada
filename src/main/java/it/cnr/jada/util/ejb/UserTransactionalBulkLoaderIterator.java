@@ -27,9 +27,9 @@ import it.cnr.jada.util.RemoteIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ejb.CreateException;
-import javax.ejb.EJBException;
-import javax.ejb.NoSuchEJBException;
+import jakarta.ejb.CreateException;
+import jakarta.ejb.EJBException;
+import jakarta.ejb.NoSuchEJBException;
 import java.lang.reflect.InvocationTargetException;
 import java.rmi.RemoteException;
 
@@ -48,7 +48,7 @@ public class UserTransactionalBulkLoaderIterator implements TransactionalBulkLoa
     public void close() throws RemoteException {
         try {
             userTransaction.invoke(remoteiterator, "close");
-        } catch (javax.ejb.ConcurrentAccessTimeoutException _ex) {
+        } catch (jakarta.ejb.ConcurrentAccessTimeoutException _ex) {
             logger.warn("Access timeout to EJB", _ex);
         } catch (InvocationTargetException e) {
             if (e.getTargetException() instanceof UserTransactionTimeoutException || e.getTargetException() instanceof NoSuchEJBException)
@@ -228,7 +228,7 @@ public class UserTransactionalBulkLoaderIterator implements TransactionalBulkLoa
     public void ejbRemove() throws EJBException {
         try {
             userTransaction.invoke(remoteiterator, "ejbRemove");
-        } catch (javax.ejb.ConcurrentAccessTimeoutException _ex) {
+        } catch (jakarta.ejb.ConcurrentAccessTimeoutException _ex) {
             logger.warn("Access timeout to EJB", _ex);
         } catch (InvocationTargetException e) {
             if (e.getTargetException() instanceof UserTransactionTimeoutException || e.getTargetException() instanceof NoSuchEJBException)

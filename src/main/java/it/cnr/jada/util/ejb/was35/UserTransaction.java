@@ -23,10 +23,11 @@ import it.cnr.jada.util.ejb.EJBCommonServices;
 import it.cnr.jada.util.ejb.TransactionalStatefulSessionImpl;
 import it.cnr.jada.util.ejb.UserTransactionTimeoutException;
 
-import javax.ejb.EJBException;
-import javax.transaction.RollbackException;
-import javax.transaction.TransactionManager;
-import javax.transaction.TransactionRolledbackException;
+import jakarta.ejb.EJBException;
+
+import jakarta.transaction.RollbackException;
+import jakarta.transaction.TransactionManager;
+import jakarta.transaction.TransactionRolledbackException;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.rmi.NoSuchObjectException;

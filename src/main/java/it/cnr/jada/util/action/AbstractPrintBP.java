@@ -20,10 +20,10 @@ package it.cnr.jada.util.action;
 import it.cnr.jada.action.BusinessProcessException;
 import it.cnr.jada.util.Config;
 import it.cnr.jada.util.jsp.Button;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.jsp.JspWriter;
+import jakarta.servlet.jsp.PageContext;
 
-import javax.servlet.ServletException;
-import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.PageContext;
 import java.io.IOException;
 import java.io.Serializable;
 

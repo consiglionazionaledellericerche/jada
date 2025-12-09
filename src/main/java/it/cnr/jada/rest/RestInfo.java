@@ -26,8 +26,8 @@ import it.cnr.jada.action.Forward;
 import it.cnr.jada.action.HttpActionContext;
 import it.cnr.jada.bulk.FieldProperty;
 import it.cnr.jada.util.action.ConsultazioniBP;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.Dictionary;
 import java.util.Enumeration;
 

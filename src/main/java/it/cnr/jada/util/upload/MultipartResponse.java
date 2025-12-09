@@ -17,8 +17,9 @@
 
 package it.cnr.jada.util.upload;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 
 public class MultipartResponse {

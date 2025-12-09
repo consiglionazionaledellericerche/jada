@@ -17,7 +17,9 @@
 
 package it.cnr.jada.util.upload;
 
-import javax.servlet.ServletInputStream;
+import jakarta.servlet.ReadListener;
+import jakarta.servlet.ServletInputStream;
+
 import java.io.IOException;
 
 public class BufferedServletInputStream extends ServletInputStream {
@@ -115,5 +117,20 @@ public class BufferedServletInputStream extends ServletInputStream {
         }
 
         return total;
+    }
+
+    @Override
+    public boolean isFinished() {
+        return false;
+    }
+
+    @Override
+    public boolean isReady() {
+        return false;
+    }
+
+    @Override
+    public void setReadListener(ReadListener readListener) {
+
     }
 }

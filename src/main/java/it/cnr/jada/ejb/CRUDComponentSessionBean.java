@@ -29,19 +29,15 @@ import it.cnr.jada.persistency.Persistent;
 import it.cnr.jada.persistency.sql.CompoundFindClause;
 import it.cnr.jada.util.RemoteIterator;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.EJBException;
-import javax.ejb.Remove;
-import javax.ejb.Stateless;
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.EJBException;
+import jakarta.ejb.Remove;
+import jakarta.ejb.Stateless;
 
 @Stateless(name = "JADAEJB_CRUDComponentSession")
 public class CRUDComponentSessionBean extends RicercaComponentSessionBean implements CRUDComponentSession {
 
     public CRUDComponentSessionBean() {
-    }
-
-    public static CRUDComponentSessionBean newInstance() throws EJBException {
-        return new CRUDComponentSessionBean();
     }
 
     @PostConstruct
@@ -50,7 +46,7 @@ public class CRUDComponentSessionBean extends RicercaComponentSessionBean implem
     }
 
     @Remove
-    public void ejbRemove() throws javax.ejb.EJBException {
+    public void ejbRemove() throws jakarta.ejb.EJBException {
         componentObj.release();
     }
 

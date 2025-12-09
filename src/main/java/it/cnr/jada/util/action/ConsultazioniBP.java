@@ -31,9 +31,9 @@ import it.cnr.jada.util.Config;
 import it.cnr.jada.util.RemoteIterator;
 import it.cnr.jada.util.jsp.Button;
 import it.cnr.jada.util.jsp.JSPUtils;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.jsp.JspWriter;
 
-import javax.servlet.ServletException;
-import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
 import java.util.BitSet;
 
@@ -67,7 +67,7 @@ public class ConsultazioniBP extends SelezionatoreListaBP
         super();
     }
 
-    public it.cnr.jada.ejb.CRUDComponentSession createComponentSession() throws javax.ejb.EJBException, java.rmi.RemoteException, BusinessProcessException {
+    public it.cnr.jada.ejb.CRUDComponentSession createComponentSession() throws jakarta.ejb.EJBException, java.rmi.RemoteException, BusinessProcessException {
 
         return (it.cnr.jada.ejb.CRUDComponentSession) createComponentSession("JADAEJB_CRUDComponentSession", it.cnr.jada.ejb.CRUDComponentSession.class);
     }
@@ -82,7 +82,7 @@ public class ConsultazioniBP extends SelezionatoreListaBP
             setSearchResultColumnSet(config.getInitParameter("searchResultColumnSet"));
             setColumns(getBulkInfo().getColumnFieldPropertyDictionary(getSearchResultColumnSet()));
             setFreeSearchSet(config.getInitParameter("freeSearchSet"));
-            setRecordPerPagina(new Integer(config.getInitParameter("recordPerPagina") != null ? config.getInitParameter("recordPerPagina") : "20"));
+            setRecordPerPagina(Integer.valueOf(config.getInitParameter("recordPerPagina") != null ? config.getInitParameter("recordPerPagina") : "20"));
             setFilterEnabled(config.getInitParameter("filterEnabled") != null ? config.getInitParameter("filterEnabled") : "Y");
             if (getMultiSelezione() != null && getMultiSelezione().equals("Y"))
                 setMultiSelection(true);

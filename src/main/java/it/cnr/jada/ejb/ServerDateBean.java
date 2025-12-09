@@ -20,8 +20,8 @@ package it.cnr.jada.ejb;
 import it.cnr.jada.util.PropertyNames;
 import it.cnr.jada.util.ejb.EJBCommonServices;
 
-import javax.ejb.EJBException;
-import javax.ejb.Stateless;
+import jakarta.ejb.EJBException;
+import jakarta.ejb.Stateless;
 import java.sql.*;
 
 @Stateless(name = "JADAEJB_ServerDate")

@@ -25,8 +25,8 @@ import it.cnr.jada.util.EventTracer;
 import it.cnr.jada.util.ejb.EJBCommonServices;
 import it.cnr.jada.util.ejb.EJBTracer;
 
-import javax.ejb.EJBException;
-import javax.ejb.Stateless;
+import jakarta.ejb.EJBException;
+import jakarta.ejb.Stateless;
 import java.beans.Introspector;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

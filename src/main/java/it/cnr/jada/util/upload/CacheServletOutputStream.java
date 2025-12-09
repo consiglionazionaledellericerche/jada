@@ -17,7 +17,9 @@
 
 package it.cnr.jada.util.upload;
 
-import javax.servlet.ServletOutputStream;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.WriteListener;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
@@ -51,5 +53,15 @@ class CacheServletOutputStream extends ServletOutputStream {
             throws IOException {
         _flddelegate.write(buf, offset, len);
         cache.write(buf, offset, len);
+    }
+
+    @Override
+    public boolean isReady() {
+        return false;
+    }
+
+    @Override
+    public void setWriteListener(WriteListener writeListener) {
+
     }
 }

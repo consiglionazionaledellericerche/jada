@@ -17,17 +17,15 @@
 
 package it.cnr.jada.util.upload;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Locale;
-import java.util.Vector;
+import java.util.*;
 
 class CacheHttpServletResponse
         implements HttpServletResponse {
@@ -229,9 +227,14 @@ class CacheHttpServletResponse
         _flddelegate.setContentLength(len);
     }
 
+    @Override
+    public void setContentLengthLong(long l) {
+
+    }
+
     public void setDateHeader(String name, long date) {
         _flddelegate.setDateHeader(name, date);
-        internalSetHeader(name, new Long(date));
+        internalSetHeader(name, date);
     }
 
     public void setHeader(String name, String value) {
@@ -241,7 +244,7 @@ class CacheHttpServletResponse
 
     public void setIntHeader(String name, int value) {
         _flddelegate.setIntHeader(name, value);
-        internalSetHeader(name, new Integer(value));
+        internalSetHeader(name, value);
     }
 
     public void setStatus(int sc) {
@@ -249,12 +252,32 @@ class CacheHttpServletResponse
         status = sc;
     }
 
+    @Override
+    public int getStatus() {
+        return 0;
+    }
+
+    @Override
+    public String getHeader(String s) {
+        return "";
+    }
+
+    @Override
+    public Collection<String> getHeaders(String s) {
+        return List.of();
+    }
+
+    @Override
+    public Collection<String> getHeaderNames() {
+        return List.of();
+    }
+
     /**
      * @deprecated Method setStatus is deprecated
      */
 
     public void setStatus(int sc, String sm) {
-        _flddelegate.setStatus(sc, sm);
+        _flddelegate.setStatus(sc);
         status = sc;
     }
 

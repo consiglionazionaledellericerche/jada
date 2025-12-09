@@ -19,7 +19,7 @@ package it.cnr.jada.ejb;
 
 import it.cnr.jada.UserContext;
 
-import javax.ejb.Remote;
+import jakarta.ejb.Remote;
 import java.rmi.RemoteException;
 
 @Remote

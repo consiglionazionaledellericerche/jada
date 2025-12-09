@@ -24,8 +24,8 @@ import it.cnr.jada.persistency.sql.Query;
 import it.cnr.jada.util.ejb.TransactionalStatefulSessionImpl;
 import it.cnr.jada.util.ejb.UserTransactionTimeoutException;
 
-import javax.ejb.CreateException;
-import javax.ejb.EJBException;
+import jakarta.ejb.CreateException;
+import jakarta.ejb.EJBException;
 import java.lang.reflect.InvocationTargetException;
 import java.rmi.RemoteException;
 

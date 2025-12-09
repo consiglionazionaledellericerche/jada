@@ -21,7 +21,7 @@ import it.cnr.jada.UserContext;
 import it.cnr.jada.bulk.OggettoBulk;
 import it.cnr.jada.comp.ComponentException;
 
-import javax.ejb.Remote;
+import jakarta.ejb.Remote;
 import java.rmi.RemoteException;
 
 @Remote

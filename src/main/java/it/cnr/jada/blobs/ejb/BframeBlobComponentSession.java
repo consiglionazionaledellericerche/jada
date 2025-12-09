@@ -24,7 +24,7 @@ import it.cnr.jada.comp.ComponentException;
 import it.cnr.jada.ejb.RicercaComponentSession;
 import it.cnr.jada.util.RemoteIterator;
 
-import javax.ejb.Remote;
+import jakarta.ejb.Remote;
 import java.rmi.RemoteException;
 
 @Remote

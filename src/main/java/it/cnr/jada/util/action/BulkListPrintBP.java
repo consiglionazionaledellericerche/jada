@@ -24,9 +24,9 @@ import it.cnr.jada.util.RemoteIterator;
 import it.cnr.jada.util.RemoteIteratorEnumeration;
 import it.cnr.jada.util.ejb.EJBCommonServices;
 import it.cnr.jada.util.jsp.JSPUtils;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.jsp.PageContext;
 
-import javax.servlet.ServletException;
-import javax.servlet.jsp.PageContext;
 import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;

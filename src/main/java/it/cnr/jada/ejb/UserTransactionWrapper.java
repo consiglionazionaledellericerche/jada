@@ -17,8 +17,9 @@
 
 package it.cnr.jada.ejb;
 
-import javax.ejb.Remote;
-import javax.transaction.RollbackException;
+import jakarta.ejb.Remote;
+import jakarta.transaction.RollbackException;
+
 import java.lang.reflect.InvocationTargetException;
 import java.rmi.RemoteException;
 

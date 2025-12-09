@@ -20,10 +20,10 @@ package it.cnr.jada.util.ejb;
 import it.cnr.jada.UserTransaction;
 import it.cnr.jada.ejb.UserTransactionWrapper;
 
-import javax.ejb.EJBHome;
-import javax.ejb.EJBObject;
-import javax.ejb.Handle;
-import javax.ejb.RemoveException;
+import jakarta.ejb.EJBHome;
+import jakarta.ejb.EJBObject;
+import jakarta.ejb.Handle;
+import jakarta.ejb.RemoveException;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.rmi.RemoteException;

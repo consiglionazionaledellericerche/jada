@@ -22,7 +22,8 @@ package it.cnr.jada.util.was35;
 //import com.ibm.servlet.engine.config.ServletEngineInfo;
 //import com.ibm.servlet.engine.config.TransportInfo;
 
-import javax.servlet.ServletContext;
+
+import jakarta.servlet.ServletContext;
 
 public class WebSphereServices extends it.cnr.jada.util.WebSphereServices {
 

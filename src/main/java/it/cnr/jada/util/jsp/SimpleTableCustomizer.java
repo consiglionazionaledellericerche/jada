@@ -17,7 +17,8 @@
 
 package it.cnr.jada.util.jsp;
 
-import javax.servlet.jsp.JspWriter;
+import jakarta.servlet.jsp.JspWriter;
+
 import java.io.IOException;
 import java.io.Serializable;
 

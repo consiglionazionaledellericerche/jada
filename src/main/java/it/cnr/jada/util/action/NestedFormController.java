@@ -22,8 +22,8 @@ import it.cnr.jada.action.ActionContext;
 import it.cnr.jada.action.BusinessProcess;
 import it.cnr.jada.action.BusinessProcessException;
 import it.cnr.jada.bulk.*;
+import jakarta.servlet.jsp.JspWriter;
 
-import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;

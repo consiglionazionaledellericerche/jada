@@ -17,8 +17,9 @@
 
 package it.cnr.jada.util;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletRequest;
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletRequest;
+
 import java.io.*;
 import java.net.URL;
 import java.util.*;

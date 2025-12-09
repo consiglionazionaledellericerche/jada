@@ -22,8 +22,8 @@ import it.cnr.jada.DetailedRuntimeException;
 import it.cnr.jada.bulk.annotation.FieldPropertyAnnotation;
 import it.cnr.jada.util.Introspector;
 import it.cnr.jada.util.jsp.JSPUtils;
+import jakarta.servlet.jsp.JspWriter;
 
-import javax.servlet.jsp.JspWriter;
 import java.beans.IntrospectionException;
 import java.io.IOException;
 import java.io.Serializable;

@@ -25,18 +25,14 @@ import it.cnr.jada.bulk.*;
 import it.cnr.jada.persistency.sql.CompoundFindClause;
 import it.cnr.jada.util.RemoteIterator;
 import it.cnr.jada.util.ejb.EJBCommonServices;
+import jakarta.servlet.jsp.JspWriter;
 
-import javax.servlet.jsp.JspWriter;
 import java.beans.IntrospectionException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.rmi.RemoteException;
 import java.util.*;
-
-// Referenced classes of package it.cnr.jada.util.action:
-//            FormBP, FormController, FormField, ModelController, 
-//            AbstractPrintBP, CRUDController, SearchProvider
 
 public abstract class BulkBP extends FormBP
         implements Serializable, FormController {

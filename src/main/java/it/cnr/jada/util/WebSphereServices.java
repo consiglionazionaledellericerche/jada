@@ -17,7 +17,8 @@
 
 package it.cnr.jada.util;
 
-import javax.servlet.ServletContext;
+
+import jakarta.servlet.ServletContext;
 
 public abstract class WebSphereServices {
 

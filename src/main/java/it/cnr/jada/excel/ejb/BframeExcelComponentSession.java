@@ -20,7 +20,7 @@ package it.cnr.jada.excel.ejb;
 import it.cnr.jada.UserContext;
 import it.cnr.jada.excel.bulk.Excel_spoolerBulk;
 
-import javax.ejb.Remote;
+import jakarta.ejb.Remote;
 
 @Remote
 public interface BframeExcelComponentSession extends it.cnr.jada.ejb.GenericComponentSession {

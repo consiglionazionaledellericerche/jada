@@ -17,7 +17,8 @@
 
 package it.cnr.jada.util.upload;
 
-import javax.servlet.ServletRequest;
+import jakarta.servlet.ServletRequest;
+
 import java.io.UnsupportedEncodingException;
 import java.util.Vector;
 
@@ -81,7 +82,7 @@ public class ParameterParser {
 
     public double getDoubleParameter(String name)
             throws ParameterNotFoundException, NumberFormatException {
-        return (new Double(getStringParameter(name))).doubleValue();
+        return Double.parseDouble(getStringParameter(name));
     }
 
     public double getDoubleParameter(String name, double def) {
@@ -94,7 +95,7 @@ public class ParameterParser {
 
     public float getFloatParameter(String name)
             throws ParameterNotFoundException, NumberFormatException {
-        return (new Float(getStringParameter(name))).floatValue();
+        return Float.parseFloat(getStringParameter(name));
     }
 
     public float getFloatParameter(String name, float def) {

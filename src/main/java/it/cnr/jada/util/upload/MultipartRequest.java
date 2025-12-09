@@ -31,9 +31,9 @@ package it.cnr.jada.util.upload;
  */
 
 import it.cnr.jada.DetailedRuntimeException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;

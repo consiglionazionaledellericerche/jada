@@ -90,7 +90,7 @@ public class SelezionatoreSearchBP extends SelezionatoreListaBP implements Searc
         }
     }
 
-    public it.cnr.jada.ejb.RicercaComponentSession createComponentSession(it.cnr.jada.action.ActionContext context, String jndiName) throws javax.ejb.EJBException, BusinessProcessException {
+    public it.cnr.jada.ejb.RicercaComponentSession createComponentSession(it.cnr.jada.action.ActionContext context, String jndiName) throws jakarta.ejb.EJBException, BusinessProcessException {
         return (it.cnr.jada.ejb.RicercaComponentSession)
                 createComponentSession(jndiName, it.cnr.jada.ejb.RicercaComponentSession.class);
     }

@@ -17,11 +17,11 @@
 
 package it.cnr.jada.ejb;
 
-import javax.ejb.Remote;
+import jakarta.ejb.Remote;
 
 @Remote
 public interface GenericComponentSession {
     String getTransactionalInterface();
 
-    void ejbRemove() throws javax.ejb.EJBException;
+    void ejbRemove() throws jakarta.ejb.EJBException;
 }

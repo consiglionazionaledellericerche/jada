@@ -17,8 +17,8 @@
 
 package it.cnr.jada.util.ejb;
 
-import javax.ejb.EJBException;
-import javax.ejb.EJBObject;
+import jakarta.ejb.EJBException;
+import jakarta.ejb.EJBObject;
 import java.lang.reflect.InvocationTargetException;
 import java.rmi.RemoteException;
 
@@ -32,7 +32,7 @@ public abstract class TransactionalSessionImpl implements java.io.Serializable {
     /**
      * getHandle method comment.
      */
-    public javax.ejb.Handle getHandle() throws java.rmi.RemoteException {
+    public jakarta.ejb.Handle getHandle() throws java.rmi.RemoteException {
         return null;
     }
 
@@ -47,12 +47,12 @@ public abstract class TransactionalSessionImpl implements java.io.Serializable {
      * Insert the method's description here.
      * Creation date: (19/12/2001 18:16:12)
      *
-     * @return javax.ejb.EJBObject
+     * @return jakarta.ejb.EJBObject
      */
     public Object getSession() throws java.rmi.RemoteException {
         try {
             return EJBCommonServices.createEJB(userTransaction, sessionName);
-        } catch (javax.ejb.EJBException e) {
+        } catch (jakarta.ejb.EJBException e) {
             throw new java.rmi.RemoteException("Can't create EJB", e);
         }
     }
@@ -108,7 +108,7 @@ public abstract class TransactionalSessionImpl implements java.io.Serializable {
         return false;
     }
 
-    public void remove() throws java.rmi.RemoteException, javax.ejb.RemoveException {
+    public void remove() throws java.rmi.RemoteException, jakarta.ejb.RemoveException {
     }
 
     public String getTransactionalInterface() {
@@ -116,7 +116,7 @@ public abstract class TransactionalSessionImpl implements java.io.Serializable {
         return name;
     }
 
-    public void ejbRemove() throws javax.ejb.EJBException {
+    public void ejbRemove() throws jakarta.ejb.EJBException {
         try {
             invoke("ejbRemove", null);
         } catch (RemoteException e) {

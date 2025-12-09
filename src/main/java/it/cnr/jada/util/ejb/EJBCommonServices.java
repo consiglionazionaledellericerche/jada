@@ -24,17 +24,17 @@ import it.cnr.jada.comp.ComponentException;
 import it.cnr.jada.ejb.*;
 import it.cnr.jada.persistency.sql.LoggableStatement;
 import it.cnr.jada.util.*;
+import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ejb.EJBException;
-import javax.ejb.EJBHome;
+import jakarta.ejb.EJBException;
+import jakarta.ejb.EJBHome;
 import javax.naming.InitialContext;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
-import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
-import javax.transaction.UserTransaction;
+import jakarta.transaction.UserTransaction;
 import java.io.Serializable;
 import java.rmi.MarshalException;
 import java.rmi.RemoteException;
@@ -77,9 +77,9 @@ public class EJBCommonServices implements Serializable {
                 remoteiterator.ejbRemove();
             }
         } catch (IllegalStateException illegalStateException) {
-        } catch (javax.ejb.NoSuchEJBException noSuchEJBException) {
+        } catch (jakarta.ejb.NoSuchEJBException noSuchEJBException) {
             logger.info("NoSuchEJBException");
-        } catch (javax.ejb.ConcurrentAccessException concurrentAccessException) {
+        } catch (jakarta.ejb.ConcurrentAccessException concurrentAccessException) {
             logger.info("ConcurrentAccessException");
         } catch (Exception removeexception) {
             throw new RemoteException("Remove exception", removeexception);

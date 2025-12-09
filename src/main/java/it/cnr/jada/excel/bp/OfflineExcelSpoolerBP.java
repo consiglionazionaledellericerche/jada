@@ -20,11 +20,11 @@ package it.cnr.jada.excel.bp;
 import it.cnr.jada.bulk.ValidationException;
 import it.cnr.jada.excel.bulk.Excel_spoolerBulk;
 import it.cnr.jada.util.jsp.Button;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.jsp.PageContext;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
-import javax.servlet.ServletException;
-import javax.servlet.jsp.PageContext;
 import java.io.IOException;
 import java.util.StringTokenizer;
 

@@ -33,14 +33,14 @@ import it.cnr.jada.util.jsp.Button;
 import it.cnr.jada.util.jsp.JSPUtils;
 import it.cnr.jada.util.jsp.Table;
 import it.cnr.jada.util.jsp.TableCustomizer;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.jsp.JspWriter;
+import jakarta.servlet.jsp.PageContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ejb.NoSuchEJBException;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpSession;
-import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.PageContext;
+import jakarta.ejb.NoSuchEJBException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.rmi.RemoteException;
@@ -447,10 +447,10 @@ public class SelezionatoreListaBP extends AbstractSelezionatoreBP
             return ((RemoteOrderable) iterator).isOrderableBy(s);
         } catch (RemoteException remoteexception) {
             throw new DetailedRuntimeException(remoteexception);
-        } catch (javax.ejb.ConcurrentAccessException concurrentAccessException) {
+        } catch (jakarta.ejb.ConcurrentAccessException concurrentAccessException) {
             logger.info("ConcurrentAccessException");
             return false;
-        } catch (javax.ejb.NoSuchEJBException _ex) {
+        } catch (jakarta.ejb.NoSuchEJBException _ex) {
             return false;
         }
     }

@@ -25,11 +25,10 @@ import it.cnr.jada.util.IntrospectionError;
 import it.cnr.jada.util.Introspector;
 import it.cnr.jada.util.OrderedHashtable;
 import it.cnr.jada.util.XMLObjectFiller;
-import it.cnr.jada.util.action.FormField;
+import jakarta.servlet.jsp.JspWriter;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import javax.servlet.jsp.JspWriter;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
 import java.lang.reflect.Field;

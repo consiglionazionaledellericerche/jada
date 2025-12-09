@@ -17,7 +17,8 @@
 
 package it.cnr.jada.util.upload;
 
-import javax.servlet.ServletInputStream;
+import jakarta.servlet.ServletInputStream;
+
 import java.io.FilterInputStream;
 import java.io.IOException;
 

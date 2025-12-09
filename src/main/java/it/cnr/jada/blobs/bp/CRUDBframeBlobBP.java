@@ -33,8 +33,9 @@ import it.cnr.jada.util.action.SelezionatoreListaAlberoBP;
 import it.cnr.jada.util.action.SimpleNestedFormController;
 import it.cnr.jada.util.jsp.Button;
 import it.cnr.jada.util.jsp.JSPUtils;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.jsp.PageContext;
 
-import javax.servlet.http.HttpServletRequest;
 import java.rmi.RemoteException;
 
 public class CRUDBframeBlobBP extends SelezionatoreListaAlberoBP {
@@ -75,7 +76,7 @@ public class CRUDBframeBlobBP extends SelezionatoreListaAlberoBP {
         return (Bframe_blob_pathBulk) getFocusedElement();
     }
 
-    public String getDownloadUrl(javax.servlet.jsp.PageContext pageContext) {
+    public String getDownloadUrl(PageContext pageContext) {
         Bframe_blob_pathBulk bframe_blob_pathbulk = getBlob_path();
         if (bframe_blob_pathbulk == null)
             return null;

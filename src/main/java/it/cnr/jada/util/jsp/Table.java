@@ -26,8 +26,8 @@ import it.cnr.jada.util.Orderable;
 import it.cnr.jada.util.Prefix;
 import it.cnr.jada.util.action.Selection;
 import it.cnr.jada.util.action.SelezionatoreListaBP;
+import jakarta.servlet.jsp.JspWriter;
 
-import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Dictionary;
@@ -403,7 +403,7 @@ public class Table
                 presenteHeader = true;
                 if (labelHeader.containsKey(columnfieldproperty.getHeaderLabel()))
                     colspan = (Integer) labelHeader.get(columnfieldproperty.getHeaderLabel());
-                labelHeader.put(columnfieldproperty.getHeaderLabel(), colspan != null ? new Integer(colspan.intValue() + 1) : new Integer(1));
+                labelHeader.put(columnfieldproperty.getHeaderLabel(), colspan != null ? Integer.valueOf(colspan.intValue() + 1) : Integer.valueOf(1));
             }
         }
 

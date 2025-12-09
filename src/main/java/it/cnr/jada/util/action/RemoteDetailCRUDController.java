@@ -34,9 +34,9 @@ import it.cnr.jada.util.RemotePagedIterator;
 import it.cnr.jada.util.ejb.EJBCommonServices;
 import it.cnr.jada.util.ejb.RemoteError;
 import it.cnr.jada.util.jsp.TableCustomizer;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.jsp.PageContext;
 
-import javax.servlet.ServletException;
-import javax.servlet.jsp.PageContext;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;

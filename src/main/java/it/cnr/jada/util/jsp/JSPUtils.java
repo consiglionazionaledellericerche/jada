@@ -22,11 +22,11 @@ import it.cnr.jada.action.HttpActionContext;
 import it.cnr.jada.bulk.ColumnFieldProperty;
 import it.cnr.jada.util.Config;
 import it.cnr.jada.util.action.RigaAlbero;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.jsp.JspWriter;
+import jakarta.servlet.jsp.PageContext;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.PageContext;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.InetAddress;

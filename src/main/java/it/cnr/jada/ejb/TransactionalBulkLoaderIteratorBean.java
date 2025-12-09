@@ -26,9 +26,9 @@ import it.cnr.jada.util.ejb.EJBCommonServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Resource;
-import javax.ejb.*;
-import javax.transaction.TransactionSynchronizationRegistry;
+import jakarta.annotation.Resource;
+import jakarta.ejb.*;
+import jakarta.transaction.TransactionSynchronizationRegistry;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;

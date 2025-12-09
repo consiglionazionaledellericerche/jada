@@ -19,7 +19,7 @@ cache:
   
 maven-deploy:
   stage: deploy
-  image: maven:alpine
+  image: maven:3.6.3-openjdk-17
   script: "mvn clean deploy $MAVEN_CLI_OPTS -Pprod"
   artifacts:
     paths:
@@ -31,7 +31,7 @@ maven-deploy:
 
 maven-install:
   stage: deploy
-  image: maven:alpine
+  image: maven:3.6.3-openjdk-17
   script: "mvn clean install $MAVEN_CLI_OPTS"
   artifacts:
     paths:
@@ -43,16 +43,14 @@ maven-install:
 #la release è opzionale e manuale.
 Perform Maven Release:
   stage: release
-  image: maven:alpine
+  image: maven:3.6.3-openjdk-17
   script:
-    - 'which git || (apk add --update git && rm -rf /var/cache/apk/*)'
-    # Install ssh-agent if not already installed, it is required by Docker.
-    # (change apt-get to yum if you use a CentOS-based image)
-    - 'which ssh-agent || ( apk add --update openssh-client && rm -rf /var/cache/apk/*)'
-
-    # Run ssh-agent (inside the build environment)
+    # Install git if missing
+    - 'command -v git || (apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*)'
+    # Install ssh-agent + ssh client if missing
+    - 'command -v ssh-agent || (apt-get update && apt-get install -y openssh-client && rm -rf /var/lib/apt/lists/*)'
+    # Run ssh-agent
     - eval $(ssh-agent -s)
-
     # Add the SSH key stored in GIT_SSH_PRIV_KEY variable to the agent store
     - ssh-add <(echo "$GIT_SSH_PRIV_KEY")
 
@@ -64,14 +62,18 @@ Perform Maven Release:
     - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
     - git config --global user.email "marco.spasiano@cnr.it"
     - git config --global user.name "marco.spasiano"
-    - git checkout -B "$CI_BUILD_REF_NAME"
+    - git checkout -B "$CI_COMMIT_REF_NAME"
 
-    # Add gpg private key
-    - 'which gnupg || ( apk add --update gnupg && rm -rf /var/cache/apk/*)'
-    - gpg -v --list-keys
+    # Install GPG
+    - 'command -v gpg || (apt-get update && apt-get install -y gnupg && rm -rf /var/lib/apt/lists/*)'
+    # Prepare GPG configuration
+    - mkdir -p /root/.gnupg
+    - chmod 700 /root/.gnupg
     - echo "pinentry-mode loopback" > /root/.gnupg/gpg.conf
     - echo "allow-loopback-pinentry" > /root/.gnupg/gpg-agent.conf
+    # Import GPG private key
     - gpg --batch --import <(echo "$GPG_PRIVATE_KEY")
+
     - mvn release:clean release:prepare -DreleaseVersion=$MAVEN_RELEASE_VERSION -Darguments="-Dgpg.passphrase=$GPG_PASSPHRASE -DskipTests" -Dresume=false -B $MAVEN_CLI_CENTRAL_OPTS -DscmCommentPrefix="[ci skip]"
     - mvn release:perform -Darguments="-Dgpg.passphrase=$GPG_PASSPHRASE -DskipTests" -Dresume=false -B $MAVEN_CLI_CENTRAL_OPTS -DscmCommentPrefix="[ci skip]"
   only:

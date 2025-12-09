@@ -29,16 +29,16 @@ import it.cnr.jada.util.ejb.EJBCommonServices;
 import it.cnr.jada.util.jsp.JSPUtils;
 import it.cnr.jada.util.servlet.MultipartWrapper;
 import it.cnr.jada.util.upload.UploadedFile;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.jsp.PageContext;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.servlet.jsp.PageContext;
 import javax.xml.parsers.ParserConfigurationException;
 import java.beans.IntrospectionException;
 import java.io.*;
@@ -86,11 +86,11 @@ public class HttpActionContext
             if (s == null) {
                 Long long1 = (Long) httpsession.getAttribute("it.cnr.jada.action.HttpActionContext.actionCounter.frame");
                 if (long1 == null)
-                    long1 = new Long(0L);
+                    long1 = Long.valueOf(0L);
                 else
-                    long1 = new Long(long1.longValue() + 1L);
+                    long1 = Long.valueOf(long1.longValue() + 1L);
                 httpsession.setAttribute("it.cnr.jada.action.HttpActionContext.actionCounter.frame", long1);
-                httpsession.setAttribute("it.cnr.jada.action.HttpActionContext.actionCounter." + long1, new Long(0L));
+                httpsession.setAttribute("it.cnr.jada.action.HttpActionContext.actionCounter." + long1, Long.valueOf(0L));
                 pagecontext.getOut().print(long1.toString() + "-0");
             } else {
                 int i = s.indexOf('-');
@@ -227,7 +227,7 @@ public class HttpActionContext
         if (Long.parseLong(s.substring(i + 1)) != l) {
             return false;
         } else {
-            getSession().setAttribute(s1, new Long(++l));
+            getSession().setAttribute(s1, Long.valueOf(++l));
             return true;
         }
     }
@@ -777,10 +777,10 @@ public class HttpActionContext
         else if (class1 == java.lang.Short.class || class1 == Short.TYPE)
             obj = Short.valueOf(s1);
         else if (class1 == java.lang.Character.class || class1 == Character.TYPE)
-            obj = new Character(s1.length() != 0 ? s1.charAt(0) : '\0');
+            obj = Character.valueOf(s1.length() != 0 ? s1.charAt(0) : '\0');
         else if (class1 == java.lang.Boolean.class || class1 == Boolean.TYPE) {
             s1 = s1.toUpperCase();
-            obj = new Boolean(s1.startsWith("Y") || s1.startsWith("T"));
+            obj = Boolean.valueOf(s1.startsWith("Y") || s1.startsWith("T"));
         }
         if (class1.isPrimitive() && obj == null) {
             throw new ParseException("The conversion of \"" + s1 + "\" is a null Object, but the property is primitive", 0);

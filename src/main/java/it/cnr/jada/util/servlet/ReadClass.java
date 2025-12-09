@@ -29,7 +29,7 @@ import org.apache.xerces.parsers.SAXParser;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
-import javax.ejb.EJBException;
+import jakarta.ejb.EJBException;
 import java.rmi.RemoteException;
 
 /**

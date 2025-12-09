@@ -28,8 +28,8 @@ import it.cnr.jada.util.RemoteIterator;
 import it.cnr.jada.util.ejb.EJBCommonServices;
 import it.cnr.jada.util.ejb.EJBTracer;
 
-import javax.ejb.CreateException;
-import javax.ejb.EJBException;
+import jakarta.ejb.CreateException;
+import jakarta.ejb.EJBException;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.io.StringWriter;

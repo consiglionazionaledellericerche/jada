@@ -18,10 +18,10 @@
 package it.cnr.jada.util.action;
 
 import it.cnr.jada.util.jsp.TableCustomizer;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.jsp.JspWriter;
+import jakarta.servlet.jsp.PageContext;
 
-import javax.servlet.ServletException;
-import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.PageContext;
 import java.io.IOException;
 import java.util.List;
 
@@ -35,7 +35,7 @@ public class CollapsableDetailCRUDController extends SimpleDetailCRUDController 
         super(s, class1, s1, formcontroller, flag);
     }
 
-    public void closeHTMLTable(PageContext pagecontext) throws IOException, ServletException{
+    public void closeHTMLTable(PageContext pagecontext) throws IOException, ServletException {
         JspWriter jspwriter = pagecontext.getOut();
         jspwriter.println("</div>");
         jspwriter.println("</div>");

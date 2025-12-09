@@ -22,10 +22,10 @@ import it.cnr.jada.comp.ComponentException;
 import it.cnr.jada.excel.bulk.Excel_spoolerBulk;
 import it.cnr.jada.excel.comp.ExcelComponent;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.EJBException;
-import javax.ejb.Remove;
-import javax.ejb.Stateless;
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.EJBException;
+import jakarta.ejb.Remove;
+import jakarta.ejb.Stateless;
 import java.rmi.RemoteException;
 
 /**
@@ -34,10 +34,6 @@ import java.rmi.RemoteException;
 @Stateless(name = "BFRAMEEXCEL_EJB_BframeExcelComponentSession")
 public class BframeExcelComponentSessionBean extends it.cnr.jada.ejb.GenericComponentSessionBean implements BframeExcelComponentSession {
     private ExcelComponent componentObj;
-
-    public static BframeExcelComponentSessionBean newInstance() throws EJBException {
-        return new BframeExcelComponentSessionBean();
-    }
 
     public void ejbActivate() throws EJBException {
     }
@@ -63,7 +59,7 @@ public class BframeExcelComponentSessionBean extends it.cnr.jada.ejb.GenericComp
                                       String param5,
                                       String param6,
                                       it.cnr.jada.persistency.sql.ColumnMap param7,
-                                      it.cnr.jada.bulk.OggettoBulk param8) throws it.cnr.jada.comp.ComponentException, javax.ejb.EJBException {
+                                      it.cnr.jada.bulk.OggettoBulk param8) throws it.cnr.jada.comp.ComponentException, jakarta.ejb.EJBException {
         pre_component_invocation(param0, componentObj);
         try {
             Excel_spoolerBulk result = componentObj.addQueue(param0, param1, param2, param3, param4, param5, param6, param7, param8);
@@ -82,7 +78,7 @@ public class BframeExcelComponentSessionBean extends it.cnr.jada.ejb.GenericComp
         }
     }
 
-    public void deleteJobs(it.cnr.jada.UserContext param0, it.cnr.jada.excel.bulk.Excel_spoolerBulk[] param1) throws it.cnr.jada.comp.ComponentException, javax.ejb.EJBException {
+    public void deleteJobs(it.cnr.jada.UserContext param0, it.cnr.jada.excel.bulk.Excel_spoolerBulk[] param1) throws it.cnr.jada.comp.ComponentException, jakarta.ejb.EJBException {
         pre_component_invocation(param0, componentObj);
         try {
             componentObj.deleteJobs(param0, param1);
@@ -100,7 +96,7 @@ public class BframeExcelComponentSessionBean extends it.cnr.jada.ejb.GenericComp
         }
     }
 
-    public it.cnr.jada.util.RemoteIterator queryJobs(it.cnr.jada.UserContext param0) throws it.cnr.jada.comp.ComponentException, javax.ejb.EJBException {
+    public it.cnr.jada.util.RemoteIterator queryJobs(it.cnr.jada.UserContext param0) throws it.cnr.jada.comp.ComponentException, jakarta.ejb.EJBException {
         pre_component_invocation(param0, componentObj);
         try {
             it.cnr.jada.util.RemoteIterator result = componentObj.queryJobs(param0);

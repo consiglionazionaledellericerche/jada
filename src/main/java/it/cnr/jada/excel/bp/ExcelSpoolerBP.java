@@ -32,8 +32,9 @@ import it.cnr.jada.excel.ejb.BframeExcelComponentSession;
 import it.cnr.jada.util.action.SelezionatoreListaBP;
 import it.cnr.jada.util.jsp.Button;
 import it.cnr.jada.util.jsp.JSPUtils;
-
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.jsp.PageContext;
 
 /**
  * @author mspasiano
@@ -102,7 +103,7 @@ public class ExcelSpoolerBP extends SelezionatoreListaBP {
 		setModel(context,model);
 	}
 	*/
-    public void writeToolbar(javax.servlet.jsp.PageContext pageContext) throws java.io.IOException, javax.servlet.ServletException {
+    public void writeToolbar(PageContext pageContext) throws java.io.IOException, ServletException {
         Button[] toolbar = getToolbar();
         Excel_spoolerBulk excel_spooler = (Excel_spoolerBulk) getFocusedElement();
         if (excel_spooler != null && excel_spooler.isEseguita())

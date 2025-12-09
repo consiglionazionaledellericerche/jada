@@ -24,9 +24,9 @@ import it.cnr.jada.persistency.sql.Query;
 import it.cnr.jada.util.ejb.EJBCommonServices;
 import it.cnr.jada.util.ejb.TransactionClosedException;
 
-import javax.annotation.Resource;
-import javax.ejb.*;
-import javax.transaction.*;
+import jakarta.annotation.Resource;
+import jakarta.ejb.*;
+import jakarta.transaction.*;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -39,7 +39,7 @@ import java.sql.SQLException;
 public class BulkLoaderIteratorBean extends BaseBulkLoaderIteratorBean implements BulkLoaderIterator {
     static final long serialVersionUID = 0x2c7e5503d9bf9553L;
     @Resource
-    javax.transaction.UserTransaction usertransaction;
+    jakarta.transaction.UserTransaction usertransaction;
     private transient Connection connection;
 
     public BulkLoaderIteratorBean() {

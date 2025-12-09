@@ -17,9 +17,9 @@
 
 package it.cnr.jada;
 
-import javax.ejb.EJBException;
-import javax.ejb.RemoveException;
-import javax.transaction.RollbackException;
+import jakarta.ejb.EJBException;
+import jakarta.ejb.RemoveException;
+import jakarta.transaction.RollbackException;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.rmi.RemoteException;

@@ -28,10 +28,10 @@ import it.cnr.jada.persistency.sql.CompoundFindClause;
 import it.cnr.jada.util.Config;
 import it.cnr.jada.util.RemoteIterator;
 import it.cnr.jada.util.jsp.Button;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.jsp.JspWriter;
+import jakarta.servlet.jsp.PageContext;
 
-import javax.servlet.ServletException;
-import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.PageContext;
 import java.io.*;
 import java.text.DateFormat;
 import java.time.ZoneId;

@@ -18,9 +18,9 @@
 package it.cnr.jada.util.upload;
 
 import it.cnr.jada.util.servlet.MultipartWrapper;
+import jakarta.servlet.*;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 

@@ -24,8 +24,8 @@ import it.cnr.jada.bulk.BulkInfo;
 import it.cnr.jada.bulk.FieldValidationMap;
 import it.cnr.jada.bulk.FillException;
 import it.cnr.jada.bulk.ValidationException;
+import jakarta.servlet.jsp.JspWriter;
 
-import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
 import java.util.Enumeration;
 

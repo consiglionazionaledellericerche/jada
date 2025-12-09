@@ -25,15 +25,12 @@ import it.cnr.jada.comp.ComponentException;
 import it.cnr.jada.comp.NoRollbackException;
 import it.cnr.jada.util.RemoteIterator;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.Remove;
-import javax.ejb.Stateless;
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.Remove;
+import jakarta.ejb.Stateless;
 
 @Stateless(name = "BFRAMEBLOBS_EJB_BframeBlobComponentSession")
 public class BframeBlobComponentSessionBean extends it.cnr.jada.ejb.RicercaComponentSessionBean implements BframeBlobComponentSession {
-    public static it.cnr.jada.ejb.RicercaComponentSessionBean newInstance() throws javax.ejb.EJBException {
-        return new BframeBlobComponentSessionBean();
-    }
 
     @PostConstruct
     public void ejbCreate() {
@@ -41,12 +38,12 @@ public class BframeBlobComponentSessionBean extends it.cnr.jada.ejb.RicercaCompo
     }
 
     @Remove
-    public void ejbRemove() throws javax.ejb.EJBException {
+    public void ejbRemove() throws jakarta.ejb.EJBException {
         componentObj.release();
     }
 
     public void elimina(UserContext param0, Bframe_blob_pathBulk param1[])
-            throws ComponentException, javax.ejb.EJBException {
+            throws ComponentException, jakarta.ejb.EJBException {
         pre_component_invocation(param0, componentObj);
         try {
             ((BframeBlobComponent) componentObj).elimina(param0, param1);
@@ -65,7 +62,7 @@ public class BframeBlobComponentSessionBean extends it.cnr.jada.ejb.RicercaCompo
     }
 
     public RemoteIterator getBlobChildren(UserContext param0, Bframe_blob_pathBulk param1, String param2)
-            throws ComponentException, javax.ejb.EJBException {
+            throws ComponentException, jakarta.ejb.EJBException {
         pre_component_invocation(param0, componentObj);
         try {
             RemoteIterator result = ((BframeBlobComponent) componentObj).getBlobChildren(param0, param1, param2);
@@ -85,7 +82,7 @@ public class BframeBlobComponentSessionBean extends it.cnr.jada.ejb.RicercaCompo
     }
 
     public Selezione_blob_tipoVBulk getSelezione_blob_tipo(UserContext param0)
-            throws ComponentException, javax.ejb.EJBException {
+            throws ComponentException, jakarta.ejb.EJBException {
         pre_component_invocation(param0, componentObj);
         try {
             Selezione_blob_tipoVBulk result = ((BframeBlobComponent) componentObj).getSelezione_blob_tipo(param0);

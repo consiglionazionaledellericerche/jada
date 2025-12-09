@@ -21,10 +21,10 @@ import it.cnr.jada.action.ActionContext;
 import it.cnr.jada.action.HttpActionContext;
 import it.cnr.jada.ejb.BulkLoaderIterator;
 import it.cnr.jada.ejb.TransactionalBulkLoaderIterator;
+import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpSession;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Optional;
@@ -91,7 +91,7 @@ public class HttpEJBCleaner implements Serializable {
             } else if (obj instanceof it.cnr.jada.UserTransaction) {
                 ((it.cnr.jada.UserTransaction) obj).remove();
             }
-        } catch (javax.ejb.NoSuchEJBException ex) {
+        } catch (jakarta.ejb.NoSuchEJBException ex) {
         } catch (Throwable _ex) {
             logger.warn("Cannot remove object: ", obj, _ex);
         }

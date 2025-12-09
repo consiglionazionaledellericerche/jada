@@ -29,8 +29,8 @@ import it.cnr.jada.persistency.sql.*;
 import it.cnr.jada.util.ejb.EJBTracer;
 import it.cnr.jada.util.ejb.TransactionClosedException;
 
-import javax.ejb.CreateException;
-import javax.ejb.EJBException;
+import jakarta.ejb.CreateException;
+import jakarta.ejb.EJBException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;

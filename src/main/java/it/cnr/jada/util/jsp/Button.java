@@ -18,8 +18,8 @@
 package it.cnr.jada.util.jsp;
 
 import it.cnr.jada.util.Introspector;
+import jakarta.servlet.jsp.JspWriter;
 
-import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Optional;

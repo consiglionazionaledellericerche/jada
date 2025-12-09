@@ -17,7 +17,8 @@
 
 package it.cnr.jada.util.upload;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
+
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;

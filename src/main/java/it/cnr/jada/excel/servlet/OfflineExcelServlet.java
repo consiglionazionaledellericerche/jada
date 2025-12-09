@@ -21,11 +21,12 @@ import it.cnr.jada.action.HttpActionContext;
 import it.cnr.jada.comp.ApplicationException;
 import it.cnr.jada.excel.bulk.Excel_spoolerBulk;
 import it.cnr.jada.persistency.sql.HomeCache;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
@@ -34,9 +35,6 @@ import java.io.IOException;
  */
 public class OfflineExcelServlet extends HttpServlet {
 
-    /**
-     * @see javax.servlet.http.HttpServlet#void (javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     */
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
@@ -49,7 +47,7 @@ public class OfflineExcelServlet extends HttpServlet {
                 return;
             }
 
-            Long pg_estrazione = new Long(request.getParameter("pg"));
+            Long pg_estrazione = Long.valueOf(request.getParameter("pg"));
 
             java.sql.Connection conn = it.cnr.jada.util.ejb.EJBCommonServices.getConnection();
 
@@ -87,7 +85,7 @@ public class OfflineExcelServlet extends HttpServlet {
                         response.setContentLength(serverConn.getContentLength());
                         response.setDateHeader("Expires", 0);
                         response.setHeader("Content-Disposition", "attachment; filename=" + file);
-                        javax.servlet.ServletOutputStream os = response.getOutputStream();
+                        ServletOutputStream os = response.getOutputStream();
                         byte[] buffer = new byte[response.getBufferSize()];
                         int buflength;
                         while ((buflength = is.read(buffer)) > 0) {
@@ -118,8 +116,8 @@ public class OfflineExcelServlet extends HttpServlet {
         }
     }
 
-    private void unauthorized(javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response) throws java.io.IOException {
-        response.setStatus(javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED);
+    private void unauthorized(HttpServletRequest request, HttpServletResponse response) throws java.io.IOException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.getWriter().println("Impossibile aprire il file Excel.<BR>");
         response.getWriter().println("Consultare il <a href=\"http://contab.cnr.it/manuali/000%20-%2001%20requisiti%20browser.doc\">Manuale della Procedura di Contabilita'</a> e verificare le Impostazioni del Browser.");
         response.flushBuffer();

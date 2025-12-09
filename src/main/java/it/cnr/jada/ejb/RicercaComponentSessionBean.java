@@ -27,10 +27,10 @@ import it.cnr.jada.persistency.Persistent;
 import it.cnr.jada.persistency.sql.CompoundFindClause;
 import it.cnr.jada.util.RemoteIterator;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.CreateException;
-import javax.ejb.EJBException;
-import javax.ejb.Remove;
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.CreateException;
+import jakarta.ejb.EJBException;
+import jakarta.ejb.Remove;
 import java.util.List;
 
 public class RicercaComponentSessionBean extends GenericComponentSessionBean implements RicercaComponentSession {
@@ -39,17 +39,13 @@ public class RicercaComponentSessionBean extends GenericComponentSessionBean imp
     public RicercaComponentSessionBean() {
     }
 
-    public static RicercaComponentSessionBean newInstance() throws EJBException {
-        return new RicercaComponentSessionBean();
-    }
-
     @PostConstruct
     public void ejbCreate() throws CreateException {
         componentObj = new RicercaComponent();
     }
 
     @Remove
-    public void ejbRemove() throws javax.ejb.EJBException {
+    public void ejbRemove() throws jakarta.ejb.EJBException {
         componentObj.release();
     }
 

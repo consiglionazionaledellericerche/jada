@@ -17,8 +17,8 @@
 
 package it.cnr.jada.ejb;
 
-import javax.ejb.EJBException;
-import javax.ejb.Remote;
+import jakarta.ejb.EJBException;
+import jakarta.ejb.Remote;
 import java.rmi.RemoteException;
 import java.sql.Timestamp;
 

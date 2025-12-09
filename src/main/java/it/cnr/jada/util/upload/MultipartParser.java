@@ -30,8 +30,9 @@ package it.cnr.jada.util.upload;
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
 
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.ServletInputStream;
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;

@@ -25,16 +25,12 @@ import it.cnr.jada.comp.NoRollbackException;
 import it.cnr.jada.persistency.sql.CompoundFindClause;
 import it.cnr.jada.util.RemoteIterator;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.EJBException;
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.EJBException;
 
 public class CRUDDetailComponentSessionBean extends CRUDComponentSessionBean implements CRUDDetailComponentSession {
 
     public CRUDDetailComponentSessionBean() {
-    }
-
-    public static CRUDComponentSessionBean newInstance() throws EJBException {
-        return new CRUDDetailComponentSessionBean();
     }
 
     @PostConstruct

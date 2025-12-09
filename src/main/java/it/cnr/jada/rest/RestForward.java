@@ -29,8 +29,8 @@ import it.cnr.jada.bulk.OggettoBulk;
 import it.cnr.jada.util.Introspector;
 import it.cnr.jada.util.action.ConsultazioniBP;
 import it.cnr.jada.util.ejb.EJBCommonServices;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.Enumeration;
 
 

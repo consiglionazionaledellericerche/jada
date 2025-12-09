@@ -19,14 +19,11 @@ package it.cnr.jada.util.action;
 
 import it.cnr.jada.action.BusinessProcessException;
 import it.cnr.jada.bulk.OggettoBulk;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.jsp.PageContext;
 
-import javax.servlet.ServletException;
-import javax.servlet.jsp.PageContext;
 import java.io.IOException;
 import java.io.Serializable;
-
-// Referenced classes of package it.cnr.jada.util.action:
-//            AbstractPrintBP, FormBP
 
 public class BulkPrintBP extends AbstractPrintBP
         implements Serializable {

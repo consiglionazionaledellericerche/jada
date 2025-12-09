@@ -32,9 +32,9 @@ package it.cnr.jada.util.servlet;
 
 import it.cnr.jada.util.upload.MultipartRequest;
 import it.cnr.jada.util.upload.UploadedFile;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.HashMap;

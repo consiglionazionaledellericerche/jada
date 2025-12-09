@@ -31,10 +31,10 @@ import it.cnr.jada.util.action.FormController;
 import it.cnr.jada.util.jsp.Button;
 import it.cnr.jada.util.jsp.JSPUtils;
 import it.cnr.jada.util.jsp.Table;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.jsp.JspWriter;
 
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.jsp.JspWriter;
 import java.beans.IntrospectionException;
 import java.io.IOException;
 import java.io.PrintWriter;

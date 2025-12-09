@@ -17,7 +17,8 @@
 
 package it.cnr.jada.action;
 
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletException;
+
 import java.io.IOException;
 import java.io.Serializable;
 

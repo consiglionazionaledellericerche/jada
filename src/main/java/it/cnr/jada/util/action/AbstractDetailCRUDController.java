@@ -30,10 +30,10 @@ import it.cnr.jada.util.Orderable;
 import it.cnr.jada.util.jsp.Button;
 import it.cnr.jada.util.jsp.Table;
 import it.cnr.jada.util.jsp.TableCustomizer;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.jsp.JspWriter;
+import jakarta.servlet.jsp.PageContext;
 
-import javax.servlet.ServletException;
-import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.PageContext;
 import java.beans.IntrospectionException;
 import java.io.IOException;
 import java.io.Serializable;

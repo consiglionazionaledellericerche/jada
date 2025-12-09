@@ -32,7 +32,7 @@ import it.cnr.jada.util.RemoteIterator;
 import it.cnr.jada.util.ejb.EJBCommonServices;
 import it.cnr.jada.util.jsp.Button;
 
-import javax.ejb.EJBException;
+import jakarta.ejb.EJBException;
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.HashSet;

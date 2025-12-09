@@ -23,11 +23,11 @@ import it.cnr.jada.comp.Component;
 import it.cnr.jada.comp.ComponentException;
 import it.cnr.jada.util.ejb.EJBCommonServices;
 
-import javax.annotation.Resource;
-import javax.ejb.EJBException;
-import javax.ejb.Remove;
-import javax.ejb.SessionContext;
-import javax.ejb.Stateless;
+import jakarta.annotation.Resource;
+import jakarta.ejb.EJBException;
+import jakarta.ejb.Remove;
+import jakarta.ejb.SessionContext;
+import jakarta.ejb.Stateless;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Optional;
@@ -110,7 +110,7 @@ public abstract class GenericComponentSessionBean implements GenericComponentSes
     }
 
     @Remove
-    public abstract void ejbRemove() throws javax.ejb.EJBException;
+    public abstract void ejbRemove() throws jakarta.ejb.EJBException;
 
     public String getTransactionalInterface() {
         String name = this.getClass().getName();
