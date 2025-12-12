@@ -32,6 +32,7 @@ import java.util.Properties;
 public class PropertyNames {
     public static final String ORACLE_PROPERTIES = "oracle.properties";
     public static final String POSTGRES_PROPERTIES = "postgres.properties";
+    public static final String H2_PROPERTIES = "h2.properties";
     public static final String POSTGRE_SQL = "PostgreSQL";
     public static final String H2 = "H2";
     public static final String ORACLE = "Oracle";
@@ -50,7 +51,7 @@ public class PropertyNames {
                     break;
                 }
                 case H2: {
-                    properties = loadFromFile(POSTGRES_PROPERTIES);
+                    properties = loadFromFile(H2_PROPERTIES);
                     break;
                 }
                 case ORACLE: {
@@ -81,6 +82,13 @@ public class PropertyNames {
         try (InputStream stream = PropertyNames.class.getResourceAsStream(filename)) {
             Properties config = new Properties();
             config.load(stream);
+            // Sovrascrivi con variabili di sistema
+            for (String key : config.stringPropertyNames()) {
+                String override = System.getProperty(key);
+                if (override != null) {
+                    config.setProperty(key, override);
+                }
+            }
             return config;
         }
     }
