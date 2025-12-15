@@ -25,7 +25,7 @@
 
 package it.cnr.jada.firma.jaxb;
 
-import javax.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
