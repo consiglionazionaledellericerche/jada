@@ -21,15 +21,15 @@ import it.cnr.jada.firma.DatiPEC;
 import it.cnr.jada.firma.jaxb.*;
 import it.cnr.jada.util.ejb.EJBCommonServices;
 
-import javax.activation.DataHandler;
-import javax.activation.FileDataSource;
-import javax.mail.Address;
-import javax.mail.MessagingException;
-import javax.mail.Transport;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
+import jakarta.activation.DataHandler;
+import jakarta.activation.FileDataSource;
+import jakarta.mail.Address;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Transport;
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMessage;
 import javax.naming.NamingException;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -44,32 +44,32 @@ import java.util.Iterator;
 import java.util.List;
 
 public class SendPecMail {
-    private static javax.mail.Session mail_session;
+    private static jakarta.mail.Session mail_session;
 
     public static void sendMail(String subject, String text, File attach, Address[] addressTO, DatiPEC datiPEC, Address[] addressCC, Address[] addressBCC) throws MessagingException, NamingException, JAXBException, IOException {
         javax.naming.InitialContext ctx = new javax.naming.InitialContext();
         if (mail_session == null) {
             try {
-                mail_session = (javax.mail.Session) ctx.lookup("java:comp/env/mail/PecMailSession");
+                mail_session = (jakarta.mail.Session) ctx.lookup("java:comp/env/mail/PecMailSession");
             } catch (NamingException e) {
-                mail_session = (javax.mail.Session) ctx.lookup("java:jboss/mail/PecMailSession");
+                mail_session = (jakarta.mail.Session) ctx.lookup("java:jboss/mail/PecMailSession");
             }
         }
         MimeMessage msg = new MimeMessage(mail_session);
-        msg.setRecipients(javax.mail.Message.RecipientType.TO, addressTO);
+        msg.setRecipients(jakarta.mail.Message.RecipientType.TO, addressTO);
         if (addressCC != null)
-            msg.setRecipients(javax.mail.Message.RecipientType.CC, addressCC);
+            msg.setRecipients(jakarta.mail.Message.RecipientType.CC, addressCC);
         if (addressBCC != null)
-            msg.setRecipients(javax.mail.Message.RecipientType.BCC, addressBCC);
+            msg.setRecipients(jakarta.mail.Message.RecipientType.BCC, addressBCC);
         msg.setFrom();
         msg.setSubject(subject);
-        javax.mail.internet.MimeMultipart multipart = new javax.mail.internet.MimeMultipart();
-        javax.mail.internet.MimeBodyPart messageBodyPart = new javax.mail.internet.MimeBodyPart();
-        javax.mail.internet.InternetHeaders internetHeaders = new javax.mail.internet.InternetHeaders();
-        internetHeaders = new javax.mail.internet.InternetHeaders();
+        jakarta.mail.internet.MimeMultipart multipart = new jakarta.mail.internet.MimeMultipart();
+        jakarta.mail.internet.MimeBodyPart messageBodyPart = new jakarta.mail.internet.MimeBodyPart();
+        jakarta.mail.internet.InternetHeaders internetHeaders = new jakarta.mail.internet.InternetHeaders();
+        internetHeaders = new jakarta.mail.internet.InternetHeaders();
         internetHeaders.addHeader("Content-Description", "test.html");
         internetHeaders.addHeader("Content-Type", "text/html");
-        multipart.addBodyPart(new javax.mail.internet.MimeBodyPart(internetHeaders, text.getBytes(StandardCharsets.UTF_8)));
+        multipart.addBodyPart(new jakarta.mail.internet.MimeBodyPart(internetHeaders, text.getBytes(StandardCharsets.UTF_8)));
         // allego il file firmato
         MimeBodyPart attachmentPart = new MimeBodyPart();
         if (attach != null) {

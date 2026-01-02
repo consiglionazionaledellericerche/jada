@@ -42,8 +42,8 @@ import it.cnr.jada.util.Introspector;
 import it.cnr.jada.util.OrderedHashtable;
 import it.cnr.jada.util.SendMail;
 
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.InternetAddress;
 import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;

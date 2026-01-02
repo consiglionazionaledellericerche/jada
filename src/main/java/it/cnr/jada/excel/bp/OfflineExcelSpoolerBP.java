@@ -23,8 +23,8 @@ import it.cnr.jada.util.jsp.Button;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.jsp.PageContext;
 
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.InternetAddress;
 import java.io.IOException;
 import java.util.StringTokenizer;
 

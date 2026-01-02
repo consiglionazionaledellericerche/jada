@@ -25,11 +25,11 @@ package it.cnr.jada.util;
 
 import it.cnr.jada.util.ejb.EJBCommonServices;
 
-import javax.mail.Address;
-import javax.mail.Transport;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.Address;
+import jakarta.mail.Transport;
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 import javax.naming.NamingException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -45,7 +45,7 @@ import java.util.Iterator;
 public class SendMail {
     public static final String JAVA_COMP_ENV_MAIL_MAIL_SESSION = "java:comp/env/mail/MailSession";
     public static final String JAVA_JBOSS_MAIL_DEFAULT = "java:jboss/mail/Default";
-    private static javax.mail.Session mail_session;
+    private static jakarta.mail.Session mail_session;
 
     public static void sendErrorMail(String subject, String text, java.util.List<String> addressTO, java.util.List<String> addressCC, java.util.List<String> addressBCC) {
         try {
@@ -58,31 +58,31 @@ public class SendMail {
             javax.naming.InitialContext ctx = new javax.naming.InitialContext();
             if (mail_session == null) {
                 try {
-                    mail_session = (javax.mail.Session) ctx.lookup(JAVA_COMP_ENV_MAIL_MAIL_SESSION);
+                    mail_session = (jakarta.mail.Session) ctx.lookup(JAVA_COMP_ENV_MAIL_MAIL_SESSION);
                 } catch (NamingException e) {
-                    mail_session = (javax.mail.Session) ctx.lookup(JAVA_JBOSS_MAIL_DEFAULT);
+                    mail_session = (jakarta.mail.Session) ctx.lookup(JAVA_JBOSS_MAIL_DEFAULT);
                 }
             }
             MimeMessage msg = new MimeMessage(mail_session);
             msg.setFrom();
             if (addressTO == null) {
-                msg.setRecipients(javax.mail.Message.RecipientType.TO, msg.getFrom());
+                msg.setRecipients(jakarta.mail.Message.RecipientType.TO, msg.getFrom());
             } else {
-                msg.setRecipients(javax.mail.Message.RecipientType.TO, indirizzi(addressTO));
+                msg.setRecipients(jakarta.mail.Message.RecipientType.TO, indirizzi(addressTO));
             }
             if (addressCC != null)
-                msg.setRecipients(javax.mail.Message.RecipientType.CC, indirizzi(addressCC));
+                msg.setRecipients(jakarta.mail.Message.RecipientType.CC, indirizzi(addressCC));
             if (addressBCC != null)
-                msg.setRecipients(javax.mail.Message.RecipientType.BCC, indirizzi(addressBCC));
+                msg.setRecipients(jakarta.mail.Message.RecipientType.BCC, indirizzi(addressBCC));
 
             msg.setSubject(subject + " Hostname:" + hostname);
-            javax.mail.internet.MimeMultipart multipart = new javax.mail.internet.MimeMultipart();
-            javax.mail.internet.MimeBodyPart messageBodyPart = new javax.mail.internet.MimeBodyPart();
-            javax.mail.internet.InternetHeaders internetHeaders = new javax.mail.internet.InternetHeaders();
-            internetHeaders = new javax.mail.internet.InternetHeaders();
+            jakarta.mail.internet.MimeMultipart multipart = new jakarta.mail.internet.MimeMultipart();
+            jakarta.mail.internet.MimeBodyPart messageBodyPart = new jakarta.mail.internet.MimeBodyPart();
+            jakarta.mail.internet.InternetHeaders internetHeaders = new jakarta.mail.internet.InternetHeaders();
+            internetHeaders = new jakarta.mail.internet.InternetHeaders();
             internetHeaders.addHeader("Content-Description", "test.html");
             internetHeaders.addHeader("Content-Type", "text/plain");
-            multipart.addBodyPart(new javax.mail.internet.MimeBodyPart(internetHeaders, text.getBytes(StandardCharsets.UTF_8)));
+            multipart.addBodyPart(new jakarta.mail.internet.MimeBodyPart(internetHeaders, text.getBytes(StandardCharsets.UTF_8)));
             msg.setContent(multipart);
             msg.setSentDate(EJBCommonServices.getServerTimestamp());
             Transport.send(msg);
@@ -95,26 +95,26 @@ public class SendMail {
             javax.naming.InitialContext ctx = new javax.naming.InitialContext();
             if (mail_session == null) {
                 try {
-                    mail_session = (javax.mail.Session) ctx.lookup(JAVA_COMP_ENV_MAIL_MAIL_SESSION);
+                    mail_session = (jakarta.mail.Session) ctx.lookup(JAVA_COMP_ENV_MAIL_MAIL_SESSION);
                 } catch (NamingException e) {
-                    mail_session = (javax.mail.Session) ctx.lookup(JAVA_JBOSS_MAIL_DEFAULT);
+                    mail_session = (jakarta.mail.Session) ctx.lookup(JAVA_JBOSS_MAIL_DEFAULT);
                 }
             }
             MimeMessage msg = new MimeMessage(mail_session);
-            msg.setRecipients(javax.mail.Message.RecipientType.TO, addressTO);
+            msg.setRecipients(jakarta.mail.Message.RecipientType.TO, addressTO);
             if (addressCC != null)
-                msg.setRecipients(javax.mail.Message.RecipientType.CC, addressCC);
+                msg.setRecipients(jakarta.mail.Message.RecipientType.CC, addressCC);
             if (addressBCC != null)
-                msg.setRecipients(javax.mail.Message.RecipientType.BCC, addressBCC);
+                msg.setRecipients(jakarta.mail.Message.RecipientType.BCC, addressBCC);
             msg.setFrom(new InternetAddress(mail_session.getProperty("mail.from")));
             msg.setSubject(subject);
-            javax.mail.internet.MimeMultipart multipart = new javax.mail.internet.MimeMultipart();
-            javax.mail.internet.MimeBodyPart messageBodyPart = new javax.mail.internet.MimeBodyPart();
-            javax.mail.internet.InternetHeaders internetHeaders = new javax.mail.internet.InternetHeaders();
-            internetHeaders = new javax.mail.internet.InternetHeaders();
+            jakarta.mail.internet.MimeMultipart multipart = new jakarta.mail.internet.MimeMultipart();
+            jakarta.mail.internet.MimeBodyPart messageBodyPart = new jakarta.mail.internet.MimeBodyPart();
+            jakarta.mail.internet.InternetHeaders internetHeaders = new jakarta.mail.internet.InternetHeaders();
+            internetHeaders = new jakarta.mail.internet.InternetHeaders();
             internetHeaders.addHeader("Content-Description", "test.html");
             internetHeaders.addHeader("Content-Type", "text/html");
-            multipart.addBodyPart(new javax.mail.internet.MimeBodyPart(internetHeaders, text.getBytes(StandardCharsets.UTF_8)));
+            multipart.addBodyPart(new jakarta.mail.internet.MimeBodyPart(internetHeaders, text.getBytes(StandardCharsets.UTF_8)));
             msg.setContent(multipart);
             msg.setSentDate(EJBCommonServices.getServerTimestamp());
             Transport.send(msg);

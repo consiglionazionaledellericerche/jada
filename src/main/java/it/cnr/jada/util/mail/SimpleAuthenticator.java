@@ -17,8 +17,8 @@
 
 package it.cnr.jada.util.mail;
 
-import javax.mail.Authenticator;
-import javax.mail.PasswordAuthentication;
+import jakarta.mail.Authenticator;
+import jakarta.mail.PasswordAuthentication;
 
 public class SimpleAuthenticator extends Authenticator {
     private String user;
