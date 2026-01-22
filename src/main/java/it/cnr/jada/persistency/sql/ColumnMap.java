@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 // Referenced classes of package it.cnr.jada.persistency.sql:
 //            ColumnMapping, SQLPersistentInfo
@@ -176,10 +177,9 @@ public class ColumnMap
     }
 
     private String buildDefaultSelectHeaderSQL() {
-        return Arrays.asList(getColumnNames()).stream()
+        return Arrays.stream(getColumnNames())
                 .map(columnName -> Optional.ofNullable(columnName)
-                        .filter(s -> s.indexOf(".") != -1)
-                        .map(s -> s)
+                        .filter(s -> s.contains(".") || ((ColumnMapping) columns.get(s)).isCount())
                         .orElse(getTableName().concat(".").concat(columnName))
                 ).collect(Collectors.joining(",")).concat("\n");
     }

@@ -175,8 +175,13 @@ public class SQLBroker extends Broker
             else
                 return fetchColumnValue(
                         Optional.ofNullable(columnmapping.getColumnName())
-                            .filter(s1 -> s1.contains("."))
-                            .map(s1 -> s1.substring(s1.indexOf(".") + 1))
+                            .filter(s1 -> s1.contains(".") || columnmapping.isCount())
+                            .map(s1 -> {
+                                if (columnmapping.isCount())
+                                    return s1.substring(s1.indexOf(" ") + 1);
+                                return s1.substring(s1.indexOf(".") + 1);
+
+                            })
                             .orElse(columnmapping.getColumnName()),
                         class1);
         } catch (SQLException sqlexception) {

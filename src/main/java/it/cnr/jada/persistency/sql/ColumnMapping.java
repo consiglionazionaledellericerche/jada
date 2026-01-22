@@ -33,6 +33,7 @@ import java.util.Map;
  * propertyName Nome della PersistentProperty su cui mappata la colonna
  * primary se true la colonna fisica fa parte della chiave primaria della tabella
  * fetchOnly se true la ColumnMapping viene aggiunta solo alla mappatura delle property;
+ * count se true non viene aggiunto il table name
  * in pratica questa mappatura viene usata solo in lettura e non in scrittura.
  * converterClassName Nome della classe da utilizzare come converter dal tipo di dati SQL al tipo della PersistentProperty e viceversa
  * sqlType Il tipo SQL della colonna fisica; una stringa che puo assumere i seguenti valori:
@@ -149,6 +150,7 @@ public class ColumnMapping implements Serializable {
     private boolean fetchOnly;
     private Boolean orderable;
     private int ordinalPosition;
+    private boolean count;
 
     public ColumnMapping() {
         ordinalPosition = 0;
@@ -274,6 +276,14 @@ public class ColumnMapping implements Serializable {
 
     public void setFetchOnly(boolean flag) {
         fetchOnly = flag;
+    }
+
+    public boolean isCount() {
+        return count;
+    }
+
+    public void setCount(boolean flag) {
+        count = flag;
     }
 
     public boolean isNullable() {
