@@ -177,7 +177,7 @@ public class SQLBroker extends Broker
                         Optional.ofNullable(columnmapping.getColumnName())
                             .filter(s1 -> s1.contains(".") || s1.contains(" "))
                             .map(s1 -> {
-                                if (s1.contains(" ")) return s1.substring(s1.indexOf(" ") + 1);
+                                if (s1.contains(" ")) return s1.substring(s1.lastIndexOf(" ") + 1);
                                 return s1.substring(s1.indexOf(".") + 1);
                             }).orElse(columnmapping.getColumnName()),
                         class1);
