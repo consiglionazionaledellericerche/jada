@@ -17,9 +17,9 @@
 
 package it.cnr.jada.util.mail;
 
-import org.apache.commons.mail.Email;
-import org.apache.commons.mail.EmailException;
-import org.apache.commons.mail.MultiPartEmail;
+import org.apache.commons.mail2.core.EmailException;
+import org.apache.commons.mail2.jakarta.Email;
+import org.apache.commons.mail2.jakarta.MultiPartEmail;
 
 import java.util.List;
 
