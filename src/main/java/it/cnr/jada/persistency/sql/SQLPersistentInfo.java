@@ -26,10 +26,7 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 // Referenced classes of package it.cnr.jada.persistency.sql:
 //            ColumnMap, ColumnMapping
@@ -54,9 +51,9 @@ public class SQLPersistentInfo extends SimplePersistentInfo
         super(class1, introspector);
         InputStream inputStream = null;
         try {
-            URL resurl = this.getClass().getResource(inputstream);
-            if (resurl != null)
-                inputStream = resurl.openStream();
+            URL resultURL = Optional.ofNullable(this.getClass().getResource(inputstream)).orElseGet(() -> this.getClass().getResource("/META-INF/" + inputstream));
+            if (resultURL != null)
+                inputStream = resultURL.openStream();
         } catch (IOException e1) {
         }
         if (columnMaps == null)

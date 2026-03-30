@@ -119,7 +119,8 @@ public class Config
         try {
             inputstream = new FileInputStream(new File(path, class1.getName() + ".properties"));
         } catch (IOException e1) {
-            URL resurl = this.getClass().getResource("/" + class1.getPackage().getName().replace('.', '/') + "/" + class1.getSimpleName() + ".properties");
+            String name = "/" + class1.getPackage().getName().replace('.', '/') + "/" + class1.getSimpleName() + ".properties";
+            URL resurl = Optional.ofNullable(this.getClass().getResource(name)).orElseGet(() -> class1.getResource("/META-INF/" + name));
             if (resurl != null)
                 inputstream = resurl.openStream();
         }

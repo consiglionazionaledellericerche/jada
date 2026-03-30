@@ -122,9 +122,10 @@ public class BulkInfo implements Serializable {
             } else {
                 InputStream inputstream = null;
                 try {
-                    URL resurl = class1.getResource("/" + class1.getPackage().getName().replace('.', '/') + "/" + class1.getSimpleName() + "Info.xml");
-                    if (resurl != null)
-                        inputstream = resurl.openStream();
+                    String name = "/" + class1.getPackage().getName().replace('.', '/') + "/" + class1.getSimpleName() + "Info.xml";
+                    URL resultURL = Optional.ofNullable(class1.getResource(name)).orElseGet(() -> class1.getResource("/META-INF/" + name));
+                    if (resultURL != null)
+                        inputstream = resultURL.openStream();
                 } catch (IOException e1) {
                 }
                 if (inputstream == null)
