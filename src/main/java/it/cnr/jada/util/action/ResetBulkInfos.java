@@ -46,7 +46,13 @@ public class ResetBulkInfos extends BusinessProcess implements Serializable {
         try {
             adminSession.resetPersistentInfos();
         } catch (Throwable throwable) {
-            handleException(throwable);
+            throw handleException(throwable);
         }
+    }
+
+    @Override
+    public BusinessProcess initBusinessProcess(ActionContext actioncontext) throws BusinessProcessException {
+        actioncontext.closeBusinessProcess();
+        return actioncontext.getBusinessProcess();
     }
 }
