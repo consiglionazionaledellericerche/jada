@@ -82,9 +82,14 @@ public class PropertyNames {
         try (InputStream stream = PropertyNames.class.getResourceAsStream(filename)) {
             Properties config = new Properties();
             config.load(stream);
-            // Sovrascrivi con variabili di sistema
+            // Sovrascrivi con variabili di sistema o env
             for (String key : config.stringPropertyNames()) {
                 String override = System.getProperty(key);
+                if (override == null) {
+                    // Converti la chiave in formato env: "my.key.name" -> "MY_KEY_NAME"
+                    String envKey = key.replace('.', '_').replace('-', '_').toUpperCase();
+                    override = System.getenv(envKey);
+                }
                 if (override != null) {
                     config.setProperty(key, override);
                 }
