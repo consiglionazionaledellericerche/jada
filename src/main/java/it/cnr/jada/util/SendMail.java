@@ -15,118 +15,172 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*
- * Created on Sep 12, 2005
- *
- * To change the template for this generated file go to
- * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
- */
 package it.cnr.jada.util;
 
 import it.cnr.jada.util.ejb.EJBCommonServices;
 
 import jakarta.mail.Address;
+import jakarta.mail.Message;
+import jakarta.mail.Session;
 import jakarta.mail.Transport;
 import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.InternetHeaders;
+import jakarta.mail.internet.MimeBodyPart;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
+import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- * @author mspasiano
+ * Invio di email tramite la sessione di posta configurata nell'application server.
  * <p>
- * To change the template for this generated type comment go to
- * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
+ * Il nome JNDI della sessione viene risolto in quest'ordine:
+ * <ol>
+ *     <li>system property {@value #PROP_MAIL_JNDI} (es. {@code -Dsigla.mail.jndi=java:jboss/mail/sigla})</li>
+ *     <li>variabile d'ambiente {@value #ENV_MAIL_JNDI}</li>
+ *     <li>{@value #JAVA_COMP_ENV_MAIL_MAIL_SESSION}</li>
+ *     <li>{@value #JAVA_JBOSS_MAIL_DEFAULT}</li>
+ * </ol>
+ *
+ * @author mspasiano
  */
 public class SendMail {
     public static final String JAVA_COMP_ENV_MAIL_MAIL_SESSION = "java:comp/env/mail/MailSession";
     public static final String JAVA_JBOSS_MAIL_DEFAULT = "java:jboss/mail/Default";
-    private static jakarta.mail.Session mail_session;
+    public static final String JAVA_JBOSS_MAIL_SIGLA ="java:jboss/mail/sigla";
+    public static final String PROP_MAIL_JNDI = "sigla.mail.jndi";
+    public static final String ENV_MAIL_JNDI = "SIGLA_MAIL_JNDI";
 
-    public static void sendErrorMail(String subject, String text, java.util.List<String> addressTO, java.util.List<String> addressCC, java.util.List<String> addressBCC) {
-        try {
-            String hostname = "";
-            try {
-                InetAddress addr = InetAddress.getLocalHost();
-                hostname = addr.getHostName();
-            } catch (UnknownHostException e) {
+    private static final Logger LOGGER = Logger.getLogger(SendMail.class.getName());
+    private static final String CONTENT_DESCRIPTION = "test.html";
+
+    private static volatile Session mail_session;
+
+    private SendMail() {
+    }
+
+    /**
+     * Restituisce la sessione di posta, cercandola una sola volta e mantenendola in cache.
+     */
+    private static Session getMailSession() throws NamingException {
+        Session session = mail_session;
+        if (session != null) {
+            return session;
+        }
+        synchronized (SendMail.class) {
+            if (mail_session != null) {
+                return mail_session;
             }
-            javax.naming.InitialContext ctx = new javax.naming.InitialContext();
-            if (mail_session == null) {
+            InitialContext ctx = new InitialContext();
+            List<String> candidati = new ArrayList<>();
+
+            String configurato = System.getProperty(PROP_MAIL_JNDI);
+            if (configurato == null || configurato.isBlank()) {
+                configurato = System.getenv(ENV_MAIL_JNDI);
+            }
+            if (configurato != null && !configurato.isBlank()) {
+                candidati.add(configurato.trim());
+            }
+            candidati.add(JAVA_COMP_ENV_MAIL_MAIL_SESSION);
+            candidati.add(JAVA_JBOSS_MAIL_DEFAULT);
+            candidati.add(JAVA_JBOSS_MAIL_SIGLA);
+
+            NamingException ultimo = null;
+            for (String nome : candidati) {
                 try {
-                    mail_session = (jakarta.mail.Session) ctx.lookup(JAVA_COMP_ENV_MAIL_MAIL_SESSION);
+                    mail_session = (Session) ctx.lookup(nome);
+                    LOGGER.log(Level.INFO, "Sessione di posta trovata: {0}", nome);
+                    return mail_session;
                 } catch (NamingException e) {
-                    mail_session = (jakarta.mail.Session) ctx.lookup(JAVA_JBOSS_MAIL_DEFAULT);
+                    LOGGER.log(Level.FINE, "Sessione di posta non trovata: {0}", nome);
+                    ultimo = e;
                 }
             }
-            MimeMessage msg = new MimeMessage(mail_session);
-            msg.setFrom();
-            if (addressTO == null) {
-                msg.setRecipients(jakarta.mail.Message.RecipientType.TO, msg.getFrom());
-            } else {
-                msg.setRecipients(jakarta.mail.Message.RecipientType.TO, indirizzi(addressTO));
-            }
-            if (addressCC != null)
-                msg.setRecipients(jakarta.mail.Message.RecipientType.CC, indirizzi(addressCC));
-            if (addressBCC != null)
-                msg.setRecipients(jakarta.mail.Message.RecipientType.BCC, indirizzi(addressBCC));
-
-            msg.setSubject(subject + " Hostname:" + hostname);
-            jakarta.mail.internet.MimeMultipart multipart = new jakarta.mail.internet.MimeMultipart();
-            jakarta.mail.internet.MimeBodyPart messageBodyPart = new jakarta.mail.internet.MimeBodyPart();
-            jakarta.mail.internet.InternetHeaders internetHeaders = new jakarta.mail.internet.InternetHeaders();
-            internetHeaders = new jakarta.mail.internet.InternetHeaders();
-            internetHeaders.addHeader("Content-Description", "test.html");
-            internetHeaders.addHeader("Content-Type", "text/plain");
-            multipart.addBodyPart(new jakarta.mail.internet.MimeBodyPart(internetHeaders, text.getBytes(StandardCharsets.UTF_8)));
-            msg.setContent(multipart);
-            msg.setSentDate(EJBCommonServices.getServerTimestamp());
-            Transport.send(msg);
-        } catch (Exception e) {
+            throw ultimo;
         }
+    }
+
+    private static String getHostname() {
+        try {
+            return InetAddress.getLocalHost().getHostName();
+        } catch (UnknownHostException e) {
+            return "";
+        }
+    }
+
+    private static void send(Session session, String subject, String text, String contentType,
+                             Address[] addressTO, Address[] addressCC, Address[] addressBCC,
+                             boolean useSessionFrom) throws Exception {
+        MimeMessage msg = new MimeMessage(session);
+
+        String from = session.getProperty("mail.from");
+        if (useSessionFrom || from == null || from.isBlank()) {
+            msg.setFrom();
+        } else {
+            msg.setFrom(new InternetAddress(from));
+        }
+
+        if (addressTO == null) {
+            msg.setRecipients(Message.RecipientType.TO, msg.getFrom());
+        } else {
+            msg.setRecipients(Message.RecipientType.TO, addressTO);
+        }
+        if (addressCC != null) {
+            msg.setRecipients(Message.RecipientType.CC, addressCC);
+        }
+        if (addressBCC != null) {
+            msg.setRecipients(Message.RecipientType.BCC, addressBCC);
+        }
+
+        msg.setSubject(subject);
+
+        InternetHeaders internetHeaders = new InternetHeaders();
+        internetHeaders.addHeader("Content-Description", CONTENT_DESCRIPTION);
+        internetHeaders.addHeader("Content-Type", contentType);
+
+        MimeMultipart multipart = new MimeMultipart();
+        multipart.addBodyPart(new MimeBodyPart(internetHeaders, text.getBytes(StandardCharsets.UTF_8)));
+        msg.setContent(multipart);
+        msg.setSentDate(EJBCommonServices.getServerTimestamp());
+        Transport.send(msg);
+    }
+
+    public static void sendErrorMail(String subject, String text, List<String> addressTO, List<String> addressCC, List<String> addressBCC) {
+        try {
+            Session session = getMailSession();
+            send(session, subject + " Hostname:" + getHostname(), text, "text/plain",
+                    indirizzi(addressTO), indirizzi(addressCC), indirizzi(addressBCC), true);
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Errore nell'invio della mail di errore: " + subject, e);
+        }
+    }
+
+    public static void sendErrorMail(String subject, String text) {
+        sendErrorMail(subject, text, null, null, null);
     }
 
     public static void sendMail(String subject, String text, Address[] addressTO, Address[] addressCC, Address[] addressBCC) {
         try {
-            javax.naming.InitialContext ctx = new javax.naming.InitialContext();
-            if (mail_session == null) {
-                try {
-                    mail_session = (jakarta.mail.Session) ctx.lookup(JAVA_COMP_ENV_MAIL_MAIL_SESSION);
-                } catch (NamingException e) {
-                    mail_session = (jakarta.mail.Session) ctx.lookup(JAVA_JBOSS_MAIL_DEFAULT);
-                }
-            }
-            MimeMessage msg = new MimeMessage(mail_session);
-            msg.setRecipients(jakarta.mail.Message.RecipientType.TO, addressTO);
-            if (addressCC != null)
-                msg.setRecipients(jakarta.mail.Message.RecipientType.CC, addressCC);
-            if (addressBCC != null)
-                msg.setRecipients(jakarta.mail.Message.RecipientType.BCC, addressBCC);
-            msg.setFrom(new InternetAddress(mail_session.getProperty("mail.from")));
-            msg.setSubject(subject);
-            jakarta.mail.internet.MimeMultipart multipart = new jakarta.mail.internet.MimeMultipart();
-            jakarta.mail.internet.MimeBodyPart messageBodyPart = new jakarta.mail.internet.MimeBodyPart();
-            jakarta.mail.internet.InternetHeaders internetHeaders = new jakarta.mail.internet.InternetHeaders();
-            internetHeaders = new jakarta.mail.internet.InternetHeaders();
-            internetHeaders.addHeader("Content-Description", "test.html");
-            internetHeaders.addHeader("Content-Type", "text/html");
-            multipart.addBodyPart(new jakarta.mail.internet.MimeBodyPart(internetHeaders, text.getBytes(StandardCharsets.UTF_8)));
-            msg.setContent(multipart);
-            msg.setSentDate(EJBCommonServices.getServerTimestamp());
-            Transport.send(msg);
+            Session session = getMailSession();
+            send(session, subject, text, "text/html", addressTO, addressCC, addressBCC, false);
         } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Errore nell'invio della mail: " + subject, e);
         }
     }
 
-    public static void sendMail(String subject, String text, java.util.List<String> addressTO, java.util.List<String> addressCC, java.util.List<String> addressBCC) {
+    public static void sendMail(String subject, String text, List<String> addressTO, List<String> addressCC, List<String> addressBCC) {
         sendMail(subject, text, indirizzi(addressTO), indirizzi(addressCC), indirizzi(addressBCC));
     }
 
-    public static void sendMail(String subject, String text, java.util.List<String> addressTO) {
+    public static void sendMail(String subject, String text, List<String> addressTO) {
         sendMail(subject, text, addressTO, null, null);
     }
 
@@ -134,22 +188,18 @@ public class SendMail {
         sendMail(subject, text, addressTO, null, null);
     }
 
-    public static void sendErrorMail(String subject, String text) {
-        sendErrorMail(subject, text, null, null, null);
-    }
-
-    private static Address[] indirizzi(java.util.List<String> listaIndirizzi) {
-        if (listaIndirizzi == null)
+    private static Address[] indirizzi(List<String> listaIndirizzi) {
+        if (listaIndirizzi == null) {
             return null;
-        Address[] address = new Address[listaIndirizzi.size()];
-        int indice = 0;
-        for (Iterator<String> i = listaIndirizzi.iterator(); i.hasNext(); ) {
+        }
+        List<Address> address = new ArrayList<>(listaIndirizzi.size());
+        for (String indirizzo : listaIndirizzi) {
             try {
-                address[indice] = new InternetAddress(i.next());
-                indice++;
+                address.add(new InternetAddress(indirizzo));
             } catch (AddressException e) {
+                LOGGER.log(Level.WARNING, "Indirizzo email non valido ignorato: {0}", indirizzo);
             }
         }
-        return address;
+        return address.toArray(new Address[0]);
     }
 }
