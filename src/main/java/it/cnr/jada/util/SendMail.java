@@ -89,9 +89,9 @@ public class SendMail {
             if (configurato != null && !configurato.isBlank()) {
                 candidati.add(configurato.trim());
             }
+            candidati.add(JAVA_JBOSS_MAIL_SIGLA);
             candidati.add(JAVA_COMP_ENV_MAIL_MAIL_SESSION);
             candidati.add(JAVA_JBOSS_MAIL_DEFAULT);
-            candidati.add(JAVA_JBOSS_MAIL_SIGLA);
 
             NamingException ultimo = null;
             for (String nome : candidati) {
